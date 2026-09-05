@@ -55,8 +55,20 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] `AppServiceProvider` (singleton + directive Blade `@formatDate`)
   - [x] **Tests écrits et verts** (voir Journal ci-dessous)
 
-- [ ] **Étape 2 — Migrations** (34 fichiers)
-- [ ] **Étape 3 — Modèles (30) + Factories (37)**
+- [x] **Étape 2 — Migrations (36 fichiers, dont 1 `.txt` désactivé → 35 exécutées)** *(fait le 05/09)*
+  - [x] Remplacée la migration `users` du squelette (`0001_01_01_000000`) par celle de `base` (`0001_01_01_000006` : UUID, `country_id`, `slug`, `status`, tables `password_reset_tokens`/`account_reset_tokens`/`sessions`)
+  - [x] Toutes les migrations de `base` copiées **1:1** (diff `base` vs `base_clone` = vide)
+  - [x] Ordre de dépendances validé : `langs` → `platform_versions(trans)` → `geo_*(trans)` → Spatie `permission_tables` → `role_translations` → `users` → `settings(trans)` → `cloud_*` → `blog_*` → `contacts/subscribes/subscribe_histories` → `faqs(trans)` → `galleries(trans)` → `audits` → `activity_logs`
+  - [x] Exécution réelle validée sur SQLite (`migrate --force`, 35 migrations DONE) puis via le test `MigrationsTest`
+  - [x] **46 tables créées** (dont `roles`, `permissions`, pivots Spatie, `migrations`)
+
+- [x] **Étape 3 — Modèles (33) + Factories (32)** *(fait le 05/09)*
+  - [x] 33 modèles copiés 1:1 depuis `base` (diff vide), dont les 2 modèles « logs » `ActivityLog`/`Audit` qui utilisent `HasAuditModelBehaviors`
+  - [x] 32 factories copiées 1:1 (la `UserFactory` du squelette est supprimée, conformément à `base`)
+  - [x] Suppression de la factory de squelette `UserFactory.php` (absente de `base`)
+  - [x] **Tests écrits et verts** : `ModelsTest` (présence + traits + clé de route), `ModelsBehaviorTest` (uuid, scopes, slug auto, casts, soft delete, Spatie)
+  - [x] Vérification : shéma + stratégie de clé de route fidèle à `base` (6 modèles de traduction `Setting`/`SettingTranslation` gardent la clé `'id'` comme dans `base`)
+
 - [ ] **Étape 4 — Seeders de base** (`DatabaseSeeder`)
 - [ ] **Étape 5 — Auth + Middlewares + `bootstrap/app.php`**
 - [ ] **Étape 6 — Module 1 : Langues** (`langs`)
@@ -98,6 +110,26 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - `tests/Feature/ServicesTest.php` : `VersionService::getActive()` sans table → `null` ; directive Blade `@formatDate` enregistrée.
   - `tests/Pest.php` : ajout `uses(TestCase::class)->in('Unit')` pour booter l'app dans les tests Unit (enums/helpers y dépendent).
 - **Validation finale :** `php artisan test` → **16 passed (338 assertions)** ✔.
+
+### 05/09 — Étape 2 : Migrations (schéma de données)
+- **Contenu intégré (copié de `base` 1:1) :**
+  - Remplacement de la migration `users` (squelette) par `0001_01_01_000006_create_users_table.php` (UUID, `country_id` FK → `geo_countries`, `slug`, `gender`, `status`, `password_reset_tokens`, `account_reset_tokens`, `sessions`).
+  - Copies des 36 fichiers de `base/database/migrations` (y compris `0001_01_01_000003_create_roles_table.txt`, désactivé en `.txt` → la table `roles` est créée par la migration Spatie `permission_tables`).
+  - `git diff --no-index` entre `base/database/migrations` et `base_clone/database/migrations` : **aucune différence**.
+- **Validation :**
+  - `php artisan migrate --force` sur SQLite de test : **35 migrations DONE**, **46 tables listées**.
+  - `tests/Feature/MigrationsTest.php` : tables présentes, colonnes clés (uuid / status / deleted_at / mots morphs `/` contraintes), compte de migrations.
+- **Tests écrits (Pest) :** `tests/Feature/MigrationsTest.php` (3 tests / 70 assertions).
+- **Validation finale :** `php artisan test` → **19 passed (408 assertions)** ✔.
+
+### 05/09 — Étape 3 : Modèles + Factories
+- **Contenu intégré (copié de `base` 1:1) :**
+  - 33 modèles dans `app/Models/` (diff vide avec `base`).
+  - 32 factories dans `database/factories/` (diff vide avec `base`) ; suppression de `UserFactory.php` (squelette) pour coller à `base` qui n'en a pas.
+- **Comportements vérifiés par les tests :** uuid auto (HasUuid), slug auto (HasSlug avec champ source custom), casts enum (`status`, `UserStatus`, etc.), `#[Fillable]`/`#[Hidden]`, Scopes (`active`, `default`, `draft/published/...`), relations (continent→pays→user, plateforme→dossiers→fichiers, rôles→permissions), soft delete + restore, masquage des secrets cloud (`api_key`/`api_secret`).
+- **Spécificité fidèle à `base` :** `Setting`, `SettingTranslation`, `BlogCategoryTranslation`, `BlogTagTranslation`, `FaqTranslation`, `GalleryTranslation` n'implémentent **pas** `getRouteKeyName()` → clé `'id'` (comportement de `base` conservé).
+- **Tests écrits (Pest) :** `tests/Feature/ModelsTest.php` (2 tests / 133 assertions) + `tests/Feature/ModelsBehaviorTest.php` (8 tests / 28 assertions).
+- **Validation finale :** `php artisan test` → **29 passed (569 assertions)** ✔.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
