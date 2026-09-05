@@ -130,7 +130,11 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Règles métier couvertes** : unicité nom/slug par langue (catégories/tags), destroy interdit si actif (catégorie/tag), destroy commentaire interdit si visible ou s'il a des réponses (`dependentRelations`), `scheduled` exige `published_at` futur, calcul auto du `time_read`, sync des tags pivot
   - [x] **Attention fixtures** : un `it()` ne doit créer l'admin qu'UNE fois (email unique) → helpers réutilisent l'utilisateur existant
 
-- [ ] **Étape 13 — Modules 17→19 : Cloud** (plateformes, dossiers, fichiers)
+- [x] **Étape 13 — Modules 17→19 : Cloud** (plateformes, dossiers, fichiers) *(fait le 05/09)*
+  - [x] Vues `clouds/**` (plateformes, dossiers, fichiers) restaurées de `base` 1:1 avec DataTables, icônes converties
+  - [x] **Tests : `CloudPlatformsTest` (11/11) + `CloudFoldersTest` (7/7) + `CloudFilesTest` (6/6)**
+  - [x] **Règles métier couvertes** : enum `name` limité (`backblaze_b2`) ; secrets masqués (`api_key`/`api_secret` jamais dans le HTML) ; `destroy` plateforme refusé si active OU si dossiers présents (`dependentRelations`) ; `architecture-store` (création des dossiers users/blogs/galleries) ; destroy d'un fichier `fileable` refusé ; restore exige un fileable existant non supprimé ; proxy public `cloud-file.show` (fichier local `pending` servi sans authentification)
+
 - [ ] **Étape 14 — Modules 20/21 : Audits & ActivityLogs**
 - [ ] **Étape 15 — Dashboard + Analytics**
 - [ ] **Étape 16 — Frontend placeholder V1/V2**
@@ -266,6 +270,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Règles métier couvertes :** unicité name/slug par langue ; destroy catégorie/tag refusé si actif ; destroy commentaire refusé si visible ou si réponses présentes ; `scheduled` exige `published_at` futur ; calcul auto `time_read` ; sync pivot tags ; Summernote présent sur les formulaires.
 - **Leçons :** fermeture `}` des helpers de fixture (insertion au milieu → "No tests found") ; réutilisation de l'admin (email unique) ; IDs réels des tables DataTables (`blog-categories-table`, `blog-tags-table`, `blog-comments-table`, `blog-comment-replies-table`).
 - **Validation :** 30 tests du module → tous passés ; suite complète en commit.
+
+### 05/09 — Étape 13 : Modules Cloud (plateformes, dossiers, fichiers)
+- **Vues :** `clouds/platforms/**`, `clouds/folders/**`, `clouds/files/**` (avec DataTables) restaurées 1:1 depuis `base`, icônes converties.
+- **Tests écrits (Pest) :** `CloudPlatformsTest.php` (11), `CloudFoldersTest.php` (7), `CloudFilesTest.php` (6).
+- **Règles métier couvertes :** masquage des secrets (`api_key`/`api_secret`), `destroy` plateforme bloqué si active ou avec dossiers (`dependentRelations`), `architecture-store`, proxy public `cloud-file.show` (fichier local `pending` servi sans auth), restore exige fileable existant non-trashed, destroy fichier refusé si `fileable` présent.
+- **Validation finale :** voir la suite complète dans le commit.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
