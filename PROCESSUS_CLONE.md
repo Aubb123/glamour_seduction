@@ -85,7 +85,14 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] Helpers de test : `bootV1WebRoutes()` (re-chargement des routes dans le groupe `web`)
   - [x] **Tests Auth : 10/10** (pages, connexion, credentials invalides, compte suspendu, guest, auth, logout, alias middleware, locale)
 
-- [ ] **Étape 6 — Module 1 : Langues** (`langs`)
+- [x] **Étape 6 — Module 1 : Langues** (`langs`) *(fait le 05/09)*
+  - [x] **Layout backend thème Larkon créé** : `_start`, `_header` (menu création rapide, sélecteur de langue, thème, profil), `_sidebar` (menu + sous-menus), `_footer`, `_end` (SweetAlert2 + JS + `@stack('scripts')`), `_toolbar` — mêmes noms de fichiers et `@yield`/`@stack` que `base`
+  - [x] `app.blade.php` structure Larkon (`wrapper` → `topbar` → `main-nav` → `page-content` → `footer`)
+  - [x] Vues `langs` en thème Larkon : `index` + `partials/_index-table` (badges, actions activate/deactivate via SweetAlert2)
+  - [x] Assets SweetAlert2 copiés vers `storage/app/public/others/all/assets/sweetalert2/`
+  - [x] **Tests : `LangsTest` 7/7** (index, protection, activate, deactivate, langue par défaut, switch, refus switch inactif)
+  - [x] **Astuce** : `forceFill()` pour `email_verified_at`/`phone_verified_at` (non couverts par `#[Fillable]` du modèle User)
+
 - [ ] **Étape 7 — Module 2 : Versions de plateforme** (`platform-versions`)
 - [ ] **Étape 8 — Modules 3/4 : Géographie** (`geo-continents`, `geo-countries`)
 - [ ] **Étape 9 — Modules 5/6/7 : RBAC + Utilisateurs**
@@ -165,6 +172,15 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Helper de test :** `bootV1WebRoutes()` dans `tests/Pest.php` — vide la collection puis recharge `routes/web.php` dans le groupe `web` (car `VersionService::getActive()` filtre les routes au boot, avant `RefreshDatabase`).
 - **Tests écrits (Pest) :** `tests/Feature/AuthTest.php` (10 tests / 40 assertions). `ExampleTest` adapté au health-check `/up` (la `/` est désormais `frontend.index`, traité à l'Étape 16).
 - **Validation finale :** `php artisan test` → **46 passed (634 assertions)** ✔.
+
+### 05/09 — Étape 6 : Module Langues (`langs`) + Layout backend Larkon
+- **Layout backend (thème Larkon)** : `resources/views/v1/backend/layouts/*` recréés en gardant les mêmes noms de fichiers que `base` (`app`, `includes/_start`, `_header`, `_sidebar`, `_footer`, `_end`, `_toolbar`). Intégration des CSS/JS du template (`vendor.min.css`, `icons.min.css`, `app.min.css`, `config.js`, `vendor.js`, `app.js`) et de SweetAlert2 (`others/all/assets/sweetalert2`).
+- **Contenu intégré :** vues `langs/index` + `partials/_index-table` en thème Larkon (les messages/actions utilisent les mêmes clés i18n que `base`).
+- **Tests écrits (Pest) :** `tests/Feature/LangsTest.php` (7 tests / 25 assertions).
+- **Découverte techniques utiles aux étapes suivantes :**
+  - Le modèle `User` utilise `#[Fillable]` (Laravel 13) qui **exclut** `email_verified_at`/`phone_verified_at` → dans les tests, `forceFill()` est nécessaire pour passer les middlewares de vérification.
+  - Les routes étant conditionnées par `VersionService::getActive()` (table `platform_versions`), les tests Feature doivent seed `LangSeeder + PlatformVersionSeeder` puis appeler `bootV1WebRoutes()`.
+- **Validation finale :** `php artisan test --filter=LangsTest` → **7 passed**. Suite complète : **53 passed** (voir commit).
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
