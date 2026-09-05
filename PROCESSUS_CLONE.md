@@ -118,7 +118,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] `UploadedFile::fake()->create()` utilisé (GD absente sur le PHP XAMPP) pour l'image de galerie
   - [x] Seed cloud requis pour les galeries : `CloudPlatformSeeder` + `CloudFolderSeeder` (architecture `galleries/images`)
 
-- [ ] **Étape 11 — Module 10 : Settings + 11/12 : Contacts & Subscribes**
+- [x] **Étape 11 — Module 10 : Settings + 11/12 : Contacts & Subscribes** *(fait le 05/09)*
+  - [x] Vues `settings`, `contacts`, `subscribes` (avec `subscribes/histories`) restaurées de `base` 1:1 (avec DataTables), icônes converties
+  - [x] **Tests : `SettingsTest` (4/4) + `ContactsTest` (6/6) + `SubscribesTest` (6/6)**
+  - [x] **Règles métier couvertes** : `ContactService::destroy` interdit si non lu ; `SubscribeService::destroy` interdit si actif ; update settings via `settings[uuid][...]` (format `form_key`) avec protection `is_editable`
+  - [x] Fixtures : `GeoCountry::factory()` vide → création explicite continent+pays (les factories géo ont des définitions vides dans `base`)
+
 - [ ] **Étape 12 — Modules 13→16 : Blog** (catégories, tags, posts, commentaires/réponses)
 - [ ] **Étape 13 — Modules 17→19 : Cloud** (plateformes, dossiers, fichiers)
 - [ ] **Étape 14 — Modules 20/21 : Audits & ActivityLogs**
@@ -242,6 +247,13 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Spécificité galeries :** le store exige `cloud_platform_uuid` + `image` (l'architecture cloud `galleries/images` est créée par `CloudFolderSeeder`) ; l'image est uploadée localement via `CloudFileService::uploadEntityImage` (statut `pending`, migration B2 asynchrone).
 - **Note tooling :** `UploadedFile::fake()->image()` nécessite GD (absente) → remplacé par `UploadedFile::fake()->create('photo.jpg', 100, 'image/jpeg')`.
 - **Validation :** échantillon `GalleriesTest|FaqsTest` → **12 passed**.
+
+### 05/09 — Étape 11 : Settings + Contacts & Subscribes
+- **Vues :** `settings/**` (index/audits/activity-logs), `contacts/**`, `subscribes/**` (+ `subscribes/histories/**`) restaurées 1:1 depuis `base` (avec DataTables), icônes converties.
+- **Tests écrits (Pest) :** `tests/Feature/SettingsTest.php` (4), `tests/Feature/ContactsTest.php` (6), `tests/Feature/SubscribesTest.php` (6).
+- **Règles métier couvertes :** suppression de contact uniquement si lu ; suppression d'abonné uniquement si inactif ; update des settings au format `settings[uuid][...]` avec protection `is_editable`.
+- **Correction d'usage :** `storage/app/private/uploads` retiré du dépôt git et ignoré (artefacts d'upload de test).
+- **Validation :** échantillon → **16 passed** ; suite complète en commit.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
