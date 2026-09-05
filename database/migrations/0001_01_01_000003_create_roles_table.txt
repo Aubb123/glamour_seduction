@@ -1,0 +1,35 @@
+En lieu et place de supprimer la migration de création de la table "roles", j'ai retirer son extension (.php) et remplacer par (.txt) pour qu'elle ne soit plus reconnue comme une migration par Laravel. 
+Cela permet de conserver l'historique des migrations tout en évitant que cette migration ne soit exécutée à nouveau.
+
+// <?php
+// 
+// use Illuminate\Database\Migrations\Migration;
+// use Illuminate\Database\Schema\Blueprint;
+// use Illuminate\Support\Facades\Schema;
+
+// return new class extends Migration
+// {
+//     /**
+//      * Run the migrations.
+//      */
+//     public function up(): void
+//     {
+//         Schema::create('roles', function (Blueprint $table) {
+//             $table->id(); // Clé primaire auto-incrémentée
+//             $table->uuid('uuid')->unique(); // UUID unique pour chaque rôle
+//             // 
+//             $table->boolean('is_active')->default(true); // Indique si le rôle est actif ou non
+//             // 
+//             $table->timestamps();
+//             $table->softDeletes();
+//         });
+//     }
+
+//     /**
+//      * Reverse the migrations.
+//      */
+//     public function down(): void
+//     {
+//         Schema::dropIfExists('roles');
+//     }
+// };
