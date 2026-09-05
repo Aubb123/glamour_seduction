@@ -56,7 +56,7 @@
                         @include('v1.backend.layouts.partials._card_actions_menu', [
                             'actions' => [
                                 ['label' => __('v1/backend/views/pages/geos/countries/partials/_index-table.listeDesPays'),   'icon' => 'bx bx-list-ul',   'route' => 'backend.geocountries.index'],
-                                ['label' => __('v1/backend/views/pages/geos/countries/partials/_index-table.corbeille'),        'icon' => 'bx bx-trash-2', 'route' => 'backend.geocountries.trashed'],
+                                ['label' => __('v1/backend/views/pages/geos/countries/partials/_index-table.corbeille'),        'icon' => 'bx bx-trash', 'route' => 'backend.geocountries.trashed'],
                             ]
                         ])
                     </ul>

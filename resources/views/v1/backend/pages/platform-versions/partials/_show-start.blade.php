@@ -34,7 +34,7 @@
                                         @csrf
                                         @method('PATCH')
                                         <button type="button" class="dropdown-item" onclick="confirmAction('unpublish-form-{{ $version->uuid }}', '{{ __('Dépublier cette version ?') }}', 'Dépublier', 'warning')">
-                                            <i class="bx bx-show-off me-2 text-warning"></i> {{ __('Dépublier') }}
+                                            <i class="bx bx-hide me-2 text-warning"></i> {{ __('Dépublier') }}
                                         </button>
                                     </form>
                                 </li>

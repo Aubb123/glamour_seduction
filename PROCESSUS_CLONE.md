@@ -106,7 +106,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Tests : `GeosTest` 7/7** (index continents, index pays, show continent, show pays, activate/deactivate continent, activate/deactivate pays, accès protégé)
   - [x] **Leçon réutilisée** : les tests Feature doivent toujours seed `PlatformVersionSeeder` (sinon `VersionService::getActive()` → null → routes V1 non chargées)
 
-- [ ] **Étape 9 — Modules 5/6/7 : RBAC + Utilisateurs**
+- [x] **Étape 9 — Modules 5/6/7 : RBAC + Utilisateurs** *(fait le 05/09)*
+  - [x] Vues `roles`, `permissions`, `users` copiées de `base` et converties au thème **Larkon** (icônes + DataTables)
+  - [x] **Tests : `RbacUsersTest` 14/14** (rôles : index/show/activate/deactivate/edit ; permissions : index/store/sync_roles/assign ; users : index/show/suspend+activate/ban+blocage réactivation/edit ; accès protégé)
+  - [x] **Règles métier décelées par les tests** : `sync_roles` attend `role_ids` ; un utilisateur **banni** ne peut pas être réactivé (`activate` interdit sur `banned`) ; `suspend` exige un statut actif
+  - [x] **Mécanisation du thème** : script `feather_robust.pl` (mapping de 69 icônes Feather→Boxicons en une passe) + re-copie complète des vues `base` puis conversion en masse
+
 - [ ] **Étape 10 — Modules 8/9 : Galeries & FAQ**
 - [ ] **Étape 11 — Module 10 : Settings + 11/12 : Contacts & Subscribes**
 - [ ] **Étape 12 — Modules 13→16 : Blog** (catégories, tags, posts, commentaires/réponses)
@@ -204,6 +209,15 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Vues (thème Larkon)** : 26 fichiers `geos/**` copiés de `base` (13 continents + 13 pays) puis convertis : `feather-*` → `bx` (Boxicons), DataTables supprimées.
 - **Tests écrits (Pest) :** `tests/Feature/GeosTest.php` (7 tests / 19 assertions).
 - **Validation finale :** `php artisan test` → **71 passed (716 assertions)** ✔.
+
+### 05/09 — Étape 9 : RBAC + Utilisateurs
+- **Vues (thème Larkon)** : `roles`, `permissions`, `users` converties. 
+- **Outillage thème** : le script `feather_robust.pl` mappe désormais **69 icônes** Feather→Boxicons en une passe regex (capture du nom complet, plus de conversions partielles fautives). Re-copie complète des vues `base` puis conversion en masse ; les vues écrites à la main (layouts, auth, langs, platform-versions/_index-table) sont sauvegardées puis restaurées.
+- **Règles métier (services) couvertes par les tests :**
+  - `PermissionService::syncRoles` attend `role_ids` (tableau d'IDs).
+  - `UserService::activate` refuse d'activer un utilisateur **banni** ; `suspend` n'accepte que les utilisateurs **actifs**.
+- **Tests écrits (Pest) :** `tests/Feature/RbacUsersTest.php` (14 tests / 40 assertions).
+- **Validation finale :** voir la suite complète dans le commit.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->

@@ -64,7 +64,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="dropdown-item text-danger" onclick="confirmAction('clear-logs-form', '{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.supprimerJournaux3Jours') }}', '{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.nettoyer') }}', 'warning')">
-                                    <i class="bx bx-trash-2 me-2"></i> {{ __('v1/backend/views/pages/activity-logs/partials/_index-table.nettoyerLogs3Jours') }}
+                                    <i class="bx bx-trash me-2"></i> {{ __('v1/backend/views/pages/activity-logs/partials/_index-table.nettoyerLogs3Jours') }}
                                 </button>
                             </form>
                         </li>

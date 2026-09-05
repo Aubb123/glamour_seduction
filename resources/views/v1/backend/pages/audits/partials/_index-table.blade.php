@@ -29,7 +29,7 @@
         [
             'label' => __('Suppressions définitives'),
             'value' => $audits->where('action', 'force_deleted')->count(),
-            'icon'  => 'bx bx-trash-2',
+            'icon'  => 'bx bx-trash',
             'color' => 'danger',
         ],
         [
@@ -76,7 +76,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="dropdown-item text-danger" onclick="confirmAction('clear-audits-form', '{{ __('Supprimer tous les audits de plus de 3 jours ?') }}', '{{ __('Nettoyer') }}', 'warning')">
-                                    <i class="bx bx-trash-2 me-2"></i> {{ __('Nettoyer audits > 3 jours') }}
+                                    <i class="bx bx-trash me-2"></i> {{ __('Nettoyer audits > 3 jours') }}
                                 </button>
                             </form>
                         </li>

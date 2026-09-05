@@ -105,7 +105,7 @@
                                         </span>
                                     @else
                                         <span class="badge bg-soft-warning px-3 py-2">
-                                            <i class="bx bx-edit-2 me-1"></i>{{ __('Brouillon') }}
+                                            <i class="bx bx-edit-alt me-1"></i>{{ __('Brouillon') }}
                                         </span>
                                     @endif
                                 </div>
