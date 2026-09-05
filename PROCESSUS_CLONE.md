@@ -182,5 +182,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - Les routes étant conditionnées par `VersionService::getActive()` (table `platform_versions`), les tests Feature doivent seed `LangSeeder + PlatformVersionSeeder` puis appeler `bootV1WebRoutes()`.
 - **Validation finale :** `php artisan test --filter=LangsTest` → **7 passed**. Suite complète : **53 passed** (voir commit).
 
+### 05/09 — Étape 7 : Module Versions de plateforme (`platform-versions`)
+- **Vues (thème Larkon)** : les 13 fichiers `platform-versions` de `base` ont été copiés puis convertis : icônes `feather-*` → `bx` (Boxicons), suppression des dépendances DataTables (remplacées par des tables Bootstrap simples), garde des mêmes `@yield`/`@stack`/variables (`$versions`, `$version`, `$langs`, `$platformVersionTranslations`).
+- **Partials transverses ajoutés :** `layouts/partials/_statistics` (cartes stats), `_card_actions_menu` (menu d'actions), `audits/partials/_index-table` et `activity-logs/partials/_index-table` (repris de `base`, convertis, réutilisés à l'Étape 14).
+- **Tests écrits (Pest) :** `tests/Feature/PlatformVersionsTest.php` (11 tests / 38 assertions).
+- **Règles métier du service couvertes par les tests :** `activate` exige `is_published` ; `unpublish` est impossible sur une version publiée ; `destroy` interdit si publiée/active.
+- **Validation finale :** `php artisan test` → **64 passed (697 assertions)** ✔.
+
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
