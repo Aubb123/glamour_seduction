@@ -124,7 +124,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Règles métier couvertes** : `ContactService::destroy` interdit si non lu ; `SubscribeService::destroy` interdit si actif ; update settings via `settings[uuid][...]` (format `form_key`) avec protection `is_editable`
   - [x] Fixtures : `GeoCountry::factory()` vide → création explicite continent+pays (les factories géo ont des définitions vides dans `base`)
 
-- [ ] **Étape 12 — Modules 13→16 : Blog** (catégories, tags, posts, commentaires/réponses)
+- [x] **Étape 12 — Modules 13→16 : Blog** (catégories, tags, posts, commentaires/réponses) *(fait le 05/09)*
+  - [x] 61 vues `blogs/**` restaurées de `base` 1:1 (avec DataTables `blog-*-table`), icônes converties, Summernote conservé sur les formulaires posts
+  - [x] **Tests : `BlogCategoriesTest` (8/8) + `BlogTagsTest` (6/6) + `BlogPostsTest` (7/7) + `BlogCommentsRepliesTest` (9/9)**
+  - [x] **Règles métier couvertes** : unicité nom/slug par langue (catégories/tags), destroy interdit si actif (catégorie/tag), destroy commentaire interdit si visible ou s'il a des réponses (`dependentRelations`), `scheduled` exige `published_at` futur, calcul auto du `time_read`, sync des tags pivot
+  - [x] **Attention fixtures** : un `it()` ne doit créer l'admin qu'UNE fois (email unique) → helpers réutilisent l'utilisateur existant
+
 - [ ] **Étape 13 — Modules 17→19 : Cloud** (plateformes, dossiers, fichiers)
 - [ ] **Étape 14 — Modules 20/21 : Audits & ActivityLogs**
 - [ ] **Étape 15 — Dashboard + Analytics**
@@ -254,6 +259,13 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Règles métier couvertes :** suppression de contact uniquement si lu ; suppression d'abonné uniquement si inactif ; update des settings au format `settings[uuid][...]` avec protection `is_editable`.
 - **Correction d'usage :** `storage/app/private/uploads` retiré du dépôt git et ignoré (artefacts d'upload de test).
 - **Validation :** échantillon → **16 passed** ; suite complète en commit.
+
+### 05/09 — Étape 12 : Blog (catégories, tags, posts, commentaires, réponses)
+- **Vues :** 61 fichiers `blogs/**` restaurés 1:1 depuis `base` (avec DataTables `blog-*-table`), icônes converties, Summernote conservé sur les formulaires posts (`_summernote_editor` + `@stack('summernote-scripts')` dans le layout).
+- **Tests écrits (Pest) :** `BlogCategoriesTest.php` (8), `BlogTagsTest.php` (6), `BlogPostsTest.php` (7), `BlogCommentsRepliesTest.php` (9).
+- **Règles métier couvertes :** unicité name/slug par langue ; destroy catégorie/tag refusé si actif ; destroy commentaire refusé si visible ou si réponses présentes ; `scheduled` exige `published_at` futur ; calcul auto `time_read` ; sync pivot tags ; Summernote présent sur les formulaires.
+- **Leçons :** fermeture `}` des helpers de fixture (insertion au milieu → "No tests found") ; réutilisation de l'admin (email unique) ; IDs réels des tables DataTables (`blog-categories-table`, `blog-tags-table`, `blog-comments-table`, `blog-comment-replies-table`).
+- **Validation :** 30 tests du module → tous passés ; suite complète en commit.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
