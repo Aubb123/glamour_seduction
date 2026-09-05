@@ -112,7 +112,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Règles métier décelées par les tests** : `sync_roles` attend `role_ids` ; un utilisateur **banni** ne peut pas être réactivé (`activate` interdit sur `banned`) ; `suspend` exige un statut actif
   - [x] **Mécanisation du thème** : script `feather_robust.pl` (mapping de 69 icônes Feather→Boxicons en une passe) + re-copie complète des vues `base` puis conversion en masse
 
-- [ ] **Étape 10 — Modules 8/9 : Galeries & FAQ**
+- [x] **Étape 10 — Modules 8/9 : Galeries & FAQ** *(fait le 05/09)*
+  - [x] Vues `galleries` (13) et `faqs` (13) — issues de la restauration `base` 1:1, donc **avec DataTables** (`galleries-table`, `faqs-table`) et icônes converties
+  - [x] **Tests : `GalleriesTest` (7/7) + `FaqsTest` (5/5)** : index avec DataTable vérifiée, create, store (image + cloud + traductions ; FAQ avec traductions), show, toggle-active, corbeille/restore, accès protégé
+  - [x] `UploadedFile::fake()->create()` utilisé (GD absente sur le PHP XAMPP) pour l'image de galerie
+  - [x] Seed cloud requis pour les galeries : `CloudPlatformSeeder` + `CloudFolderSeeder` (architecture `galleries/images`)
+
 - [ ] **Étape 11 — Module 10 : Settings + 11/12 : Contacts & Subscribes**
 - [ ] **Étape 12 — Modules 13→16 : Blog** (catégories, tags, posts, commentaires/réponses)
 - [ ] **Étape 13 — Modules 17→19 : Cloud** (plateformes, dossiers, fichiers)
@@ -230,6 +235,13 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Vérification :** `DataTablesTest` (3 tests) valide la présence de `jquery.dataTables` et de l'init `DataTable()` dans le HTML rendu (`versions-table`, `langs-table`, `users-table`).
 - **Résultat :** 32 vues avec DataTables + 3 vues avec Summernote (blogs/posts create/edit) restaurées.
 - **Checks :** `php artisan test --filter='LangsTest|GeosTest|DataTablesTest'` → **17 passed**.
+
+### 05/09 — Étape 10 : Galeries & FAQ
+- **Vues :** `galleries/**` (13) + `faqs/**` (13) restaurées en 1:1 depuis `base` → **DataTables conservées** (`#galleries-table`, `#faqs-table`), icônes converties en Boxicons.
+- **Tests écrits (Pest) :** `tests/Feature/GalleriesTest.php` (7 tests) + `tests/Feature/FaqsTest.php` (5 tests).
+- **Spécificité galeries :** le store exige `cloud_platform_uuid` + `image` (l'architecture cloud `galleries/images` est créée par `CloudFolderSeeder`) ; l'image est uploadée localement via `CloudFileService::uploadEntityImage` (statut `pending`, migration B2 asynchrone).
+- **Note tooling :** `UploadedFile::fake()->image()` nécessite GD (absente) → remplacé par `UploadedFile::fake()->create('photo.jpg', 100, 'image/jpeg')`.
+- **Validation :** échantillon `GalleriesTest|FaqsTest` → **12 passed**.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
