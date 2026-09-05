@@ -1,0 +1,33 @@
+<?php
+
+return [
+    // _index-table.blade.php
+    'journaux' => 'Journaux',
+    'succes' => 'Succès',
+    'erreurs' => 'Erreurs',
+    'types' => 'Types',
+    'actionsDistinctes' => 'Actions distinctes',
+    'utilisateurs' => 'Utilisateurs',
+    'journalActivite' => 'Journal d\'activité',
+    'actions' => 'Actions',
+    'tousLesJournaux' => 'Tous les journaux',
+    'supprimerJournaux3Jours' => 'Supprimer tous les journaux de plus de 3 jours ?',
+    'nettoyer' => 'Nettoyer',
+    'nettoyerLogs3Jours' => 'Nettoyer logs > 3 jours',
+    'type' => 'Type',
+    'tous' => 'Tous',
+    'action' => 'Action',
+    'toutes' => 'Toutes',
+    'statut' => 'Statut',
+    'nonDefini' => 'Non défini',
+    'erreur' => 'Erreur',
+    'du' => 'Du',
+    'au' => 'Au',
+    'ip' => 'IP',
+    'date' => 'Date',
+    'systeme' => 'Système',
+    'voir' => 'Voir',
+    'supprimer' => 'Supprimer',
+    'supprimerCeJournal' => 'Supprimer ce journal ?',
+    'aucunJournalTrouve' => 'Aucun journal trouvé.',
+];

@@ -1,0 +1,30 @@
+<?php
+
+return [
+    'faqs' => [
+        'destroy' => [
+            'active_faq_forbidden' => 'Impossible de supprimer une FAQ active. Veuillez d\'abord la désactiver.',
+            'already_deleted' => 'Cette FAQ est déjà supprimée et ne peut plus être supprimée à nouveau.',
+        ],
+        'restore' => [
+            'not_trashed_forbidden' => 'Seules les FAQs déjà supprimées ou en corbeille peuvent être restaurées.',
+        ],
+        'force_destroy' => [
+            'active_faq_forbidden' => 'Impossible de supprimer définitivement une FAQ active. Veuillez d\'abord la désactiver.',
+            'not_trashed_forbidden' => 'Seules les FAQs déjà supprimées ou en corbeille peuvent être supprimées définitivement.',
+        ],
+        'translations' => [
+            'destroy' => [
+                'last_translation_forbidden' => 'Impossible de supprimer la dernière traduction de cette FAQ.',
+                'already_deleted' => 'Cette traduction est déjà supprimée et ne peut plus être supprimée à nouveau.',
+            ],
+            'restore' => [
+                'not_trashed_forbidden' => 'Seules les traductions déjà supprimées ou en corbeille peuvent être restaurées.',
+            ],
+            'force_destroy' => [
+                'last_translation_forbidden' => 'Impossible de supprimer définitivement la dernière traduction de cette FAQ.',
+                'not_trashed_forbidden' => 'Seules les traductions déjà supprimées ou en corbeille peuvent être supprimées définitivement.',
+            ],
+        ],
+    ],
+];

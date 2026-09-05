@@ -1,0 +1,108 @@
+<?php
+
+return [
+    'subscribes' => [
+        'not_found' => 'Attempt to access a non-existent subscriber (UUID: :uuid).',
+        'index' => [
+            'success' => 'Viewing the subscribers list',
+            'error' => 'Error viewing the subscribers list',
+        ],
+        'show' => [
+            'success' => 'Viewing subscriber details: :name',
+            'warning' => 'Attempt to view a non-existent subscriber: :uuid',
+            'error' => 'Error viewing subscriber: :uuid',
+        ],
+        'activate' => [
+            'success' => 'Subscriber activated: :name',
+            'warning' => 'Attempt to activate a non-existent subscriber: :uuid',
+            'warning_meta' => 'Business error when activating subscriber: :uuid',
+            'error' => 'Error activating subscriber: :uuid',
+            'flash_success' => 'Subscriber activated successfully.',
+            'flash_warning' => 'Subscriber not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'deactivate' => [
+            'success' => 'Subscriber deactivated: :name',
+            'warning' => 'Attempt to deactivate a non-existent subscriber: :uuid',
+            'warning_meta' => 'Business error when deactivating subscriber: :uuid',
+            'error' => 'Error deactivating subscriber: :uuid',
+            'flash_success' => 'Subscriber deactivated successfully.',
+            'flash_warning' => 'Subscriber not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'destroy' => [
+            'success' => 'Deleting subscriber from database: :name',
+            'warning' => 'Attempt to delete a non-existent subscriber: :uuid',
+            'warning_meta' => 'Business error when deleting subscriber: :uuid',
+            'error' => 'Error deleting subscriber: :uuid',
+            'flash_success' => 'Subscriber (:name) deleted successfully.',
+            'flash_warning' => 'Subscriber not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'trashed' => [
+            'success' => 'Viewing the deleted subscribers list',
+            'error' => 'Error viewing the deleted subscribers list',
+        ],
+        'restore' => [
+            'success' => 'Restoring subscriber: :name',
+            'warning' => 'Attempt to restore a non-existent subscriber: :uuid',
+            'warning_meta' => 'Business error when restoring subscriber: :uuid',
+            'error' => 'Error restoring subscriber: :uuid',
+            'flash_success' => 'Subscriber (:name) restored successfully.',
+            'flash_warning' => 'Subscriber not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'force_destroy' => [
+            'success' => 'Permanently deleting subscriber: :name',
+            'warning' => 'Attempt to permanently delete a non-existent subscriber: :uuid',
+            'warning_meta' => 'Business error when permanently deleting subscriber: :uuid',
+            'error' => 'Error permanently deleting subscriber: :uuid',
+            'flash_success' => 'Subscriber permanently deleted successfully.',
+            'flash_warning' => 'Subscriber not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'histories' => [
+            'not_found' => 'Attempt to access a non-existent subscribe history (UUID: :uuid).',
+            'index' => [
+                'success' => 'Viewing the subscribe histories list',
+                'error' => 'Error viewing the subscribe histories list',
+            ],
+            'show' => [
+                'success' => 'Viewing history details: :uuid',
+                'warning' => 'Attempt to view a non-existent history: :uuid',
+                'error' => 'Error viewing history: :uuid',
+            ],
+            'destroy' => [
+                'success' => 'Deleting history: :uuid',
+                'warning' => 'Attempt to delete a non-existent history: :uuid',
+                'warning_meta' => 'Business error when deleting history: :uuid',
+                'error' => 'Error deleting history: :uuid',
+                'flash_success' => 'History deleted successfully.',
+                'flash_warning' => 'History not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+            'trashed' => [
+                'success' => 'Viewing the deleted histories list',
+                'error' => 'Error viewing the deleted histories list',
+            ],
+            'restore' => [
+                'success' => 'Restoring history: :uuid',
+                'warning' => 'Attempt to restore a non-existent history: :uuid',
+                'warning_meta' => 'Business error when restoring history: :uuid',
+                'error' => 'Error restoring history: :uuid',
+                'flash_success' => 'History restored successfully.',
+                'flash_warning' => 'History not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+            'force_destroy' => [
+                'success' => 'Permanently deleting history: :uuid',
+                'warning' => 'Attempt to permanently delete a non-existent history: :uuid',
+                'warning_meta' => 'Business error when permanently deleting history: :uuid',
+                'error' => 'Error permanently deleting history: :uuid',
+                'flash_success' => 'History permanently deleted successfully.',
+                'flash_warning' => 'History not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+        ],
+    ],
+];

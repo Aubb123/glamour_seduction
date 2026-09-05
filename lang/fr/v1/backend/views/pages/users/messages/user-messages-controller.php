@@ -1,0 +1,113 @@
+<?php
+
+return [
+    'users' => [
+        'not_found' => 'Tentative d\'accès à un utilisateur introuvable (UUID: :uuid).',
+        'index' => [
+            'success' => 'Consultation de la liste des utilisateurs',
+            'error' => 'Erreur lors de la consultation de la liste des utilisateurs',
+        ],
+        'show' => [
+            'no_name' => 'Aucun nom trouvé',
+            'success' => 'Consultation du détail de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation de l\'utilisateur : :uuid',
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+        ],
+        'activity-logs' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation du journal d\'activité de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation du journal d\'activité d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation du journal d\'activité de l\'utilisateur : :uuid',
+        ],
+        'subscribes' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation des abonnements de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation des abonnements d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation des abonnements de l\'utilisateur : :uuid',
+        ],
+        'galleries' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation des galeries de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation des galeries d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation des galeries de l\'utilisateur : :uuid',
+        ],
+        'contacts' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation des messages de contact de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation des messages de contact d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation des messages de contact de l\'utilisateur : :uuid',
+        ],
+        'faqs' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation des FAQ de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation des FAQ d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation des FAQ de l\'utilisateur : :uuid',
+        ],
+        'audits' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation du journal d\'audit de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation du journal d\'audit d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation du journal d\'audit de l\'utilisateur : :uuid',
+        ],
+        'blog-posts' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation des articles de blog de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation des articles de blog d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation des articles de blog de l\'utilisateur : :uuid',
+        ],
+        'blog-post-comments' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation des commentaires de blog de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation des commentaires de blog d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation des commentaires de blog de l\'utilisateur : :uuid',
+        ],
+        'blog-post-comment-replies' => [
+            'slug_mismatch' => 'Incohérence du slug pour l\'utilisateur',
+            'success' => 'Consultation des réponses de commentaires de blog de l\'utilisateur : :name',
+            'warning' => 'Tentative de consultation des réponses de commentaires de blog d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de la consultation des réponses de commentaires de blog de l\'utilisateur : :uuid',
+        ],
+        'edit' => [
+            'success' => 'Accès à la page de modification de l\'utilisateur : :name',
+            'warning' => 'Tentative de modification d\'un utilisateur introuvable : :uuid',
+            'error' => 'Erreur lors de l\'accès à la page de modification de l\'utilisateur : :uuid',
+        ],
+        'update' => [
+            'success' => 'Mise à jour de l\'utilisateur en base de données : :name',
+            'warning' => 'Tentative de mise à jour d\'un utilisateur introuvable : :uuid',
+            'warning_meta' => 'Erreur métier lors de la mise à jour de l\'utilisateur : :uuid',
+            'error' => 'Erreur lors de la mise à jour de l\'utilisateur : :uuid',
+            'flash_success' => 'Utilisateur (:name) mis à jour avec succès.',
+            'flash_warning' => 'Utilisateur introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'activate' => [
+            'success' => 'Activation de l\'utilisateur : :name',
+            'error' => 'Erreur lors de l\'activation de l\'utilisateur : :uuid',
+            'flash_success' => 'Utilisateur (:name) activé avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative d\'activation d\'un utilisateur introuvable : :uuid',
+            'flash_warning' => 'Utilisateur introuvable.',
+            'warning_meta' => 'Erreur métier lors de l\'activation de l\'utilisateur : :uuid',
+        ],
+        'suspend' => [
+            'success' => 'Suspension de l\'utilisateur : :name',
+            'error' => 'Erreur lors de la suspension de l\'utilisateur : :uuid',
+            'flash_success' => 'Utilisateur (:name) suspendu avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative de suspension d\'un utilisateur introuvable : :uuid',
+            'flash_warning' => 'Utilisateur introuvable.',
+            'warning_meta' => 'Erreur métier lors de la suspension de l\'utilisateur : :uuid',
+        ],
+        'ban' => [
+            'success' => 'Bannissement de l\'utilisateur : :name',
+            'error' => 'Erreur lors du bannissement de l\'utilisateur : :uuid',
+            'flash_success' => 'Utilisateur (:name) banni avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative de bannissement d\'un utilisateur introuvable : :uuid',
+            'flash_warning' => 'Utilisateur introuvable.',
+            'warning_meta' => 'Erreur métier lors du bannissement de l\'utilisateur : :uuid',
+        ],
+    ],
+];

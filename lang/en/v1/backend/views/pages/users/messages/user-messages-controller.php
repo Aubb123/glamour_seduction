@@ -1,0 +1,113 @@
+<?php
+
+return [
+    'users' => [
+        'not_found' => 'Attempt to access a non-existent user (UUID: :uuid).',
+        'index' => [
+            'success' => 'Viewing the users list',
+            'error' => 'Error viewing the users list',
+        ],
+        'show' => [
+            'no_name' => 'No name found',
+            'success' => 'Viewing user details: :name',
+            'warning' => 'Attempt to view a non-existent user: :uuid',
+            'error' => 'Error viewing user: :uuid',
+            'slug_mismatch' => 'Slug mismatch for user',
+        ],
+        'activity-logs' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing activity logs for user: :name',
+            'warning' => 'Attempt to view activity logs for a non-existent user: :uuid',
+            'error' => 'Error viewing activity logs for user: :uuid',
+        ],
+        'subscribes' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing subscribes for user: :name',
+            'warning' => 'Attempt to view subscribes for a non-existent user: :uuid',
+            'error' => 'Error viewing subscribes for user: :uuid',
+        ],
+        'galleries' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing galleries for user: :name',
+            'warning' => 'Attempt to view galleries for a non-existent user: :uuid',
+            'error' => 'Error viewing galleries for user: :uuid',
+        ],
+        'contacts' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing contact messages for user: :name',
+            'warning' => 'Attempt to view contact messages for a non-existent user: :uuid',
+            'error' => 'Error viewing contact messages for user: :uuid',
+        ],
+        'faqs' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing FAQs for user: :name',
+            'warning' => 'Attempt to view FAQs for a non-existent user: :uuid',
+            'error' => 'Error viewing FAQs for user: :uuid',
+        ],
+        'audits' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing audit logs for user: :name',
+            'warning' => 'Attempt to view audit logs for a non-existent user: :uuid',
+            'error' => 'Error viewing audit logs for user: :uuid',
+        ],
+        'blog-posts' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing blog posts for user: :name',
+            'warning' => 'Attempt to view blog posts for a non-existent user: :uuid',
+            'error' => 'Error viewing blog posts for user: :uuid',
+        ],
+        'blog-post-comments' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing blog post comments for user: :name',
+            'warning' => 'Attempt to view blog post comments for a non-existent user: :uuid',
+            'error' => 'Error viewing blog post comments for user: :uuid',
+        ],
+        'blog-post-comment-replies' => [
+            'slug_mismatch' => 'Slug mismatch for user',
+            'success' => 'Viewing blog post comment replies for user: :name',
+            'warning' => 'Attempt to view blog post comment replies for a non-existent user: :uuid',
+            'error' => 'Error viewing blog post comment replies for user: :uuid',
+        ],
+        'edit' => [
+            'success' => 'Access to the user modification page: :name',
+            'warning' => 'Attempt to modify a non-existent user: :uuid',
+            'error' => 'Error accessing the user modification page: :uuid',
+        ],
+        'update' => [
+            'success' => 'Updating user in database: :name',
+            'warning' => 'Attempt to update a non-existent user: :uuid',
+            'warning_meta' => 'Business error when updating user: :uuid',
+            'error' => 'Error updating user: :uuid',
+            'flash_success' => 'User (:name) updated successfully.',
+            'flash_warning' => 'User not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'activate' => [
+            'success' => 'Activating user: :name',
+            'error' => 'Error activating user: :uuid',
+            'flash_success' => 'User (:name) activated successfully.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to activate a non-existent user: :uuid',
+            'flash_warning' => 'User not found.',
+            'warning_meta' => 'Business error when activating user: :uuid',
+        ],
+        'suspend' => [
+            'success' => 'Suspending user: :name',
+            'error' => 'Error suspending user: :uuid',
+            'flash_success' => 'User (:name) suspended successfully.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to suspend a non-existent user: :uuid',
+            'flash_warning' => 'User not found.',
+            'warning_meta' => 'Business error when suspending user: :uuid',
+        ],
+        'ban' => [
+            'success' => 'Banning user: :name',
+            'error' => 'Error banning user: :uuid',
+            'flash_success' => 'User (:name) banned successfully.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to ban a non-existent user: :uuid',
+            'flash_warning' => 'User not found.',
+            'warning_meta' => 'Business error when banning user: :uuid',
+        ],
+    ],
+];

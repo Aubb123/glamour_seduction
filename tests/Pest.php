@@ -52,3 +52,36 @@ function something()
 {
     // ..
 }
+
+/*
+|--------------------------------------------------------------------------
+| Routes V1 pour les tests Feature
+|--------------------------------------------------------------------------
+|
+| routes/web.php n'enregistre les routes que si VersionService::getActive()
+| renvoie une version active 'v1' — or au boot de l'application (avant les
+| migrations RefreshDatabase), la table `platform_versions` n'existe pas.
+|
+| Après avoir seedé les données minimales (langs + platform_versions), on
+| vide la collection de routes puis on recharge routes/web.php pour que
+| toutes les routes V1 (auth, backend, proxy…) soient disponibles en test.
+|
+*/
+function bootV1WebRoutes(): void
+{
+    $router = \Illuminate\Support\Facades\Route::getFacadeRoot();
+    $router->setRoutes(new \Illuminate\Routing\RouteCollection);
+
+    // routes/web.php est normalement chargé par le framework DANS le groupe de
+    // middleware 'web' (session, partage de $errors, CSRF…). On reproduit ce
+    // comportement pour que les routes ré-enregistrées fonctionnent correctement.
+    \Illuminate\Support\Facades\Route::middleware('web')->group(function () {
+        require base_path('routes/web.php');
+    });
+
+    // Les noms de routes sont résolus via la table de lookups (`nameList`),
+    // qui n'est rafraîchie qu'à la compilation. On force le refresh pour que
+    // route('login') & co. fonctionnent immédiatement dans les tests.
+    $router->getRoutes()->refreshNameLookups();
+    $router->getRoutes()->refreshActionLookups();
+}

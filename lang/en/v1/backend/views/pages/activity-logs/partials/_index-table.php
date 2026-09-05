@@ -1,0 +1,33 @@
+<?php
+
+return [
+    // _index-table.blade.php
+    'journaux' => 'Logs',
+    'succes' => 'Successes',
+    'erreurs' => 'Errors',
+    'types' => 'Types',
+    'actionsDistinctes' => 'Distinct actions',
+    'utilisateurs' => 'Users',
+    'journalActivite' => 'Activity Log',
+    'actions' => 'Actions',
+    'tousLesJournaux' => 'All logs',
+    'supprimerJournaux3Jours' => 'Delete all logs older than 3 days?',
+    'nettoyer' => 'Clean',
+    'nettoyerLogs3Jours' => 'Clean logs > 3 days',
+    'type' => 'Type',
+    'tous' => 'All',
+    'action' => 'Action',
+    'toutes' => 'All',
+    'statut' => 'Status',
+    'nonDefini' => 'Undefined',
+    'erreur' => 'Error',
+    'du' => 'From',
+    'au' => 'To',
+    'ip' => 'IP',
+    'date' => 'Date',
+    'systeme' => 'System',
+    'voir' => 'View',
+    'supprimer' => 'Delete',
+    'supprimerCeJournal' => 'Delete this log?',
+    'aucunJournalTrouve' => 'No log found.',
+];

@@ -75,7 +75,16 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Tests** : `SeedersTest` (présence 35) + `SeedersRunTest` (exécution réelle : langues, versions+translations, plateforme cloud, continents/pays+traductions, rôles+permissions+utilisateurs, settings)
   - [x] Note : `ClearAllTablesSeeder` utilise `SHOW TABLES` (MySQL-only) → non exécutable sous SQLite ; les testeurs `SeedersRunTest` l'évitent
 
-- [ ] **Étape 5 — Auth + Middlewares + `bootstrap/app.php`**
+- [x] **Étape 5 — Auth + Middlewares + `bootstrap/app.php`** *(fait le 05/09)*
+  - [x] 8 middlewares `Web\V1` copiés 1:1 (`Auth`, `Guest`, `SetLocale`, `CheckActiveUserAccount`, `CheckUserEmail`, `CheckUserPhone`, `CheckActiveRole`, `CheckCloudFilesSync`)
+  - [x] `AuthController` (+ 3 vues de statut OTP/disabled) ; `routes/web.php` + `routes/console.php` + `bootstrap/app.php` **1:1** avec `base`
+  - [x] Dépendances requises par `routes/web.php` : 36 contrôleurs V1 + 1 V2, 23 Requests, 37 Services, 2 commandes, **188 fichiers de langues** (1:1)
+  - [x] Base **MySQL `base_clone` créée** + `migrate:fresh --seed` complet exécuté (MariaDB)
+  - [x] **Jalon conformité routes : `route:list` = 293 routes web, diff identique à `base`**
+  - [x] Vues **auth en thème Larkon** : `login`, `verify-otp` (email/phone), `disabled` (mêmes chemins que `base`) + partials `sweetalert-message` copiés
+  - [x] Helpers de test : `bootV1WebRoutes()` (re-chargement des routes dans le groupe `web`)
+  - [x] **Tests Auth : 10/10** (pages, connexion, credentials invalides, compte suspendu, guest, auth, logout, alias middleware, locale)
+
 - [ ] **Étape 6 — Module 1 : Langues** (`langs`)
 - [ ] **Étape 7 — Module 2 : Versions de plateforme** (`platform-versions`)
 - [ ] **Étape 8 — Modules 3/4 : Géographie** (`geo-continents`, `geo-countries`)
@@ -143,6 +152,19 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Tests écrits (Pest) :** `tests/Feature/SeedersTest.php` + `tests/Feature/SeedersRunTest.php`.
 - **Validation finale :** `php artisan test` → **36 passed (594 assertions)** ✔.
 - **GitHub :** commit `Étapes 2-3…` poussé ; étape 4 poussée avec le commit suivant.
+
+### 05/09 — Étape 5 : Auth + Middlewares + bootstrap/app.php
+- **Contenu intégré (copié de `base` 1:1) :**
+  - `app/Http/Middleware/Web/V1/*` (8 fichiers : `Auth`, `Guest`, `SetLocale`, `CheckActiveUserAccount`, `CheckUserEmail`, `CheckUserPhone`, `CheckActiveRole`, `CheckCloudFilesSync`).
+  - `app/Http/Controllers/V1/AuthController.php`, `app/Http/Controllers/Controller.php`.
+  - `routes/web.php` (293 routes V1), `routes/console.php`, `bootstrap/app.php` (alias middleware, `withSchedule`, `withExceptions`).
+  - Tout ce que `routes/web.php` référence : 36 contrôleurs V1 + 1 V2, 23 Requests, 32+ services + services cloud, 2 commandes console, **188 fichiers de langues**.
+- **Environnement :** base **MySQL `base_clone`** créée (MariaDB 10.4) ; `migrate:fresh --seed` exécuté sans erreur (comprend la géographie + RBAC + blog + cloud + settings).
+- **Jalon conformité :** `php artisan route:list` → 293 routes web (297 total avec boost/storage/up) ; **diff `base` vs `base_clone` sur le listing complet = 0 ligne**.
+- **Vues (thème Larkon) :** `resources/views/v1/auth/{email/login,email/verify-otp,phone/verify-otp,account/disabled}.blade.php` + partials `sweetalert-message/*` (copiés de `base`).
+- **Helper de test :** `bootV1WebRoutes()` dans `tests/Pest.php` — vide la collection puis recharge `routes/web.php` dans le groupe `web` (car `VersionService::getActive()` filtre les routes au boot, avant `RefreshDatabase`).
+- **Tests écrits (Pest) :** `tests/Feature/AuthTest.php` (10 tests / 40 assertions). `ExampleTest` adapté au health-check `/up` (la `/` est désormais `frontend.index`, traité à l'Étape 16).
+- **Validation finale :** `php artisan test` → **46 passed (634 assertions)** ✔.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->

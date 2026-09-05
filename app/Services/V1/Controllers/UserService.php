@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Services\V1\Controllers;
+
+use App\Enums\Users\UserStatus;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
+class UserService
+{
+    // Chemin de base pour les traductions (centralisé)
+    protected string $langPath = 'v1/backend/views/pages/users/messages/user-messages-service.users';
+
+    public function __construct(protected CloudFileService $cloudFileService) {}
+
+    // ─────────────────────────────────────────────
+    // UPDATE
+    // ─────────────────────────────────────────────
+    public function update(User $user, array $data): User
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        return DB::transaction(function () use ($user, $data) {
+
+            // Préparation des données de mise à jour (uniquement les champs fournis)
+            $updateData = [];
+
+            if (isset($data['first_name'])) {
+                $updateData['first_name'] = $data['first_name'];
+            }
+            if (isset($data['last_name'])) {
+                $updateData['last_name'] = $data['last_name'];
+            }
+            if (isset($data['gender'])) {
+                $updateData['gender'] = $data['gender'];
+            }
+            if (isset($data['status'])) {
+                $updateData['status'] = UserStatus::tryFrom($data['status']) ?? $user->status;
+            }
+            if (isset($data['country_id'])) {
+                $updateData['country_id'] = $data['country_id'];
+            }
+            if (isset($data['password']) && ! empty($data['password'])) {
+                // Hashé automatiquement par le cast 'hashed' du modèle User
+                $updateData['password'] = $data['password'];
+            }
+
+            // Application de la mise à jour si des données sont présentes
+            if (! empty($updateData)) {
+                $user->update($updateData);
+            }
+
+            // Synchronisation des rôles si fournis
+            if (isset($data['roles'])) {
+                $roleNames = Role::whereIn('id', $data['roles'])->pluck('name')->toArray();
+                $user->syncRoles($roleNames);
+            }
+
+            // Si une image est fournie
+            if (isset($data['image'])) {
+
+                // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
+                if (! isset($data['cloud_platform_uuid'])) {
+                    throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
+                }
+
+                $this->cloudFileService->uploadEntityImage(
+                    $data['image'],
+                    $data['cloud_platform_uuid'],
+                    $user,
+                    $user->getTable(),
+                    $this->langPath,
+                );
+
+            }
+
+            return $user; // ← retourne l'utilisateur mis à jour
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    // ACTIVATE
+    // ─────────────────────────────────────────────
+    public function activate(User $user): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($user) {
+
+            // Vérification que l'utilisateur n'est pas déjà actif
+            if ($user->status === UserStatus::Active) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+            }
+
+            // Un utilisateur banni ne peut pas être activé
+            if ($user->status === UserStatus::Banned) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.activate.banned_cannot_activate"));
+            }
+
+            // Activation de l'utilisateur (passage en statut 'actif')
+            $user->update(['status' => UserStatus::Active]);
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    // SUSPEND
+    // ─────────────────────────────────────────────
+    public function suspend(User $user): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($user) {
+
+            // Vérification que l'utilisateur n'est pas déjà suspendu
+            if ($user->status === UserStatus::Suspended) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.suspend.already_suspended"));
+            }
+
+            // Seuls les utilisateurs actifs peuvent être suspendus
+            if ($user->status !== UserStatus::Active) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.suspend.only_active_can_suspend"));
+            }
+
+            // Suspension de l'utilisateur (passage en statut 'suspendu')
+            $user->update(['status' => UserStatus::Suspended]);
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    // BAN
+    // ─────────────────────────────────────────────
+    public function ban(User $user): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($user) {
+
+            // Vérification que l'utilisateur n'est pas déjà banni
+            if ($user->status === UserStatus::Banned) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.ban.already_banned"));
+            }
+
+            // Bannissement de l'utilisateur (passage en statut 'banni')
+            $user->update(['status' => UserStatus::Banned]);
+        });
+    }
+}
