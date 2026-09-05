@@ -219,5 +219,17 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Tests écrits (Pest) :** `tests/Feature/RbacUsersTest.php` (14 tests / 40 assertions).
 - **Validation finale :** voir la suite complète dans le commit.
 
+### 05/09 — CORRECTION : restauration des DataTables + Summernote (fidélité fonctionnelle)
+- **Problème constaté :** les scripts de conversion de thème avaient supprimé les blocs DataTables (`@push('styles')`/`@push('scripts')` avec `jquery.dataTables`) → les tables du back-office n'étaient plus des DataTables. **Inacceptable** : le clone doit être fonctionnellement identique à `base` (seul le template change).
+- **Corrections appliquées :**
+  - Copie des assets `storage/app/public/others/backend` (datatables + summernote) et `others/all` complets depuis `base` (~20 Mo) dans le clone.
+  - Re-copie de `resources/views` depuis `base` (272 fichiers, **1:1**) puis nouvelle conversion **uniquement** des icônes (`feather-*` → `bx`) — plus AUCUNE suppression de DataTables.
+  - Restauration des vues manuelles Larkon (layouts backend, vues auth).
+  - `errors/layout.blade.php` réécrit en thème Larkon (mêmes `@yield`/`@stack`) + images d'erreur (404/500/503) copiées dans `backend/assets/img/authentication/`.
+  - Ajout de `@stack('summernote-scripts')` dans `_end.blade.php` (le partial `_summernote_editor` en dépend).
+- **Vérification :** `DataTablesTest` (3 tests) valide la présence de `jquery.dataTables` et de l'init `DataTable()` dans le HTML rendu (`versions-table`, `langs-table`, `users-table`).
+- **Résultat :** 32 vues avec DataTables + 3 vues avec Summernote (blogs/posts create/edit) restaurées.
+- **Checks :** `php artisan test --filter='LangsTest|GeosTest|DataTablesTest'` → **17 passed**.
+
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->

@@ -7,57 +7,49 @@
 
 <head>
 
-	<!-- Meta Tags -->
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Meta Tags -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>{{ config('app.name') }} - @yield('title')</title>
+<title>{{ config('app.name') }} - @yield('title')</title>
 
-	<!-- Favicon -->
-	<link rel="shortcut icon" type="image/x-icon" href="{{ asset(getEnvFolder() . 'backend/assets/img/favicon.png') }}">
+<!-- Favicon -->
+<link rel="shortcut icon" type="image/x-icon" href="{{ asset(getEnvFolder() . 'backend/assets/images/favicon.ico') }}">
 
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="{{ asset(getEnvFolder() . 'backend/assets/css/bootstrap.min.css') }}">
+<!-- Vendor css (Require in all Page) -->
+<link href="{{ asset(getEnvFolder().'backend/assets/css/vendor.min.css') }}" rel="stylesheet" type="text/css" />
 
-	<!-- Tabler Icon CSS -->
-	<link rel="stylesheet" href="{{ asset(getEnvFolder() . 'backend/assets/plugins/tabler-icons/tabler-icons.min.css') }}">
+<!-- Icons css -->
+<link href="{{ asset(getEnvFolder().'backend/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
 
-	@if ($isBackend)
-		<!-- Feather Icon CSS -->
-		<link rel="stylesheet" href="{{ asset(getEnvFolder() . 'backend/assets/css/feather.css') }}">
+<!-- App css -->
+<link href="{{ asset(getEnvFolder().'backend/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
 
-		<!-- Fontawesome CSS -->
-		<link rel="stylesheet" href="{{ asset(getEnvFolder() . 'backend/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-		<link rel="stylesheet" href="{{ asset(getEnvFolder() . 'backend/assets/plugins/fontawesome/css/all.min.css') }}">
-	@endif
+<!-- Theme Config js -->
+<script src="{{ asset(getEnvFolder().'backend/assets/js/config.js') }}"></script>
 
-	<!-- Main CSS -->
-	<link rel="stylesheet" href="{{ asset(getEnvFolder() . 'backend/assets/css/style.css') }}">
-
-	@stack('styles')
+@stack('styles')
 
 </head>
 
-<body class="error-page">
+<body class="error-page h-100">
 
-	<!-- Main Wrapper -->
-	<div class="main-wrapper">
+<!-- START Wrapper -->
+<div class="wrapper">
 
-		<div class="error-box">
-			@yield('content')
-		</div>
+class="page-content">
+class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+ield('content')
+END Wrapper -->
 
-	</div>
-	<!-- /Main Wrapper -->
+<!-- Vendor Javascript -->
+<script src="{{ asset(getEnvFolder().'backend/assets/js/vendor.js') }}"></script>
 
-	<!-- jQuery -->
-	<script src="{{ asset(getEnvFolder() . 'backend/assets/js/jquery-3.7.1.min.js') }}"></script>
+<!-- App Javascript -->
+<script src="{{ asset(getEnvFolder().'backend/assets/js/app.js') }}"></script>
 
-	<!-- Bootstrap Core JS -->
-	<script src="{{ asset(getEnvFolder() . 'backend/assets/js/bootstrap.bundle.min.js') }}"></script>
-
-	@stack('scripts')
+@stack('scripts')
 
 </body>
 

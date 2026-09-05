@@ -1,6 +1,8 @@
 </div>
     <!-- END Wrapper -->
 
+    @stack('summernote-scripts')
+
     <!-- Theme Settings offcanvas -->
     <div class="offcanvas offcanvas-end border-0" tabindex="-1" id="theme-settings-offcanvas" style="max-width: 350px; width: 100%;">
         <div class="d-flex align-items-center bg-primary p-3 offcanvas-header">

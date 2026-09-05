@@ -1,4 +1,15 @@
+@push('styles')
+    <link rel="stylesheet" type="text/css" href="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery.dataTables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.dataTables.min.css') }}">
 
+    <style>
+        .dataTables_paginate .paginate_button {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+    </style>
+@endpush
 
 @include('v1.backend.layouts.partials._statistics', [
     'statistics' => [
@@ -168,3 +179,48 @@
     </div>
 </div>
 
+@push('scripts')
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jszip.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/pdfmake.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/vfs_fonts.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.print.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            var table = $('#cloud-files-sync-table').DataTable({
+                dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>' +
+                'tr'                                        +
+                '<"row mt-3"<"col-md-5"l><"col-md-7"p>>',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                language: {
+                    url: "{{ app()->getLocale() === 'fr' ? asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/fr-FR.json') : asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/en-GB.json') }}"
+                },
+                columnDefs: [
+                    { orderable: false, targets: [0] },
+                ],
+            });
+
+            // Check-all / Uncheck-all
+            $('#check-all').on('change', function() {
+                $('.row-checkbox').prop('checked', this.checked);
+                updateSyncButton();
+            });
+
+            // Mise à jour du bouton selon les cases cochées
+            $('.row-checkbox').on('change', updateSyncButton);
+
+            function updateSyncButton() {
+                var count = $('.row-checkbox:checked').length;
+                $('#sync-selected-btn').prop('disabled', count === 0);
+                $('#sync-selected-btn span').remove();
+                $('#sync-selected-btn').html('<i class="bx bx-cloud-upload me-1"></i> {{ __("Synchroniser la sélection") }} (' + count + ')');
+            }
+        });
+    </script>
+@endpush
