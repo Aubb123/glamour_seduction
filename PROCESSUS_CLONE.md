@@ -100,7 +100,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Tests : `PlatformVersionsTest` 11/11** (index, create, store→show, show, edit, activate/deactivate, refus activation non publiée, publish + blocage unpublish, corbeille/restore, trashed, accès protégé)
   - [x] **Règles métier du service respectées** : activation exige publication ; dépublication impossible après publication ; destroy interdit si publiée/active
 
-- [ ] **Étape 8 — Modules 3/4 : Géographie** (`geo-continents`, `geo-countries`)
+- [x] **Étape 8 — Modules 3/4 : Géographie** (`geo-continents`, `geo-countries`) *(fait le 05/09)*
+  - [x] 26 vues `geos/**` (13 continents + 13 pays) copiées de `base` et converties au thème **Larkon** (mêmes chemins)
+  - [x] Conversion automatique : icônes `feather-*` → `bx` (ajout `feather-map`, `feather-image`, `feather-type` au mapping), suppression DataTables
+  - [x] **Tests : `GeosTest` 7/7** (index continents, index pays, show continent, show pays, activate/deactivate continent, activate/deactivate pays, accès protégé)
+  - [x] **Leçon réutilisée** : les tests Feature doivent toujours seed `PlatformVersionSeeder` (sinon `VersionService::getActive()` → null → routes V1 non chargées)
+
 - [ ] **Étape 9 — Modules 5/6/7 : RBAC + Utilisateurs**
 - [ ] **Étape 10 — Modules 8/9 : Galeries & FAQ**
 - [ ] **Étape 11 — Module 10 : Settings + 11/12 : Contacts & Subscribes**
@@ -194,6 +199,11 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Tests écrits (Pest) :** `tests/Feature/PlatformVersionsTest.php` (11 tests / 38 assertions).
 - **Règles métier du service couvertes par les tests :** `activate` exige `is_published` ; `unpublish` est impossible sur une version publiée ; `destroy` interdit si publiée/active.
 - **Validation finale :** `php artisan test` → **64 passed (697 assertions)** ✔.
+
+### 05/09 — Étape 8 : Modules Géographie (`geo-continents`, `geo-countries`)
+- **Vues (thème Larkon)** : 26 fichiers `geos/**` copiés de `base` (13 continents + 13 pays) puis convertis : `feather-*` → `bx` (Boxicons), DataTables supprimées.
+- **Tests écrits (Pest) :** `tests/Feature/GeosTest.php` (7 tests / 19 assertions).
+- **Validation finale :** `php artisan test` → **71 passed (716 assertions)** ✔.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
