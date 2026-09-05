@@ -69,7 +69,12 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Tests écrits et verts** : `ModelsTest` (présence + traits + clé de route), `ModelsBehaviorTest` (uuid, scopes, slug auto, casts, soft delete, Spatie)
   - [x] Vérification : shéma + stratégie de clé de route fidèle à `base` (6 modèles de traduction `Setting`/`SettingTranslation` gardent la clé `'id'` comme dans `base`)
 
-- [ ] **Étape 4 — Seeders de base** (`DatabaseSeeder`)
+- [x] **Étape 4 — Seeders de base (35)** *(fait le 05/09)*
+  - [x] 35 seeders copiés 1:1 depuis `base` (diff vide)
+  - [x] Ordre du `DatabaseSeeder` validé (`ClearAllTables` → Cloud → Lang → Versions → Settings → Géo → RBAC → Users → Blog → Contacts/Subscribes/FAQ/Galleries)
+  - [x] **Tests** : `SeedersTest` (présence 35) + `SeedersRunTest` (exécution réelle : langues, versions+translations, plateforme cloud, continents/pays+traductions, rôles+permissions+utilisateurs, settings)
+  - [x] Note : `ClearAllTablesSeeder` utilise `SHOW TABLES` (MySQL-only) → non exécutable sous SQLite ; les testeurs `SeedersRunTest` l'évitent
+
 - [ ] **Étape 5 — Auth + Middlewares + `bootstrap/app.php`**
 - [ ] **Étape 6 — Module 1 : Langues** (`langs`)
 - [ ] **Étape 7 — Module 2 : Versions de plateforme** (`platform-versions`)
@@ -130,6 +135,14 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Spécificité fidèle à `base` :** `Setting`, `SettingTranslation`, `BlogCategoryTranslation`, `BlogTagTranslation`, `FaqTranslation`, `GalleryTranslation` n'implémentent **pas** `getRouteKeyName()` → clé `'id'` (comportement de `base` conservé).
 - **Tests écrits (Pest) :** `tests/Feature/ModelsTest.php` (2 tests / 133 assertions) + `tests/Feature/ModelsBehaviorTest.php` (8 tests / 28 assertions).
 - **Validation finale :** `php artisan test` → **29 passed (569 assertions)** ✔.
+
+### 05/09 — Étape 4 : Seeders de base
+- **Contenu intégré (copié de `base` 1:1) :** 35 seeders dans `database/seeders/` (diff vide) : `ClearAllTables`, Cloud (plateforme/dossiers/fichiers), Lang, PlatformVersion(+trans), Setting(+trans), Géo (continents/pays + trans), RBAC (rôles + trans / permissions), User, Blog (catégories/tags/posts/comments/replies + trans), Contacts, Subscribes(+histoires), FAQ, Galeries, Audits, ActivityLogs.
+- **Validation :** exécution réelle des seeders de fondation sous SQLite de test (langues, versions, plateforme cloud, 7 continents + >200 pays, 10 rôles + >100 permissions + 5 utilisateurs, settings). `DatabaseSeeder` complet = réservé au recette finale MySQL (Étape 19).
+- **Points notés :** `ClearAllTablesSeeder` est MySQL-only (`SHOW TABLES`) — cohérent avec `base` ; `CloudFolderSeeder` dépend de `CloudPlatformService` (introduit à l'étape Cloud). Les translateurs volontairement vides (`RoleTranslationSeeder`, `PlatformVersionTranslationSeeder`, …) sont conservés à l'identique.
+- **Tests écrits (Pest) :** `tests/Feature/SeedersTest.php` + `tests/Feature/SeedersRunTest.php`.
+- **Validation finale :** `php artisan test` → **36 passed (594 assertions)** ✔.
+- **GitHub :** commit `Étapes 2-3…` poussé ; étape 4 poussée avec le commit suivant.
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
