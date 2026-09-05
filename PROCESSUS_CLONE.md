@@ -93,7 +93,13 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Tests : `LangsTest` 7/7** (index, protection, activate, deactivate, langue par défaut, switch, refus switch inactif)
   - [x] **Astuce** : `forceFill()` pour `email_verified_at`/`phone_verified_at` (non couverts par `#[Fillable]` du modèle User)
 
-- [ ] **Étape 7 — Module 2 : Versions de plateforme** (`platform-versions`)
+- [x] **Étape 7 — Module 2 : Versions de plateforme** (`platform-versions`) *(fait le 05/09)*
+  - [x] 13 vues `platform-versions` converties au thème **Larkon** (mêmes chemins que `base`)
+  - [x] **Convention thème établie** : mapping icônes `feather-*` → `bx bx-*` (Boxicons), suppression DataTables (tables Bootstrap), partials `_statistics`/`_card_actions_menu`/`_show-*`/`_trashed-table-translations` adaptés
+  - [x] Partials `audits` + `activity-logs` copiés et convertis (réutilisés à l'Étape 14)
+  - [x] **Tests : `PlatformVersionsTest` 11/11** (index, create, store→show, show, edit, activate/deactivate, refus activation non publiée, publish + blocage unpublish, corbeille/restore, trashed, accès protégé)
+  - [x] **Règles métier du service respectées** : activation exige publication ; dépublication impossible après publication ; destroy interdit si publiée/active
+
 - [ ] **Étape 8 — Modules 3/4 : Géographie** (`geo-continents`, `geo-countries`)
 - [ ] **Étape 9 — Modules 5/6/7 : RBAC + Utilisateurs**
 - [ ] **Étape 10 — Modules 8/9 : Galeries & FAQ**
