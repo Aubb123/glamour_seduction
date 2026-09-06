@@ -128,7 +128,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-post-comment-replies.audits', ['blogPostCommentReply' => $reply->uuid]) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $reply->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -137,7 +137,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-post-comment-replies.activity-logs', ['blogPostCommentReply' => $reply->uuid]) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $reply->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -145,9 +145,9 @@
 
                                     <td>
                                         @if ($reply->is_visible)
-                                            <span class="badge bg-soft-success">{{ __('Approuvé') }}</span>
+                                            <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
                                         @else
-                                            <span class="badge bg-soft-danger">{{ __('En attente') }}</span>
+                                            <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
                                         @endif
                                     </td>
 

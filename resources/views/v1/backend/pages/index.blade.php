@@ -25,9 +25,9 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['users']['total'] }}</h6>
                         <small class="text-muted">{{ __('Utilisateurs') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-success">{{ $stats['users']['active'] }} {{ __('actifs') }}</span>
-                            <span class="badge bg-soft-warning">{{ $stats['users']['suspended'] }} {{ __('suspendus') }}</span>
-                            <span class="badge bg-soft-danger">{{ $stats['users']['banned'] }} {{ __('bannis') }}</span>
+                            <span class="badge bg-success-subtle text-success">{{ $stats['users']['active'] }} {{ __('actifs') }}</span>
+                            <span class="badge bg-warning-subtle text-warning">{{ $stats['users']['suspended'] }} {{ __('suspendus') }}</span>
+                            <span class="badge bg-danger-subtle text-danger">{{ $stats['users']['banned'] }} {{ __('bannis') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.users.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -46,7 +46,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['roles']['total'] }}</h6>
                         <small class="text-muted">{{ __('Rôles') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-info">{{ $stats['permissions']['total'] }} {{ __('permissions') }}</span>
+                            <span class="badge bg-info-subtle text-info">{{ $stats['permissions']['total'] }} {{ __('permissions') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.roles.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -65,7 +65,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['subscribes']['total'] }}</h6>
                         <small class="text-muted">{{ __('Abonnés') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-success">{{ $stats['subscribes']['active'] }} {{ __('actifs') }}</span>
+                            <span class="badge bg-success-subtle text-success">{{ $stats['subscribes']['active'] }} {{ __('actifs') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.subscribes.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -84,7 +84,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['contacts']['total'] }}</h6>
                         <small class="text-muted">{{ __('Contacts') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-warning">{{ $stats['contacts']['unread'] }} {{ __('non lus') }}</span>
+                            <span class="badge bg-warning-subtle text-warning">{{ $stats['contacts']['unread'] }} {{ __('non lus') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.contacts.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -103,8 +103,8 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['blogPosts']['total'] }}</h6>
                         <small class="text-muted">{{ __('Articles') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-success">{{ $stats['blogPosts']['published'] }} {{ __('publiés') }}</span>
-                            <span class="badge bg-soft-warning">{{ $stats['blogPosts']['drafts'] }} {{ __('brouillons') }}</span>
+                            <span class="badge bg-success-subtle text-success">{{ $stats['blogPosts']['published'] }} {{ __('publiés') }}</span>
+                            <span class="badge bg-warning-subtle text-warning">{{ $stats['blogPosts']['drafts'] }} {{ __('brouillons') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.blog-posts.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -123,8 +123,8 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['blogComments']['total'] }}</h6>
                         <small class="text-muted">{{ __('Commentaires') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-success">{{ $stats['blogComments']['approved'] }} {{ __('approuvés') }}</span>
-                            <span class="badge bg-soft-warning">{{ $stats['blogComments']['pending'] }} {{ __('en attente') }}</span>
+                            <span class="badge bg-success-subtle text-success">{{ $stats['blogComments']['approved'] }} {{ __('approuvés') }}</span>
+                            <span class="badge bg-warning-subtle text-warning">{{ $stats['blogComments']['pending'] }} {{ __('en attente') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.blog-post-comments.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -143,7 +143,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['galleries']['total'] }}</h6>
                         <small class="text-muted">{{ __('Galeries') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-success">{{ $stats['galleries']['active'] }} {{ __('actives') }}</span>
+                            <span class="badge bg-success-subtle text-success">{{ $stats['galleries']['active'] }} {{ __('actives') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.galleries.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -162,7 +162,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['faqs']['total'] }}</h6>
                         <small class="text-muted">{{ __('FAQs') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-success">{{ $stats['faqs']['active'] }} {{ __('actives') }}</span>
+                            <span class="badge bg-success-subtle text-success">{{ $stats['faqs']['active'] }} {{ __('actives') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.faqs.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -181,8 +181,8 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['cloudPlatforms']['total'] }}</h6>
                         <small class="text-muted">{{ __('Plateformes Cloud') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-info">{{ $stats['cloudFolders'] }} {{ __('dossiers') }}</span>
-                            <span class="badge bg-soft-warning">{{ $stats['cloudFiles'] }} {{ __('fichiers') }}</span>
+                            <span class="badge bg-info-subtle text-info">{{ $stats['cloudFolders'] }} {{ __('dossiers') }}</span>
+                            <span class="badge bg-warning-subtle text-warning">{{ $stats['cloudFiles'] }} {{ __('fichiers') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.cloud-platforms.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -201,7 +201,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['blogTags'] }}</h6>
                         <small class="text-muted">{{ __('Tags') }}</small>
                         <div class="mt-1">
-                            <span class="badge bg-soft-info">{{ $stats['blogCategories'] }} {{ __('catégories') }}</span>
+                            <span class="badge bg-info-subtle text-info">{{ $stats['blogCategories'] }} {{ __('catégories') }}</span>
                         </div>
                     </div>
                     <a href="{{ route('backend.blog-tags.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
@@ -264,17 +264,17 @@
                                     <h6 class="fs-medium text-truncate mb-1"><a href="{{ route('backend.users.show', ['user' => $user->uuid, 'slug' => $user->slug]) }}">{{ $user->first_name }} {{ $user->last_name }}</a></h6>
                                     <p class="fs-13 d-inline-flex align-items-center">
                                         <span class="text-info">{{ $user->email }}</span>
-                                        <i class="ti ti-circle-filled fs-6 text-primary mx-1"></i>@formatDate($user->created_at, 'D MMM YYYY')
+                                        <i class="bx bxs-circle fs-6 text-primary mx-1"></i>@formatDate($user->created_at, 'D MMM YYYY')
                                     </p>
                                 </div>
                             </div>
                             <div class="text-sm-end mb-2">
                                 @if ($user->status === \App\Enums\Users\UserStatus::Active)
-                                    <span class="badge bg-soft-success">{{ __('Actif') }}</span>
+                                    <span class="badge bg-success-subtle text-success">{{ __('Actif') }}</span>
                                 @elseif ($user->status === \App\Enums\Users\UserStatus::Suspended)
-                                    <span class="badge bg-soft-warning">{{ __('Suspendu') }}</span>
+                                    <span class="badge bg-warning-subtle text-warning">{{ __('Suspendu') }}</span>
                                 @elseif ($user->status === \App\Enums\Users\UserStatus::Banned)
-                                    <span class="badge bg-soft-danger">{{ __('Banni') }}</span>
+                                    <span class="badge bg-danger-subtle text-danger">{{ __('Banni') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -302,22 +302,22 @@
 									</a>
 								@else
 									<span class="avatar bg-gray-100 rounded-circle flex-shrink-0">
-										<i class="ti ti-user fs-5"></i>
+										<i class="bx bx-user fs-5"></i>
 									</span>
 								@endif
                                 <div class="ms-2 flex-fill">
                                     <h6 class="fs-medium text-truncate mb-1"><a href="{{ route('backend.contacts.show', ['contact' => $contact->uuid]) }}">{{ $contact->fullname }}</a></h6>
                                     <p class="fs-13 d-inline-flex align-items-center">
                                         <span class="text-info">{{ $contact->email }}</span>
-                                        <i class="ti ti-circle-filled fs-6 text-primary mx-1"></i>@formatDate($contact->created_at, 'D MMM YYYY')
+                                        <i class="bx bxs-circle fs-6 text-primary mx-1"></i>@formatDate($contact->created_at, 'D MMM YYYY')
                                     </p>
                                 </div>
                             </div>
                             <div class="text-sm-end mb-2">
                                 @if ($contact->is_read)
-                                    <span class="badge bg-soft-success">{{ __('Lu') }}</span>
+                                    <span class="badge bg-success-subtle text-success">{{ __('Lu') }}</span>
                                 @else
-                                    <span class="badge bg-soft-warning">{{ __('Non lu') }}</span>
+                                    <span class="badge bg-warning-subtle text-warning">{{ __('Non lu') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -346,19 +346,19 @@
                                     <h6 class="fs-medium text-truncate mb-1"><a href="{{ route('backend.blog-posts.show', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}">{{ Str::limit($post->active_translation?->title ?? __('Sans titre'), 30) }}</a></h6>
                                     <p class="fs-13 d-inline-flex align-items-center">
                                         <span class="text-info">{{ $post->user?->first_name }} {{ $post->user?->last_name }}</span>
-                                        <i class="ti ti-circle-filled fs-6 text-primary mx-1"></i>@formatDate($post->created_at, 'D MMM YYYY')
+                                        <i class="bx bxs-circle fs-6 text-primary mx-1"></i>@formatDate($post->created_at, 'D MMM YYYY')
                                     </p>
                                 </div>
                             </div>
                             <div class="text-sm-end mb-2">
                                 @if ($post->status === \App\Enums\Blogs\Posts\BlogPostStatus::Published)
-                                    <span class="badge bg-soft-success">{{ __('Publié') }}</span>
+                                    <span class="badge bg-success-subtle text-success">{{ __('Publié') }}</span>
                                 @elseif ($post->status === \App\Enums\Blogs\Posts\BlogPostStatus::Scheduled)
-                                    <span class="badge bg-soft-warning">{{ __('Programmé') }}</span>
+                                    <span class="badge bg-warning-subtle text-warning">{{ __('Programmé') }}</span>
                                 @elseif ($post->status === \App\Enums\Blogs\Posts\BlogPostStatus::Archived)
-                                    <span class="badge bg-soft-secondary">{{ __('Archivé') }}</span>
+                                    <span class="badge bg-secondary-subtle text-secondary">{{ __('Archivé') }}</span>
                                 @else
-                                    <span class="badge bg-soft-danger">{{ __('Brouillon') }}</span>
+                                    <span class="badge bg-danger-subtle text-danger">{{ __('Brouillon') }}</span>
                                 @endif
                             </div>
                         </div>
@@ -386,19 +386,19 @@
 									</a>
 								@else
 									<span class="avatar bg-gray-100 rounded-circle flex-shrink-0">
-										<i class="ti ti-send fs-5"></i>
+										<i class="bx bx-send fs-5"></i>
 									</span>
 								@endif
                                 <div class="ms-2 flex-fill">
                                     <h6 class="fs-medium text-truncate mb-1"><a href="{{ route('backend.subscribes.show', ['subscribe' => $subscribe->uuid]) }}">{{ $subscribe->email }}</a></h6>
                                     <p class="fs-13 d-inline-flex align-items-center">
                                         <span class="text-info">{{ $subscribe->user?->first_name }} {{ $subscribe->user?->last_name }}</span>
-                                        <i class="ti ti-circle-filled fs-6 text-primary mx-1"></i>@formatDate($subscribe->created_at, 'D MMM YYYY')
+                                        <i class="bx bxs-circle fs-6 text-primary mx-1"></i>@formatDate($subscribe->created_at, 'D MMM YYYY')
                                     </p>
                                 </div>
                             </div>
                             <div class="text-sm-end mb-2">
-                                <span class="{{ $subscribe->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                <span class="{{ $subscribe->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                     {{ $subscribe->status?->label() ?? __("Inconnu") }}
                                 </span>
                             </div>

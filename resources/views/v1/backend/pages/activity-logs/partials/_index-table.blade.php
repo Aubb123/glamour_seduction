@@ -184,15 +184,15 @@
 
                                     <td>
                                         @if($log->is_success === null)
-                                            <span class="badge bg-soft-secondary">
+                                            <span class="badge bg-secondary-subtle text-secondary">
                                                 <i class="bx bx-minus me-1"></i>{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.nonDefini') }}
                                             </span>
                                         @elseif($log->is_success)
-                                            <span class="badge bg-soft-success">
+                                            <span class="badge bg-success-subtle text-success">
                                                 <i class="bx bx-check-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.succes') }}
                                             </span>
                                         @else
-                                            <span class="badge bg-soft-danger">
+                                            <span class="badge bg-danger-subtle text-danger">
                                                 <i class="bx bx-x-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.erreur') }}
                                             </span>
                                         @endif

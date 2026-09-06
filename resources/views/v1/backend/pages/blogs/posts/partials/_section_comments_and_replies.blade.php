@@ -58,9 +58,9 @@
 
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 @if ($comment->is_visible)
-                                    <span class="badge bg-soft-success">{{ __('Approuvé') }}</span>
+                                    <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
                                 @else
-                                    <span class="badge bg-soft-danger">{{ __('En attente') }}</span>
+                                    <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
                                 @endif
                                 <small class="text-muted">{{ $comment->replies->count() }} {{ __('réponse(s)') }}</small>
                             </div>
@@ -115,9 +115,9 @@
                                             </div>
                                             <div class="mt-1">
                                                 @if ($reply->is_visible)
-                                                    <span class="badge bg-soft-success">{{ __('Approuvé') }}</span>
+                                                    <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
                                                 @else
-                                                    <span class="badge bg-soft-danger">{{ __('En attente') }}</span>
+                                                    <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
                                                 @endif
                                             </div>
                                         </div>

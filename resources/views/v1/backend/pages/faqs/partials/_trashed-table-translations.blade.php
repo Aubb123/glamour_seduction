@@ -40,7 +40,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td><code>{{ Str::limit($translation->question, 50) }}</code></td>
                                     <td>
-                                        <span class="badge bg-soft-primary">{{ $translation->lang?->code ?? '—' }}</span>
+                                        <span class="badge bg-primary-subtle text-primary">{{ $translation->lang?->code ?? '—' }}</span>
                                     </td>
                                     <td class="text-muted">@formatDate($translation->deleted_at, 'D MMMM YYYY - HH:mm:ss')</td>
                                     <td>

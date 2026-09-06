@@ -40,7 +40,7 @@
                                 <tr>
 
                                     <td>
-                                        <span class="badge bg-soft-primary">
+                                        <span class="badge bg-primary-subtle text-primary">
                                             {{ $translation->lang?->code ?? '—' }}
                                         </span>
                                     </td>

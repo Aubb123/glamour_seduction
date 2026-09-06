@@ -38,7 +38,7 @@
                                     <td>{{ $loop->iteration }}</td>
 
                                     <td>
-                                        <span class="badge bg-soft-info">
+                                        <span class="badge bg-info-subtle text-info">
                                             {{ $translation->lang?->name ?? '—' }}
                                         </span>
                                     </td>

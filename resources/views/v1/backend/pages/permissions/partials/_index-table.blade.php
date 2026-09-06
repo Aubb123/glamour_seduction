@@ -115,7 +115,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $permission->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $permission->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $permission->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>

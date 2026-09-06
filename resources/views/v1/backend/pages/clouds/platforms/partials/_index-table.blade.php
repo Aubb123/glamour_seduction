@@ -112,7 +112,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $platform->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $platform->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $platform->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>

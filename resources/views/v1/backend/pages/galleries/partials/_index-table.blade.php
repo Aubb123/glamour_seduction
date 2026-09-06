@@ -123,18 +123,18 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-secondary">{{ $gallery->sort_order }}</span>
+                                        <span class="badge bg-secondary-subtle text-secondary">{{ $gallery->sort_order }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="{{ $gallery->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $gallery->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $gallery->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
 
                                     <td class="text-center">
                                         <a href="{{ route('backend.galleries.audits', ['gallery' => $gallery->uuid, 'slug' => $gallery->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-muted" title="{{ __('Voir les audits') }}">
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-file me-1"></i>{{ $gallery->audits_count }}
                                             </span>
                                         </a>
@@ -142,7 +142,7 @@
 
                                     <td class="text-center">
                                         <a href="{{ route('backend.galleries.activity-logs', ['gallery' => $gallery->uuid, 'slug' => $gallery->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-muted" title="{{ __('Voir les logs d\'activité') }}">
-                                            <span class="badge bg-soft-warning">
+                                            <span class="badge bg-warning-subtle text-warning">
                                                 <i class="bx bx-pulse me-1"></i>{{ $gallery->activity_logs_count }}
                                             </span>
                                         </a>

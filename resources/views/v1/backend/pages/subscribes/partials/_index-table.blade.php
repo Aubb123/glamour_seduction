@@ -109,15 +109,15 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="{{ $subscribe->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $subscribe->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $subscribe->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
                                     <td>
                                         @if ($subscribe->verified_at)
-                                            <span class="badge bg-soft-info">{{ __('Oui') }}</span>
+                                            <span class="badge bg-info-subtle text-info">{{ __('Oui') }}</span>
                                         @else
-                                            <span class="badge bg-soft-secondary">{{ __('Non') }}</span>
+                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Non') }}</span>
                                         @endif
                                     </td>
 

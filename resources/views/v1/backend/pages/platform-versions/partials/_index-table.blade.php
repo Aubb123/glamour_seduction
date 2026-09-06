@@ -75,16 +75,16 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $version->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $version->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $version->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
 
                                     <td>
                                         @if ($version->is_published)
-                                            <span class="badge bg-soft-success">{{ __('Publié') }}</span>
+                                            <span class="badge bg-success-subtle text-success">{{ __('Publié') }}</span>
                                         @else
-                                            <span class="badge bg-soft-warning">{{ __('Brouillon') }}</span>
+                                            <span class="badge bg-warning-subtle text-warning">{{ __('Brouillon') }}</span>
                                         @endif
                                     </td>
 

@@ -108,7 +108,7 @@
                                     <td>
                                         @if($folder->platform)
                                             <a href="{{ route('backend.cloud-platforms.show', ['cloudPlatform' => $folder->platform->uuid, 'slug' => $folder->platform->slug]) }}" class="text-decoration-none">
-                                                <span class="badge bg-soft-primary">
+                                                <span class="badge bg-primary-subtle text-primary">
                                                     <i class="bx bx-server me-1"></i> {{ $folder->platform->label }}
                                                 </span>
                                             </a>
@@ -120,7 +120,7 @@
                                     <td>
                                         @if($folder->parent)
                                             <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $folder->parent->uuid]) }}" class="text-decoration-none">
-                                                <span class="badge bg-soft-secondary">
+                                                <span class="badge bg-secondary-subtle text-secondary">
                                                     <i class="bx bx-folder me-1"></i> {{ $folder->parent->folder_name }}
                                                 </span>
                                             </a>
@@ -146,7 +146,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $folder->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $folder->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $folder->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -154,18 +154,18 @@
                                     <td> 
                                         @if($folder->content_type)
                                             @foreach($folder->content_type as $type)
-                                                <span class="badge bg-soft-primary">{{ $type }}</span>
+                                                <span class="badge bg-primary-subtle text-primary">{{ $type }}</span>
                                             @endforeach
                                         @else
-                                            <span class="badge bg-soft-secondary">{{ __('Aucun') }}</span>
+                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Aucun') }}</span>
                                         @endif
                                     </td>
 
                                     <td>
                                         @if ($folder->entity_table)
-                                            <span class="badge bg-soft-info">{{ $folder->entity_table }}</span>
+                                            <span class="badge bg-info-subtle text-info">{{ $folder->entity_table }}</span>
                                         @else
-                                            <span class="badge bg-soft-secondary">{{ __('Aucun') }}</span>
+                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Aucun') }}</span>
                                         @endif
                                     </td>
 

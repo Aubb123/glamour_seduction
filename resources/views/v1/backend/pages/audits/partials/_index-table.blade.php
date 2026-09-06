@@ -183,7 +183,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-primary">
+                                        <span class="badge bg-primary-subtle text-primary">
                                             {{ class_basename($audit->auditable_type) }}
                                         </span>
                                     </td>

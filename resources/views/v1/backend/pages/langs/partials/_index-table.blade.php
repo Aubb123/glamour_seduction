@@ -84,25 +84,25 @@
 
                                     <td>
                                         @if ($lang->direction === 'ltr')
-                                            <span class="badge bg-soft-info">{{ __('LTR') }}</span>
+                                            <span class="badge bg-info-subtle text-info">{{ __('LTR') }}</span>
                                         @else
-                                            <span class="badge bg-soft-warning">{{ __('RTL') }}</span>
+                                            <span class="badge bg-warning-subtle text-warning">{{ __('RTL') }}</span>
                                         @endif
                                     </td>
 
                                     <td>
                                         @if ($lang->is_default)
-                                            <span class="badge bg-soft-primary">{{ __('Défaut') }}</span>
+                                            <span class="badge bg-primary-subtle text-primary">{{ __('Défaut') }}</span>
                                         @else
-                                            <span class="badge bg-soft-secondary">{{ __('Non') }}</span>
+                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Non') }}</span>
                                         @endif
                                     </td>
 
                                     <td>
                                         @if ($lang->is_active)
-                                            <span class="badge bg-soft-success">{{ __('Actif') }}</span>
+                                            <span class="badge bg-success-subtle text-success">{{ __('Actif') }}</span>
                                         @else
-                                            <span class="badge bg-soft-danger">{{ __('Inactif') }}</span>
+                                            <span class="badge bg-danger-subtle text-danger">{{ __('Inactif') }}</span>
                                         @endif
                                     </td>
 

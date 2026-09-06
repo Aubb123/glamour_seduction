@@ -129,7 +129,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-post-comments.audits', ['blogPostComment' => $comment->uuid]) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $comment->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -138,7 +138,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-post-comments.activity-logs', ['blogPostComment' => $comment->uuid]) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $comment->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -147,7 +147,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-post-comments.replies', ['blogPostComment' => $comment->uuid]) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-success">
+                                            <span class="badge bg-success-subtle text-success">
                                                 <i class="bx bx-corner-down-right me-1"></i> {{ $comment->replies_count ?? 0 }}
                                             </span>
                                         </a>
@@ -155,9 +155,9 @@
 
                                     <td>
                                         @if ($comment->is_visible)
-                                            <span class="badge bg-soft-success">{{ __('Approuvé') }}</span>
+                                            <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
                                         @else
-                                            <span class="badge bg-soft-danger">{{ __('En attente') }}</span>
+                                            <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
                                         @endif
                                     </td>
 

@@ -20,7 +20,7 @@
                                 <div class="card-body">
                                     <div class="row mb-3 align-items-center"><div class="col-3 text-muted fw-semibold">{{ __('Email') }}</div><div class="col-9"><code>{{ $history->subscribe?->email ?? '—' }}</code></div></div>
                                     <hr class="my-2">
-                                    <div class="row mb-3 align-items-center"><div class="col-3 text-muted fw-semibold">{{ __('Action') }}</div><div class="col-9"><span class="badge bg-soft-{{ $history->action === 'subscribed' ? 'success' : ($history->action === 'unsubscribed' ? 'danger' : 'info') }}">{{ __(ucfirst($history->action)) }}</span></div></div>
+                                    <div class="row mb-3 align-items-center"><div class="col-3 text-muted fw-semibold">{{ __('Action') }}</div><div class="col-9"><span class="badge bg-{{ $history->action === 'subscribed' ? 'success' : ($history->action === 'unsubscribed' ? 'danger' : 'info') }}-subtle text-{{ $history->action === 'subscribed' ? 'success' : ($history->action === 'unsubscribed' ? 'danger' : 'info') }}">{{ __(ucfirst($history->action)) }}</span></div></div>
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center"><div class="col-3 text-muted fw-semibold">{{ __('Adresse IP') }}</div><div class="col-9"><code>{{ $history->ip_address ?? '—' }}</code></div></div>
                                     <hr class="my-2">

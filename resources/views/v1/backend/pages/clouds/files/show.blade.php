@@ -140,19 +140,19 @@
                                                 <div class="col-4 text-muted fw-semibold">{{ __('Statut de synchronisation') }}</div>
                                                 <div class="col-8">
                                                     @if($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Pending)
-                                                        <span class="badge bg-soft-warning">
+                                                        <span class="badge bg-warning-subtle text-warning">
                                                             <i class="bx bx-time-five me-1"></i> {{ __('En attente') }}
                                                         </span>
                                                     @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Processing)
-                                                        <span class="badge bg-soft-info">
+                                                        <span class="badge bg-info-subtle text-info">
                                                             <i class="bx bx-refresh me-1"></i> {{ __('En cours') }}
                                                         </span>
                                                     @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Error)
-                                                        <span class="badge bg-soft-danger">
+                                                        <span class="badge bg-danger-subtle text-danger">
                                                             <i class="bx bx-error-circle me-1"></i> {{ __('Erreur') }}
                                                         </span>
                                                     @else
-                                                        <span class="badge bg-soft-success">
+                                                        <span class="badge bg-success-subtle text-success">
                                                             <i class="bx bx-check-circle me-1"></i> {{ __('Synchronisé') }}
                                                         </span>
                                                     @endif
@@ -242,7 +242,7 @@
                                                         <div class="fw-semibold">{{ __('Plateforme') }}</div>
                                                         <small class="text-muted">{{ $file->cloudFolder->platform->label }}</small>
                                                     </div>
-                                                    <span class="badge bg-soft-success px-3 py-2">
+                                                    <span class="badge bg-success-subtle text-success px-3 py-2">
                                                         <i class="bx bx-server me-1"></i>{{ $file->cloudFolder->platform->name }}
                                                     </span>
                                                 </div>

@@ -38,10 +38,13 @@
 <!-- START Wrapper -->
 <div class="wrapper">
 
-class="page-content">
-class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100vh;">
-ield('content')
-END Wrapper -->
+    <!-- Page Content -->
+    <main class="page-content">
+        <div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+            @yield('content')
+        </div>
+    </main>
+    <!-- END Wrapper -->
 
 <!-- Vendor Javascript -->
 <script src="{{ asset(getEnvFolder().'backend/assets/js/vendor.js') }}"></script>

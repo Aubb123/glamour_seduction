@@ -11,10 +11,10 @@
         <p class="text-muted mb-4">{{ __('Une erreur inattendue est survenue. Veuillez réessayer plus tard.') }}</p>
         <div class="d-flex justify-content-center gap-2 flex-wrap">
             <a href="{{ url()->previous() }}" class="btn btn-light">
-                <i class="ti ti-arrow-left me-1"></i>{{ __('Retour') }}
+                <i class="bx bx-arrow-back me-1"></i>{{ __('Retour') }}
             </a>
             <a href="{{ route('backend.index') }}" class="btn btn-primary">
-                <i class="ti ti-home me-1"></i>{{ __('Retour au tableau de bord') }}
+                <i class="bx bx-home-alt me-1"></i>{{ __('Retour au tableau de bord') }}
             </a>
         </div>
     </div>

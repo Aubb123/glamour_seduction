@@ -76,11 +76,11 @@
                                         <small class="text-muted">{{ __('Visibilité interne') }}</small>
                                     </div>
                                     @if ($permission->status === \App\Enums\Permissions\PermissionStatus::Active)
-                                        <span class="badge bg-soft-success px-3 py-2">
+                                        <span class="badge bg-success-subtle text-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-soft-danger px-3 py-2">
+                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}
                                         </span>
                                     @endif
@@ -92,7 +92,7 @@
                                         <div class="fw-semibold">{{ __('Rôles') }}</div>
                                         <small class="text-muted">{{ __('Rôles associés') }}</small>
                                     </div>
-                                    <span class="badge bg-soft-primary px-3 py-2 fs-13">
+                                    <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-13">
                                         <i class="bx bx-user me-1"></i>{{ $permission->roles()->count() }}
                                     </span>
                                 </a>

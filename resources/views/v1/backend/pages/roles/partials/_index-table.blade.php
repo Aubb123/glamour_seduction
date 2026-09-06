@@ -111,7 +111,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-info">{{ $role->guard_name }}</span>
+                                        <span class="badge bg-info-subtle text-info">{{ $role->guard_name }}</span>
                                     </td>
 
                                     <!-- 
@@ -122,7 +122,7 @@
                                     -->
 
                                     <td>
-                                        <span class="{{ $role->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $role->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $role->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>

@@ -112,7 +112,7 @@
                                     </td>
 
                                     <td class="fw-bold">
-                                        <span class="badge bg-soft-secondary fs-12">{{ strtoupper($continent->code) }}</span>
+                                        <span class="badge bg-secondary-subtle text-secondary fs-12">{{ strtoupper($continent->code) }}</span>
                                     </td>
 
                                     <td class="fw-bold">
@@ -133,7 +133,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocontinents.countries', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none text-primary">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-map me-1"></i>{{ $continent->countries_count ?? 0 }}
                                             </span>
                                         </a>
@@ -144,7 +144,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $continent->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $continent->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $continent->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -152,7 +152,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocontinents.audits', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none text-primary">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-file me-1"></i>{{ $continent->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -161,7 +161,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocontinents.activity-logs', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none text-primary">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-pulse me-1"></i>{{ $continent->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>

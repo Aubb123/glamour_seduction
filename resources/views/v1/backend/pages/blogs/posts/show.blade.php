@@ -65,11 +65,11 @@
                                         <div class="col-8 fw-semibold">
                                             @if($post->category)
                                                 <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $post->category->uuid, 'slug' => $post->category?->active_translation?->slug ?? 'null']) }}"
-                                                    class="badge bg-soft-primary text-decoration-none">
+                                                    class="badge bg-primary-subtle text-primary text-decoration-none">
                                                     {{ $post->category?->active_translation?->name ?? '—' }}
                                                 </a>
                                             @else
-                                                <span class="badge bg-soft-primary">—</span>
+                                                <span class="badge bg-primary-subtle text-primary">—</span>
                                             @endif
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
                                         <div class="col-8">
                                             @forelse ($post->tags as $tag)
                                                 <a href="{{ route('backend.blog-tags.show', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
-                                                    class="badge bg-soft-info me-1 text-decoration-none">
+                                                    class="badge bg-info-subtle text-info me-1 text-decoration-none">
                                                     {{ $tag->active_translation?->name ?? '#' . $tag->id }}
                                                 </a>
                                             @empty
@@ -147,7 +147,7 @@
                                                 @endif
                                             </small>
                                         </div>
-                                        <span class="{{ $post->status?->badgeClass() ?? 'badge bg-soft-secondary' }} px-3 py-2">
+                                        <span class="{{ $post->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }} px-3 py-2">
                                             {{ $post->status?->label() ?? '—' }}
                                         </span>
                                     </div>

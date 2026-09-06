@@ -151,15 +151,15 @@
                                                     <small class="text-muted">{{ $log->is_success === null ? __('v1/backend/views/pages/activity-logs/show.nonDefini') : ($log->is_success ? __('v1/backend/views/pages/activity-logs/show.operationReussie') : __('v1/backend/views/pages/activity-logs/show.echecOperation')) }}</small>
                                                 </div>
                                                 @if($log->is_success === null)
-                                                    <span class="badge bg-soft-secondary px-3 py-2">
+                                                    <span class="badge bg-secondary-subtle text-secondary px-3 py-2">
                                                         <i class="bx bx-minus me-1"></i>{{ __('v1/backend/views/pages/activity-logs/show.nonDefini') }}
                                                     </span>
                                                 @elseif($log->is_success)
-                                                    <span class="badge bg-soft-success px-3 py-2">
+                                                    <span class="badge bg-success-subtle text-success px-3 py-2">
                                                         <i class="bx bx-check-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/show.succes') }}
                                                     </span>
                                                 @else
-                                                    <span class="badge bg-soft-danger px-3 py-2">
+                                                    <span class="badge bg-danger-subtle text-danger px-3 py-2">
                                                         <i class="bx bx-x-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/show.erreur') }}
                                                     </span>
                                                 @endif

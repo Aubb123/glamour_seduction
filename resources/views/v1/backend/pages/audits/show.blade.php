@@ -85,7 +85,7 @@
                                             <div class="row mb-3 align-items-center">
                                                 <div class="col-4 text-muted fw-semibold">{{ __('Type d\'entité') }}</div>
                                                 <div class="col-8 fw-semibold">
-                                                    <span class="badge bg-soft-primary">{{ class_basename($audit->auditable_type) }}</span>
+                                                    <span class="badge bg-primary-subtle text-primary">{{ class_basename($audit->auditable_type) }}</span>
                                                 </div>
                                             </div>
                                             <hr class="my-2">

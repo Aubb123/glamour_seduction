@@ -119,11 +119,11 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-primary">{{ $country->code }}</span>
+                                        <span class="badge bg-primary-subtle text-primary">{{ $country->code }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-secondary">{{ $country->code_2 }}</span>
+                                        <span class="badge bg-secondary-subtle text-secondary">{{ $country->code_2 }}</span>
                                     </td>
 
                                     <td class="text-muted">
@@ -132,14 +132,14 @@
 
                                     <td>
                                         @if ($country->currency_code)
-                                            <span class="badge bg-soft-success" title="{{ $country->currency_name }}">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
+                                            <span class="badge bg-success-subtle text-success" title="{{ $country->currency_name }}">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-info">{{ $country->type_label }}</span>
+                                        <span class="badge bg-info-subtle text-info">{{ $country->type_label }}</span>
                                     </td>
 
                                     <td class="text-muted">
@@ -156,7 +156,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocountries.users', ['geoCountry' => $country->uuid, 'slug' => $country->active_translation?->slug ?? $country->code]) }}"
                                             class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-user me-1"></i>{{ $country->users_count ?? 0 }}
                                             </span>
                                         </a>
@@ -167,7 +167,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $country->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $country->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $country->status?->label() ?? __('v1/backend/views/pages/geos/countries/partials/_index-table.inconnu') }}
                                         </span>
                                     </td>
@@ -175,7 +175,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocountries.audits', ['geoCountry' => $country->uuid, 'slug' => $country->active_translation?->slug ?? $country->code]) }}"
                                             class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-file me-1"></i>{{ $country->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -184,7 +184,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocountries.activity-logs', ['geoCountry' => $country->uuid, 'slug' => $country->active_translation?->slug ?? $country->code]) }}"
                                             class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-pulse me-1"></i>{{ $country->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>

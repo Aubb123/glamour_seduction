@@ -120,9 +120,9 @@
 
                                     <td>
                                         @if ($contact->is_read)
-                                            <span class="badge bg-soft-success">{{ __('Lu') }}</span>
+                                            <span class="badge bg-success-subtle text-success">{{ __('Lu') }}</span>
                                         @else
-                                            <span class="badge bg-soft-warning">{{ __('Non lu') }}</span>
+                                            <span class="badge bg-warning-subtle text-warning">{{ __('Non lu') }}</span>
                                         @endif
                                     </td>
 

@@ -60,13 +60,13 @@
                                                     </label>
                                                     <br>
                                                     @if($setting->is_translatable)
-                                                        <span class="badge bg-soft-info mb-1">{{ __('Multilingue') }}</span>
+                                                        <span class="badge bg-info-subtle text-info mb-1">{{ __('Multilingue') }}</span>
                                                     @endif
                                                     @if($setting->is_public)
-                                                        <span class="badge bg-soft-success">{{ __('Public') }}</span>
+                                                        <span class="badge bg-success-subtle text-success">{{ __('Public') }}</span>
                                                     @endif
                                                     @if(!$isEditable)
-                                                        <span class="badge bg-soft-secondary">{{ __('Non modifiable') }}</span>
+                                                        <span class="badge bg-secondary-subtle text-secondary">{{ __('Non modifiable') }}</span>
                                                     @endif
                                                     <p class="text-muted small mt-1 mb-0">
                                                         {{ $setting->active_translation?->description ?: __('Aucune description disponible.') }}

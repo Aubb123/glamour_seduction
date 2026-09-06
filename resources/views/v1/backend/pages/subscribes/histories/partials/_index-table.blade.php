@@ -96,7 +96,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td><code>{{ $history->subscribe?->email ?? '—' }}</code></td>
                                     <td>
-                                        <span class="badge bg-soft-{{ $history->action === 'subscribed' ? 'success' : ($history->action === 'unsubscribed' ? 'danger' : 'info') }}">
+                                        <span class="badge bg-{{ $history->action === 'subscribed' ? 'success' : ($history->action === 'unsubscribed' ? 'danger' : 'info') }}-subtle text-{{ $history->action === 'subscribed' ? 'success' : ($history->action === 'unsubscribed' ? 'danger' : 'info') }}">
                                             {{ __(ucfirst($history->action)) }}
                                         </span>
                                     </td>

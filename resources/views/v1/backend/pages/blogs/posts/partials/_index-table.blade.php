@@ -116,11 +116,11 @@
                                     <td>
                                         @if($post->category)
                                             <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $post->category->uuid, 'slug' => $post->category?->active_translation?->slug ?? 'null']) }}"
-                                               class="badge bg-soft-primary text-decoration-none">
+                                               class="badge bg-primary-subtle text-primary text-decoration-none">
                                                 {{ $post->category?->active_translation?->name ?? '—' }}
                                             </a>
                                         @else
-                                            <span class="badge bg-soft-primary">—</span>
+                                            <span class="badge bg-primary-subtle text-primary">—</span>
                                         @endif
                                     </td>
 
@@ -136,13 +136,13 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-info">{{ $post->views }}</span>
+                                        <span class="badge bg-info-subtle text-info">{{ $post->views }}</span>
                                     </td>
 
                                     <td>
                                         <a href="{{ route('backend.blog-posts.audits', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $post->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -151,18 +151,18 @@
                                     <td>
                                         <a href="{{ route('backend.blog-posts.activity-logs', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $post->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-secondary">{{ $post->sort_order }}</span>
+                                        <span class="badge bg-secondary-subtle text-secondary">{{ $post->sort_order }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="{{ $post->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $post->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $post->status?->label() ?? '—' }}
                                         </span>
                                     </td>

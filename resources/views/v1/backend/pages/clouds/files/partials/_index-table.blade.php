@@ -116,19 +116,19 @@
 
                                     <td>
                                         @if($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Pending)
-                                            <span class="badge bg-soft-warning">
+                                            <span class="badge bg-warning-subtle text-warning">
                                                 <i class="bx bx-time-five me-1"></i> {{ __('En attente') }}
                                             </span>
                                         @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Processing)
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-refresh me-1"></i> {{ __('En cours') }}
                                             </span>
                                         @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Error)
-                                            <span class="badge bg-soft-danger">
+                                            <span class="badge bg-danger-subtle text-danger">
                                                 <i class="bx bx-error-circle me-1"></i> {{ __('Erreur') }}
                                             </span>
                                         @else
-                                            <span class="badge bg-soft-success">
+                                            <span class="badge bg-success-subtle text-success">
                                                 <i class="bx bx-check-circle me-1"></i> {{ __('Synchronisé') }}
                                             </span>
                                         @endif
@@ -140,7 +140,7 @@
                                         @if($file->cloudFolder)
                                             <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $file->cloudFolder->uuid]) }}"
                                                class="text-decoration-none">
-                                                <span class="badge bg-soft-primary">
+                                                <span class="badge bg-primary-subtle text-primary">
                                                     <i class="bx bx-folder me-1"></i> {{ $file->cloudFolder->folder_name }}
                                                 </span>
                                             </a>
@@ -187,7 +187,7 @@
                                                     </span>
                                                 </a>
                                             @else
-                                                <span class="badge bg-soft-secondary">{{ class_basename($file->fileable_type) }}</span>
+                                                <span class="badge bg-secondary-subtle text-secondary">{{ class_basename($file->fileable_type) }}</span>
                                             @endif
                                         @else
                                             <span class="text-muted">—</span>

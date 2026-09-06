@@ -95,11 +95,11 @@
                                         <small class="text-muted">{{ __('Visibilité publique') }}</small>
                                     </div>
                                     @if ($comment->is_visible)
-                                        <span class="badge bg-soft-success px-3 py-2">
+                                        <span class="badge bg-success-subtle text-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Approuvé') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-soft-danger px-3 py-2">
+                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('En attente') }}
                                         </span>
                                     @endif
@@ -173,9 +173,9 @@
 
                                         <div class="mt-2">
                                             @if ($reply->is_visible)
-                                                <span class="badge bg-soft-success">{{ __('Approuvé') }}</span>
+                                                <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
                                             @else
-                                                <span class="badge bg-soft-danger">{{ __('En attente') }}</span>
+                                                <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
                                             @endif
                                         </div>
                                     </div>

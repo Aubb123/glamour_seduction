@@ -104,13 +104,13 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-soft-secondary">{{ $faq->sort_order }}</span>
+                                        <span class="badge bg-secondary-subtle text-secondary">{{ $faq->sort_order }}</span>
                                     </td>
 
                                     <td>
                                         @if($faq->user)
                                             <a href="{{ route('backend.users.show', ['user' => $faq->user->uuid, 'slug' => $faq->user->slug]) }}" class="text-decoration-none">
-                                                <span class="badge bg-soft-primary">
+                                                <span class="badge bg-primary-subtle text-primary">
                                                     <i class="bx bx-user me-1"></i> {{ $faq->user->first_name . ' ' . $faq->user->last_name }}
                                                 </span>
                                             </a>
@@ -120,14 +120,14 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $faq->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $faq->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $faq->status?->label() ?? __('v1/backend/views/pages/faqs/partials/_index-table.inconnu') }}
                                         </span>
                                     </td>
 
                                     <td class="text-center">
                                         <a href="{{ route('backend.faqs.audits', ['faq' => $faq->uuid, 'slug' => $faq->active_translation?->slug ?? 'null']) }}#audits" class="text-decoration-none">
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-file me-1"></i> {{ $faq->audits_count }}
                                             </span>
                                         </a>
@@ -135,7 +135,7 @@
 
                                     <td class="text-center">
                                         <a href="{{ route('backend.faqs.activity-logs', ['faq' => $faq->uuid, 'slug' => $faq->active_translation?->slug ?? 'null']) }}#activity-logs" class="text-decoration-none">
-                                            <span class="badge bg-soft-warning">
+                                            <span class="badge bg-warning-subtle text-warning">
                                                 <i class="bx bx-pulse me-1"></i> {{ $faq->activity_logs_count }}
                                             </span>
                                         </a>

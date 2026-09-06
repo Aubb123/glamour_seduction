@@ -123,7 +123,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-categories.audits', ['blogCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $category->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -132,7 +132,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-categories.activity-logs', ['blogCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $category->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -141,7 +141,7 @@
                                     <td>{{ $category->sort_order }}</td>
 
                                     <td>
-                                        <span class="{{ $category->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $category->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $category->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>

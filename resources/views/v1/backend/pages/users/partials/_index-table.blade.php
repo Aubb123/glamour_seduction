@@ -135,11 +135,11 @@
 
                                     <td>
                                         @if ($user->status === \App\Enums\Users\UserStatus::Active)
-                                            <span class="badge bg-soft-success">{{ __('Actif') }}</span>
+                                            <span class="badge bg-success-subtle text-success">{{ __('Actif') }}</span>
                                         @elseif ($user->status === \App\Enums\Users\UserStatus::Suspended)
-                                            <span class="badge bg-soft-warning">{{ __('Suspendu') }}</span>
+                                            <span class="badge bg-warning-subtle text-warning">{{ __('Suspendu') }}</span>
                                         @elseif ($user->status === \App\Enums\Users\UserStatus::Banned)
-                                            <span class="badge bg-soft-danger">{{ __('Banni') }}</span>
+                                            <span class="badge bg-danger-subtle text-danger">{{ __('Banni') }}</span>
                                         @endif
                                     </td>
 

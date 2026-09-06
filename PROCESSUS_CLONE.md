@@ -320,6 +320,44 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Compilation Blade :** `php artisan view:cache` OK sur les 272+ vues.
 - **Suite Pest : voir section « Tests rattrapés » (06/09) et tableau « État final » ci-dessous.**
 
+## 📤 Export des tests vers `base` (06/09/2026)
+
+> L'ensemble de la suite de tests Pest validée ici a été **exportée vers le projet principal `base`** (`c:\xampp\htdocs\projects\01\base`), afin qu'il bénéficie du socle de tests du clone.
+
+### Fichiers copiés (`base_clone` → `base`)
+| Fichier / dossier | Contenu | Résultat |
+|---|---|---|
+| `tests/Feature/` | 30 fichiers Feature (Analytics → Traits, dont le socle, Auth, modules 1→21) | sur Base = diff 0 |
+| `tests/Unit/` | 4 fichiers Unit (Enums, Helpers, HasSlug, SocleComponents) | sur Base = diff 0 |
+| `tests/Pest.php` | `uses(TestCase::class)` Unit + Feature + `bootV1WebRoutes()` | identique |
+| `tests/TestCase.php` | classe de base | identique |
+| `phpunit.xml` | force `DB_DATABASE=:memory:` (SQLite) pour la suite | identique |
+| `composer.json` | Pest `^5.1` + `pest-plugin-laravel ^5.0` + `laravel/pao` ; `phpunit` retiré | applicable |
+| `resources/views/v1/auth/**` | 4 vues auth Larkon (`email/login` avec `authentication-form`, `email/verify-otp`, `phone/verify-otp`, `account/disabled`) | **copiées** (le test `AuthTest` exige le marqueur `authentication-form`) |
+
+### Corrections spécifiques `base` (pour passer la suite exportée)
+- **`AuthTest` (1 seul échec au premier run)** : `route('login')` renvoyait l'ancienne page « cc login page » sans `authentication-form`. → export des 4 vues auth Larkon du clone. (Le `assertSee('Compte désactivé')` était déjà OK dans `base`.)
+- **`AnalyticsTest`** : déja agnostique (`analyticsRecetteDatabase()` lit `DB_DATABASE` du `.env` → `base`), MySQL recette en lecture seule — **passé en contexte de suite complète** (3/3), revisé dans `base` ET `base_clone` le 06/09.
+
+### État des suites (06/09/2026, après correction)
+| Projet | Suite | Résultat |
+|---|---|---|
+| `base` | Unit | ✅ **10 passed (330 assertions)** |
+| `base` | Feature | ✅ **178 passed (715 assertions)** — 0 échec |
+| `base_clone` | complète | ✅ **188 passed (1045 assertions)** — 0 échec |
+
+- Premier run `base` (avant export vues auth) : `177 passed, 1 failed` → après correction : `178 passed` (le test virtuellement compense l'assertion réparée). Durée suite Feature ~27 min (`base-feature.log`), suite complète clone ~27 min (`clone-full.log`).
+
+### Différences restantes `base` vs `base_clone` (hors tests identiques)
+- `laravel/boost`: `^2.4` (`base`) vs `^2.2` (`clone`) → installé `v2.4.13` vs `v2.7.0` — sans impact sur les tests.
+- `pestphp/pest`: installé `v5.1.2` (`base`) vs `v5.1.3` (`clone`) — sans impact.
+- `config/database.php` : `base` embase PHP 8.5 (`PHP_VERSION_ID >= 80500`), clone non — neutre.
+- `database/schema` présent dans `base` uniquement (artefact, sans impact test).
+- `.env` / `.env.example` : `DB_DATABASE=base` vs `base_clone` (attendu — chaque projet a sa base MySQL de recette).
+- Assets thème Larkon (`storage/app/public/backend/assets`, ~24 Mo) : présent dans `base_clone`, **absent de `base`** → les vues auth désormais Larkon-copiées de `base` rendront sans CSS tant que les assets ne sont pas exportés (impact **visuel** uniquement, aucun test ne l'exige).
+
+---
+
 ## 🏁 État final du clone
 
 | Livrable | État |

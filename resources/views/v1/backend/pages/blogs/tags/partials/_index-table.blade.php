@@ -121,7 +121,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-tags.audits', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-primary">
+                                            <span class="badge bg-primary-subtle text-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $tag->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -130,7 +130,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-tags.activity-logs', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-soft-info">
+                                            <span class="badge bg-info-subtle text-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $tag->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -139,7 +139,7 @@
                                     <td>{{ $tag->sort_order }}</td>
 
                                     <td>
-                                        <span class="{{ $tag->status?->badgeClass() ?? 'badge bg-soft-secondary' }}">
+                                        <span class="{{ $tag->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
                                             {{ $tag->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
