@@ -155,7 +155,7 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - [x] **Étape 18 — Finalisation i18n FR/EN** *(fait le 05/09)*
   - [x] Les 188 fichiers de langues copiés 1:1 dès l'Étape 5 → aucune clé manquante
 
-- [x] **Étape 19 — Recette finale « clone conforme »** *(voir journal — exécution en cours)*
+- [ ] **Étape 19 — Recette finale « clone conforme »** *(⚠️ NON TERMINÉE : recette partielle exécutée — `migrate:fresh --seed` OK et `route:list` diff = 0 — mais validation finale en attente des tests reportés, voir section ⏳)*
 
 ---
 
