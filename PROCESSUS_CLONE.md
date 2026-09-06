@@ -135,17 +135,18 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Tests : `CloudPlatformsTest` (11/11) + `CloudFoldersTest` (7/7) + `CloudFilesTest` (6/6)**
   - [x] **Règles métier couvertes** : enum `name` limité (`backblaze_b2`) ; secrets masqués (`api_key`/`api_secret` jamais dans le HTML) ; `destroy` plateforme refusé si active OU si dossiers présents (`dependentRelations`) ; `architecture-store` (création des dossiers users/blogs/galleries) ; destroy d'un fichier `fileable` refusé ; restore exige un fileable existant non supprimé ; proxy public `cloud-file.show` (fichier local `pending` servi sans authentification)
 
-- [x] **Étape 14 — Modules 20/21 : Audits & ActivityLogs** *(fait le 05/09 — code déjà intégré à l'Étape 7 ; ⚠️ tests en attente)*
+- [x] **Étape 14 — Modules 20/21 : Audits & ActivityLogs** *(fait le 05/09 — code intégré à l'Étape 7 + tests rattrapés le 06/09)*
   - [x] Contrôleurs `AuditController` / `ActivityLogController` + vues `audits/**`, `activity-logs/**` copiés 1:1 et convertis (fait à l'Étape 7)
-  - [x] Validation **sans tests** (consigne utilisateur) : compilation Blade de toutes les vues OK (`php artisan view:cache`)
+  - [x] **Tests : `AuditsActivityLogsTest` (9/9)** — index DataTables + stats, show, protection auth
+  - [x] **Découverte importante :** dans `base`, `destroy` et `clear` sont **volontairement désactivés** (code de suppression commenté → redirect + flash `info`, aucune suppression). Tests alignés sur ce contrat 1:1 (les entrées restent présentes, flash `info` affiché)
 
-- [x] **Étape 15 — Dashboard + Analytics** *(fait le 05/09 — code déjà intégré ; ⚠️ tests en attente)*
+- [x] **Étape 15 — Dashboard + Analytics** *(fait le 05/09 — code intégré + tests rattrapés le 06/09)*
   - [x] Vues `pages/index.blade.php` (dashboard) + `pages/analytics.blade.php` + partial `_statistics` copiées 1:1, converties
-  - [x] Validation sans tests : compilation Blade OK
+  - [x] **Tests : `DashboardTest` (2/2, SQLite)** + **`AnalyticsTest` (3/3, MySQL recette `base_clone` en lecture seule — `DATE_FORMAT()` est du SQL MySQL pur, incompatible SQLite)**
 
-- [x] **Étape 16 — Frontend placeholder V1/V2** *(fait le 05/09 — code déjà intégré ; ⚠️ tests en attente)*
+- [x] **Étape 16 — Frontend placeholder V1/V2** *(fait le 05/09 — code intégré + tests rattrapés le 06/09)*
   - [x] Vues `v1/frontend/pages/welcome.blade.php` + `v2/frontend/pages/welcome.blade.php` + `FrontendController` V1/V2 copiés 1:1
-  - [x] Validation sans tests : compilation Blade OK
+  - [x] **Tests : `FrontendTest` (3/3)** — `/` → 200 avec placeholder `v1`, lien `backend.index`, bouton « Déconnexion » si connecté
 
 - [x] **Étape 17 — Intégration du template backend (thème Larkon)** *(réalisée progressivement dès l'Étape 6)*
   - [x] Layouts `app` + includes (`_start`, `_header`, `_sidebar`, `_footer`, `_end`, `_toolbar`) en thème Larkon
@@ -155,20 +156,20 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - [x] **Étape 18 — Finalisation i18n FR/EN** *(fait le 05/09)*
   - [x] Les 188 fichiers de langues copiés 1:1 dès l'Étape 5 → aucune clé manquante
 
-- [ ] **Étape 19 — Recette finale « clone conforme »** *(⚠️ NON TERMINÉE : recette partielle exécutée — `migrate:fresh --seed` OK et `route:list` diff = 0 — mais validation finale en attente des tests reportés, voir section ⏳)*
+- [x] **Étape 19 — Recette finale « clone conforme »** *(terminée le 06/09 : `migrate:fresh --seed` MySQL EXIT 0 + `route:list` diff = 0 + **suite Pest complète 188 passed / 1045 assertions, 0 échec**)*
 
 ---
 
-## ⏳ Tests en attente (consigne utilisateur du 05/09)
+## ✅ Tests rattrapés (06/09 — fin de la pause décidée le 05/09)
 
-> Les tests Pest suivants seront écrits **plus tard** (mise en pause décidée après `CloudFilesTest`). Les étapes concernées sont **validées par d'autres moyens** en attendant (compilation Blade, `route:list`, `migrate:fresh --seed`, rendu manuel) :
+> La reprise a été décidée par l'utilisateur le 06/09. Tous les tests reportés sont désormais **écrits et verts** :
 
-| Étape | Module | Tests à écrire plus tard |
-|---|---|---|
-| 14 | Audits & ActivityLogs | index/show/destroy/clear (audits + logs) |
-| 15 | Dashboard + Analytics | rendu dashboard + analytics |
-| 16 | Frontend placeholder V1/V2 | rendu `/` selon version active |
-| 19 | Recette finale | compléter la couverture globale (smoke tests CRUD de tous les modules) |
+| Étape | Module | Tests écrits | Résultat |
+|---|---|---|---|
+| 14 | Audits & ActivityLogs | `AuditsActivityLogsTest` (index/show + destroy/clear **désactivés dans base** + protection auth) | 9/9 ✅ |
+| 15 | Dashboard + Analytics | `DashboardTest` (SQLite) + `AnalyticsTest` (MySQL recette, lecture seule) | 2/2 + 3/3 ✅ |
+| 16 | Frontend placeholder V1/V2 | `FrontendTest` (placeholder `v1`, lien backend, déconnexion) | 3/3 ✅ |
+| 19 | Recette finale | suite complète `php artisan test` (voir tableau « État final ») | voir ci-dessous |
 
 ---
 
@@ -305,11 +306,19 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 - **Règles métier couvertes :** masquage des secrets (`api_key`/`api_secret`), `destroy` plateforme bloqué si active ou avec dossiers (`dependentRelations`), `architecture-store`, proxy public `cloud-file.show` (fichier local `pending` servi sans auth), restore exige fileable existant non-trashed, destroy fichier refusé si `fileable` présent.
 - **Validation finale :** voir la suite complète dans le commit.
 
+### 06/09 — Reprise des tests reportés (Étapes 14-16) ✅
+- **`AuditsActivityLogsTest` (9/9) :** index DataTables + stats, show, protection auth, et — découverte clé — **`destroy`/`clear` sont volontairement désactivés dans `base`** (code de suppression commenté, redirect + flash `info`, aucune suppression, traçabilité oblige). Tests alignés sur ce contrat 1:1 : les entrées restent en base et le flash `info` est vérifié.
+- **`DashboardTest` (2/2, SQLite) :** rendu du dashboard + protection auth.
+- **`AnalyticsTest` (3/3, MySQL) :** `backend_analytics` utilise `DATE_FORMAT()` (SQL MySQL pur, incompatible SQLite) → tests exécutés sur la connexion MySQL de recette `base_clone` (seedée par `migrate:fresh --seed`, lecture seule) ; périodes défaut/week/month/year + protection auth. Rechargement des routes v1 via `bootV1WebRoutes()` après le switch de connexion.
+- **`FrontendTest` (3/3, SQLite) :** `/` → 200 avec placeholder `v1`, lien `backend.index`, bouton « Déconnexion » pour un utilisateur connecté.
+- **Suite complète `php artisan test` : 188 passed / 1045 assertions / 0 échec** — toutes les étapes 0→19 validées.
+- **Mise à jour du document :** section « ⏳ Tests en attente » remplacée par « ✅ Tests rattrapés » ; étapes 14-16 actualisées ; Étape 19 cochée (recette complète) ; tableau « État final » mis à jour.
+
 ### 05/09 — Étape 19 : Recette finale « clone conforme » ✅
 - **`migrate:fresh --seed` (MySQL `base_clone`, MariaDB) : EXIT 0** — 35 migrations + tous les seeders sans erreur.
 - **`php artisan route:list` : 297 routes** (293 web + 4 système) — **diff complet `base` vs `base_clone` = 0 ligne** (mêmes méthodes, URIs et noms).
 - **Compilation Blade :** `php artisan view:cache` OK sur les 272+ vues.
-- **Suite Pest existante (étapes 0-11) : 85 passed** — les tests des étapes 14-19 sont en attente (voir section ⏳).
+- **Suite Pest : voir section « Tests rattrapés » (06/09) et tableau « État final » ci-dessous.**
 
 ## 🏁 État final du clone
 
@@ -322,7 +331,7 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 | `lang/{en,fr}/**` (188 fichiers) | ✅ 1:1 |
 | `resources/views/**` (272 fichiers) | ✅ 1:1 (contenu adapté au thème Larkon : icônes, DataTables/Summernote conservés) |
 | `storage/app/public/backend/assets` | ✅ Thème Larkon (différence unique autorisée) |
-| Tests Pest (étapes 0-11) | ✅ 85 passed — étapes 12-13 : ✅ 30 tests Blog/Cloud — étapes 14-19 : ⏳ en attente |
+| Tests Pest (suites 0→19) | ✅ **188 passed / 1045 assertions / 0 échec** (06/09 — suite complète) |
 
 ---
 <!-- À compléter à chaque étape : date, contenu, fichiers ajoutés, tests associés, résultat des validations. -->
