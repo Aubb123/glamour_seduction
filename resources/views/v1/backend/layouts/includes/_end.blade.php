@@ -41,6 +41,10 @@
     <!-- App Javascript (Require in all Page) -->
     <script src="{{ asset(getEnvFolder().'backend/assets/js/app.js') }}"></script>
 
+    <!-- Custom JS Fait par moi -dev aubanel- -->
+    <script src="{{ asset(getEnvFolder() . 'others/all/assets/js/global-form-loader.js')}}"> </script>
+
+
     @stack('scripts')
 </body>
 

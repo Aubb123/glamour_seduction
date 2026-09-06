@@ -65,7 +65,7 @@
                 <div class="dropdown topbar-item">
                     <a class="topbar-button" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="javascript:void(0);">
                         <span class="d-flex align-items-center">
-                            <img class="rounded-circle" width="32" src="{{ asset(getEnvFolder().'backend/assets/images/users/avatar-1.jpg') }}" alt="avatar">
+                            <img class="rounded-circle" src="{{ auth()->user()->getFirstImage()['url_img'] }}" alt="avatar" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
                         </span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">

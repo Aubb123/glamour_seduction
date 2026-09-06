@@ -20,7 +20,12 @@
     <!-- Theme Config js (Require in all Page) -->
     <script src="{{ asset(getEnvFolder().'backend/assets/js/config.js') }}"></script>
 
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="{{ asset(getEnvFolder() . 'others/all/assets/sweetalert2/dist/sweetalert2.min.css')}}">
+    <script src="{{ asset(getEnvFolder() . 'others/all/assets/sweetalert2/dist/sweetalert2.all.min.js')}}"> </script>
+
     @stack('styles')
+
 </head>
 
 <body>
