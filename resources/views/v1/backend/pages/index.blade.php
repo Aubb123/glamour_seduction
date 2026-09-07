@@ -30,7 +30,7 @@
                             <span class="badge badge-soft-danger">{{ $stats['users']['banned'] }} {{ __('bannis') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.users.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.users.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
                             <span class="badge badge-soft-info">{{ $stats['permissions']['total'] }} {{ __('permissions') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.roles.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.roles.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -68,7 +68,7 @@
                             <span class="badge badge-soft-success">{{ $stats['subscribes']['active'] }} {{ __('actifs') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.subscribes.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.subscribes.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
                             <span class="badge badge-soft-warning">{{ $stats['contacts']['unread'] }} {{ __('non lus') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.contacts.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.contacts.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@
                             <span class="badge badge-soft-warning">{{ $stats['blogPosts']['drafts'] }} {{ __('brouillons') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.blog-posts.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.blog-posts.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -127,7 +127,7 @@
                             <span class="badge badge-soft-warning">{{ $stats['blogComments']['pending'] }} {{ __('en attente') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.blog-post-comments.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.blog-post-comments.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -146,7 +146,7 @@
                             <span class="badge badge-soft-success">{{ $stats['galleries']['active'] }} {{ __('actives') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.galleries.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.galleries.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -165,7 +165,7 @@
                             <span class="badge badge-soft-success">{{ $stats['faqs']['active'] }} {{ __('actives') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.faqs.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.faqs.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -185,7 +185,7 @@
                             <span class="badge badge-soft-warning">{{ $stats['cloudFiles'] }} {{ __('fichiers') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.cloud-platforms.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.cloud-platforms.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -204,7 +204,7 @@
                             <span class="badge badge-soft-info">{{ $stats['blogCategories'] }} {{ __('catégories') }}</span>
                         </div>
                     </div>
-                    <a href="{{ route('backend.blog-tags.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.blog-tags.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -220,7 +220,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['audits'] }}</h6>
                         <small class="text-muted">{{ __('Audits') }}</small>
                     </div>
-                    <a href="{{ route('backend.audits.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.audits.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>
@@ -236,7 +236,7 @@
                         <h6 class="mb-0 fw-bold fs-4">{{ $stats['activityLogs'] }}</h6>
                         <small class="text-muted">{{ __('Logs d\'activité') }}</small>
                     </div>
-                    <a href="{{ route('backend.activity-logs.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-arrow-right"></i></a>
+                    <a href="{{ route('backend.activity-logs.index') }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-right-arrow-alt"></i></a>
                 </div>
             </div>
         </div>

@@ -6,7 +6,7 @@
     </li>
     <li class="nav-item">
         <a class="nav-link @if(request()->routeIs('backend.blog-post-comments.replies')) active @endif" href="{{ route('backend.blog-post-comments.replies', ['blogPostComment' => $comment->uuid]) }}">
-            <i class="bx bx-corner-down-right me-1"></i> {{ __('Réponses') }}
+            <i class="bx bx-reply me-1"></i> {{ __('Réponses') }}
             <span class="badge bg-primary ms-1">{{ $comment->replies_count ?? 0 }}</span>
         </a>
     </li>

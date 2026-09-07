@@ -221,7 +221,7 @@
                             @empty
                                 <tr>
                                     <td colspan="{{ request()->routeIs('backend.geocontinents.trashed') ? 11 : 10 }}" class="text-center text-muted py-5">
-                                        <i class="bx bx-inbox fs-3 d-block mb-2"></i>
+                                        <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('Aucun continent trouvé.') }}
                                     </td>
                                 </tr>

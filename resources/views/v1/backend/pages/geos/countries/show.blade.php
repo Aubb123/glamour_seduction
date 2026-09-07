@@ -258,7 +258,7 @@
                             <div class="card-body">
                                 @if ($geoCountryTranslations->isEmpty())
                                     <p class="text-muted mb-0">
-                                        <i class="bx bx-inbox me-1"></i>{{ __('v1/backend/views/pages/geos/countries/show.aucuneTraductionSupprimee') }}
+                                        <i class="bx bx-archive me-1"></i>{{ __('v1/backend/views/pages/geos/countries/show.aucuneTraductionSupprimee') }}
                                     </p>
                                 @else
                                     @include('v1.backend.pages.geos.countries.partials._trashed-table-translations', [

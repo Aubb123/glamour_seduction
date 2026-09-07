@@ -22,7 +22,7 @@
         [
             'label' => __('Non lus'),
             'value' => $contacts->where('is_read', false)->count(),
-            'icon'  => 'bx bx-inbox',
+            'icon'  => 'bx bx-archive',
             'color' => 'warning',
         ],
         [
@@ -212,7 +212,7 @@
                             @empty
                                 <tr>
                                     <td colspan="{{ request()->routeIs('backend.contacts.trashed') ? 8 : 7 }}" class="text-center text-muted py-5">
-                                        <i class="bx bx-inbox fs-3 d-block mb-2"></i>
+                                        <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('Aucun message trouvé.') }}
                                     </td>
                                 </tr>

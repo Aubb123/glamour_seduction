@@ -18,7 +18,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_replies">
-                    <i class="bx bx-corner-down-right me-1"></i> {{ __('Réponses') }}
+                    <i class="bx bx-reply me-1"></i> {{ __('Réponses') }}
                     @if($replies->isNotEmpty())
                         <span class="badge bg-primary ms-1">{{ $replies->count() }}</span>
                     @endif
@@ -119,7 +119,7 @@
                         <div class="card border">
                             <div class="card-header bg-light py-2 d-flex align-items-center justify-content-between">
                                 <h6 class="mb-0 fw-bold">
-                                    <i class="bx bx-corner-down-right me-2 text-primary"></i>{{ __('Réponses à ce commentaire') }}
+                                    <i class="bx bx-reply me-2 text-primary"></i>{{ __('Réponses à ce commentaire') }}
                                     <span class="badge bg-primary ms-2">{{ $replies->count() }}</span>
                                 </h6>
                                 <a href="{{ route('backend.blog-post-comment-replies.index') }}" class="btn btn-sm btn-soft-primary">
@@ -181,7 +181,7 @@
                                     </div>
                                 @empty
                                     <p class="text-muted mb-0 text-center py-3">
-                                        <i class="bx bx-inbox fs-3 d-block mb-2"></i>
+                                        <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('Aucune réponse à ce commentaire.') }}
                                     </p>
                                 @endforelse

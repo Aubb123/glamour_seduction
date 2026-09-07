@@ -24,7 +24,7 @@
                 <div class="card-body">
                     @if ($galleryTranslations->isEmpty())
                         <p class="text-muted mb-0 text-center py-3">
-                            <i class="bx bx-inbox fs-3 d-block mb-2"></i>
+                            <i class="bx bx-archive fs-3 d-block mb-2"></i>
                             {{ __('Aucune traduction supprimée.') }}
                         </p>
                     @else

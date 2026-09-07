@@ -209,7 +209,7 @@
                             </button>
                             <div class="ms-auto d-flex gap-2">
                                 <button type="button" class="btn btn-primary" id="btn-next">
-                                    {{ __('v1/backend/views/pages/geos/countries/edit.suivant') }} <i class="bx bx-arrow-right ms-1"></i>
+                                    {{ __('v1/backend/views/pages/geos/countries/edit.suivant') }} <i class="bx bx-right-arrow-alt ms-1"></i>
                                 </button>
                                 <button type="submit" class="btn btn-success d-none" id="btn-submit">
                                     <i class="bx bx-save me-1"></i> {{ __('v1/backend/views/pages/geos/countries/edit.mettreAJour') }}

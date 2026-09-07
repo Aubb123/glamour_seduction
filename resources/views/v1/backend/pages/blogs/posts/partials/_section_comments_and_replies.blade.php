@@ -69,7 +69,7 @@
                             @if($comment->replies->isNotEmpty())
                                 <div class="ms-4 ps-3 border-start border-3">
                                     <h6 class="text-muted mb-2">
-                                        <i class="bx bx-corner-down-right me-1"></i>{{ __('Réponses') }}
+                                        <i class="bx bx-reply me-1"></i>{{ __('Réponses') }}
                                     </h6>
                                     @foreach ($comment->replies as $reply)
                                         <div class="border rounded p-2 mb-2 bg-light">
@@ -128,7 +128,7 @@
                         </div>
                     @empty
                         <p class="text-muted mb-0 text-center py-3">
-                            <i class="bx bx-inbox fs-3 d-block mb-2"></i>
+                            <i class="bx bx-archive fs-3 d-block mb-2"></i>
                             {{ __('Aucun commentaire pour cet article.') }}
                         </p>
                     @endforelse

@@ -34,7 +34,7 @@
         [
             'label' => __('Réponses'),
             'value' => $comments->sum('replies_count'),
-            'icon'  => 'bx bx-corner-down-right',
+            'icon'  => 'bx bx-reply',
             'color' => 'info',
         ],
         [
@@ -148,7 +148,7 @@
                                         <a href="{{ route('backend.blog-post-comments.replies', ['blogPostComment' => $comment->uuid]) }}"
                                            class="text-decoration-none">
                                             <span class="badge badge-soft-success">
-                                                <i class="bx bx-corner-down-right me-1"></i> {{ $comment->replies_count ?? 0 }}
+                                                <i class="bx bx-reply me-1"></i> {{ $comment->replies_count ?? 0 }}
                                             </span>
                                         </a>
                                     </td>
@@ -231,7 +231,7 @@
                             @empty
                                 <tr>
                                     <td colspan="{{ request()->routeIs('backend.blog-post-comments.trashed') ? 11 : 10 }}" class="text-center text-muted py-5">
-                                        <i class="bx bx-inbox fs-3 d-block mb-2"></i>
+                                        <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('Aucun commentaire trouvé.') }}
                                     </td>
                                 </tr>

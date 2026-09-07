@@ -24,7 +24,7 @@
                         </a>
 
                         <a href="{{ route('backend.blog-post-comments.replies', ['blogPostComment' => $comment->uuid]) }}" class="btn btn-soft-success btn-sm">
-                            <i class="bx bx-corner-down-right me-1"></i> {{ __('Réponses') }}
+                            <i class="bx bx-reply me-1"></i> {{ __('Réponses') }}
                             <span class="badge bg-primary ms-1">{{ $comment->replies_count ?? 0 }}</span>
                         </a>
 

@@ -204,7 +204,7 @@
                             @empty
                                 <tr>
                                     <td colspan="{{ request()->routeIs('backend.galleries.trashed') ? 8 : 7 }}" class="text-center text-muted py-5">
-                                        <i class="bx bx-inbox fs-3 d-block mb-2"></i>
+                                        <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('Aucune galerie trouvée.') }}
                                     </td>
                                 </tr>
