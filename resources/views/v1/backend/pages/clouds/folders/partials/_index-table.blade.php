@@ -75,7 +75,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="cloud-folders-table">
+                    <table class="table table-centered text-nowrap" id="cloud-folders-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -108,7 +108,7 @@
                                     <td>
                                         @if($folder->platform)
                                             <a href="{{ route('backend.cloud-platforms.show', ['cloudPlatform' => $folder->platform->uuid, 'slug' => $folder->platform->slug]) }}" class="text-decoration-none">
-                                                <span class="badge bg-primary-subtle text-primary">
+                                                <span class="badge badge-soft-primary">
                                                     <i class="bx bx-server me-1"></i> {{ $folder->platform->label }}
                                                 </span>
                                             </a>
@@ -120,7 +120,7 @@
                                     <td>
                                         @if($folder->parent)
                                             <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $folder->parent->uuid]) }}" class="text-decoration-none">
-                                                <span class="badge bg-secondary-subtle text-secondary">
+                                                <span class="badge badge-soft-secondary">
                                                     <i class="bx bx-folder me-1"></i> {{ $folder->parent->folder_name }}
                                                 </span>
                                             </a>
@@ -146,7 +146,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $folder->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $folder->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $folder->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -154,18 +154,18 @@
                                     <td> 
                                         @if($folder->content_type)
                                             @foreach($folder->content_type as $type)
-                                                <span class="badge bg-primary-subtle text-primary">{{ $type }}</span>
+                                                <span class="badge badge-soft-primary">{{ $type }}</span>
                                             @endforeach
                                         @else
-                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Aucun') }}</span>
+                                            <span class="badge badge-soft-secondary">{{ __('Aucun') }}</span>
                                         @endif
                                     </td>
 
                                     <td>
                                         @if ($folder->entity_table)
-                                            <span class="badge bg-info-subtle text-info">{{ $folder->entity_table }}</span>
+                                            <span class="badge badge-soft-info">{{ $folder->entity_table }}</span>
                                         @else
-                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Aucun') }}</span>
+                                            <span class="badge badge-soft-secondary">{{ __('Aucun') }}</span>
                                         @endif
                                     </td>
 
@@ -191,11 +191,11 @@
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
-                                            <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $folder->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                            <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $folder->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                 <i class="bx bx-show"></i>
                                             </a>
 
-                                            <a href="{{ route('backend.cloud-folders.edit', ['cloudFolder' => $folder->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                            <a href="{{ route('backend.cloud-folders.edit', ['cloudFolder' => $folder->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                 <i class="bx bx-edit"></i>
                                             </a>
                                         </div>

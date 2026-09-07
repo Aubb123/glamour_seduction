@@ -7,7 +7,7 @@
                         <i class="bx bx-message-square me-2 text-primary"></i>{{ __('Commentaires') }}
                         <span class="badge bg-primary ms-2">{{ $comments->count() }}</span>
                     </h6>
-                    <a href="{{ route('backend.blog-post-comments.index') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('backend.blog-post-comments.index') }}" class="btn btn-sm btn-soft-primary">
                         <i class="bx bx-link-external me-1"></i> {{ __('Voir tous les commentaires') }}
                     </a>
                 </div>
@@ -20,7 +20,7 @@
                                     <small class="text-muted ms-2">@formatDate($comment->created_at, 'D MMMM YYYY - HH:mm:ss')</small>
                                 </div>
                                 <div class="hstack gap-1">
-                                    <a href="{{ route('backend.blog-post-comments.show', ['blogPostComment' => $comment->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Détails') }}">
+                                    <a href="{{ route('backend.blog-post-comments.show', ['blogPostComment' => $comment->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Détails') }}">
                                         <i class="bx bx-show"></i>
                                     </a>
 
@@ -28,7 +28,7 @@
                                         <form action="{{ route('backend.blog-post-comments.deactivate', ['blogPostComment' => $comment->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $comment->uuid }}">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('deactivate-form-{{ $comment->uuid }}', '{{ __('Désapprouver ce commentaire ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
+                                            <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $comment->uuid }}', '{{ __('Désapprouver ce commentaire ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
                                                 <i class="bx bx-toggle-left"></i>
                                             </button>
                                         </form>
@@ -36,7 +36,7 @@
                                         <form action="{{ route('backend.blog-post-comments.activate', ['blogPostComment' => $comment->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $comment->uuid }}">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('activate-form-{{ $comment->uuid }}', '{{ __('Approuver ce commentaire ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
+                                            <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $comment->uuid }}', '{{ __('Approuver ce commentaire ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
                                                 <i class="bx bx-toggle-right"></i>
                                             </button>
                                         </form>
@@ -45,7 +45,7 @@
                                     <form action="{{ route('backend.blog-post-comments.destroy', ['blogPostComment' => $comment->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $comment->uuid }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $comment->uuid }}', '{{ __('Supprimer ce commentaire ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                        <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $comment->uuid }}', '{{ __('Supprimer ce commentaire ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                             <i class="bx bx-trash"></i>
                                         </button>
                                     </form>
@@ -58,9 +58,9 @@
 
                             <div class="d-flex align-items-center gap-2 mb-2">
                                 @if ($comment->is_visible)
-                                    <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
+                                    <span class="badge badge-soft-success">{{ __('Approuvé') }}</span>
                                 @else
-                                    <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
+                                    <span class="badge badge-soft-danger">{{ __('En attente') }}</span>
                                 @endif
                                 <small class="text-muted">{{ $comment->replies->count() }} {{ __('réponse(s)') }}</small>
                             </div>
@@ -79,7 +79,7 @@
                                                     <small class="text-muted ms-2">@formatDate($reply->created_at, 'D MMMM YYYY - HH:mm:ss')</small>
                                                 </div>
                                                 <div class="hstack gap-1">
-                                                    <a href="{{ route('backend.blog-post-comment-replies.show', ['blogPostCommentReply' => $reply->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Détails') }}">
+                                                    <a href="{{ route('backend.blog-post-comment-replies.show', ['blogPostCommentReply' => $reply->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Détails') }}">
                                                         <i class="bx bx-show"></i>
                                                     </a>
 
@@ -87,7 +87,7 @@
                                                         <form action="{{ route('backend.blog-post-comment-replies.deactivate', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="reply-deactivate-form-{{ $reply->uuid }}">
                                                             @csrf
                                                             @method('PATCH')
-                                                            <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('reply-deactivate-form-{{ $reply->uuid }}', '{{ __('Désapprouver cette réponse ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
+                                                            <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('reply-deactivate-form-{{ $reply->uuid }}', '{{ __('Désapprouver cette réponse ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
                                                                 <i class="bx bx-toggle-left"></i>
                                                             </button>
                                                         </form>
@@ -95,7 +95,7 @@
                                                         <form action="{{ route('backend.blog-post-comment-replies.activate', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="reply-activate-form-{{ $reply->uuid }}">
                                                             @csrf
                                                             @method('PATCH')
-                                                            <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('reply-activate-form-{{ $reply->uuid }}', '{{ __('Approuver cette réponse ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
+                                                            <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('reply-activate-form-{{ $reply->uuid }}', '{{ __('Approuver cette réponse ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
                                                                 <i class="bx bx-toggle-right"></i>
                                                             </button>
                                                         </form>
@@ -104,7 +104,7 @@
                                                     <form action="{{ route('backend.blog-post-comment-replies.destroy', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="reply-delete-form-{{ $reply->uuid }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('reply-delete-form-{{ $reply->uuid }}', '{{ __('Supprimer cette réponse ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('reply-delete-form-{{ $reply->uuid }}', '{{ __('Supprimer cette réponse ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                             <i class="bx bx-trash"></i>
                                                         </button>
                                                     </form>
@@ -115,9 +115,9 @@
                                             </div>
                                             <div class="mt-1">
                                                 @if ($reply->is_visible)
-                                                    <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
+                                                    <span class="badge badge-soft-success">{{ __('Approuvé') }}</span>
                                                 @else
-                                                    <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
+                                                    <span class="badge badge-soft-danger">{{ __('En attente') }}</span>
                                                 @endif
                                             </div>
                                         </div>

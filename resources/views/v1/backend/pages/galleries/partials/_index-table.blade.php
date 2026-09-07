@@ -77,7 +77,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="galleries-table">
+                    <table class="table table-centered text-nowrap" id="galleries-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -123,18 +123,18 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-secondary-subtle text-secondary">{{ $gallery->sort_order }}</span>
+                                        <span class="badge badge-soft-secondary">{{ $gallery->sort_order }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="{{ $gallery->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $gallery->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $gallery->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
 
                                     <td class="text-center">
                                         <a href="{{ route('backend.galleries.audits', ['gallery' => $gallery->uuid, 'slug' => $gallery->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-muted" title="{{ __('Voir les audits') }}">
-                                            <span class="badge bg-info-subtle text-info">
+                                            <span class="badge badge-soft-info">
                                                 <i class="bx bx-file me-1"></i>{{ $gallery->audits_count }}
                                             </span>
                                         </a>
@@ -142,7 +142,7 @@
 
                                     <td class="text-center">
                                         <a href="{{ route('backend.galleries.activity-logs', ['gallery' => $gallery->uuid, 'slug' => $gallery->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-muted" title="{{ __('Voir les logs d\'activité') }}">
-                                            <span class="badge bg-warning-subtle text-warning">
+                                            <span class="badge badge-soft-warning">
                                                 <i class="bx bx-pulse me-1"></i>{{ $gallery->activity_logs_count }}
                                             </span>
                                         </a>
@@ -164,7 +164,7 @@
                                                 <form action="{{ route('backend.galleries.restore', ['uuid' => $gallery->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $gallery->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $gallery->uuid }}', '{{ __('Restaurer cette galerie ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $gallery->uuid }}', '{{ __('Restaurer cette galerie ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -172,7 +172,7 @@
                                                 <form action="{{ route('backend.galleries.force_destroy', ['uuid' => $gallery->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $gallery->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $gallery->uuid }}', '{{ __('Supprimer définitivement cette galerie ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $gallery->uuid }}', '{{ __('Supprimer définitivement cette galerie ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -181,18 +181,18 @@
 
                                         @if(!$gallery->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.galleries.show', ['gallery' => $gallery->uuid, 'slug' => $gallery->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.galleries.show', ['gallery' => $gallery->uuid, 'slug' => $gallery->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.galleries.edit', ['gallery' => $gallery->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.galleries.edit', ['gallery' => $gallery->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
                                                 <form action="{{ route('backend.galleries.destroy', ['gallery' => $gallery->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $gallery->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $gallery->uuid }}', '{{ __('Supprimer cette galerie ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $gallery->uuid }}', '{{ __('Supprimer cette galerie ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

@@ -78,7 +78,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="blog-categories-table">
+                    <table class="table table-centered text-nowrap" id="blog-categories-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -123,7 +123,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-categories.audits', ['blogCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $category->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -132,7 +132,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-categories.activity-logs', ['blogCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-info-subtle text-info">
+                                            <span class="badge badge-soft-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $category->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -141,7 +141,7 @@
                                     <td>{{ $category->sort_order }}</td>
 
                                     <td>
-                                        <span class="{{ $category->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $category->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $category->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -162,7 +162,7 @@
                                                 <form action="{{ route('backend.blog-categories.restore', ['uuid' => $category->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $category->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $category->uuid }}', '{{ __('Restaurer cette catégorie ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $category->uuid }}', '{{ __('Restaurer cette catégorie ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -170,7 +170,7 @@
                                                 <form action="{{ route('backend.blog-categories.force_destroy', ['uuid' => $category->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $category->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $category->uuid }}', '{{ __('Supprimer définitivement cette catégorie ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $category->uuid }}', '{{ __('Supprimer définitivement cette catégorie ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -179,11 +179,11 @@
 
                                         @if(!$category->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.blog-categories.edit', ['blogCategory' => $category->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.blog-categories.edit', ['blogCategory' => $category->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
@@ -191,7 +191,7 @@
                                                     <form action="{{ route('backend.blog-categories.deactivate', ['blogCategory' => $category->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $category->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('deactivate-form-{{ $category->uuid }}', '{{ __('Désactiver cette catégorie ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $category->uuid }}', '{{ __('Désactiver cette catégorie ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -199,7 +199,7 @@
                                                     <form action="{{ route('backend.blog-categories.activate', ['blogCategory' => $category->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $category->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('activate-form-{{ $category->uuid }}', '{{ __('Activer cette catégorie ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $category->uuid }}', '{{ __('Activer cette catégorie ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -208,7 +208,7 @@
                                                 <form action="{{ route('backend.blog-categories.destroy', ['blogCategory' => $category->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $category->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $category->uuid }}', '{{ __('Supprimer cette catégorie ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $category->uuid }}', '{{ __('Supprimer cette catégorie ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

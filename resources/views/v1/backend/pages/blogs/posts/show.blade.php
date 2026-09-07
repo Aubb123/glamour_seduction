@@ -65,11 +65,11 @@
                                         <div class="col-8 fw-semibold">
                                             @if($post->category)
                                                 <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $post->category->uuid, 'slug' => $post->category?->active_translation?->slug ?? 'null']) }}"
-                                                    class="badge bg-primary-subtle text-primary text-decoration-none">
+                                                    class="badge badge-soft-primary text-decoration-none">
                                                     {{ $post->category?->active_translation?->name ?? '—' }}
                                                 </a>
                                             @else
-                                                <span class="badge bg-primary-subtle text-primary">—</span>
+                                                <span class="badge badge-soft-primary">—</span>
                                             @endif
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
                                         <div class="col-8">
                                             @forelse ($post->tags as $tag)
                                                 <a href="{{ route('backend.blog-tags.show', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
-                                                    class="badge bg-info-subtle text-info me-1 text-decoration-none">
+                                                    class="badge badge-soft-info me-1 text-decoration-none">
                                                     {{ $tag->active_translation?->name ?? '#' . $tag->id }}
                                                 </a>
                                             @empty
@@ -147,7 +147,7 @@
                                                 @endif
                                             </small>
                                         </div>
-                                        <span class="{{ $post->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }} px-3 py-2">
+                                        <span class="{{ $post->status?->badgeClass() ?? 'badge badge-soft-secondary' }} px-3 py-2">
                                             {{ $post->status?->label() ?? '—' }}
                                         </span>
                                     </div>
@@ -215,7 +215,7 @@
                                                             <form action="{{ route('backend.blog-post-translations.destroy', ['blogPostTranslation' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">
+                                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">
                                                                     <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
                                                                 </button>
                                                             </form>

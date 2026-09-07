@@ -83,11 +83,11 @@
                                     <small class="text-muted">{{ $contact->is_read ? __('Message lu') : __('Message non lu') }}</small>
                                 </div>
                                 @if ($contact->is_read)
-                                    <span class="badge bg-success-subtle text-success px-3 py-2">
+                                    <span class="badge badge-soft-success px-3 py-2">
                                         <i class="bx bx-check-circle me-1"></i>{{ __('Lu') }}
                                     </span>
                                 @else
-                                    <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                                    <span class="badge badge-soft-warning px-3 py-2">
                                         <i class="bx bx-time-five me-1"></i>{{ __('Non lu') }}
                                     </span>
                                 @endif

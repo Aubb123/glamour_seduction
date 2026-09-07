@@ -121,22 +121,22 @@
 
                                             @if($log->user)
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
                                                         {{ strtoupper(substr($log->user->first_name, 0, 1)) }}{{ strtoupper(substr($log->user->last_name, 0, 1)) }}
-                                                    </div>
+                                                    </span></div>
                                                     <div class="flex-grow-1">
                                                         <div class="fw-semibold">{{ $log->user->first_name . ' ' . $log->user->last_name }}</div>
                                                         <small class="text-muted">{{ $log->user->email }}</small>
                                                     </div>
-                                                    <a href="{{ route('backend.users.show', ['user' => $log->user->uuid, 'slug' => $log->user->slug]) }}" class="btn btn-sm btn-outline-primary" title="{{ __('v1/backend/views/pages/activity-logs/show.voirUtilisateur') }}">
+                                                    <a href="{{ route('backend.users.show', ['user' => $log->user->uuid, 'slug' => $log->user->slug]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('v1/backend/views/pages/activity-logs/show.voirUtilisateur') }}">
                                                         <i class="bx bx-link-external"></i>
                                                     </a>
                                                 </div>
                                             @else
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-secondary text-secondary fs-20 rounded-circle">
                                                         <i class="bx bx-terminal"></i>
-                                                    </div>
+                                                    </span></div>
                                                     <div>
                                                         <div class="fw-semibold">{{ __('v1/backend/views/pages/activity-logs/show.systeme') }}</div>
                                                         <small class="text-muted">{{ __('v1/backend/views/pages/activity-logs/show.actionAutomatiqueConsole') }}</small>
@@ -151,15 +151,15 @@
                                                     <small class="text-muted">{{ $log->is_success === null ? __('v1/backend/views/pages/activity-logs/show.nonDefini') : ($log->is_success ? __('v1/backend/views/pages/activity-logs/show.operationReussie') : __('v1/backend/views/pages/activity-logs/show.echecOperation')) }}</small>
                                                 </div>
                                                 @if($log->is_success === null)
-                                                    <span class="badge bg-secondary-subtle text-secondary px-3 py-2">
+                                                    <span class="badge badge-soft-secondary px-3 py-2">
                                                         <i class="bx bx-minus me-1"></i>{{ __('v1/backend/views/pages/activity-logs/show.nonDefini') }}
                                                     </span>
                                                 @elseif($log->is_success)
-                                                    <span class="badge bg-success-subtle text-success px-3 py-2">
+                                                    <span class="badge badge-soft-success px-3 py-2">
                                                         <i class="bx bx-check-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/show.succes') }}
                                                     </span>
                                                 @else
-                                                    <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                                    <span class="badge badge-soft-danger px-3 py-2">
                                                         <i class="bx bx-x-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/show.erreur') }}
                                                     </span>
                                                 @endif
@@ -171,7 +171,7 @@
                                                     <div class="fw-semibold">{{ __('v1/backend/views/pages/activity-logs/show.entiteAssociee') }}</div>
                                                     <small class="text-muted">{{ $log->entity_label }}</small>
                                                 </div>
-                                                <a href="{{ $log->entity_url }}" class="btn btn-sm btn-outline-primary" title="{{ __('v1/backend/views/pages/activity-logs/show.voirEntite') }}">
+                                                <a href="{{ $log->entity_url }}" class="btn btn-sm btn-soft-primary" title="{{ __('v1/backend/views/pages/activity-logs/show.voirEntite') }}">
                                                     <i class="bx bx-link-external"></i>
                                                 </a>
                                             @endif
@@ -196,7 +196,7 @@
                                         <div class="card-body">
                                             @if(!empty($log->context_data) && is_array($log->context_data))
                                                 <div class="table-responsive">
-                                                    <table class="table table-sm table-bordered">
+                                                    <table class="table table-centered table-sm table-bordered">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th style="width:200px;">{{ __('v1/backend/views/pages/activity-logs/show.cle') }}</th>

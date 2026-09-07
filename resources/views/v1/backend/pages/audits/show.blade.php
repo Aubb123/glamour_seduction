@@ -85,7 +85,7 @@
                                             <div class="row mb-3 align-items-center">
                                                 <div class="col-4 text-muted fw-semibold">{{ __('Type d\'entité') }}</div>
                                                 <div class="col-8 fw-semibold">
-                                                    <span class="badge bg-primary-subtle text-primary">{{ class_basename($audit->auditable_type) }}</span>
+                                                    <span class="badge badge-soft-primary">{{ class_basename($audit->auditable_type) }}</span>
                                                 </div>
                                             </div>
                                             <hr class="my-2">
@@ -118,22 +118,22 @@
 
                                             @if($audit->user)
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
                                                         {{ strtoupper(substr($audit->user->first_name, 0, 1)) }}{{ strtoupper(substr($audit->user->last_name, 0, 1)) }}
-                                                    </div>
+                                                    </span></div>
                                                     <div class="flex-grow-1">
                                                         <div class="fw-semibold">{{ $audit->user->first_name . ' ' . $audit->user->last_name }}</div>
                                                         <small class="text-muted">{{ $audit->user->email }}</small>
                                                     </div>
-                                                    <a href="{{ route('backend.users.show', ['user' => $audit->user->uuid, 'slug' => $audit->user->slug]) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Voir l\'utilisateur') }}">
+                                                    <a href="{{ route('backend.users.show', ['user' => $audit->user->uuid, 'slug' => $audit->user->slug]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Voir l\'utilisateur') }}">
                                                         <i class="bx bx-link-external"></i>
                                                     </a>
                                                 </div>
                                             @else
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-secondary text-secondary fs-20 rounded-circle">
                                                         <i class="bx bx-terminal"></i>
-                                                    </div>
+                                                    </span></div>
                                                     <div>
                                                         <div class="fw-semibold">{{ __('Système') }}</div>
                                                         <small class="text-muted">{{ __('Action automatique ou console') }}</small>
@@ -143,9 +143,9 @@
 
                                             @if($audit->entity_url)
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-secondary text-secondary fs-20 rounded-circle">
                                                         <i class="bx bx-link"></i>
-                                                    </div>
+                                                    </span></div>
                                                     <a href="{{ $audit->entity_url }}" class="btn btn-primary btn-sm">
                                                         <i class="bx bx-link-external me-1"></i> {{ $audit->entity_label }}
                                                     </a>
@@ -173,7 +173,7 @@
                                         <div class="card-body">
                                             @if(!empty($audit->old_values_array) && is_array($audit->old_values_array))
                                                 <div class="table-responsive">
-                                                    <table class="table table-sm table-bordered">
+                                                    <table class="table table-centered table-sm table-bordered">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>{{ __('Champ') }}</th>
@@ -213,7 +213,7 @@
                                         <div class="card-body">
                                             @if(!empty($audit->new_values_array) && is_array($audit->new_values_array))
                                                 <div class="table-responsive">
-                                                    <table class="table table-sm table-bordered">
+                                                    <table class="table table-centered table-sm table-bordered">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th>{{ __('Champ') }}</th>

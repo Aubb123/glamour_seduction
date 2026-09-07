@@ -23,7 +23,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="translations-table">
+                    <table class="table table-centered text-nowrap" id="translations-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -43,7 +43,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-primary-subtle text-primary">
+                                        <span class="badge badge-soft-primary">
                                             {{ $translation->lang?->code ?? '—' }}
                                         </span>
                                     </td>
@@ -70,7 +70,7 @@
                                             <form action="{{ route('backend.blog-tag-translations.restore', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $translation->uuid }}">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('Restaurer cette traduction ?') }}')" style="width: 32px; height: 32px; padding: 0; overflow: hidden;">
+                                                <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('Restaurer cette traduction ?') }}')" style="width: 32px; height: 32px; padding: 0; overflow: hidden;">
                                                     <i class="bx bx-undo"></i> 
                                                 </button>
                                             </form>
@@ -78,7 +78,7 @@
                                             <form action="{{ route('backend.blog-tag-translations.force_destroy', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $translation->uuid }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', '{{ __('Supprimer définitivement cette traduction ? Cette action est irréversible.') }}')">
+                                                <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', '{{ __('Supprimer définitivement cette traduction ? Cette action est irréversible.') }}')">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             </form>

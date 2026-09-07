@@ -81,7 +81,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="permissions-table">
+                    <table class="table table-centered text-nowrap" id="permissions-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -115,7 +115,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $permission->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $permission->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $permission->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -164,7 +164,7 @@
                                                 <form action="{{ route('backend.permissions.restore', ['uuid' => $permission->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $permission->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $permission->uuid }}', '{{ __('Restaurer cette permission ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $permission->uuid }}', '{{ __('Restaurer cette permission ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -172,7 +172,7 @@
                                                 <form action="{{ route('backend.permissions.force_destroy', ['uuid' => $permission->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $permission->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $permission->uuid }}', '{{ __('Supprimer définitivement cette permission ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $permission->uuid }}', '{{ __('Supprimer définitivement cette permission ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -181,22 +181,22 @@
 
                                         @if(!$permission->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.permissions.show', ['permission' => $permission->uuid, 'slug' => $permission->slug]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.permissions.show', ['permission' => $permission->uuid, 'slug' => $permission->slug]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.permissions.edit', ['permission' => $permission->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.permissions.edit', ['permission' => $permission->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.permissions.assign', ['permission' => $permission->uuid]) }}" class="btn btn-sm btn-secondary" title="{{ __('Assigner aux rôles') }}">
+                                                <a href="{{ route('backend.permissions.assign', ['permission' => $permission->uuid]) }}" class="btn btn-sm btn-soft-secondary" title="{{ __('Assigner aux rôles') }}">
                                                     <i class="bx bx-user"></i>
                                                 </a>
 
                                                 <form action="{{ route('backend.permissions.destroy', ['permission' => $permission->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $permission->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $permission->uuid }}', '{{ __('Supprimer cette permission ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $permission->uuid }}', '{{ __('Supprimer cette permission ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

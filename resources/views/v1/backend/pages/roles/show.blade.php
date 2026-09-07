@@ -81,11 +81,11 @@
                                         <small class="text-muted">{{ __('Visibilité interne') }}</small>
                                     </div>
                                     @if ($role->status === \App\Enums\Roles\RoleStatus::Active)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        <span class="badge badge-soft-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}
                                         </span>
                                     @endif
@@ -97,7 +97,7 @@
                                         <div class="fw-semibold">{{ __('Permissions') }}</div>
                                         <small class="text-muted">{{ __('Permissions liées au rôle') }}</small>
                                     </div>
-                                    <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-13">
+                                    <span class="badge badge-soft-primary px-3 py-2 fs-13">
                                         <i class="bx bx-shield-quarter me-1"></i>{{ $role->permissions()->count() }}
                                     </span>
                                 </a>
@@ -165,7 +165,7 @@
                                                         <form action="{{ route('backend.roles.translations.destroy', getTranslation($role, $lang->id)->uuid) }}" method="POST" id="delete-form-{{ getTranslation($role, $lang->id)->uuid }}" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{ getTranslation($role, $lang->id)->uuid }}', 'Êtes-vous sûr de vouloir supprimer cette traduction ?')">
+                                                            <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmDelete('{{ getTranslation($role, $lang->id)->uuid }}', 'Êtes-vous sûr de vouloir supprimer cette traduction ?')">
                                                                 <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
                                                             </button>
                                                         </form>

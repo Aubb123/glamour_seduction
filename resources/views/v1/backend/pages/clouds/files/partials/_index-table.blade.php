@@ -79,7 +79,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="cloud-files-table">
+                    <table class="table table-centered text-nowrap" id="cloud-files-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -116,19 +116,19 @@
 
                                     <td>
                                         @if($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Pending)
-                                            <span class="badge bg-warning-subtle text-warning">
+                                            <span class="badge badge-soft-warning">
                                                 <i class="bx bx-time-five me-1"></i> {{ __('En attente') }}
                                             </span>
                                         @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Processing)
-                                            <span class="badge bg-info-subtle text-info">
+                                            <span class="badge badge-soft-info">
                                                 <i class="bx bx-refresh me-1"></i> {{ __('En cours') }}
                                             </span>
                                         @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Error)
-                                            <span class="badge bg-danger-subtle text-danger">
+                                            <span class="badge badge-soft-danger">
                                                 <i class="bx bx-error-circle me-1"></i> {{ __('Erreur') }}
                                             </span>
                                         @else
-                                            <span class="badge bg-success-subtle text-success">
+                                            <span class="badge badge-soft-success">
                                                 <i class="bx bx-check-circle me-1"></i> {{ __('Synchronisé') }}
                                             </span>
                                         @endif
@@ -140,7 +140,7 @@
                                         @if($file->cloudFolder)
                                             <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $file->cloudFolder->uuid]) }}"
                                                class="text-decoration-none">
-                                                <span class="badge bg-primary-subtle text-primary">
+                                                <span class="badge badge-soft-primary">
                                                     <i class="bx bx-folder me-1"></i> {{ $file->cloudFolder->folder_name }}
                                                 </span>
                                             </a>
@@ -187,7 +187,7 @@
                                                     </span>
                                                 </a>
                                             @else
-                                                <span class="badge bg-secondary-subtle text-secondary">{{ class_basename($file->fileable_type) }}</span>
+                                                <span class="badge badge-soft-secondary">{{ class_basename($file->fileable_type) }}</span>
                                             @endif
                                         @else
                                             <span class="text-muted">—</span>
@@ -242,7 +242,7 @@
                                                 <form action="{{ route('backend.cloud-files.restore', ['uuid' => $file->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $file->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $file->uuid }}', '{{ __('Restaurer ce fichier ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $file->uuid }}', '{{ __('Restaurer ce fichier ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -250,7 +250,7 @@
                                                 <form action="{{ route('backend.cloud-files.force_destroy', ['uuid' => $file->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $file->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $file->uuid }}', '{{ __('Supprimer définitivement ce fichier ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $file->uuid }}', '{{ __('Supprimer définitivement ce fichier ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -259,14 +259,14 @@
 
                                         @if(!$file->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.cloud-files.show', ['cloudFile' => $file->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.cloud-files.show', ['cloudFile' => $file->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
                                                 <form action="{{ route('backend.cloud-files.destroy', ['cloudFile' => $file->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $file->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $file->uuid }}', '{{ __('Supprimer ce fichier ?') }}', '{{ __('Supprimer') }}', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $file->uuid }}', '{{ __('Supprimer ce fichier ?') }}', '{{ __('Supprimer') }}', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

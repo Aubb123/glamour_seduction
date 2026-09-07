@@ -74,7 +74,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="users-table">
+                    <table class="table table-centered text-nowrap" id="users-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -135,11 +135,11 @@
 
                                     <td>
                                         @if ($user->status === \App\Enums\Users\UserStatus::Active)
-                                            <span class="badge bg-success-subtle text-success">{{ __('Actif') }}</span>
+                                            <span class="badge badge-soft-success">{{ __('Actif') }}</span>
                                         @elseif ($user->status === \App\Enums\Users\UserStatus::Suspended)
-                                            <span class="badge bg-warning-subtle text-warning">{{ __('Suspendu') }}</span>
+                                            <span class="badge badge-soft-warning">{{ __('Suspendu') }}</span>
                                         @elseif ($user->status === \App\Enums\Users\UserStatus::Banned)
-                                            <span class="badge bg-danger-subtle text-danger">{{ __('Banni') }}</span>
+                                            <span class="badge badge-soft-danger">{{ __('Banni') }}</span>
                                         @endif
                                     </td>
 
@@ -206,29 +206,29 @@
                                     
                                     <td>
                                         <div class="hstack gap-2 fs-15">
-                                            <a href="{{ route('backend.users.show', ['user' => $user->uuid, 'slug' => $user->slug]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                            <a href="{{ route('backend.users.show', ['user' => $user->uuid, 'slug' => $user->slug]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                 <i class="bx bx-show"></i>
                                             </a>
-                                            <a href="{{ route('backend.users.edit', ['user' => $user->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                            <a href="{{ route('backend.users.edit', ['user' => $user->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                 <i class="bx bx-edit"></i>
                                             </a>
                                             @if ($user->status === \App\Enums\Users\UserStatus::Active)
                                                 <form action="{{ route('backend.users.suspend', ['user' => $user->uuid]) }}" method="POST" class="d-inline" id="suspend-form-{{ $user->uuid }}">
                                                     @csrf @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-secondary" title="{{ __('Suspendre') }}" onclick="confirmAction('suspend-form-{{ $user->uuid }}', '{{ __('Suspendre cet utilisateur ?') }}', 'Suspendre', 'warning')">
+                                                    <button type="button" class="btn btn-sm btn-soft-secondary" title="{{ __('Suspendre') }}" onclick="confirmAction('suspend-form-{{ $user->uuid }}', '{{ __('Suspendre cet utilisateur ?') }}', 'Suspendre', 'warning')">
                                                         <i class="bx bx-pause"></i>
                                                     </button>
                                                 </form>
                                                 <form action="{{ route('backend.users.ban', ['user' => $user->uuid]) }}" method="POST" class="d-inline" id="ban-form-{{ $user->uuid }}">
                                                     @csrf @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Bannir') }}" onclick="confirmAction('ban-form-{{ $user->uuid }}', '{{ __('Bannir cet utilisateur ?') }}', 'Bannir', 'danger')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Bannir') }}" onclick="confirmAction('ban-form-{{ $user->uuid }}', '{{ __('Bannir cet utilisateur ?') }}', 'Bannir', 'danger')">
                                                         <i class="bx bx-minus"></i>
                                                     </button>
                                                 </form>
                                             @else
                                                 <form action="{{ route('backend.users.activate', ['user' => $user->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $user->uuid }}">
                                                     @csrf @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Activer') }}" onclick="confirmAction('activate-form-{{ $user->uuid }}', '{{ __('Activer cet utilisateur ?') }}', 'Activer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Activer') }}" onclick="confirmAction('activate-form-{{ $user->uuid }}', '{{ __('Activer cet utilisateur ?') }}', 'Activer', 'success')">
                                                         <i class="bx bx-toggle-right"></i>
                                                     </button>
                                                 </form>

@@ -23,7 +23,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="translations-table">
+                    <table class="table table-centered text-nowrap" id="translations-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -48,7 +48,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-primary-subtle text-primary">
+                                        <span class="badge badge-soft-primary">
                                             {{ $translation->lang?->code ?? '—' }}
                                         </span>
                                     </td>
@@ -85,7 +85,7 @@
                                             <form action="{{ route('backend.geocountries.translation.restore', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $translation->uuid }}">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="button" class="btn btn-sm btn-success" title="{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.restaurerCetteTraduction') }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.restaurer') }}', 'success')">
+                                                <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.restaurerCetteTraduction') }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.restaurer') }}', 'success')">
                                                     <i class="bx bx-undo"></i>
                                                 </button>
                                             </form>
@@ -93,7 +93,7 @@
                                             <form action="{{ route('backend.geocountries.translation.force_destroy', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $translation->uuid }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-danger" title="{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.supprimerDefinitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.confirmerSuppressionDefinitive') }}')">
+                                                <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.supprimerDefinitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.confirmerSuppressionDefinitive') }}')">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             </form>

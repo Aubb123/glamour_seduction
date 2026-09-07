@@ -50,9 +50,9 @@
                                 <small class="text-muted">{{ __('Dossier actif') }}</small>
                             </div>
                             @if ($folder->status === \App\Enums\Clouds\Folders\CloudFolderStatus::Active)
-                                <span class="badge bg-success-subtle text-success px-3 py-2"><i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}</span>
+                                <span class="badge badge-soft-success px-3 py-2"><i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}</span>
                             @else
-                                <span class="badge bg-danger-subtle text-danger px-3 py-2"><i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}</span>
+                                <span class="badge badge-soft-danger px-3 py-2"><i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}</span>
                             @endif
                         </div>
                     </div>

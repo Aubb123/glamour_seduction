@@ -77,7 +77,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="cloud-platforms-table">
+                    <table class="table table-centered text-nowrap" id="cloud-platforms-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -112,7 +112,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $platform->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $platform->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $platform->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -162,7 +162,7 @@
                                                 <form action="{{ route('backend.cloud-platforms.restore', ['uuid' => $platform->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $platform->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $platform->uuid }}', '{{ __('Restaurer cette plateforme ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $platform->uuid }}', '{{ __('Restaurer cette plateforme ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -170,7 +170,7 @@
                                                 <form action="{{ route('backend.cloud-platforms.force_destroy', ['uuid' => $platform->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $platform->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $platform->uuid }}', '{{ __('Supprimer définitivement cette plateforme ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $platform->uuid }}', '{{ __('Supprimer définitivement cette plateforme ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -179,11 +179,11 @@
 
                                         @if(!$platform->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.cloud-platforms.edit', ['cloudPlatform' => $platform->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.cloud-platforms.edit', ['cloudPlatform' => $platform->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
@@ -191,7 +191,7 @@
                                                     <form action="{{ route('backend.cloud-platforms.toggle_active', ['cloudPlatform' => $platform->uuid]) }}" method="POST" id="deactivate-form-{{ $platform->uuid }}" class="d-inline">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('deactivate-form-{{ $platform->uuid }}', '{{ __('Désactiver cette plateforme ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $platform->uuid }}', '{{ __('Désactiver cette plateforme ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -199,7 +199,7 @@
                                                     <form action="{{ route('backend.cloud-platforms.toggle_active', ['cloudPlatform' => $platform->uuid]) }}" method="POST" id="activate-form-{{ $platform->uuid }}" class="d-inline">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('activate-form-{{ $platform->uuid }}', '{{ __('Activer cette plateforme ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $platform->uuid }}', '{{ __('Activer cette plateforme ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -208,7 +208,7 @@
                                                 <form action="{{ route('backend.cloud-platforms.destroy', ['cloudPlatform' => $platform->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $platform->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $platform->uuid }}', '{{ __('Supprimer cette plateforme ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $platform->uuid }}', '{{ __('Supprimer cette plateforme ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

@@ -105,15 +105,15 @@
                                         <small class="text-muted">{{ __('Statut actuel') }}</small>
                                     </div>
                                     @if ($user->status === \App\Enums\Users\UserStatus::Active)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}
                                         </span>
                                     @elseif ($user->status === \App\Enums\Users\UserStatus::Suspended)
-                                        <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                                        <span class="badge badge-soft-warning px-3 py-2">
                                             <i class="bx bx-pause me-1"></i>{{ __('Suspendu') }}
                                         </span>
                                     @elseif ($user->status === \App\Enums\Users\UserStatus::Banned)
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        <span class="badge badge-soft-danger px-3 py-2">
                                             <i class="bx bx-minus me-1"></i>{{ __('Banni') }}
                                         </span>
                                     @endif
@@ -125,11 +125,11 @@
                                         <small class="text-muted">{{ $user->email_verified_at ? formatDate($user->email_verified_at, 'D MMMM YYYY - HH:mm:ss') : __('Non vérifié') }}</small>
                                     </div>
                                     @if ($user->email_verified_at)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check me-1"></i>{{ __('Vérifié') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                                        <span class="badge badge-soft-warning px-3 py-2">
                                             <i class="bx bx-x me-1"></i>{{ __('Non vérifié') }}
                                         </span>
                                     @endif

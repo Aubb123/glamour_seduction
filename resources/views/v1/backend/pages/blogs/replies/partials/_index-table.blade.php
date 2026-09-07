@@ -77,7 +77,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="blog-comment-replies-table">
+                    <table class="table table-centered text-nowrap" id="blog-comment-replies-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -128,7 +128,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-post-comment-replies.audits', ['blogPostCommentReply' => $reply->uuid]) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $reply->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -137,7 +137,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-post-comment-replies.activity-logs', ['blogPostCommentReply' => $reply->uuid]) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-info-subtle text-info">
+                                            <span class="badge badge-soft-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $reply->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -145,9 +145,9 @@
 
                                     <td>
                                         @if ($reply->is_visible)
-                                            <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
+                                            <span class="badge badge-soft-success">{{ __('Approuvé') }}</span>
                                         @else
-                                            <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
+                                            <span class="badge badge-soft-danger">{{ __('En attente') }}</span>
                                         @endif
                                     </td>
 
@@ -167,7 +167,7 @@
                                                 <form action="{{ route('backend.blog-post-comment-replies.restore', ['uuid' => $reply->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $reply->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $reply->uuid }}', '{{ __('Restaurer cette réponse ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $reply->uuid }}', '{{ __('Restaurer cette réponse ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -175,7 +175,7 @@
                                                 <form action="{{ route('backend.blog-post-comment-replies.force_destroy', ['uuid' => $reply->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $reply->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $reply->uuid }}', '{{ __('Supprimer définitivement cette réponse ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $reply->uuid }}', '{{ __('Supprimer définitivement cette réponse ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -184,7 +184,7 @@
 
                                         @if(!$reply->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.blog-post-comment-replies.show', ['blogPostCommentReply' => $reply->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.blog-post-comment-replies.show', ['blogPostCommentReply' => $reply->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
@@ -192,7 +192,7 @@
                                                     <form action="{{ route('backend.blog-post-comment-replies.deactivate', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $reply->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('deactivate-form-{{ $reply->uuid }}', '{{ __('Désapprouver cette réponse ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $reply->uuid }}', '{{ __('Désapprouver cette réponse ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -200,7 +200,7 @@
                                                     <form action="{{ route('backend.blog-post-comment-replies.activate', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $reply->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('activate-form-{{ $reply->uuid }}', '{{ __('Approuver cette réponse ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $reply->uuid }}', '{{ __('Approuver cette réponse ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -209,7 +209,7 @@
                                                 <form action="{{ route('backend.blog-post-comment-replies.destroy', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $reply->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $reply->uuid }}', '{{ __('Supprimer cette réponse ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $reply->uuid }}', '{{ __('Supprimer cette réponse ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

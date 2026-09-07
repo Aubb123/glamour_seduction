@@ -77,7 +77,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="blog-posts-table">
+                    <table class="table table-centered text-nowrap" id="blog-posts-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -116,11 +116,11 @@
                                     <td>
                                         @if($post->category)
                                             <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $post->category->uuid, 'slug' => $post->category?->active_translation?->slug ?? 'null']) }}"
-                                               class="badge bg-primary-subtle text-primary text-decoration-none">
+                                               class="badge badge-soft-primary text-decoration-none">
                                                 {{ $post->category?->active_translation?->name ?? '—' }}
                                             </a>
                                         @else
-                                            <span class="badge bg-primary-subtle text-primary">—</span>
+                                            <span class="badge badge-soft-primary">—</span>
                                         @endif
                                     </td>
 
@@ -136,13 +136,13 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-info-subtle text-info">{{ $post->views }}</span>
+                                        <span class="badge badge-soft-info">{{ $post->views }}</span>
                                     </td>
 
                                     <td>
                                         <a href="{{ route('backend.blog-posts.audits', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $post->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -151,18 +151,18 @@
                                     <td>
                                         <a href="{{ route('backend.blog-posts.activity-logs', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-info-subtle text-info">
+                                            <span class="badge badge-soft-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $post->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-secondary-subtle text-secondary">{{ $post->sort_order }}</span>
+                                        <span class="badge badge-soft-secondary">{{ $post->sort_order }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="{{ $post->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $post->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $post->status?->label() ?? '—' }}
                                         </span>
                                     </td>
@@ -183,7 +183,7 @@
                                                 <form action="{{ route('backend.blog-posts.restore', ['uuid' => $post->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $post->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $post->uuid }}', '{{ __('Restaurer cet article ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $post->uuid }}', '{{ __('Restaurer cet article ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -191,7 +191,7 @@
                                                 <form action="{{ route('backend.blog-posts.force_destroy', ['uuid' => $post->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $post->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $post->uuid }}', '{{ __('Supprimer définitivement cet article ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $post->uuid }}', '{{ __('Supprimer définitivement cet article ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -200,18 +200,18 @@
 
                                         @if(!$post->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.blog-posts.show', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.blog-posts.show', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.blog-posts.edit', ['blogPost' => $post->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.blog-posts.edit', ['blogPost' => $post->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
                                                 <form action="{{ route('backend.blog-posts.destroy', ['blogPost' => $post->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $post->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $post->uuid }}', '{{ __('Supprimer cet article ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $post->uuid }}', '{{ __('Supprimer cet article ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

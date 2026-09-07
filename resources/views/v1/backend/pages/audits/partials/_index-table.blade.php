@@ -147,7 +147,7 @@
                 @endif
 
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="audits-table">
+                    <table class="table table-centered text-nowrap" id="audits-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -183,7 +183,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-primary-subtle text-primary">
+                                        <span class="badge badge-soft-primary">
                                             {{ class_basename($audit->auditable_type) }}
                                         </span>
                                     </td>
@@ -202,14 +202,14 @@
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
-                                            <a href="{{ route('backend.audits.show', ['audit' => $audit->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                            <a href="{{ route('backend.audits.show', ['audit' => $audit->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                 <i class="bx bx-show"></i>
                                             </a>
 
                                             <form action="{{ route('backend.audits.destroy', ['audit' => $audit->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $audit->uuid }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $audit->uuid }}', '{{ __('Supprimer cet audit ?') }}', '{{ __('Supprimer') }}', 'warning')" title="{{ __('Supprimer') }}">
+                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $audit->uuid }}', '{{ __('Supprimer cet audit ?') }}', '{{ __('Supprimer') }}', 'warning')" title="{{ __('Supprimer') }}">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             </form>

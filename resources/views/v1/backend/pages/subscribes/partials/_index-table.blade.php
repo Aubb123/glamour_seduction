@@ -76,7 +76,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="subscribes-table">
+                    <table class="table table-centered text-nowrap" id="subscribes-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -109,15 +109,15 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="{{ $subscribe->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $subscribe->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $subscribe->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
                                     <td>
                                         @if ($subscribe->verified_at)
-                                            <span class="badge bg-info-subtle text-info">{{ __('Oui') }}</span>
+                                            <span class="badge badge-soft-info">{{ __('Oui') }}</span>
                                         @else
-                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Non') }}</span>
+                                            <span class="badge badge-soft-secondary">{{ __('Non') }}</span>
                                         @endif
                                     </td>
 
@@ -150,32 +150,32 @@
                                             <div class="hstack gap-2 fs-15">
                                                 <form action="{{ route('backend.subscribes.restore', ['uuid' => $subscribe->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $subscribe->uuid }}">
                                                     @csrf @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $subscribe->uuid }}', '{{ __('Restaurer cet abonné ?') }}', 'Restaurer', 'success')"><i class="bx bx-undo"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $subscribe->uuid }}', '{{ __('Restaurer cet abonné ?') }}', 'Restaurer', 'success')"><i class="bx bx-undo"></i></button>
                                                 </form>
                                                 <form action="{{ route('backend.subscribes.force_destroy', ['uuid' => $subscribe->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $subscribe->uuid }}">
                                                     @csrf @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $subscribe->uuid }}', '{{ __('Supprimer définitivement cet abonné ? Cette action est irréversible.') }}')"><i class="bx bx-trash"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $subscribe->uuid }}', '{{ __('Supprimer définitivement cet abonné ? Cette action est irréversible.') }}')"><i class="bx bx-trash"></i></button>
                                                 </form>
                                             </div>
                                         @else
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.subscribes.show', ['subscribe' => $subscribe->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}"><i class="bx bx-show"></i></a>
+                                                <a href="{{ route('backend.subscribes.show', ['subscribe' => $subscribe->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-show"></i></a>
 
                                                 @if (!$subscribe->status || $subscribe->status === \App\Enums\Subscribes\SubscribeStatus::Inactive)
                                                     <form action="{{ route('backend.subscribes.activate', ['subscribe' => $subscribe->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $subscribe->uuid }}">
                                                         @csrf @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('activate-form-{{ $subscribe->uuid }}', '{{ __('Activer cet abonné ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}"><i class="bx bx-check"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $subscribe->uuid }}', '{{ __('Activer cet abonné ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}"><i class="bx bx-check"></i></button>
                                                     </form>
                                                 @else
                                                     <form action="{{ route('backend.subscribes.deactivate', ['subscribe' => $subscribe->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $subscribe->uuid }}">
                                                         @csrf @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('deactivate-form-{{ $subscribe->uuid }}', '{{ __('Désactiver cet abonné ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}"><i class="bx bx-x"></i></button>
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $subscribe->uuid }}', '{{ __('Désactiver cet abonné ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}"><i class="bx bx-x"></i></button>
                                                     </form>
                                                 @endif
 
                                                 <form action="{{ route('backend.subscribes.destroy', ['subscribe' => $subscribe->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $subscribe->uuid }}">
                                                     @csrf @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $subscribe->uuid }}', '{{ __('Supprimer cet abonné ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}"><i class="bx bx-trash"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $subscribe->uuid }}', '{{ __('Supprimer cet abonné ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}"><i class="bx bx-trash"></i></button>
                                                 </form>
                                             </div>
                                         @endif

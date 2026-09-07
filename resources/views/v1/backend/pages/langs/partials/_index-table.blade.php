@@ -34,7 +34,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="langs-table">
+                    <table class="table table-centered text-nowrap" id="langs-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -84,25 +84,25 @@
 
                                     <td>
                                         @if ($lang->direction === 'ltr')
-                                            <span class="badge bg-info-subtle text-info">{{ __('LTR') }}</span>
+                                            <span class="badge badge-soft-info">{{ __('LTR') }}</span>
                                         @else
-                                            <span class="badge bg-warning-subtle text-warning">{{ __('RTL') }}</span>
+                                            <span class="badge badge-soft-warning">{{ __('RTL') }}</span>
                                         @endif
                                     </td>
 
                                     <td>
                                         @if ($lang->is_default)
-                                            <span class="badge bg-primary-subtle text-primary">{{ __('Défaut') }}</span>
+                                            <span class="badge badge-soft-primary">{{ __('Défaut') }}</span>
                                         @else
-                                            <span class="badge bg-secondary-subtle text-secondary">{{ __('Non') }}</span>
+                                            <span class="badge badge-soft-secondary">{{ __('Non') }}</span>
                                         @endif
                                     </td>
 
                                     <td>
                                         @if ($lang->is_active)
-                                            <span class="badge bg-success-subtle text-success">{{ __('Actif') }}</span>
+                                            <span class="badge badge-soft-success">{{ __('Actif') }}</span>
                                         @else
-                                            <span class="badge bg-danger-subtle text-danger">{{ __('Inactif') }}</span>
+                                            <span class="badge badge-soft-danger">{{ __('Inactif') }}</span>
                                         @endif
                                     </td>
 
@@ -131,7 +131,7 @@
                                                 <form action="#" method="POST" style="display:inline-block" id="restore-form-{{ $lang->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $lang->uuid }}', '{{ __('Restaurer cette langue ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $lang->uuid }}', '{{ __('Restaurer cette langue ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -139,7 +139,7 @@
                                                 <form action="#" method="POST" style="display:inline-block" id="delete-form-{{$lang->uuid}}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $lang->uuid }}', 'Supprimer définitivement cette langue ? Cette action est irréversible.')" disabled>
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $lang->uuid }}', 'Supprimer définitivement cette langue ? Cette action est irréversible.')" disabled>
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -150,7 +150,7 @@
                                         @if(!$lang->trashed())
                                             <div class="hstack gap-2 fs-15">
 
-                                                <a href="#" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="#" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
@@ -159,7 +159,7 @@
                                                     <form action="{{ route('backend.langs.deactivate', ['lang' => $lang->uuid]) }}" method="POST" style="display:inline-block" id="deactivate-form-{{ $lang->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" title="{{ __('Désactiver') }}" onclick="confirmAction('deactivate-form-{{ $lang->uuid }}', '{{ __('Désactiver cette langue ?') }}', 'Désactiver', 'warning')">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" title="{{ __('Désactiver') }}" onclick="confirmAction('deactivate-form-{{ $lang->uuid }}', '{{ __('Désactiver cette langue ?') }}', 'Désactiver', 'warning')">
                                                             <i class="bx bx-x"></i> Désactiver
                                                         </button>
                                                     </form>
@@ -167,7 +167,7 @@
                                                     <form action="{{ route('backend.langs.activate', ['lang' => $lang->uuid]) }}" method="POST" style="display:inline-block" id="activate-form-{{ $lang->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" title="{{ __('Activer') }}" onclick="confirmAction('activate-form-{{ $lang->uuid }}', '{{ __('Activer cette langue ?') }}', 'Activer', 'success')">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Activer') }}" onclick="confirmAction('activate-form-{{ $lang->uuid }}', '{{ __('Activer cette langue ?') }}', 'Activer', 'success')">
                                                             <i class="bx bx-check"></i> Activer
                                                         </button>
                                                     </form>

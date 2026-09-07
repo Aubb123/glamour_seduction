@@ -17,7 +17,7 @@
                         
                         @if(isset($entity->getFirstImage()['cloud_file']))
                             <!-- Un petit bouton détail qui mène à backend.cloud-files.show -->
-                            <a href="{{ route('backend.cloud-files.show', ['cloudFile' => $entity->getFirstImage()['cloud_file']->uuid]) }}" class="btn btn-sm btn-outline-primary mt-3">
+                            <a href="{{ route('backend.cloud-files.show', ['cloudFile' => $entity->getFirstImage()['cloud_file']->uuid]) }}" class="btn btn-sm btn-soft-primary mt-3">
                                 <i class="bx bx-info-circle me-1"></i> {{ __('Détails du fichier') }}
                             </a>
                         @endif

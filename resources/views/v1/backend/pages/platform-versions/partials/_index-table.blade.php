@@ -40,7 +40,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="versions-table">
+                    <table class="table table-centered text-nowrap" id="versions-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -75,16 +75,16 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $version->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $version->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $version->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
 
                                     <td>
                                         @if ($version->is_published)
-                                            <span class="badge bg-success-subtle text-success">{{ __('Publié') }}</span>
+                                            <span class="badge badge-soft-success">{{ __('Publié') }}</span>
                                         @else
-                                            <span class="badge bg-warning-subtle text-warning">{{ __('Brouillon') }}</span>
+                                            <span class="badge badge-soft-warning">{{ __('Brouillon') }}</span>
                                         @endif
                                     </td>
 
@@ -93,14 +93,14 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="{{ route('backend.versions.audits', ['platformVersion' => $version->uuid, 'slug' => $version->active_translation?->slug ?? $version->code]) }}" class="btn btn-sm btn-info" title="{{ __('Voir les audits') }}">
+                                        <a href="{{ route('backend.versions.audits', ['platformVersion' => $version->uuid, 'slug' => $version->active_translation?->slug ?? $version->code]) }}" class="btn btn-sm btn-light" title="{{ __('Voir les audits') }}">
                                             <i class="bx bx-file"></i>
                                             <span class="badge ms-1">{{ $version->audits_count ?? 0 }}</span>
                                         </a>
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="{{ route('backend.versions.activity-logs', ['platformVersion' => $version->uuid, 'slug' => $version->active_translation?->slug ?? $version->code]) }}" class="btn btn-sm btn-info" title="{{ __('Voir les logs d\'activité') }}">
+                                        <a href="{{ route('backend.versions.activity-logs', ['platformVersion' => $version->uuid, 'slug' => $version->active_translation?->slug ?? $version->code]) }}" class="btn btn-sm btn-light" title="{{ __('Voir les logs d\'activité') }}">
                                             <i class="bx bx-pulse"></i>
                                             <span class="badge ms-1">{{ $version->activity_logs_count ?? 0 }}</span>
                                         </a>
@@ -127,7 +127,7 @@
                                                 <form action="{{ route('backend.versions.restore', ['uuid' => $version->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $version->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $version->uuid }}', '{{ __('Restaurer cette version ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $version->uuid }}', '{{ __('Restaurer cette version ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -135,7 +135,7 @@
                                                 <form action="{{ route('backend.versions.force_destroy', ['uuid' => $version->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{$version->uuid}}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $version->uuid }}', 'Supprimer définitivement cette version ? Cette action est irréversible.')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $version->uuid }}', 'Supprimer définitivement cette version ? Cette action est irréversible.')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -146,18 +146,18 @@
                                         @if(!$version->trashed())
                                             <div class="hstack gap-2 fs-15">
 
-                                                <a href="{{ route('backend.versions.show', ['platformVersion' => $version->uuid, 'slug' => $version->active_translation?->slug ?? $version->code]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.versions.show', ['platformVersion' => $version->uuid, 'slug' => $version->active_translation?->slug ?? $version->code]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.versions.edit', ['platformVersion' => $version->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.versions.edit', ['platformVersion' => $version->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
                                                 <form action="{{ route('backend.versions.destroy', ['platformVersion' => $version->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{$version->uuid}}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button"  class="btn btn-sm btn-danger"  title="{{ __('Supprimer') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{$version->uuid}}', 'Êtes-vous sûr de vouloir supprimer cette version ?')">
+                                                    <button type="button"  class="btn btn-sm btn-soft-danger"  title="{{ __('Supprimer') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{$version->uuid}}', 'Êtes-vous sûr de vouloir supprimer cette version ?')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

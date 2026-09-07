@@ -83,11 +83,11 @@
                                         <small class="text-muted">{{ __('Visibilité interne') }}</small>
                                     </div>
                                     @if ($version->status === \App\Enums\PlatformVersions\PlatformVersionStatus::Active)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        <span class="badge badge-soft-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}
                                         </span>
                                     @endif
@@ -100,11 +100,11 @@
                                         <small class="text-muted">{{ __('Visibilité publique') }}</small>
                                     </div>
                                     @if ($version->is_published)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-globe me-1"></i>{{ __('Publié') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-warning-subtle text-warning px-3 py-2">
+                                        <span class="badge badge-soft-warning px-3 py-2">
                                             <i class="bx bx-edit-alt me-1"></i>{{ __('Brouillon') }}
                                         </span>
                                     @endif
@@ -167,7 +167,7 @@
                                                         <form action="{{ route('backend.platform-version-translations.destroy', ['platformVersionTranslation' => getTranslation($version, $lang->id)?->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($version, $lang->id)?->uuid }}" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{ getTranslation($version, $lang->id)?->uuid }}', 'Êtes-vous sûr de vouloir supprimer cette traduction ?')">
+                                                            <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmDelete('{{ getTranslation($version, $lang->id)?->uuid }}', 'Êtes-vous sûr de vouloir supprimer cette traduction ?')">
                                                                 <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
                                                             </button>
                                                         </form>

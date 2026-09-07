@@ -74,8 +74,8 @@
                             <div class="card-body d-flex flex-column gap-3">
                                 <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background: {{ $subscribe->status === \App\Enums\Subscribes\SubscribeStatus::Active ? '#e8f9f0' : '#fef0f0' }}">
                                     <div><div class="fw-semibold">{{ __('Statut') }}</div><small class="text-muted">{{ $subscribe->status === \App\Enums\Subscribes\SubscribeStatus::Active ? __('Abonné actif') : __('Abonné inactif') }}</small></div>
-                                    @if ($subscribe->status === \App\Enums\Subscribes\SubscribeStatus::Active)<span class="badge bg-success-subtle text-success px-3 py-2"><i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}</span>
-                                    @else<span class="badge bg-danger-subtle text-danger px-3 py-2"><i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}</span>@endif
+                                    @if ($subscribe->status === \App\Enums\Subscribes\SubscribeStatus::Active)<span class="badge badge-soft-success px-3 py-2"><i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}</span>
+                                    @else<span class="badge badge-soft-danger px-3 py-2"><i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}</span>@endif
                                 </div>
                                 <div class="d-flex align-items-center justify-content-between p-3 rounded bg-light">
                                     <div><div class="fw-semibold">{{ __('Inscrit le') }}</div><small class="text-muted">@formatDate($subscribe->created_at, 'D MMMM YYYY - HH:mm:ss')</small></div>

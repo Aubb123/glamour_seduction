@@ -62,7 +62,7 @@
                                                 <div class="text-center py-5">
                                                     <i class="bx bx-archive" style="font-size: 5rem; color: #dee2e6;"></i>
                                                     <p class="text-muted mt-3 mb-0">{{ __('La prévisualisation n\'est pas disponible pour les archives ZIP.') }}</p>
-                                                    <a href="{{ route('cloud-file.show', ['uuid' => $file->uuid]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary mt-3">
+                                                    <a href="{{ route('cloud-file.show', ['uuid' => $file->uuid]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-soft-primary mt-3">
                                                         <i class="bx bx-download me-1"></i> {{ __('Télécharger') }}
                                                     </a>
                                                 </div>
@@ -70,7 +70,7 @@
                                                 <div class="text-center py-5">
                                                     <i class="bx bx-file" style="font-size: 5rem; color: #dee2e6;"></i>
                                                     <p class="text-muted mt-3 mb-0">{{ __('La prévisualisation n\'est pas disponible pour ce type de fichier.') }}</p>
-                                                    <a href="{{ route('cloud-file.show', ['uuid' => $file->uuid]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary mt-3">
+                                                    <a href="{{ route('cloud-file.show', ['uuid' => $file->uuid]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-soft-primary mt-3">
                                                         <i class="bx bx-download me-1"></i> {{ __('Télécharger') }}
                                                     </a>
                                                 </div>
@@ -140,19 +140,19 @@
                                                 <div class="col-4 text-muted fw-semibold">{{ __('Statut de synchronisation') }}</div>
                                                 <div class="col-8">
                                                     @if($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Pending)
-                                                        <span class="badge bg-warning-subtle text-warning">
+                                                        <span class="badge badge-soft-warning">
                                                             <i class="bx bx-time-five me-1"></i> {{ __('En attente') }}
                                                         </span>
                                                     @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Processing)
-                                                        <span class="badge bg-info-subtle text-info">
+                                                        <span class="badge badge-soft-info">
                                                             <i class="bx bx-refresh me-1"></i> {{ __('En cours') }}
                                                         </span>
                                                     @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Error)
-                                                        <span class="badge bg-danger-subtle text-danger">
+                                                        <span class="badge badge-soft-danger">
                                                             <i class="bx bx-error-circle me-1"></i> {{ __('Erreur') }}
                                                         </span>
                                                     @else
-                                                        <span class="badge bg-success-subtle text-success">
+                                                        <span class="badge badge-soft-success">
                                                             <i class="bx bx-check-circle me-1"></i> {{ __('Synchronisé') }}
                                                         </span>
                                                     @endif
@@ -213,22 +213,22 @@
 
                                             @if($file->cloudFolder)
                                                 <div class="d-flex align-items-center" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
                                                         <i class="bx bx-folder"></i>
-                                                    </div>
+                                                    </span></div>
                                                     <div class="flex-grow-1">
                                                         <div class="fw-semibold">{{ $file->cloudFolder->folder_name }}</div>
                                                         <small class="text-muted">{{ $file->cloudFolder->path ?? '—' }}</small>
                                                     </div>
-                                                    <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $file->cloudFolder->uuid]) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Voir le dossier') }}">
+                                                    <a href="{{ route('backend.cloud-folders.show', ['cloudFolder' => $file->cloudFolder->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Voir le dossier') }}">
                                                         <i class="bx bx-link-external"></i>
                                                     </a>
                                                 </div>
                                             @else
                                                 <div class="d-flex align-items-center" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 30px; height: 30px; object-fit: cover; border-radius: 50%;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-secondary text-secondary fs-20 rounded-circle">
                                                         <i class="bx bx-folder"></i>
-                                                    </div>
+                                                    </span></div>
                                                     <div>
                                                         <div class="fw-semibold">{{ __('Aucun dossier') }}</div>
                                                         <small class="text-muted">{{ __('Fichier orphelin') }}</small>
@@ -242,7 +242,7 @@
                                                         <div class="fw-semibold">{{ __('Plateforme') }}</div>
                                                         <small class="text-muted">{{ $file->cloudFolder->platform->label }}</small>
                                                     </div>
-                                                    <span class="badge bg-success-subtle text-success px-3 py-2">
+                                                    <span class="badge badge-soft-success px-3 py-2">
                                                         <i class="bx bx-server me-1"></i>{{ $file->cloudFolder->platform->name }}
                                                     </span>
                                                 </div>
@@ -268,31 +268,31 @@
                                         <div class="card-body">
                                             @if($file->fileable)
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
                                                         <i class="bx bx-box"></i>
-                                                    </div>
+                                                    </span></div>
                                                     <div class="flex-grow-1">
                                                         <div class="fw-semibold">{{ class_basename($file->fileable_type) }}</div>
                                                         <small class="text-muted">{{ $file->fileable->uuid ?? '—' }}</small>
                                                     </div>
                                                     @if($file->fileable instanceof \App\Models\User)
-                                                        <a href="{{ route('backend.users.show', ['user' => $file->fileable->uuid, 'slug' => $file->fileable->slug]) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Voir l\'utilisateur') }}">
+                                                        <a href="{{ route('backend.users.show', ['user' => $file->fileable->uuid, 'slug' => $file->fileable->slug]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Voir l\'utilisateur') }}">
                                                             {{ $file->fileable->first_name . ' ' . $file->fileable->last_name }} <i class="bx bx-link-external"></i>
                                                         </a>
                                                     @elseif($file->fileable instanceof \App\Models\BlogPost)
-                                                        <a href="{{ route('backend.blog-posts.show', ['blogPost' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Voir l\'article') }}">
+                                                        <a href="{{ route('backend.blog-posts.show', ['blogPost' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Voir l\'article') }}">
                                                             {{ Str::limit($file->fileable->active_translation?->title ?? 'Article', 30) }} <i class="bx bx-link-external"></i>
                                                         </a>
                                                     @elseif($file->fileable instanceof \App\Models\BlogCategory)
-                                                        <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Voir la catégorie') }}">
+                                                        <a href="{{ route('backend.blog-categories.show', ['blogCategory' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Voir la catégorie') }}">
                                                             {{ Str::limit($file->fileable->active_translation?->name ?? 'Catégorie', 30) }} <i class="bx bx-link-external"></i>
                                                         </a>
                                                     @elseif($file->fileable instanceof \App\Models\BlogTag)
-                                                        <a href="{{ route('backend.blog-tags.show', ['blogTag' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Voir le tag') }}">
+                                                        <a href="{{ route('backend.blog-tags.show', ['blogTag' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Voir le tag') }}">
                                                             {{ Str::limit($file->fileable->active_translation?->name ?? 'Tag', 30) }} <i class="bx bx-link-external"></i>
                                                         </a>
                                                     @elseif($file->fileable instanceof \App\Models\Gallery)
-                                                        <a href="{{ route('backend.galleries.show', ['gallery' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Voir la galerie') }}">
+                                                        <a href="{{ route('backend.galleries.show', ['gallery' => $file->fileable->uuid, 'slug' => $file->fileable->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Voir la galerie') }}">
                                                             {{ Str::limit($file->fileable->active_translation?->title ?? 'Galerie', 30) }} <i class="bx bx-link-external"></i>
                                                         </a>
                                                     @endif
@@ -319,7 +319,7 @@
                                         <div class="card-body">
                                             @if(!empty($file->metadata) && is_array($file->metadata))
                                                 <div class="table-responsive">
-                                                    <table class="table table-sm table-bordered">
+                                                    <table class="table table-centered table-sm table-bordered">
                                                         <thead class="table-light">
                                                             <tr>
                                                                 <th style="width:200px;">{{ __('Clé') }}</th>

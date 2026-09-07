@@ -78,7 +78,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="blog-tags-table">
+                    <table class="table table-centered text-nowrap" id="blog-tags-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -121,7 +121,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-tags.audits', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-file me-1"></i> {{ $tag->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -130,7 +130,7 @@
                                     <td>
                                         <a href="{{ route('backend.blog-tags.activity-logs', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none">
-                                            <span class="badge bg-info-subtle text-info">
+                                            <span class="badge badge-soft-info">
                                                 <i class="bx bx-pulse me-1"></i> {{ $tag->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -139,7 +139,7 @@
                                     <td>{{ $tag->sort_order }}</td>
 
                                     <td>
-                                        <span class="{{ $tag->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $tag->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $tag->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -160,7 +160,7 @@
                                                 <form action="{{ route('backend.blog-tags.restore', ['uuid' => $tag->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $tag->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $tag->uuid }}', '{{ __('Restaurer ce tag ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $tag->uuid }}', '{{ __('Restaurer ce tag ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -168,7 +168,7 @@
                                                 <form action="{{ route('backend.blog-tags.force_destroy', ['uuid' => $tag->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $tag->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $tag->uuid }}', '{{ __('Supprimer définitivement ce tag ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $tag->uuid }}', '{{ __('Supprimer définitivement ce tag ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -177,11 +177,11 @@
 
                                         @if(!$tag->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.blog-tags.show', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.blog-tags.show', ['blogTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.blog-tags.edit', ['blogTag' => $tag->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.blog-tags.edit', ['blogTag' => $tag->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
@@ -189,7 +189,7 @@
                                                     <form action="{{ route('backend.blog-tags.deactivate', ['blogTag' => $tag->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $tag->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('deactivate-form-{{ $tag->uuid }}', '{{ __('Désactiver ce tag ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $tag->uuid }}', '{{ __('Désactiver ce tag ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -197,7 +197,7 @@
                                                     <form action="{{ route('backend.blog-tags.activate', ['blogTag' => $tag->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $tag->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('activate-form-{{ $tag->uuid }}', '{{ __('Activer ce tag ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $tag->uuid }}', '{{ __('Activer ce tag ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -206,7 +206,7 @@
                                                 <form action="{{ route('backend.blog-tags.destroy', ['blogTag' => $tag->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $tag->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $tag->uuid }}', '{{ __('Supprimer ce tag ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $tag->uuid }}', '{{ __('Supprimer ce tag ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

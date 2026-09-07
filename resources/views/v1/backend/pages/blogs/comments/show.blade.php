@@ -95,11 +95,11 @@
                                         <small class="text-muted">{{ __('Visibilité publique') }}</small>
                                     </div>
                                     @if ($comment->is_visible)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Approuvé') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        <span class="badge badge-soft-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('En attente') }}
                                         </span>
                                     @endif
@@ -122,7 +122,7 @@
                                     <i class="bx bx-corner-down-right me-2 text-primary"></i>{{ __('Réponses à ce commentaire') }}
                                     <span class="badge bg-primary ms-2">{{ $replies->count() }}</span>
                                 </h6>
-                                <a href="{{ route('backend.blog-post-comment-replies.index') }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ route('backend.blog-post-comment-replies.index') }}" class="btn btn-sm btn-soft-primary">
                                     <i class="bx bx-link-external me-1"></i> {{ __('Voir toutes les réponses') }}
                                 </a>
                             </div>
@@ -135,7 +135,7 @@
                                                 <small class="text-muted ms-2">@formatDate($reply->created_at, 'D MMMM YYYY - HH:mm:ss')</small>
                                             </div>
                                             <div class="hstack gap-1">
-                                                <a href="{{ route('backend.blog-post-comment-replies.show', ['blogPostCommentReply' => $reply->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Détails') }}">
+                                                <a href="{{ route('backend.blog-post-comment-replies.show', ['blogPostCommentReply' => $reply->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Détails') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
@@ -143,7 +143,7 @@
                                                     <form action="{{ route('backend.blog-post-comment-replies.deactivate', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $reply->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('deactivate-form-{{ $reply->uuid }}', '{{ __('Désapprouver cette réponse ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $reply->uuid }}', '{{ __('Désapprouver cette réponse ?') }}', 'Désapprouver', 'warning')" title="{{ __('Désapprouver') }}">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -151,7 +151,7 @@
                                                     <form action="{{ route('backend.blog-post-comment-replies.activate', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $reply->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('activate-form-{{ $reply->uuid }}', '{{ __('Approuver cette réponse ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $reply->uuid }}', '{{ __('Approuver cette réponse ?') }}', 'Approuver', 'success')" title="{{ __('Approuver') }}">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -160,7 +160,7 @@
                                                 <form action="{{ route('backend.blog-post-comment-replies.destroy', ['blogPostCommentReply' => $reply->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $reply->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $reply->uuid }}', '{{ __('Supprimer cette réponse ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $reply->uuid }}', '{{ __('Supprimer cette réponse ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -173,9 +173,9 @@
 
                                         <div class="mt-2">
                                             @if ($reply->is_visible)
-                                                <span class="badge bg-success-subtle text-success">{{ __('Approuvé') }}</span>
+                                                <span class="badge badge-soft-success">{{ __('Approuvé') }}</span>
                                             @else
-                                                <span class="badge bg-danger-subtle text-danger">{{ __('En attente') }}</span>
+                                                <span class="badge badge-soft-danger">{{ __('En attente') }}</span>
                                             @endif
                                         </div>
                                     </div>

@@ -358,6 +358,40 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 
 ---
 
+## 🎨 Migration des vues backend vers les composants natifs Larkon (06/09/2026)
+
+> Objectif : utiliser les **classes composants du template Larkon** (`btn-soft-*`, `badge-soft-*`, `table-centered`, `avatar-sm`/`avatar-title`) dans toutes les vues backend, en gardant le contrat « DataTables conservés » et sans casser les tests.
+
+### Référence
+- Template source : `../template-larkon/admin/*` (demos `category-list.html`, `category-add.html`, `ui-badge.html`).
+- Mapping dérivé des démos : boutons principaux (Add/submit) **solides** (`btn-primary`) ; actions de ligne (tooltip `title=`) **soft** (`btn-soft-*`, `btn-light` pour « Voir ») ; badges `badge badge-soft-{color}` ; tables `table-centered` ; initiales `avatar-sm` > `avatar-title bg-soft-{c} text-{c} fs-20 rounded-circle`.
+- `page-title-box` **non appliqué** : la classe existe dans `app.min.css` mais aucune démo Larkon ne l'utilise ; le `_toolbar` (row/h4/breadcrumb) est déjà conforme au rendu des démos.
+
+### Outil
+- Script `larkon_migrate.pl` (idempotent, même philosophie que `feather_robust.pl`) — 2 runs + compléments manuels.
+- Piège corrigé : les expressions Blade (`->uuid`, `=>`) contiennent des `>` qui cassent le matching de tag HTML → approche ligne par ligne pour les balises `<a`/`<button` portant un `title=`.
+
+### Résultats (253 vues backend)
+| Élément | Avant | Après |
+|---|---|---|
+| Badges `badge bg-{c}-subtle text-{c}` | 190 | 0 → `badge badge-soft-{c}` (190) |
+| Tables | 0 | 36 `<table>` avec `table-centered` |
+| Boutons d'action `btn-{c}` (avec `title=`) | 148 solides/outline | 142 `btn-soft-*` + `btn-light` (Voir) |
+| `btn-outline-*` (tabs de navigation show) | 21 | 0 → `btn-soft-*` |
+| Avatars custom (activity-logs, audits, clouds) | 8 | 8 structures Larkon `avatar-sm`/`avatar-title` |
+
+### Validation
+- `php artisan view:cache` : OK (toutes les vues compilent).
+- Tests ciblés post-migration : **31 passed** (DataTables 3, Langs 7, RbacUsers 14, Geos 7).
+- Suite complète : **voir tableau « État final »** — log `../clone-larkon.log`.
+
+### Non migré (choix assumé)
+- Boutons principaux solides (`btn-primary` sur les Add/submit, `btn btn-primary dropdown-toggle` des filtres) — conformes aux démos Larkon.
+- DataTables (GridJS non adopté) — contrat de fidélité fonctionnelle + `DataTablesTest`.
+- Vues frontend & vues auth (déjà Larkon pour l'auth).
+
+---
+
 ## 🏁 État final du clone
 
 | Livrable | État |

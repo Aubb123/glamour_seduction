@@ -71,7 +71,7 @@
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/geos/countries/show.codeIso3') }}</div>
                                     <div class="col-8">
-                                        <span class="badge bg-primary-subtle text-primary fs-13">{{ $country->code }}</span>
+                                        <span class="badge badge-soft-primary fs-13">{{ $country->code }}</span>
                                     </div>
                                 </div>
                                 <hr class="my-2">
@@ -79,7 +79,7 @@
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/geos/countries/show.codeIso2') }}</div>
                                     <div class="col-8">
-                                        <span class="badge bg-secondary-subtle text-secondary fs-13">{{ $country->code_2 }}</span>
+                                        <span class="badge badge-soft-secondary fs-13">{{ $country->code_2 }}</span>
                                     </div>
                                 </div>
                                 <hr class="my-2">
@@ -94,7 +94,7 @@
                                     <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/geos/countries/show.devise') }}</div>
                                     <div class="col-8 fw-semibold">
                                         @if ($country->currency_code)
-                                            <span class="badge bg-success-subtle text-success fs-13">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
+                                            <span class="badge badge-soft-success fs-13">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
                                             <span class="text-muted ms-1 small">{{ $country->currency_name }}</span>
                                         @else
                                             <span class="text-muted">—</span>
@@ -106,7 +106,7 @@
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/geos/countries/show.type') }}</div>
                                     <div class="col-8">
-                                        <span class="badge bg-info-subtle text-info fs-13">{{ $country->type_label }}</span>
+                                        <span class="badge badge-soft-info fs-13">{{ $country->type_label }}</span>
                                     </div>
                                 </div>
                                 <hr class="my-2">
@@ -144,11 +144,11 @@
                                         <small class="text-muted">{{ __('v1/backend/views/pages/geos/countries/show.visibiliteDansApp') }}</small>
                                     </div>
                                     @if ($country->status === \App\Enums\Geos\Countries\GeoCountryStatus::Active)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('v1/backend/views/pages/geos/countries/show.actif') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        <span class="badge badge-soft-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('v1/backend/views/pages/geos/countries/show.inactif') }}
                                         </span>
                                     @endif
@@ -160,7 +160,7 @@
                                         <div class="fw-semibold">{{ __('v1/backend/views/pages/geos/countries/show.utilisateurs') }}</div>
                                         <small class="text-muted">{{ __('v1/backend/views/pages/geos/countries/show.utilisateursDuPays') }}</small>
                                     </div>
-                                    <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-13">
+                                    <span class="badge badge-soft-primary px-3 py-2 fs-13">
                                         <i class="bx bx-user me-1"></i>{{ $country->users_count ?? 0 }}
                                     </span>
                                 </a>
@@ -231,7 +231,7 @@
                                                         <form action="{{ route('backend.geocountries.translation.destroy', ['geoCountryTranslation' => getTranslation($country, $lang->id)->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($country, $lang->id)->uuid }}" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{ getTranslation($country, $lang->id)->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/show.confirmerSuppressionTraduction') }}')">
+                                                            <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmDelete('{{ getTranslation($country, $lang->id)->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/show.confirmerSuppressionTraduction') }}')">
                                                                 <i class="bx bx-trash me-1"></i> {{ __('v1/backend/views/pages/geos/countries/show.supprimer') }}
                                                             </button>
                                                         </form>

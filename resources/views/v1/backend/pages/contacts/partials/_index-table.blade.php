@@ -76,7 +76,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="contacts-table">
+                    <table class="table table-centered text-nowrap" id="contacts-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -120,9 +120,9 @@
 
                                     <td>
                                         @if ($contact->is_read)
-                                            <span class="badge bg-success-subtle text-success">{{ __('Lu') }}</span>
+                                            <span class="badge badge-soft-success">{{ __('Lu') }}</span>
                                         @else
-                                            <span class="badge bg-warning-subtle text-warning">{{ __('Non lu') }}</span>
+                                            <span class="badge badge-soft-warning">{{ __('Non lu') }}</span>
                                         @endif
                                     </td>
 
@@ -158,7 +158,7 @@
                                                 <form action="{{ route('backend.contacts.restore', ['uuid' => $contact->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $contact->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $contact->uuid }}', '{{ __('Restaurer ce message ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $contact->uuid }}', '{{ __('Restaurer ce message ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -166,7 +166,7 @@
                                                 <form action="{{ route('backend.contacts.force_destroy', ['uuid' => $contact->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $contact->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $contact->uuid }}', '{{ __('Supprimer définitivement ce message ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $contact->uuid }}', '{{ __('Supprimer définitivement ce message ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -175,7 +175,7 @@
 
                                         @if(!$contact->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.contacts.show', ['contact' => $contact->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.contacts.show', ['contact' => $contact->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
@@ -183,7 +183,7 @@
                                                     <form action="{{ route('backend.contacts.mark_as_read', ['contact' => $contact->uuid]) }}" method="POST" class="d-inline" id="read-form-{{ $contact->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-success" onclick="confirmAction('read-form-{{ $contact->uuid }}', '{{ __('Marquer ce message comme lu ?') }}', 'Marquer comme lu', 'success')" title="{{ __('Marquer comme lu') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('read-form-{{ $contact->uuid }}', '{{ __('Marquer ce message comme lu ?') }}', 'Marquer comme lu', 'success')" title="{{ __('Marquer comme lu') }}">
                                                             <i class="bx bx-check"></i>
                                                         </button>
                                                     </form>
@@ -191,7 +191,7 @@
                                                     <form action="{{ route('backend.contacts.mark_as_unread', ['contact' => $contact->uuid]) }}" method="POST" class="d-inline" id="unread-form-{{ $contact->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-warning" onclick="confirmAction('unread-form-{{ $contact->uuid }}', '{{ __('Marquer ce message comme non lu ?') }}', 'Marquer comme non lu', 'warning')" title="{{ __('Marquer comme non lu') }}">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('unread-form-{{ $contact->uuid }}', '{{ __('Marquer ce message comme non lu ?') }}', 'Marquer comme non lu', 'warning')" title="{{ __('Marquer comme non lu') }}">
                                                             <i class="bx bx-hide"></i>
                                                         </button>
                                                     </form>
@@ -200,7 +200,7 @@
                                                 <form action="{{ route('backend.contacts.destroy', ['contact' => $contact->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $contact->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $contact->uuid }}', '{{ __('Supprimer ce message ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $contact->uuid }}', '{{ __('Supprimer ce message ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

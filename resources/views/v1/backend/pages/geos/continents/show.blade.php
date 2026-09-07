@@ -59,7 +59,7 @@
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Code') }}</div>
                                     <div class="col-8">
-                                        <span class="badge bg-secondary-subtle text-secondary fs-13">{{ strtoupper($continent->code) }}</span>
+                                        <span class="badge badge-soft-secondary fs-13">{{ strtoupper($continent->code) }}</span>
                                     </div>
                                 </div>
                                 <hr class="my-2">
@@ -111,11 +111,11 @@
                                         <small class="text-muted">{{ __('Visibilité interne') }}</small>
                                     </div>
                                     @if ($continent->status === \App\Enums\Geos\Continents\GeoContinentStatus::Active)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        <span class="badge badge-soft-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}
                                         </span>
                                     @endif
@@ -127,7 +127,7 @@
                                         <div class="fw-semibold">{{ __('Pays') }}</div>
                                         <small class="text-muted">{{ __('Pays rattachés') }}</small>
                                     </div>
-                                    <span class="badge bg-primary-subtle text-primary px-3 py-2 fs-13">
+                                    <span class="badge badge-soft-primary px-3 py-2 fs-13">
                                         <i class="bx bx-map me-1"></i>{{ $continent->countries_count ?? 0 }}
                                     </span>
                                 </a>
@@ -196,7 +196,7 @@
                                                         <form action="{{ route('backend.geocontinents.translation.destroy', ['geoContinentTranslation' => getTranslation($continent, $lang->id)?->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($continent, $lang->id)?->uuid }}" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('{{ getTranslation($continent, $lang->id)?->uuid }}', 'Êtes-vous sûr de vouloir supprimer cette traduction ?')">
+                                                            <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmDelete('{{ getTranslation($continent, $lang->id)?->uuid }}', 'Êtes-vous sûr de vouloir supprimer cette traduction ?')">
                                                                 <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
                                                             </button>
                                                         </form>

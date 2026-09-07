@@ -76,7 +76,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="subscribe-histories-table">
+                    <table class="table table-centered text-nowrap" id="subscribe-histories-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -112,20 +112,20 @@
                                             <div class="hstack gap-2 fs-15">
                                                 <form action="{{ route('backend.subscribe-histories.restore', ['uuid' => $history->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $history->uuid }}">
                                                     @csrf @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $history->uuid }}', '{{ __('Restaurer cet historique ?') }}', 'Restaurer', 'success')"><i class="bx bx-undo"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $history->uuid }}', '{{ __('Restaurer cet historique ?') }}', 'Restaurer', 'success')"><i class="bx bx-undo"></i></button>
                                                 </form>
                                                 <form action="{{ route('backend.subscribe-histories.force_destroy', ['uuid' => $history->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $history->uuid }}">
                                                     @csrf @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $history->uuid }}', '{{ __('Supprimer définitivement cet historique ? Cette action est irréversible.') }}')"><i class="bx bx-trash"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $history->uuid }}', '{{ __('Supprimer définitivement cet historique ? Cette action est irréversible.') }}')"><i class="bx bx-trash"></i></button>
                                                 </form>
                                             </div>
                                         @else
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.subscribe-histories.show', ['subscribeHistory' => $history->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}"><i class="bx bx-show"></i></a>
+                                                <a href="{{ route('backend.subscribe-histories.show', ['subscribeHistory' => $history->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}"><i class="bx bx-show"></i></a>
 
                                                 <form action="{{ route('backend.subscribe-histories.destroy', ['subscribeHistory' => $history->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $history->uuid }}">
                                                     @csrf @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $history->uuid }}', '{{ __('Supprimer cet historique ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}"><i class="bx bx-trash"></i></button>
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $history->uuid }}', '{{ __('Supprimer cet historique ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}"><i class="bx bx-trash"></i></button>
                                                 </form>
                                             </div>
                                         @endif

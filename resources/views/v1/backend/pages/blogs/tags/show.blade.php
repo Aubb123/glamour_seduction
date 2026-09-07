@@ -71,11 +71,11 @@
                                         <small class="text-muted">{{ __('Visibilité interne') }}</small>
                                     </div>
                                     @if ($tag->status === \App\Enums\Blogs\Tags\BlogTagStatus::Active)
-                                        <span class="badge bg-success-subtle text-success px-3 py-2">
+                                        <span class="badge badge-soft-success px-3 py-2">
                                             <i class="bx bx-check-circle me-1"></i>{{ __('Actif') }}
                                         </span>
                                     @else
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                        <span class="badge badge-soft-danger px-3 py-2">
                                             <i class="bx bx-x-circle me-1"></i>{{ __('Inactif') }}
                                         </span>
                                     @endif
@@ -156,7 +156,7 @@
                                                                         <form action="{{ route('backend.blog-tag-translations.destroy', ['uuid' => getTranslation($tag, $lang->id)->uuid]) }}" method="POST" id="delete-translation-form-{{ getTranslation($tag, $lang->id)->uuid }}" class="d-inline">
                                                                             @csrf
                                                                             @method('DELETE')
-                                                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmAction('delete-translation-form-{{ getTranslation($tag, $lang->id)->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">
+                                                                            <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-translation-form-{{ getTranslation($tag, $lang->id)->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">
                                                                                 <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
                                                                             </button>
                                                                         </form>

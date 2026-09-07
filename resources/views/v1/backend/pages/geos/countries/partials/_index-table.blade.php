@@ -75,7 +75,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="countries-table">
+                    <table class="table table-centered text-nowrap" id="countries-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -119,11 +119,11 @@
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-primary-subtle text-primary">{{ $country->code }}</span>
+                                        <span class="badge badge-soft-primary">{{ $country->code }}</span>
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-secondary-subtle text-secondary">{{ $country->code_2 }}</span>
+                                        <span class="badge badge-soft-secondary">{{ $country->code_2 }}</span>
                                     </td>
 
                                     <td class="text-muted">
@@ -132,14 +132,14 @@
 
                                     <td>
                                         @if ($country->currency_code)
-                                            <span class="badge bg-success-subtle text-success" title="{{ $country->currency_name }}">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
+                                            <span class="badge badge-soft-success" title="{{ $country->currency_name }}">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif
                                     </td>
 
                                     <td>
-                                        <span class="badge bg-info-subtle text-info">{{ $country->type_label }}</span>
+                                        <span class="badge badge-soft-info">{{ $country->type_label }}</span>
                                     </td>
 
                                     <td class="text-muted">
@@ -156,7 +156,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocountries.users', ['geoCountry' => $country->uuid, 'slug' => $country->active_translation?->slug ?? $country->code]) }}"
                                             class="text-decoration-none">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-user me-1"></i>{{ $country->users_count ?? 0 }}
                                             </span>
                                         </a>
@@ -167,7 +167,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $country->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $country->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $country->status?->label() ?? __('v1/backend/views/pages/geos/countries/partials/_index-table.inconnu') }}
                                         </span>
                                     </td>
@@ -175,7 +175,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocountries.audits', ['geoCountry' => $country->uuid, 'slug' => $country->active_translation?->slug ?? $country->code]) }}"
                                             class="text-decoration-none">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-file me-1"></i>{{ $country->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -184,7 +184,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocountries.activity-logs', ['geoCountry' => $country->uuid, 'slug' => $country->active_translation?->slug ?? $country->code]) }}"
                                             class="text-decoration-none">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-pulse me-1"></i>{{ $country->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -211,7 +211,7 @@
                                                 <form action="{{ route('backend.geocountries.restore', ['uuid' => $country->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $country->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.restaurer') }}" onclick="confirmAction('restore-form-{{ $country->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.restaurerCePays') }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.restaurer') }}', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.restaurer') }}" onclick="confirmAction('restore-form-{{ $country->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.restaurerCePays') }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.restaurer') }}', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -219,7 +219,7 @@
                                                 <form action="{{ route('backend.geocountries.force_destroy', ['uuid' => $country->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $country->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.supprimerDefinitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $country->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.confirmerSuppressionDefinitive') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.supprimerDefinitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $country->uuid }}', '{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.confirmerSuppressionDefinitive') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -231,12 +231,12 @@
                                             <div class="hstack gap-2 fs-15">
 
                                                 <a href="{{ route('backend.geocountries.show', ['geoCountry' => $country->uuid, 'slug' => $country->active_translation?->slug ?? $country->code]) }}"
-                                                   class="btn btn-sm btn-info" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.voir') }}">
+                                                   class="btn btn-sm btn-light" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
                                                 <a href="{{ route('backend.geocountries.edit', ['geoCountry' => $country->uuid]) }}"
-                                                   class="btn btn-sm btn-primary" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.modifier') }}">
+                                                   class="btn btn-sm btn-soft-primary" title="{{ __('v1/backend/views/pages/geos/countries/partials/_index-table.modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 

@@ -143,7 +143,7 @@
                 @endif
 
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="activity-logs-table">
+                    <table class="table table-centered text-nowrap" id="activity-logs-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -184,15 +184,15 @@
 
                                     <td>
                                         @if($log->is_success === null)
-                                            <span class="badge bg-secondary-subtle text-secondary">
+                                            <span class="badge badge-soft-secondary">
                                                 <i class="bx bx-minus me-1"></i>{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.nonDefini') }}
                                             </span>
                                         @elseif($log->is_success)
-                                            <span class="badge bg-success-subtle text-success">
+                                            <span class="badge badge-soft-success">
                                                 <i class="bx bx-check-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.succes') }}
                                             </span>
                                         @else
-                                            <span class="badge bg-danger-subtle text-danger">
+                                            <span class="badge badge-soft-danger">
                                                 <i class="bx bx-x-circle me-1"></i>{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.erreur') }}
                                             </span>
                                         @endif
@@ -208,14 +208,14 @@
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
-                                            <a href="{{ route('backend.activity-logs.show', ['activityLog' => $log->uuid]) }}" class="btn btn-sm btn-info" title="{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.voir') }}">
+                                            <a href="{{ route('backend.activity-logs.show', ['activityLog' => $log->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.voir') }}">
                                                 <i class="bx bx-show"></i>
                                             </a>
 
                                             <form action="{{ route('backend.activity-logs.destroy', ['activityLog' => $log->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $log->uuid }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('delete-form-{{ $log->uuid }}', '{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.supprimerCeJournal') }}', '{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.supprimer') }}', 'warning')" title="{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.supprimer') }}">
+                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $log->uuid }}', '{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.supprimerCeJournal') }}', '{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.supprimer') }}', 'warning')" title="{{ __('v1/backend/views/pages/activity-logs/partials/_index-table.supprimer') }}">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             </form>

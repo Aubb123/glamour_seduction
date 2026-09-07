@@ -77,7 +77,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table class="table text-nowrap" id="cloud-files-sync-table">
+                        <table class="table table-centered text-nowrap" id="cloud-files-sync-table">
                             <thead>
                                 <tr>
                                     <th scope="col">
@@ -112,19 +112,19 @@
 
                                         <td>
                                             @if($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Pending)
-                                                <span class="badge bg-warning-subtle text-warning">
+                                                <span class="badge badge-soft-warning">
                                                     <i class="bx bx-time-five me-1"></i> {{ __('En attente') }}
                                                 </span>
                                             @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Processing)
-                                                <span class="badge bg-info-subtle text-info">
+                                                <span class="badge badge-soft-info">
                                                     <i class="bx bx-refresh me-1"></i> {{ __('En cours') }}
                                                 </span>
                                             @elseif($file->sync_status === \App\Enums\Clouds\Files\CloudFileStatus::Error)
-                                                <span class="badge bg-danger-subtle text-danger">
+                                                <span class="badge badge-soft-danger">
                                                     <i class="bx bx-error-circle me-1"></i> {{ __('Erreur') }}
                                                 </span>
                                             @else
-                                                <span class="badge bg-success-subtle text-success">
+                                                <span class="badge badge-soft-success">
                                                     <i class="bx bx-check-circle me-1"></i> {{ __('Synchronisé') }}
                                                 </span>
                                             @endif
@@ -134,7 +134,7 @@
 
                                         <td>
                                             @if($file->cloudFolder)
-                                                <span class="badge bg-primary-subtle text-primary">
+                                                <span class="badge badge-soft-primary">
                                                     <i class="bx bx-folder me-1"></i> {{ $file->cloudFolder->folder_name }}
                                                 </span>
                                             @else
@@ -144,7 +144,7 @@
 
                                         <td>
                                             @if($file->fileable)
-                                                <span class="badge bg-secondary-subtle text-secondary">{{ class_basename($file->fileable_type) }}</span>
+                                                <span class="badge badge-soft-secondary">{{ class_basename($file->fileable_type) }}</span>
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif

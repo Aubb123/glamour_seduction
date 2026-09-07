@@ -75,7 +75,7 @@
 
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table text-nowrap" id="geocontinents-table">
+                    <table class="table table-centered text-nowrap" id="geocontinents-table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
@@ -112,7 +112,7 @@
                                     </td>
 
                                     <td class="fw-bold">
-                                        <span class="badge bg-secondary-subtle text-secondary fs-12">{{ strtoupper($continent->code) }}</span>
+                                        <span class="badge badge-soft-secondary fs-12">{{ strtoupper($continent->code) }}</span>
                                     </td>
 
                                     <td class="fw-bold">
@@ -133,7 +133,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocontinents.countries', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none text-primary">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-map me-1"></i>{{ $continent->countries_count ?? 0 }}
                                             </span>
                                         </a>
@@ -144,7 +144,7 @@
                                     </td>
 
                                     <td>
-                                        <span class="{{ $continent->status?->badgeClass() ?? 'badge bg-secondary-subtle text-secondary' }}">
+                                        <span class="{{ $continent->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $continent->status?->label() ?? __('Inconnu') }}
                                         </span>
                                     </td>
@@ -152,7 +152,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocontinents.audits', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none text-primary">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-file me-1"></i>{{ $continent->audits_count ?? 0 }}
                                             </span>
                                         </a>
@@ -161,7 +161,7 @@
                                     <td class="text-center">
                                         <a href="{{ route('backend.geocontinents.activity-logs', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}"
                                            class="text-decoration-none text-primary">
-                                            <span class="badge bg-primary-subtle text-primary">
+                                            <span class="badge badge-soft-primary">
                                                 <i class="bx bx-pulse me-1"></i>{{ $continent->activity_logs_count ?? 0 }}
                                             </span>
                                         </a>
@@ -188,7 +188,7 @@
                                                 <form action="{{ route('backend.geocontinents.restore', ['uuid' => $continent->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $continent->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $continent->uuid }}', '{{ __('Restaurer ce continent ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $continent->uuid }}', '{{ __('Restaurer ce continent ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -196,7 +196,7 @@
                                                 <form action="{{ route('backend.geocontinents.force_destroy', ['uuid' => $continent->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $continent->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;"
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;"
                                                             onclick="confirmDelete('{{ $continent->uuid }}', '{{ __('Supprimer définitivement ce continent ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
@@ -207,10 +207,10 @@
 
                                         @if (!$continent->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.geocontinents.show', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-info" title="{{ __('Voir') }}">
+                                                <a href="{{ route('backend.geocontinents.show', ['geoContinent' => $continent->uuid, 'slug' => $continent->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
-                                                <a href="{{ route('backend.geocontinents.edit', ['geoContinent' => $continent->uuid]) }}" class="btn btn-sm btn-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.geocontinents.edit', ['geoContinent' => $continent->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
                                             </div>

@@ -94,11 +94,11 @@
                                             <small class="text-muted">{{ __('v1/backend/views/pages/faqs/show.faqEnLigne') }}</small>
                                         </div>
                                         @if ($faq->status === \App\Enums\Faqs\FaqStatus::Active)
-                                            <span class="badge bg-success-subtle text-success px-3 py-2">
+                                            <span class="badge badge-soft-success px-3 py-2">
                                                 <i class="bx bx-check-circle me-1"></i>{{ __('v1/backend/views/pages/faqs/show.active') }}
                                             </span>
                                         @else
-                                            <span class="badge bg-danger-subtle text-danger px-3 py-2">
+                                            <span class="badge badge-soft-danger px-3 py-2">
                                                 <i class="bx bx-x-circle me-1"></i>{{ __('v1/backend/views/pages/faqs/show.inactive') }}
                                             </span>
                                         @endif
@@ -164,7 +164,7 @@
                                                             <form action="{{ route('backend.faq-translations.destroy', ['uuid' => getTranslation($faq, $lang->id)->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($faq, $lang->id)->uuid }}" class="d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmAction('delete-form-{{ getTranslation($faq, $lang->id)->uuid }}', '{{ __('v1/backend/views/pages/faqs/show.supprimerCetteTraduction') }}', '{{ __('v1/backend/views/pages/faqs/show.supprimer') }}', 'warning')">
+                                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ getTranslation($faq, $lang->id)->uuid }}', '{{ __('v1/backend/views/pages/faqs/show.supprimerCetteTraduction') }}', '{{ __('v1/backend/views/pages/faqs/show.supprimer') }}', 'warning')">
                                                                     <i class="bx bx-trash me-1"></i> {{ __('v1/backend/views/pages/faqs/show.supprimer') }}
                                                                 </button>
                                                             </form>
