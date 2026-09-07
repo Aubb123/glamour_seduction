@@ -5,7 +5,7 @@
             <div class="d-flex align-items-center">
                 <div class="topbar-item">
                     <button type="button" class="button-toggle-menu me-2">
-                        <iconify-icon icon="solar:hamburger-menu-broken" class="fs-24 align-middle"></iconify-icon>
+                        <i class="bx bx-menu fs-24 align-middle"></i>
                     </button>
                 </div>
                 <div class="topbar-item d-none d-md-flex">
@@ -18,7 +18,7 @@
                 {{-- Création rapide (getCreateLinks) --}}
                 <div class="dropdown topbar-item">
                     <button type="button" class="topbar-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ __('Ajouter') }}">
-                        <iconify-icon icon="solar:add-circle-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+                        <i class="bx bx-plus-circle fs-24 align-middle"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-end p-1">
                         @foreach (getCreateLinks() as $link)
@@ -39,7 +39,7 @@
                         @if ($currentLang && !empty($currentLang->file_path))
                             <img src="{{ asset(getEnvFolder().$currentLang->file_path) }}" alt="{{ $currentLang->name }}" class="rounded-circle" height="24" width="24">
                         @else
-                            <iconify-icon icon="solar:global-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+                            <i class="bx bx-globe fs-24 align-middle"></i>
                         @endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-end dropdown-lg p-1">
@@ -58,14 +58,14 @@
                 {{-- Thème clair/sombre --}}
                 <div class="topbar-item">
                     <button type="button" class="topbar-button" id="light-dark-mode">
-                        <iconify-icon icon="solar:moon-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+                        <i class="bx bx-moon fs-24 align-middle"></i>
                     </button>
                 </div>
 
                 <!-- Theme Setting -->
                 <div class="topbar-item d-none d-md-flex">
                     <button type="button" class="topbar-button" id="theme-settings-btn" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
-                        <iconify-icon icon="solar:settings-bold-duotone" class="fs-24 align-middle"></iconify-icon>
+                        <i class="bx bx-cog fs-24 align-middle"></i>
                     </button>
                 </div>
 

@@ -15,7 +15,7 @@
 
     <!-- Menu Toggle Button (sm-hover) -->
     <button type="button" class="button-sm-hover" aria-label="{{ __('Afficher la sidebar') }}">
-        <iconify-icon icon="solar:double-alt-arrow-right-bold-duotone" class="button-sm-hover-icon"></iconify-icon>
+        <i class="bx bx-chevrons-right button-sm-hover-icon"></i>
     </button>
 
     <div class="scrollbar" data-simplebar>
