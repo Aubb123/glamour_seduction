@@ -47,7 +47,8 @@ it('affiche la page analytics (période par défaut)', function () {
     $this->actingAs($admin)
         ->get(route('backend.analytics'))
         ->assertOk()
-        ->assertSee('labels');
+        ->assertSee('labels')
+        ->assertSee('chart.min.js'); // Chart.js doit être chargé pour les graphiques
 });
 
 it('accepte les paramètres de période (week, month, year)', function () {

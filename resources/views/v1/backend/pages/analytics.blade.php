@@ -238,6 +238,7 @@
 @endpush
 
 @push('scripts')
+<script src="{{ asset(getEnvFolder().'backend/assets/plugins/chartjs/chart.min.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
