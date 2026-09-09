@@ -84,7 +84,7 @@ class CloudFile extends Model
      */
     public function getFileTypeBadgeAttribute(): string
     {
-        return CloudFileType::tryFrom($this->file_type)?->badgeClass() ?? 'bg-soft-secondary';
+        return CloudFileType::tryFrom($this->file_type)?->badgeClass() ?? 'badge-soft-secondary';
     }
 
     /**

@@ -46,10 +46,10 @@ enum CloudFileStatus: string
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Pending => 'bg-soft-warning',
-            self::Processing => 'bg-soft-info',
-            self::Synced => 'bg-soft-success',
-            self::Error => 'bg-soft-danger',
+            self::Pending => 'badge-soft-warning',
+            self::Processing => 'badge-soft-info',
+            self::Synced => 'badge-soft-success',
+            self::Error => 'badge-soft-danger',
         };
     }
 

@@ -24,10 +24,10 @@ enum BlogPostStatus: string
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Draft => 'badge bg-soft-danger',
-            self::Published => 'badge bg-soft-success',
-            self::Archived => 'badge bg-soft-secondary',
-            self::Scheduled => 'badge bg-soft-warning',
+            self::Draft => 'badge badge-soft-danger',
+            self::Published => 'badge badge-soft-success',
+            self::Archived => 'badge badge-soft-secondary',
+            self::Scheduled => 'badge badge-soft-warning',
         };
     }
 }

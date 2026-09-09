@@ -89,11 +89,11 @@ class ActivityLog extends Model
     public function getTypeBadgeAttribute(): string
     {
         return match ($this->type) {
-            'info' => 'bg-soft-info',
-            'warning' => 'bg-soft-warning',
-            'error' => 'bg-soft-danger',
-            'debug' => 'bg-soft-secondary',
-            default => 'bg-soft-primary',
+            'info' => 'badge-soft-info',
+            'warning' => 'badge-soft-warning',
+            'error' => 'badge-soft-danger',
+            'debug' => 'badge-soft-secondary',
+            default => 'badge-soft-primary',
         };
     }
 

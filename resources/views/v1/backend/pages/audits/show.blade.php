@@ -118,7 +118,7 @@
 
                                             @if($audit->user)
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
+                                                    <div class="avatar-sm"><span class="avatar-title badge-soft-primary text-primary fs-20 rounded-circle">
                                                         {{ strtoupper(substr($audit->user->first_name, 0, 1)) }}{{ strtoupper(substr($audit->user->last_name, 0, 1)) }}
                                                     </span></div>
                                                     <div class="flex-grow-1">
@@ -131,7 +131,7 @@
                                                 </div>
                                             @else
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-secondary text-secondary fs-20 rounded-circle">
+                                                    <div class="avatar-sm"><span class="avatar-title badge-soft-secondary text-secondary fs-20 rounded-circle">
                                                         <i class="bx bx-terminal"></i>
                                                     </span></div>
                                                     <div>
@@ -143,7 +143,7 @@
 
                                             @if($audit->entity_url)
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-secondary text-secondary fs-20 rounded-circle">
+                                                    <div class="avatar-sm"><span class="avatar-title badge-soft-secondary text-secondary fs-20 rounded-circle">
                                                         <i class="bx bx-link"></i>
                                                     </span></div>
                                                     <a href="{{ $audit->entity_url }}" class="btn btn-primary btn-sm">

@@ -77,7 +77,7 @@
                                     <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/currencies/show.deviseParDefaut') }}</div>
                                     <div class="col-8">
                                         @if ($currency->is_default)
-                                            <span class="badge bg-soft-success"><i class="bx bx-star me-1"></i>{{ __('v1/backend/views/pages/currencies/show.oui') }}</span>
+                                            <span class="badge badge-soft-success"><i class="bx bx-star me-1"></i>{{ __('v1/backend/views/pages/currencies/show.oui') }}</span>
                                         @else
                                             <span class="badge badge-soft-secondary">{{ __('v1/backend/views/pages/currencies/show.non') }}</span>
                                         @endif

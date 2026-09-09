@@ -48,11 +48,11 @@ enum AuditAction: string
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Created => 'bg-soft-success',
-            self::Updated => 'bg-soft-info',
-            self::Deleted => 'bg-soft-warning',
-            self::ForceDeleted => 'bg-soft-danger',
-            self::Restored => 'bg-soft-primary',
+            self::Created => 'badge-soft-success',
+            self::Updated => 'badge-soft-info',
+            self::Deleted => 'badge-soft-warning',
+            self::ForceDeleted => 'badge-soft-danger',
+            self::Restored => 'badge-soft-primary',
         };
     }
 

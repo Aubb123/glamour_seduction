@@ -5,7 +5,7 @@
             <div class="col-xl-2 col-lg-4 col-md-6">
                 <div class="card border-0 shadow-sm bg-gradient-{{ $stat['color'] }} h-100">
                     <div class="card-body d-flex align-items-center gap-3">
-                        <div class="rounded-circle bg-soft-{{ $stat['color'] }} p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                        <div class="rounded-circle badge-soft-{{ $stat['color'] }} p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                             <i class="{{ $stat['icon'] }} fs-4 text-{{ $stat['color'] }}"></i>
                         </div>
                         <div>

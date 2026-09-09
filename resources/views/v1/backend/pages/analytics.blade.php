@@ -66,7 +66,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-primary p-3"><i class="bx bx-user fs-4 text-primary"></i></div>
+                    <div class="rounded-circle badge-soft-primary p-3"><i class="bx bx-user fs-4 text-primary"></i></div>
                     <div>
                         <h5 class="mb-0 fw-bold">{{ $totals['users'] }}</h5>
                         <small class="text-muted">{{ __('Utilisateurs') }}</small>
@@ -77,7 +77,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-success p-3"><i class="bx bx-send fs-4 text-success"></i></div>
+                    <div class="rounded-circle badge-soft-success p-3"><i class="bx bx-send fs-4 text-success"></i></div>
                     <div>
                         <h5 class="mb-0 fw-bold">{{ $totals['subscribes'] }}</h5>
                         <small class="text-muted">{{ __('Abonnés') }}</small>
@@ -88,7 +88,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-warning p-3"><i class="bx bx-mail-send fs-4 text-warning"></i></div>
+                    <div class="rounded-circle badge-soft-warning p-3"><i class="bx bx-mail-send fs-4 text-warning"></i></div>
                     <div>
                         <h5 class="mb-0 fw-bold">{{ $totals['contacts'] }}</h5>
                         <small class="text-muted">{{ __('Contacts') }}</small>
@@ -99,7 +99,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-info p-3"><i class="bx bx-book fs-4 text-info"></i></div>
+                    <div class="rounded-circle badge-soft-info p-3"><i class="bx bx-book fs-4 text-info"></i></div>
                     <div>
                         <h5 class="mb-0 fw-bold">{{ $totals['posts'] }}</h5>
                         <small class="text-muted">{{ __('Articles') }}</small>
@@ -110,7 +110,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-danger p-3"><i class="bx bx-message-square fs-4 text-danger"></i></div>
+                    <div class="rounded-circle badge-soft-danger p-3"><i class="bx bx-message-square fs-4 text-danger"></i></div>
                     <div>
                         <h5 class="mb-0 fw-bold">{{ $totals['comments'] }}</h5>
                         <small class="text-muted">{{ __('Commentaires') }}</small>
@@ -121,7 +121,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-secondary p-3"><i class="bx bx-file fs-4 text-secondary"></i></div>
+                    <div class="rounded-circle badge-soft-secondary p-3"><i class="bx bx-file fs-4 text-secondary"></i></div>
                     <div>
                         <h5 class="mb-0 fw-bold">{{ $totals['audits'] }}</h5>
                         <small class="text-muted">{{ __('Audits') }}</small>
@@ -132,7 +132,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-primary p-3"><i class="bx bx-pulse fs-4 text-primary"></i></div>
+                    <div class="rounded-circle badge-soft-primary p-3"><i class="bx bx-pulse fs-4 text-primary"></i></div>
                     <div>
                         <h5 class="mb-0 fw-bold">{{ $totals['activityLogs'] }}</h5>
                         <small class="text-muted">{{ __('Logs d\'activité') }}</small>

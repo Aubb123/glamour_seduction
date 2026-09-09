@@ -213,7 +213,7 @@
 
                                             @if($file->cloudFolder)
                                                 <div class="d-flex align-items-center" style="background: #f8f9fa;">
-                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
+                                                    <div class="avatar-sm"><span class="avatar-title badge-soft-primary text-primary fs-20 rounded-circle">
                                                         <i class="bx bx-folder"></i>
                                                     </span></div>
                                                     <div class="flex-grow-1">
@@ -226,7 +226,7 @@
                                                 </div>
                                             @else
                                                 <div class="d-flex align-items-center" style="background: #f8f9fa;">
-                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-secondary text-secondary fs-20 rounded-circle">
+                                                    <div class="avatar-sm"><span class="avatar-title badge-soft-secondary text-secondary fs-20 rounded-circle">
                                                         <i class="bx bx-folder"></i>
                                                     </span></div>
                                                     <div>
@@ -268,7 +268,7 @@
                                         <div class="card-body">
                                             @if($file->fileable)
                                                 <div class="d-flex align-items-center gap-3 p-3 rounded" style="background: #f8f9fa;">
-                                                    <div class="avatar-sm"><span class="avatar-title bg-soft-primary text-primary fs-20 rounded-circle">
+                                                    <div class="avatar-sm"><span class="avatar-title badge-soft-primary text-primary fs-20 rounded-circle">
                                                         <i class="bx bx-box"></i>
                                                     </span></div>
                                                     <div class="flex-grow-1">

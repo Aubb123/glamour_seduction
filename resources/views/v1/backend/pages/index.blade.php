@@ -18,7 +18,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-primary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-primary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-user fs-4 text-primary"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -39,7 +39,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-info p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-info p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-shield-quarter fs-4 text-info"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -58,7 +58,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-success p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-success p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-send fs-4 text-success"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -77,7 +77,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-warning p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-warning p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-mail-send fs-4 text-warning"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -96,7 +96,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-secondary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-secondary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-book fs-4 text-secondary"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -116,7 +116,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-danger p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-danger p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-message-square fs-4 text-danger"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -136,7 +136,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-success p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-success p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-image fs-4 text-success"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -155,7 +155,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-info p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-info p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-help-circle fs-4 text-info"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -174,7 +174,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-secondary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-secondary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-cloud fs-4 text-secondary"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -194,7 +194,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-warning p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-warning p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-tag fs-4 text-warning"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -213,7 +213,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-danger p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-danger p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-file fs-4 text-danger"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -229,7 +229,7 @@
         <div class="col-xl-3 col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body d-flex align-items-center gap-3">
-                    <div class="rounded-circle bg-soft-primary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                    <div class="rounded-circle badge-soft-primary p-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
                         <i class="bx bx-pulse fs-4 text-primary"></i>
                     </div>
                     <div class="flex-grow-1">

@@ -211,7 +211,7 @@ class Audit extends Model
      */
     public function getActionBadgeAttribute(): string
     {
-        return AuditAction::tryFrom($this->action)?->badgeClass() ?? 'bg-soft-secondary';
+        return AuditAction::tryFrom($this->action)?->badgeClass() ?? 'badge-soft-secondary';
     }
 
     /**

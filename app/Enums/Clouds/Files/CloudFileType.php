@@ -76,10 +76,10 @@ enum CloudFileType: string
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Image => 'bg-soft-success',
-            self::Video => 'bg-soft-info',
-            self::Zip => 'bg-soft-warning',
-            self::Others => 'bg-soft-secondary',
+            self::Image => 'badge-soft-success',
+            self::Video => 'badge-soft-info',
+            self::Zip => 'badge-soft-warning',
+            self::Others => 'badge-soft-secondary',
         };
     }
 }

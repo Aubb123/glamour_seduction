@@ -38,9 +38,9 @@ enum UserStatus: string
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Active => 'badge bg-soft-success',
-            self::Suspended => 'badge bg-soft-warning',
-            self::Banned => 'badge bg-soft-danger',
+            self::Active => 'badge badge-soft-success',
+            self::Suspended => 'badge badge-soft-warning',
+            self::Banned => 'badge badge-soft-danger',
         };
     }
 }

@@ -16259,92 +16259,92 @@ html[data-menu-color=brand] .main-nav .logo-box .logo-dark {
   margin-left: -0.5rem;
 }
 
-.bg-soft-primary {
+.badge-soft-primary {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-secondary {
+.badge-soft-secondary {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-secondary-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-success {
+.badge-soft-success {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-success-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-warning {
+.badge-soft-warning {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-warning-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-info {
+.badge-soft-info {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-info-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-danger {
+.badge-soft-danger {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-purple {
+.badge-soft-purple {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-purple-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-pink {
+.badge-soft-pink {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-pink-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-blue {
+.badge-soft-blue {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-blue-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-orange {
+.badge-soft-orange {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-orange-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-indigo {
+.badge-soft-indigo {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-indigo-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-red {
+.badge-soft-red {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-red-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-yellow {
+.badge-soft-yellow {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-yellow-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-green {
+.badge-soft-green {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-green-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-teal {
+.badge-soft-teal {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-teal-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-cyan {
+.badge-soft-cyan {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-cyan-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-light {
+.badge-soft-light {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
 }
 
-.bg-soft-dark {
+.badge-soft-dark {
   --bs-bg-opacity: 0.25;
   background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
 }

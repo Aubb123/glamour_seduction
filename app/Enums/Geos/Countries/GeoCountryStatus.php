@@ -36,8 +36,8 @@ enum GeoCountryStatus: string
     public function badgeClass(): string
     {
         return match ($this) {
-            self::Active => 'badge bg-soft-success',
-            self::Inactive => 'badge bg-soft-danger',
+            self::Active => 'badge badge-soft-success',
+            self::Inactive => 'badge badge-soft-danger',
         };
     }
 }

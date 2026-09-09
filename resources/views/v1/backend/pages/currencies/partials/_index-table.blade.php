@@ -141,7 +141,7 @@
 
                                     <td class="text-center">
                                         @if ($currency->is_default)
-                                            <span class="badge bg-soft-success"><i class="bx bx-star me-1"></i>{{ __('v1/backend/views/pages/currencies/partials/_index-table.oui') }}</span>
+                                            <span class="badge badge-soft-success"><i class="bx bx-star me-1"></i>{{ __('v1/backend/views/pages/currencies/partials/_index-table.oui') }}</span>
                                         @else
                                             <span class="badge badge-soft-secondary">{{ __('v1/backend/views/pages/currencies/partials/_index-table.non') }}</span>
                                         @endif
