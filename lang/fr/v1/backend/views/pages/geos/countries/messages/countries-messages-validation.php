@@ -83,6 +83,15 @@ return [
     ],
 
     // ─────────────────────────────────────────────
+    // ─────────────────────────────────────────────
+    // DEVISE
+    // ─────────────────────────────────────────────
+    'currency_id' => [
+        'integer' => 'La devise doit être un entier.',
+        'exists' => 'La devise sélectionnée n\'existe pas.',
+    ],
+
+    // ─────────────────────────────────────────────
     // TRADUCTIONS
     // ─────────────────────────────────────────────
     'translations' => [
@@ -108,12 +117,6 @@ return [
         'description' => [
             'required' => 'La description du pays est obligatoire.',
             'string' => 'La description doit être une chaîne de caractères.',
-        ],
-
-        // Nom de la devise
-        'currency_name' => [
-            'string' => 'Le nom de la devise doit être une chaîne de caractères.',
-            'max' => 'Le nom de la devise ne peut pas dépasser 100 caractères.',
         ],
     ],
 

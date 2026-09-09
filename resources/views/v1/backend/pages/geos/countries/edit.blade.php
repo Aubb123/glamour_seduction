@@ -115,17 +115,18 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="currency_code" class="form-label">{{ __('v1/backend/views/pages/geos/countries/edit.codeMonetaire') }}</label>
-                                    <input type="text" name="currency_code" id="currency_code" class="form-control @error('currency_code') is-invalid @enderror" placeholder="ex: EUR, USD, XOF..." value="{{ old('currency_code', $country->currency_code) }}" maxlength="3" />
-                                    @error('currency_code') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                    <small class="text-muted">{{ __('v1/backend/views/pages/geos/countries/edit.troisLettresMajusculesOptionnel') }}</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="currency_symbol" class="form-label">{{ __('v1/backend/views/pages/geos/countries/edit.symboleMonetaire') }}</label>
-                                    <input type="text" name="currency_symbol" id="currency_symbol" class="form-control @error('currency_symbol') is-invalid @enderror" placeholder="ex: €, $..." value="{{ old('currency_symbol', $country->currency_symbol) }}" maxlength="10" />
-                                    @error('currency_symbol') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                    <small class="text-muted">{{ __('v1/backend/views/pages/geos/countries/edit.optionnel') }}</small>
+                                <div class='col-md-12'>
+                                    <label for='currency_id' class='form-label'>{{ __('v1/backend/views/pages/geos/countries/edit.devise') }}</label>
+                                    <select name='currency_id' id='currency_id' class='form-select @error('currency_id') is-invalid @enderror'>
+                                        <option value=''>{{ __('v1/backend/views/pages/geos/countries/edit.selectionnerUneDevise') }}</option>
+                                        @foreach ($currencies as $currency)
+                                            <option value='{{ $currency->id }}' {{ old('currency_id', $country->currency_id) == $currency->id ? 'selected' : '' }}>
+                                                {{ $currency->active_translation?->name ?? $currency->code }} ({{ $currency->symbol }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('currency_id') <div class='invalid-feedback'>{{ $message }}</div> @enderror
+                                    <small class='text-muted'>{{ __('v1/backend/views/pages/geos/countries/edit.deviseOptionnelle') }}</small>
                                 </div>
                             </div>
 
@@ -182,17 +183,6 @@
                                             </label>
                                             <textarea name="translations[{{ $lang->code }}][description]" id="description_{{ $lang->code }}" required class="form-control @error('translations.' . $lang->code . '.description') is-invalid @enderror" rows="4" placeholder="{{ __('v1/backend/views/pages/geos/countries/edit.descriptionOptionnelleDuPays') }}">{{ old('translations.' . $lang->code . '.description', getTranslation($country, $lang->id)?->description) }}</textarea>
                                             @error('translations.' . $lang->code . '.description')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="currency_name_{{ $lang->code }}" class="form-label">
-                                                {{ __('v1/backend/views/pages/geos/countries/edit.nomDeLaDevise') }}
-                                                <span class="text-muted">({{ $lang->name }})</span>
-                                            </label>
-                                            <input type="text" name="translations[{{ $lang->code }}][currency_name]" id="currency_name_{{ $lang->code }}" class="form-control @error('translations.' . $lang->code . '.currency_name') is-invalid @enderror" placeholder="ex: Euro, Dollar..." value="{{ old('translations.' . $lang->code . '.currency_name', getTranslation($country, $lang->id)?->currency_name) }}" maxlength="100" />
-                                            @error('translations.' . $lang->code . '.currency_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>

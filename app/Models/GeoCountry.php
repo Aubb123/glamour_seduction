@@ -35,8 +35,7 @@ class GeoCountry extends Model
         'code',
         'code_2',
         'phone_code',
-        'currency_code',
-        'currency_symbol',
+        'currency_id',
         'file_path',
         'sort_order',
         'status',
@@ -81,6 +80,14 @@ class GeoCountry extends Model
     }
 
     /**
+     * Relation vers la devise principale du pays (normalisée via la table currencies).
+     */
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
+
+    /**
      * Relation : un pays a plusieurs utilisateurs.
      */
     public function users(): HasMany
@@ -105,14 +112,6 @@ class GeoCountry extends Model
     public function getTypeLabelAttribute(): string
     {
         return CountryType::tryFrom((string) $this->type)?->label() ?? $this->type;
-    }
-
-    /**
-     * Accesseur : nom traduit de la devise via la traduction active.
-     */
-    public function getCurrencyNameAttribute(): ?string
-    {
-        return $this->active_translation?->currency_name;
     }
 
     /**

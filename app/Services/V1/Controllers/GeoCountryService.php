@@ -37,7 +37,7 @@ class GeoCountryService
             // la valeur existante) et « champ présent avec null » (on VIDE le champ).
             // C'est ce qui permet par exemple de détacher un territoire de son pays
             // souverain ou de retirer la devise d'un pays.
-            foreach (['sovereign_id', 'code', 'phone_code', 'currency_code', 'currency_symbol'] as $nullableField) {
+            foreach (['sovereign_id', 'code', 'phone_code', 'currency_id'] as $nullableField) {
                 $attributes[$nullableField] = Arr::exists($data, $nullableField)
                     ? $data[$nullableField] // ← null explicite = on vide le champ
                     : $country->{$nullableField}; // ← absent = on conserve l'existant
@@ -146,7 +146,6 @@ class GeoCountryService
                     'name' => $translation['name'],
                     // La description est toujours fournie (règle "required" du FormRequest) — jamais null.
                     'description' => $translation['description'],
-                    'currency_name' => $translation['currency_name'] ?? $existingTranslation->currency_name,
                 ]);
 
             } else {
@@ -157,7 +156,6 @@ class GeoCountryService
                     'name' => $translation['name'],
                     // La description est toujours fournie (règle "required" du FormRequest) — jamais null.
                     'description' => $translation['description'],
-                    'currency_name' => $translation['currency_name'] ?? null,
                 ]);
             }
         }

@@ -84,6 +84,13 @@ return [
         'min' => 'The sort order must be greater than or equal to 0.',
         'unique' => 'This sort order is already used by another country.',
     ],
+    // ─────────────────────────────────────────────
+    // CURRENCY
+    // ─────────────────────────────────────────────
+    'currency_id' => [
+        'integer' => 'The currency must be an integer.',
+        'exists' => 'The selected currency does not exist.',
+    ],
 
     // ─────────────────────────────────────────────
     // TRANSLATIONS
@@ -111,12 +118,6 @@ return [
         'description' => [
             'required' => 'The country description is required.',
             'string' => 'The description must be a string.',
-        ],
-
-        // Currency name
-        'currency_name' => [
-            'string' => 'The currency name must be a string.',
-            'max' => 'The currency name cannot exceed 100 characters.',
         ],
     ],
 

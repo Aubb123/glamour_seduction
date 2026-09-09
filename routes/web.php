@@ -25,6 +25,8 @@ use App\Http\Controllers\V1\GeoContinentController as V1GeoContinentController;
 use App\Http\Controllers\V1\GeoContinentTranslationController as V1GeoContinentTranslationController;
 use App\Http\Controllers\V1\GeoCountryController as V1GeoCountryController;
 use App\Http\Controllers\V1\GeoCountryTranslationController as V1GeoCountryTranslationController;
+use App\Http\Controllers\V1\CurrencyController as V1CurrencyController;
+use App\Http\Controllers\V1\CurrencyTranslationController as V1CurrencyTranslationController;
 use App\Http\Controllers\V1\LangController as V1LangController;
 use App\Http\Controllers\V1\PermissionController as V1PermissionController;
 use App\Http\Controllers\V1\PlatformVersionController as V1PlatformVersionController;
@@ -172,6 +174,29 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/geo-countries-translations/trashed/{geoCountry}', 'backend_geocountries_translations_trashed')->middleware(['permission:geo-countries-translations.trashed'])->name('backend.geocountries.translation.trashed')->withTrashed();
             Route::patch('/backend/geo-countries-translations/restore/{uuid}', 'backend_geocountries_translations_restore')->middleware(['permission:geo-countries-translations.restore'])->name('backend.geocountries.translation.restore');
             Route::delete('/backend/geo-countries-translations/force-destroy/{uuid}', 'backend_geocountries_translations_force_destroy')->middleware(['permission:geo-countries-translations.force_destroy'])->name('backend.geocountries.translation.force_destroy');
+
+        // Routes pour : Gestion des Devises
+        Route::controller(V1CurrencyController::class)->group(function () {
+            Route::get('/backend/currencies/index', 'backend_currencies_index')->middleware(['permission:currencies.index'])->name('backend.currencies.index');
+            Route::get('/backend/currencies/show/{currency}/{slug}', 'backend_currencies_show')->middleware(['permission:currencies.show'])->name('backend.currencies.show');
+            Route::get('/backend/currencies/countries/{currency}/{slug}', 'backend_currencies_countries')->middleware(['permission:currencies.show'])->name('backend.currencies.countries');
+            Route::get('/backend/currencies/audits/{currency}/{slug}', 'backend_currencies_audits')->middleware(['permission:currencies.audits'])->name('backend.currencies.audits');
+            Route::get('/backend/currencies/activity-logs/{currency}/{slug}', 'backend_currencies_activity_logs')->middleware(['permission:currencies.activity_logs'])->name('backend.currencies.activity-logs');
+            Route::get('/backend/currencies/edit/{currency}', 'backend_currencies_edit')->middleware(['permission:currencies.edit'])->name('backend.currencies.edit');
+            Route::put('/backend/currencies/update/{currency}', 'backend_currencies_update')->middleware(['permission:currencies.update'])->name('backend.currencies.update');
+            Route::patch('/backend/currencies/activate/{currency}', 'backend_currencies_activate')->middleware(['permission:currencies.activate'])->name('backend.currencies.activate');
+            Route::patch('/backend/currencies/deactivate/{currency}', 'backend_currencies_deactivate')->middleware(['permission:currencies.deactivate'])->name('backend.currencies.deactivate');
+            Route::delete('/backend/currencies/destroy/{currency}', 'backend_currencies_destroy')->middleware(['permission:currencies.destroy'])->name('backend.currencies.destroy');
+            Route::get('/backend/currencies/trashed', 'backend_currencies_trashed')->middleware(['permission:currencies.trashed'])->name('backend.currencies.trashed');
+            Route::patch('/backend/currencies/restore/{uuid}', 'backend_currencies_restore')->middleware(['permission:currencies.restore'])->name('backend.currencies.restore');
+            Route::delete('/backend/currencies/force-destroy/{uuid}', 'backend_currencies_force_destroy')->middleware(['permission:currencies.force_destroy'])->name('backend.currencies.force_destroy');
+        });
+        Route::controller(V1CurrencyTranslationController::class)->group(function () {
+            Route::delete('/backend/currency-translations/destroy/{currencyTranslation}', 'backend_currencies_translations_destroy')->middleware(['permission:currency-translations.destroy'])->name('backend.currencies.translation.destroy');
+            Route::get('/backend/currency-translations/trashed/{currency}', 'backend_currencies_translations_trashed')->middleware(['permission:currency-translations.trashed'])->name('backend.currencies.translation.trashed')->withTrashed();
+            Route::patch('/backend/currency-translations/restore/{uuid}', 'backend_currencies_translations_restore')->middleware(['permission:currency-translations.restore'])->name('backend.currencies.translation.restore');
+            Route::delete('/backend/currency-translations/force-destroy/{uuid}', 'backend_currencies_translations_force_destroy')->middleware(['permission:currency-translations.force_destroy'])->name('backend.currencies.translation.force_destroy');
+        });
         });
 
         // Routes pour : Gestion des Roles et Permissions

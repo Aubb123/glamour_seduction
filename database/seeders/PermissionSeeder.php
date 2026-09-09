@@ -28,6 +28,8 @@ class PermissionSeeder extends Seeder
         'geo-continents-translations' => [], // Exemple pour les traductions des continents, avec uniquement les actions de base
         'geo-countries' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Exemple pour les pays, avec des actions spécifiques en plus du CRUD de base
         'geo-countries-translations' => [], // Exemple pour les traductions des pays, avec uniquement les actions de base
+        'currencies' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Exemple pour les devises, avec des actions spécifiques en plus du CRUD de base
+        'currency-translations' => [], // Exemple pour les traductions des devises, avec uniquement les actions de base
         'roles' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Exemple pour les rôles, avec des actions spécifiques en plus du CRUD de base
         'roles-translations' => [], // Exemple pour les traductions des rôles, avec uniquement les actions de base
         'permissions' => ['activate', 'deactivate', 'assign', 'sync_roles', 'audits', 'activity_logs'], // Exemple pour les permissions, avec des actions spécifiques en plus du CRUD de base
@@ -86,6 +88,13 @@ class PermissionSeeder extends Seeder
             'geo-countries.edit',
             'geo-countries.update',
             // geo-countries-translations (index, create, store, show, edit, update)
+
+            // currencies
+            'currencies.index',
+            'currencies.show',
+            'currencies.edit',
+            'currencies.update',
+            // currency-translations (index, create, store, show, edit, update)
 
             // roles
             'roles.index',

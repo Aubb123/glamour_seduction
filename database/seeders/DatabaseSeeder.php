@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             SettingTranslationSeeder::class,
             GeoContinentSeeder::class,
             GeoContinentTranslationSeeder::class,
+            CurrencySeeder::class,
+            CurrencyTranslationSeeder::class,
             GeoCountrySeeder::class,
             GeoCountryTranslationSeeder::class,
             RoleSeeder::class,

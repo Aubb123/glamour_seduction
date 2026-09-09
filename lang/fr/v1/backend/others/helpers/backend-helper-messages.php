@@ -6,6 +6,7 @@ return [
     'entityLabels' => [
         'country' => 'pays',
         'continent' => 'continent',
+        'currency' => 'devise',
         'category' => 'catégorie',
         'tag' => 'tag',
         'post' => 'article',
@@ -53,6 +54,13 @@ return [
                 'pronoun' => 'il',
                 'participle' => 'lié',
                 'object' => 'le',
+            ],
+            'Currency' => [
+                'label' => 'devise',
+                'demonstrative' => 'cette',
+                'pronoun' => 'elle',
+                'participle' => 'liée',
+                'object' => 'la',
             ],
             'BlogCategory' => [
                 'label' => 'catégorie',

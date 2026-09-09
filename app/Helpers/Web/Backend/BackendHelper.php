@@ -496,6 +496,7 @@ class BackendHelper
                         'children' => [
                             ['label' => 'Continents', 'route' => 'backend.geocontinents.index', 'patterns' => ['backend.geocontinents.*']],
                             ['label' => 'Pays', 'route' => 'backend.geocountries.index', 'patterns' => ['backend.geocountries.*']],
+                            ['label' => 'Devises', 'route' => 'backend.currencies.index', 'patterns' => ['backend.currencies.*', 'backend.currency-translations.*']],
                         ],
                     ],
                     [

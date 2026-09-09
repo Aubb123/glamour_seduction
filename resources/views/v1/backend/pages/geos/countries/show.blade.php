@@ -93,9 +93,9 @@
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/geos/countries/show.devise') }}</div>
                                     <div class="col-8 fw-semibold">
-                                        @if ($country->currency_code)
-                                            <span class="badge badge-soft-success fs-13">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
-                                            <span class="text-muted ms-1 small">{{ $country->currency_name }}</span>
+                                        @if ($country->currency)
+                                            <span class="badge badge-soft-success fs-13">{{ $country->currency?->symbol }} {{ $country->currency?->code }}</span>
+                                            <span class="text-muted ms-1 small">{{ $country->currency?->active_translation?->name ?? $country->currency?->code }}</span>
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif

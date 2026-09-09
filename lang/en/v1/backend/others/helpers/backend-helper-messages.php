@@ -6,6 +6,7 @@ return [
     'entityLabels' => [
         'country' => 'country',
         'continent' => 'continent',
+        'currency' => 'currency',
         'category' => 'category',
         'tag' => 'tag',
         'post' => 'post',
@@ -49,6 +50,13 @@ return [
             ],
             'GeoCountry' => [
                 'label' => 'country',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
+            'Currency' => [
+                'label' => 'currency',
                 'demonstrative' => 'this',
                 'pronoun' => 'it',
                 'participle' => 'linked',

@@ -1,0 +1,30 @@
+<?php
+
+return [
+    // edit.blade.php
+    'pageTitle' => 'Edit a currency',
+    'modifier' => 'Edit',
+    'retour' => 'Back',
+    'informationsGenerales' => 'General information',
+    'traductions' => 'Translations',
+    'codeDevise' => 'Currency code (ISO 4217 alpha-3)',
+    'troisLettresMajuscules' => '3 uppercase letters (e.g., EUR, USD, XOF).',
+    'symboleMonetaire' => 'Currency symbol',
+    'symboleExemple' => 'e.g., €, $, ₫, د.إ...',
+    'codeNumerique' => 'Numeric code (ISO 4217)',
+    'troisChiffresOptionnel' => '3 digits. Optional (e.g., 978, 840).',
+    'decimales' => 'Decimal places',
+    'decimalesAide' => '0 for JPY/KRW, 2 for EUR/USD, 3 for KWD/BHD.',
+    'deviseParDefaut' => 'Platform default currency',
+    'deviseParDefautAide' => 'Only one currency can be the default. Checking this will automatically remove the previous default currency status.',
+    'ordreAffichage' => 'Sort order',
+    'utiliseDansListesSelects' => 'Used in lists and selects.',
+    'statut' => 'Status',
+    'nom' => 'Name',
+    'exDevise' => 'e.g., Euro, US Dollar, CFA Franc...',
+    'description' => 'Description',
+    'descriptionOptionnelleDeLaDevise' => 'Optional currency description...',
+    'precedent' => 'Previous',
+    'suivant' => 'Next',
+    'mettreAJour' => 'Update',
+];

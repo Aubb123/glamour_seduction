@@ -24,7 +24,6 @@ class GeoCountryTranslation extends Model
         'name',
         'slug',
         'description',
-        'currency_name',
     ];
 
     /**

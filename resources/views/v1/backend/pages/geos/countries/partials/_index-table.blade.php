@@ -131,8 +131,8 @@
                                     </td>
 
                                     <td>
-                                        @if ($country->currency_code)
-                                            <span class="badge badge-soft-success" title="{{ $country->currency_name }}">{{ $country->currency_symbol }} {{ $country->currency_code }}</span>
+                                        @if ($country->currency)
+                                            <span class="badge badge-soft-success" title="{{ $country->currency?->active_translation?->name ?? $country->currency?->code }}">{{ $country->currency?->symbol }} {{ $country->currency?->code }}</span>
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif

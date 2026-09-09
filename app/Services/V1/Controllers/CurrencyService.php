@@ -1,0 +1,237 @@
+<?php
+
+namespace App\Services\V1\Controllers;
+
+use App\Enums\Currencies\CurrencyStatus;
+use App\Models\Currency;
+use App\Models\CurrencyTranslation;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+
+use function __;
+
+class CurrencyService
+{
+    // Chemin de base pour les traductions (centralisé)
+    protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies';
+
+    // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
+    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages'; 
+
+    // ─────────────────────────────────────────────
+    // UPDATE
+    // ─────────────────────────────────────────────
+    public function update(Currency $currency, array $data): Currency
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        return DB::transaction(function () use ($currency, $data) {
+
+            // Si la devise est marquée comme par défaut, on retire le flag
+            // à toutes les autres devises (une seule devise par défaut à la fois).
+            $isDefault = ! empty($data['is_default']);
+
+            if ($isDefault) {
+                Currency::where('id', '!=', $currency->id)
+                    ->where('is_default', true)
+                    ->update(['is_default' => false]);
+            }
+
+            $attributes = [
+                // Champs obligatoires : toujours présents dans les données validées
+                'code' => $data['code'],
+                'symbol' => $data['symbol'],
+                'decimal_places' => $data['decimal_places'],
+                'sort_order' => $data['sort_order'],
+                // Statut : la case à cocher est absente du payload = devise masquée (convention formulaire)
+                'status' => ($data['status'] ?? null) === CurrencyStatus::Active->value
+                    ? CurrencyStatus::Active
+                    : CurrencyStatus::Inactive,
+                'is_default' => $isDefault,
+            ];
+
+            // Champs nullables : on distingue « champ absent du payload » (on conserve
+            // la valeur existante) et « champ présent avec null » (on VIDE le champ).
+            foreach (['numeric_code'] as $nullableField) {
+                $attributes[$nullableField] = Arr::exists($data, $nullableField)
+                    ? $data[$nullableField] // ← null explicite = on vide le champ
+                    : $currency->{$nullableField}; // ← absent = on conserve l'existant
+            }
+
+            // Mise à jour des champs de la devise (sauf les traductions)
+            $currency->update($attributes);
+
+            // Ensuite, synchronisation des traductions (création ou mise à jour)
+            $this->syncTranslations($currency, $data['translations']);
+
+            return $currency; // ← retourne la devise mise à jour avec ses traductions
+        });
+    }
+// ─────────────────────────────────────────────
+    // ACTIVATE
+    // ─────────────────────────────────────────────
+    public function activate(Currency $currency): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($currency) {
+
+            // Si la devise est déjà active, on lève une exception métier pour éviter une opération inutile
+            if ($currency->status === CurrencyStatus::Active) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active")); 
+            }
+
+            // Activation de la devise sélectionnée
+            $currency->update([
+                'status' => CurrencyStatus::Active,
+            ]);
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    // DEACTIVATE
+    // ─────────────────────────────────────────────
+    public function deactivate(Currency $currency): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($currency) {
+
+            // Si la devise est déjà inactive, on lève une exception métier
+            if ($currency->status === CurrencyStatus::Inactive) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+            }
+
+            // Désactivation de la devise sélectionnée
+            $currency->update([
+                'status' => CurrencyStatus::Inactive,
+            ]);
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    // DESTROY (soft delete)
+    // ─────────────────────────────────────────────
+    public function destroy(Currency $currency): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($currency) {
+
+            // Une devise par défaut ne peut pas être supprimée (il faut d'abord en désigner une autre)
+            if ($currency->is_default) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.default_currency_forbidden"));
+            }
+
+            // Empêche la suppression si la devise est déjà en corbeille
+            if ($currency->trashed()) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+            }
+
+            // Suppression (soft delete) de la devise et de ses dépendances associées
+            destroy_function($currency);
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    // RESTORE
+    // ─────────────────────────────────────────────
+    public function restore(Currency $currency): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($currency) {
+
+            // Restauration simple (restore)
+            if ($currency->trashed()) {
+                restore_function($currency);
+            } else {
+                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+            }
+        });
+    }
+
+    // ─────────────────────────────────────────────
+    // FORCE DESTROY
+    // ─────────────────────────────────────────────
+    public function forceDestroy(Currency $currency): void
+    {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
+        DB::transaction(function () use ($currency) {
+
+            // Une devise par défaut ne peut pas être supprimée définitivement
+            if ($currency->is_default) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.default_currency_forbidden"));
+            }
+
+            // Suppression définitive (forceDelete)
+            if ($currency->trashed()) {
+                force_destroy_function($currency);
+            } else {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+            }
+        });
+    }
+// ─────────────────────────────────────────────
+    // SYNC TRANSLATIONS (privé)
+    // ─────────────────────────────────────────────
+    private function syncTranslations(Currency $currency, array $translations): void
+    {
+        // Récupère les IDs des langues soumises
+        $submittedLangIds = collect($translations)->pluck('lang_id')->toArray();
+
+        // Supprime les traductions qui ne sont plus présentes dans le formulaire
+        CurrencyTranslation::where('currency_id', $currency->id)
+            ->whereNotIn('lang_id', $submittedLangIds)
+            ->delete();
+        // Suppression définitive des traductions supprimées (soft delete) qui sont en corbeille, supprimer précédemment
+        CurrencyTranslation::onlyTrashed()->where('currency_id', $currency->id)
+            ->whereNotIn('lang_id', $submittedLangIds)
+            ->forceDelete();
+
+        // Validation générique factorisée (BackendHelper) :
+        //  - conflit nom/slug avec une autre entité (active ou en corbeille) dans la même langue ;
+        //  - conflit avec la propre traduction de l'entité, placée en corbeille.
+        // Lève une InvalidArgumentException avec un message explicite si besoin.
+        assertTranslationUniqueness(
+            $currency,
+            $translations,
+            __('v1/backend/others/helpers/backend-helper-messages.entityLabels.currency'),
+            $this->helperLangPath
+        );
+
+        // Pour chaque traduction reçue, on utilise updateOrCreate pour créer ou mettre à jour la traduction correspondante
+        foreach ($translations as $translation) {
+
+            $langId = $translation['lang_id'];
+
+            // Vérifie si une traduction existe déjà pour la devise et la langue
+            $existingTranslation = CurrencyTranslation::withTrashed()
+                ->where('currency_id', $currency->id)
+                ->where('lang_id', $langId)
+                ->first();
+
+            // Si une traduction existante est trouvée
+            if ($existingTranslation) {
+
+                // Si la traduction existante est en corbeille, on la restaure d'abord
+                // (un update() sur un modèle soft-deleted ne le restaure pas).
+                if ($existingTranslation->trashed()) {
+                    $existingTranslation->restore();
+                }
+
+                // NB : le slug n'est PAS défini manuellement ici — le trait HasSlug le régénère
+                // automatiquement (avec garantie d'unicité par langue) si le nom change.
+                $existingTranslation->update([
+                    'name' => $translation['name'],
+                    // La description est optionnelle
+                    'description' => $translation['description'] ?? null,
+                ]);
+
+            } else {
+                // Si la traduction n'existe pas, on la crée
+                CurrencyTranslation::create([
+                    'currency_id' => $currency->id,
+                    'lang_id' => $langId,
+                    'name' => $translation['name'],
+                    'description' => $translation['description'] ?? null,
+                ]);
+            }
+        }
+    }
+}

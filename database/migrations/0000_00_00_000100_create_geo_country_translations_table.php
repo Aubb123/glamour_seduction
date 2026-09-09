@@ -20,7 +20,6 @@ return new class extends Migration
             //
             $table->string('name'); // Nom du pays dans la langue de traduction
             $table->string('slug'); // Slug SEO-friendly
-            $table->string('currency_name', 100)->nullable(); // Euro, Dollar...
             $table->text('description'); // Description optionnelle du pays
             //
             $table->timestamps();

@@ -82,11 +82,8 @@ class UpdateGeoCountryRequest extends FormRequest
             // Ordre d'affichage dans les listes — optionnel, entier positif ou nul
             'sort_order' => ['required', 'integer', 'min:0', 'unique:geo_countries,sort_order,'.$this->countryId],
 
-            // Code monétaire (ex: EUR, USD, XOF) — optionnel
-            'currency_code' => ['nullable', 'string', 'max:3', 'regex:/^[A-Z]{3}$/'],
-
-            // Symbole monétaire (ex: €, $) — optionnel
-            'currency_symbol' => ['nullable', 'string', 'max:10'],
+            // Devise principale du pays (normalisée via la table currencies) — optionnelle
+            'currency_id' => ['nullable', 'integer', 'exists:currencies,id'],
 
             // Statut du pays — optionnel, doit être une valeur de l'enum GeoCountryStatus
             'status' => ['required', Rule::in(GeoCountryStatus::values())],
@@ -103,9 +100,6 @@ class UpdateGeoCountryRequest extends FormRequest
             // Description du pays dans la langue concernée — optionnelle
             'translations.*.description' => ['required', 'string'],
 
-            // Nom de la devise dans la langue concernée (ex: Euro, Dollar) — optionnel
-            'translations.*.currency_name' => ['nullable', 'string', 'max:100'],
-
         ];
     }
 
@@ -116,73 +110,73 @@ class UpdateGeoCountryRequest extends FormRequest
     {
         return [
             // Continent
-            'continent_id.required' => __("{$this->langPath}.continent_id.required"),
-            'continent_id.integer' => __("{$this->langPath}.continent_id.integer"),
-            'continent_id.exists' => __("{$this->langPath}.continent_id.exists"),
+            'continent_id.required' => __($this->langPath.'.continent_id.required'),
+            'continent_id.integer' => __($this->langPath.'.continent_id.integer'),
+            'continent_id.exists' => __($this->langPath.'.continent_id.exists'),
 
             // Type
-            'type.required' => __("{$this->langPath}.type.required"),
-            'type.in' => __("{$this->langPath}.type.in"),
+            'type.required' => __($this->langPath.'.type.required'),
+            'type.in' => __($this->langPath.'.type.in'),
             // Statut
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __($this->langPath.'.status.required'),
+            'status.in' => __($this->langPath.'.status.in'),
 
             // Pays souverain
-            'sovereign_id.exists' => __("{$this->langPath}.sovereign_id.exists"),
-            'sovereign_id.required_unless' => __("{$this->langPath}.sovereign_id.required_unless"),
-            'sovereign_id.prohibited_if' => __("{$this->langPath}.sovereign_id.prohibited_if"),
-            'sovereign_id.not_in' => __("{$this->langPath}.sovereign_id.not_in"),
+            'sovereign_id.exists' => __($this->langPath.'.sovereign_id.exists'),
+            'sovereign_id.required_unless' => __($this->langPath.'.sovereign_id.required_unless'),
+            'sovereign_id.prohibited_if' => __($this->langPath.'.sovereign_id.prohibited_if'),
+            'sovereign_id.not_in' => __($this->langPath.'.sovereign_id.not_in'),
 
             // Code alpha-3
-            'code.string' => __("{$this->langPath}.code.string"),
-            'code.size' => __("{$this->langPath}.code.size"),
-            'code.regex' => __("{$this->langPath}.code.regex"),
-            'code.unique' => __("{$this->langPath}.code.unique"),
+            'code.string' => __($this->langPath.'.code.string'),
+            'code.size' => __($this->langPath.'.code.size'),
+            'code.regex' => __($this->langPath.'.code.regex'),
+            'code.unique' => __($this->langPath.'.code.unique'),
 
             // Code alpha-2
-            'code_2.required' => __("{$this->langPath}.code_2.required"),
-            'code_2.string' => __("{$this->langPath}.code_2.string"),
-            'code_2.max' => __("{$this->langPath}.code_2.max"),
-            'code_2.regex' => __("{$this->langPath}.code_2.regex"),
-            'code_2.unique' => __("{$this->langPath}.code_2.unique"),
+            'code_2.required' => __($this->langPath.'.code_2.required'),
+            'code_2.string' => __($this->langPath.'.code_2.string'),
+            'code_2.max' => __($this->langPath.'.code_2.max'),
+            'code_2.regex' => __($this->langPath.'.code_2.regex'),
+            'code_2.unique' => __($this->langPath.'.code_2.unique'),
 
             // Indicatif téléphonique
-            'phone_code.string' => __("{$this->langPath}.phone_code.string"),
-            'phone_code.max' => __("{$this->langPath}.phone_code.max"),
-            'phone_code.regex' => __("{$this->langPath}.phone_code.regex"),
+            'phone_code.string' => __($this->langPath.'.phone_code.string'),
+            'phone_code.max' => __($this->langPath.'.phone_code.max'),
+            'phone_code.regex' => __($this->langPath.'.phone_code.regex'),
 
             // Image
-            'file_path.image' => __("{$this->langPath}.file_path.image"),
-            'file_path.mimes' => __("{$this->langPath}.file_path.mimes"),
-            'file_path.max' => __("{$this->langPath}.file_path.max"),
+            'file_path.image' => __($this->langPath.'.file_path.image'),
+            'file_path.mimes' => __($this->langPath.'.file_path.mimes'),
+            'file_path.max' => __($this->langPath.'.file_path.max'),
 
             // Ordre d'affichage
-            'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
-            'sort_order.min' => __("{$this->langPath}.sort_order.min"),
-            'sort_order.unique' => __("{$this->langPath}.sort_order.unique"),
+            'sort_order.integer' => __($this->langPath.'.sort_order.integer'),
+            'sort_order.min' => __($this->langPath.'.sort_order.min'),
+            'sort_order.unique' => __($this->langPath.'.sort_order.unique'),
+
+            // Devise
+            'currency_id.integer' => __($this->langPath.'.currency_id.integer'),
+            'currency_id.exists' => __($this->langPath.'.currency_id.exists'),
 
             // Traductions (tableau)
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
-            'translations.min' => __("{$this->langPath}.translations.min"),
+            'translations.required' => __($this->langPath.'.translations.required'),
+            'translations.array' => __($this->langPath.'.translations.array'),
+            'translations.min' => __($this->langPath.'.translations.min'),
 
             // Langue de la traduction
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.integer' => __("{$this->langPath}.translations.lang_id.integer"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __($this->langPath.'.translations.lang_id.required'),
+            'translations.*.lang_id.integer' => __($this->langPath.'.translations.lang_id.integer'),
+            'translations.*.lang_id.exists' => __($this->langPath.'.translations.lang_id.exists'),
 
             // Nom de la traduction
-            'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
-            'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
-            'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
+            'translations.*.name.required' => __($this->langPath.'.translations.name.required'),
+            'translations.*.name.string' => __($this->langPath.'.translations.name.string'),
+            'translations.*.name.max' => __($this->langPath.'.translations.name.max'),
 
             // Description de la traduction
-            'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
-            'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
-
-            // Nom de la devise de la traduction
-            'translations.*.currency_name.string' => __("{$this->langPath}.translations.currency_name.string"),
-            'translations.*.currency_name.max' => __("{$this->langPath}.translations.currency_name.max"),
+            'translations.*.description.required' => __($this->langPath.'.translations.description.required'),
+            'translations.*.description.string' => __($this->langPath.'.translations.description.string'),
         ];
     }
 }

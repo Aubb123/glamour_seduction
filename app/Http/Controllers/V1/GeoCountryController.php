@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Geo\Countries\UpdateGeoCountryRequest;
 use App\Models\GeoContinent;
+use App\Models\Currency;
 use App\Models\GeoCountry;
 use App\Models\GeoCountryTranslation;
 use App\Models\User;
@@ -31,7 +32,7 @@ class GeoCountryController extends Controller
         try {
 
             // ✅ Récupère tous les pays avec leurs traductions actives et leur continent, triés par ordre d'affichage décroissant
-            $geocountries = GeoCountry::withCount(['users', 'audits', 'activityLogs'])->withActiveTranslation()->with(['continent'])->orderBy('sort_order', 'desc')->get();
+            $geocountries = GeoCountry::withCount(['users', 'audits', 'activityLogs'])->withActiveTranslation()->with(['continent', 'currency'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des pays
             $this->logActivity(type: 'info', action: 'backend.geocountries.index', context: ['count' => $geocountries->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
@@ -62,7 +63,7 @@ class GeoCountryController extends Controller
             // car l'onglet "Traductions" de la vue affiche chaque langue), continent et compteurs.
             $country = GeoCountry::query()
                 ->withCount(['users', 'audits', 'activityLogs'])
-                ->with(['continent'])
+                ->with(['continent', 'currency'])
                 ->with(['translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang')])
                 ->findOrFail($geoCountry->id);
 
@@ -221,6 +222,9 @@ class GeoCountryController extends Controller
             // Récupère tous les pays (pour le select du pays souverain)
             $geocountries = GeoCountry::withActiveTranslation()->orderBy('sort_order', 'asc')->get();
 
+            // Récupère toutes les devises actives (pour le select de la devise du pays)
+            $currencies = Currency::withActiveTranslation()->orderBy('sort_order', 'asc')->get();
+
             // Pays résolu par le binding implicite sur uuid (404 automatique si introuvable)
             $country = $geoCountry;
 
@@ -228,7 +232,7 @@ class GeoCountryController extends Controller
             $this->logActivity(type: 'info', action: 'backend.geocountries.edit', context: ['country_uuid' => $country->uuid, 'country_code' => $country->code], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $country->active_translation?->name ?? $country->code]), is_success: true, loggable: $country);
 
             // Retourne la vue d'édition du pays avec les données nécessaires
-            return view('v1.backend.pages.geos.countries.edit', compact('country', 'langs', 'continents', 'geocountries'));
+            return view('v1.backend.pages.geos.countries.edit', compact('country', 'langs', 'continents', 'geocountries', 'currencies'));
 
         } catch (\Exception $e) {
 
@@ -361,7 +365,7 @@ class GeoCountryController extends Controller
         try {
 
             // Récupère tous les pays supprimés (soft deleted) avec leurs traductions, triés par date de suppression décroissante
-            $geocountries = GeoCountry::onlyTrashed()->withTrashedActiveTranslation()->with(['continent'])->withCount(['users', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $geocountries = GeoCountry::onlyTrashed()->withTrashedActiveTranslation()->with(['continent', 'currency'])->withCount(['users', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des pays
             $this->logActivity(type: 'info', action: 'backend.geocountries.trashed', context: ['count' => $geocountries->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);

@@ -29,8 +29,6 @@ return new class extends Migration
             // Code ISO 3166-1 alpha-2 (ex: FR, US, BJ) — étendu aux subdivisions (GB-ENG...) donc longueur 10
             $table->string('code_2', 10)->unique();
             $table->string('phone_code', 10)->nullable(); // certains territoires partagent l'indicatif du pays parent ou n'en ont pas
-            $table->string('currency_code', 3)->nullable();   // EUR, USD, XOF...
-            $table->string('currency_symbol', 10)->nullable(); // €, $, ...
             $table->string('file_path');
             $table->integer('sort_order')->unique(); // Utile dans les selects/listes // Pour l'ordre d'affichage : 0 en premier
             $table->enum('status', ['active', 'inactive'])->default('inactive');

@@ -1,0 +1,30 @@
+<?php
+
+return [
+    // edit.blade.php
+    'pageTitle' => 'Modifier une devise',
+    'modifier' => 'Modifier',
+    'retour' => 'Retour',
+    'informationsGenerales' => 'Informations générales',
+    'traductions' => 'Traductions',
+    'codeDevise' => 'Code devise (ISO 4217 alpha-3)',
+    'troisLettresMajuscules' => '3 lettres majuscules (ex: EUR, USD, XOF).',
+    'symboleMonetaire' => 'Symbole monétaire',
+    'symboleExemple' => 'ex: €, $, ₫, د.إ...',
+    'codeNumerique' => 'Code numérique (ISO 4217)',
+    'troisChiffresOptionnel' => '3 chiffres. Optionnel (ex: 978, 840).',
+    'decimales' => 'Nombre de décimales',
+    'decimalesAide' => '0 pour JPY/KRW, 2 pour EUR/USD, 3 pour KWD/BHD.',
+    'deviseParDefaut' => 'Devise par défaut de la plateforme',
+    'deviseParDefautAide' => 'Une seule devise peut être définie par défaut. Cocher retirera automatiquement le statut de l\'ancienne devise par défaut.',
+    'ordreAffichage' => 'Ordre d\'affichage',
+    'utiliseDansListesSelects' => 'Utilisé dans les listes et selects.',
+    'statut' => 'Statut',
+    'nom' => 'Nom',
+    'exDevise' => 'ex: Euro, Dollar américain, Franc CFA...',
+    'description' => 'Description',
+    'descriptionOptionnelleDeLaDevise' => 'Description optionnelle de la devise...',
+    'precedent' => 'Précédent',
+    'suivant' => 'Suivant',
+    'mettreAJour' => 'Mettre à jour',
+];
