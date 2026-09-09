@@ -364,7 +364,7 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 
 ### Référence
 - Template source : `../template-larkon/admin/*` (demos `category-list.html`, `category-add.html`, `ui-badge.html`).
-- Mapping dérivé des démos : boutons principaux (Add/submit) **solides** (`btn-primary`) ; actions de ligne (tooltip `title=`) **soft** (`btn-soft-*`, `btn-light` pour « Voir ») ; badges `badge badge-soft-{color}` ; tables `table-centered` ; initiales `avatar-sm` > `avatar-title bg-soft-{c} text-{c} fs-20 rounded-circle`.
+- Mapping dérivé des démos : boutons principaux (Add/submit) **solides** (`btn-primary`) ; actions de ligne (tooltip `title=`) **soft** (`btn-soft-*`, `btn-light` pour « Voir ») ; badges `badge badge-soft-{color}` ; tables `table-centered` ; initiales `avatar-sm` > `avatar-title badge-soft-{c} text-{c} fs-20 rounded-circle`.
 - `page-title-box` **non appliqué** : la classe existe dans `app.min.css` mais aucune démo Larkon ne l'utilise ; le `_toolbar` (row/h4/breadcrumb) est déjà conforme au rendu des démos.
 
 ### Outil
@@ -398,7 +398,7 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 |---|---|
 | `routes/web.php` + `routes/console.php` | ✅ 1:1 (`route:list` diff = 0) |
 | `app/**` (contrôleurs, modèles, services, requests, middleware, enums, traits, helpers, commands) | ✅ 1:1 |
-| `database/**` (36 migrations, 32 factories, 35 seeders) | ✅ 1:1 |
+| `database/**` (36 migrations, 32 factories, 37 seeders) | ✅ 1:1 |
 | `config/**`, `bootstrap/app.php`, `composer.json`, `vite.config.js`, `.env.example` | ✅ 1:1 |
 | `lang/{en,fr}/**` (188 fichiers) | ✅ 1:1 |
 | `resources/views/**` (272 fichiers) | ✅ 1:1 (contenu adapté au thème Larkon : icônes, DataTables/Summernote conservés) |

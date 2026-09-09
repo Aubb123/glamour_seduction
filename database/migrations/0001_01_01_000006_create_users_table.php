@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique(); // UUID pour une identification universelle unique
             //
             $table->foreignId('country_id')->constrained('geo_countries')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table geo_countries
+            $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table currencies
             //
             $table->string('first_name'); // Prénom de l'utilisateur
             $table->string('last_name'); // Nom de famille de l'utilisateur

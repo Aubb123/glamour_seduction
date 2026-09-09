@@ -7,7 +7,6 @@ use Illuminate\Filesystem\Filesystem;
 /**
  * Étape 4 — Seeders : présence des 35 seeders (contrat 1:1 avec base).
  */
-
 it('contient les 35 seeders de base', function () {
     $filesystem = new Filesystem;
 
@@ -19,7 +18,7 @@ it('contient les 35 seeders de base', function () {
         ->values()
         ->all();
 
-    expect($seeders)->toHaveCount(35);
+    expect($seeders)->toHaveCount(37);
 
     $expected = [
         'ActivityLogSeeder', 'AuditSeeder',
@@ -28,6 +27,7 @@ it('contient les 35 seeders de base', function () {
         'BlogPostSeeder', 'BlogPostTranslationSeeder',
         'BlogTagSeeder', 'BlogTagTranslationSeeder',
         'ClearAllTablesSeeder',
+        'CurrencySeeder', 'CurrencyTranslationSeeder',
         'CloudFileSeeder', 'CloudFolderSeeder', 'CloudPlatformSeeder',
         'ContactSeeder', 'DatabaseSeeder',
         'FaqSeeder', 'FaqTranslationSeeder',
