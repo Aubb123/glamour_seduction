@@ -1617,19 +1617,19 @@ class GeoCountrySeeder extends Seeder
         // Insérer les pays et leurs traductions dans la base de données
         foreach ($countries as $index => $data) {
 
-            // // Si en environnement local on ne seeder que les 25 premiers pays (car ils sont nombreux
-            // // et cela peut ralentir le processus de seeding)
-            // if (app()->environment('local') && $index >= $maxCountriesPerSeed) {
-            //     $this->command->info('Environnement local détecté, saut du pays : '.$data['translations'][0]['name'].' (code: '.Str::lower((string) $data['code']).")\n");
+            // Si en environnement local on ne seeder que les 25 premiers pays (car ils sont nombreux
+            // et cela peut ralentir le processus de seeding)
+            if (app()->environment('local') && $index >= $maxCountriesPerSeed) {
+                $this->command->info('Environnement local détecté, saut du pays : '.$data['translations'][0]['name'].' (code: '.Str::lower((string) $data['code']).")\n");
 
-            //     continue; // Passer à l'itération suivante sans insérer le pays
-            // } else {
-            //     $this->command->info('Insertion du pays : '.$data['translations'][0]['name'].' (code: '.Str::lower((string) $data['code']).")\n");
-            // }
+                continue; // Passer à l'itération suivante sans insérer le pays
+            } else {
+                $this->command->info('Insertion du pays : '.$data['translations'][0]['name'].' (code: '.Str::lower((string) $data['code']).")\n");
+            }
 
-            // if (app()->environment('production')) {
-            //     $this->command->info('Environnement de production détecté, insertion du pays : '.$data['translations'][0]['name'].' (code: '.Str::lower((string) $data['code']).")\n");
-            // }
+            if (app()->environment('production')) {
+                $this->command->info('Environnement de production détecté, insertion du pays : '.$data['translations'][0]['name'].' (code: '.Str::lower((string) $data['code']).")\n");
+            }
 
             $translations = $data['translations'];
 

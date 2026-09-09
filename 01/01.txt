@@ -166,3 +166,172 @@ Schema::create('geo_countries', function (Blueprint $table) {
             // Index pour les filtres courants
             $table->index(['deleted_at']); // Index pour les filtres courants
         });
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Que penses-tu de ma table (geo_countries), et du systeme de gestion des geo_countries qui a été implémenter sur le projet ?
+
+Jette un oeil à tout ce qui a été fait (Model, Controller, Resquest, Vues/Views, Routes, Routes Web, Seeders, Middleware, les fichiers 
+de traduction (lang/en et lang/fr /v1/backend/views/pages/geos/countries/*.php) etc... liée au version de plateforme) et dis moi ce que tu 
+en penses, si tu vois des améliorations à apporter, ou des choses à corriger.
+
+        Schema::create('geo_countries', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('continent_id')->constrained('geo_continents')->cascadeOnUpdate()->cascadeOnDelete();
+            // Nature de l'entité géographique
+            $table->enum('type', [
+                'country',              // État souverain reconnu (France, Japon...)
+                'territory',            // Territoire/dépendance (Guam, Nouvelle-Calédonie...)
+                'special_administrative_region', // Hong Kong, Macao
+                'disputed',              // Reconnaissance limitée/contestée (Taïwan, Kosovo...)
+            ])->default('country');
+            // Pays de rattachement (rempli uniquement si type != 'country')
+            $table->foreignId('sovereign_id')->nullable()->constrained('geo_countries')->cascadeOnUpdate()->cascadeOnDelete();
+            // Code ISO 3166-1 alpha-3 (ex: FRA, USA, BEN) — nullable car certaines entités n'en ont pas (subdivisions GB-ENG...)
+            $table->string('code', 3)->nullable()->unique();
+            // Code ISO 3166-1 alpha-2 (ex: FR, US, BJ) — étendu aux subdivisions (GB-ENG...) donc longueur 10
+            $table->string('code_2', 10)->unique();
+            $table->string('phone_code', 10)->nullable(); // certains territoires partagent l'indicatif du pays parent ou n'en ont pas
+            $table->string('currency_code', 3)->nullable();   // EUR, USD, XOF...
+            $table->string('currency_symbol', 10)->nullable(); // €, $, ...
+            $table->string('file_path');
+            $table->integer('sort_order')->unique(); // Utile dans les selects/listes // Pour l'ordre d'affichage : 0 en premier
+            $table->enum('status', ['active', 'inactive'])->default('inactive');
+            //
+            $table->timestamps();
+            $table->softDeletes();
+            // Index pour les filtres courants
+            $table->index(['continent_id', 'status', 'sort_order', 'deleted_at']);
+            $table->index(['type']); // utile pour filtrer rapidement pays vs territoires
+            $table->index(['sovereign_id']); // Index pour retrouver les territoires rattachés à un pays
+        });
+
+        Schema::create('geo_country_translations', function (Blueprint $table) {
+            $table->id(); // Clé primaire auto-incrémentée
+            $table->uuid('uuid')->unique(); // UUID unique pour chaque réponse
+            //
+            $table->foreignId('country_id')->constrained('geo_countries')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers geo_countries
+            $table->foreignId('lang_id')->constrained('langs')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table langs fr, en, ar, es, pt, zh, de
+            //
+            $table->string('name'); // Nom du pays dans la langue de traduction
+            $table->string('slug'); // Slug SEO-friendly
+            $table->string('currency_name', 100)->nullable(); // Euro, Dollar...
+            $table->text('description'); // Description optionnelle du pays
+            //
+            $table->timestamps();
+            $table->softDeletes();
+            // Contraintes d'unicité
+            $table->unique(['country_id', 'lang_id']); // Une seule traduction par pays et par langue
+            $table->unique(['name', 'lang_id']);
+            $table->unique(['slug', 'lang_id']); // Un slug unique par langue
+            // Index pour les filtres courants
+            $table->index(['deleted_at']); // Index pour les filtres courants
+        });
+
+J'aimerais me débarasser des champs (currency_code) (currency_symbol) (currency_name) de la table 
+geo_countries. Par la suite je voudrais créer une table currencies et une table currency_translations pour gérer les devises de manière 
+plus propre et normalisée. Chaque pays pourra alors avoir une relation avec la table currencies, et chaque devise pourra avoir ses 
+traductions dans la table currency_translations.
+
+Inspire -toi de la structure de la table geo_countries et geo_country_translations pour créer la structure des tables 
+currencies et currency_translations. Assure-toi d'inclure les champs nécessaires pour gérer les devises, leurs codes, symboles, décimales, 
+statut, et les traductions associées. N'oublie pas d'ajouter les contraintes d'unicité et les index appropriés pour optimiser les requêtes.
+
+Créer la migration, le modèle, le contrôleur, les requêtes, les vues, les routes, les seeders, les services pour gérer les devises et leurs 
+traductions ainsi que les fichiers de traduction pour les vues (lang/en et lang/fr /v1/backend/views/pages/currencies/*.php).
+Assure-toi que le système est cohérent avec la gestion des pays et que les relations entre les tables sont correctement définies.
+Inspire-toi de la structure et des conventions utilisées pour les pays et leurs traductions pour assurer une cohérence dans le projet.
+
+En ce qui concerne GeoCountrySeeder.php retire les champs currency_code, currency_symbol et currency_name ainsi que les valeurs 
+associées dans le seeder. Et ajoute les au fichier CurrencySeeder.php pour gérer les devises de manière centralisée. 
+Assure-toi que les relations entre les pays et les devises sont correctement établies dans le seeder.
+
+Mets à jour le fichier sidebar.blade.php pour inclure un lien vers la gestion des devises dans le menu de navigation, 
+en suivant le même style et les conventions utilisées pour les pays.
+
+Mets à jour le fichier permissionseeder.php pour inclure les permissions nécessaires pour gérer les devises, 
+en suivant le même style et les conventions utilisées pour les pays.
+
+Un __enum `CurrencyStatus`__ dans `app/Enums/Currencies/` (avec `values()`, `label()`, `badgeClass()`, calqué sur `GeoCountryStatus`) ;
+
+
+Schema::create('currencies', function (Blueprint $table) {
+    $table->id();
+    $table->uuid('uuid')->unique();
+
+    $table->string('code', 3)->unique();
+    $table->string('symbol', 10);
+
+    $table->unsignedTinyInteger('decimal_places')->default(2);
+    $table->string('numeric_code', 3)->nullable()->unique(); // ex: 978, 840, 952
+    $table->integer('sort_order')->unique(); 
+    $table->boolean('is_default')->default(false);
+    $table->enum('status', ['active','inactive',])->default('inactive');
+
+    $table->timestamps();
+    $table->softDeletes();
+
+    $table->index(['status','deleted_at']);
+    $
+
+});
+
+Schema::create('currency_translations', function (Blueprint $table) {
+    $table->id();
+    $table->uuid('uuid')->unique();
+
+    $table->foreignId('currency_id')->constrained('currencies')->cascadeOnUpdate()->cascadeOnDelete();
+    $table->foreignId('lang_id')->constrained('langs')->cascadeOnUpdate()->cascadeOnDelete();
+
+    $table->string('name', 100); // Nom de la devise dans la langue de traduction
+    $table->string('slug'); // Slug SEO-friendly
+    $table->string('description')->nullable(); // Description optionnelle de la devise
+
+    $table->timestamps();
+    $table->softDeletes();
+
+    // Contraintes d'unicité
+    $table->unique(['currency_id', 'lang_id']); // Une seule traduction par devise et par langue
+    $table->unique(['slug', 'lang_id']); // Un slug unique par langue
+    $table->unique(['name', 'lang_id']); // Un nom unique par langue
+
+    // Index pour les filtres courants
+    $table->index(['deleted_at']);
+});
+
