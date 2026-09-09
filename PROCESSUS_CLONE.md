@@ -56,7 +56,7 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
   - [x] **Tests écrits et verts** (voir Journal ci-dessous)
 
 - [x] **Étape 2 — Migrations (36 fichiers, dont 1 `.txt` désactivé → 35 exécutées)** *(fait le 05/09)*
-  - [x] Remplacée la migration `users` du squelette (`0001_01_01_000000`) par celle de `base` (`0001_01_01_000006` : UUID, `country_id`, `slug`, `status`, tables `password_reset_tokens`/`account_reset_tokens`/`sessions`)
+  - [x] Remplacée la migration `users` du squelette (`0001_01_01_000000`) par celle de `base` (`0001_01_01_000100` : UUID, `country_id`, `slug`, `status`, tables `password_reset_tokens`/`account_reset_tokens`/`sessions`)
   - [x] Toutes les migrations de `base` copiées **1:1** (diff `base` vs `base_clone` = vide)
   - [x] Ordre de dépendances validé : `langs` → `platform_versions(trans)` → `geo_*(trans)` → Spatie `permission_tables` → `role_translations` → `users` → `settings(trans)` → `cloud_*` → `blog_*` → `contacts/subscribes/subscribe_histories` → `faqs(trans)` → `galleries(trans)` → `audits` → `activity_logs`
   - [x] Exécution réelle validée sur SQLite (`migrate --force`, 35 migrations DONE) puis via le test `MigrationsTest`
@@ -198,7 +198,7 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 
 ### 05/09 — Étape 2 : Migrations (schéma de données)
 - **Contenu intégré (copié de `base` 1:1) :**
-  - Remplacement de la migration `users` (squelette) par `0001_01_01_000006_create_users_table.php` (UUID, `country_id` FK → `geo_countries`, `slug`, `gender`, `status`, `password_reset_tokens`, `account_reset_tokens`, `sessions`).
+  - Remplacement de la migration `users` (squelette) par `0001_01_01_000100_create_users_table.php` (UUID, `country_id` FK → `geo_countries`, `slug`, `gender`, `status`, `password_reset_tokens`, `account_reset_tokens`, `sessions`).
   - Copies des 36 fichiers de `base/database/migrations` (y compris `0001_01_01_000003_create_roles_table.txt`, désactivé en `.txt` → la table `roles` est créée par la migration Spatie `permission_tables`).
   - `git diff --no-index` entre `base/database/migrations` et `base_clone/database/migrations` : **aucune différence**.
 - **Validation :**
@@ -392,13 +392,36 @@ Reconstruire, pas à pas et à l'identique, l'intégralité du projet **`base`**
 
 ---
 
+## 🧹 Restructuration des migrations devises (09/09/2026)
+
+> Objectif : ne garder que des **migrations de création de table** et supprimer la migration d'altération de table.
+
+### Modifications
+- **Supprimée** : `2026_08_09_000003_add_currency_id_to_geo_countries_table.php` (migration d'`ALTER TABLE`).
+- Son effet est **reporté directement dans la création de `geo_countries`** : `0000_00_00_000101_create_geo_countries_table.php` ajoute la colonne `currency_id` (FK nullable → `currencies`, `nullOnDelete`).
+- **Réordonnancement** pour que `currencies` soit créée **avant** `geo_countries` (FK valide sur MySQL, qui vérifie les contraintes à la création) :
+  - `currencies` : `2026_08_09_000001` → `0000_00_00_000095`
+  - `currency_translations` : `2026_08_09_000002` → `0000_00_00_000096`
+  - `platform_versions` : `000095` → `000097` ; `platform_version_translations` : `000096` → `000098`
+  - `geo_continents` : `000097` → `000099` ; `geo_continent_translations` : `000098` → `000100`
+  - `geo_countries` : `000099` → `000101` (+ `currency_id`) ; `geo_country_translations` : `000100` → `000102`
+  - `users` : `0001_01_01_000006` → `0001_01_01_000100` (reste après `currencies`)
+- **Nouvel ordre des migrations** : `langs` → `currencies(trans)` → `platform_versions(trans)` → `geo_continents(trans)` → `geo_countries(trans)` → Spatie `permission_tables`/`role_translations` → `users` → `settings(trans)` → `cloud_*` → `blog_*` → `contacts/subscribes/subscribe_histories` → `faqs(trans)` → `galleries(trans)` → `audits` → `activity_logs`.
+
+### Validation
+- `php artisan migrate:fresh --seed` **sur MySQL `base_clone`** : EXIT 0 (toutes les FK vérifiées par le moteur, tous les seeders DONE).
+- Tests ciblés : `MigrationsTest` 3/3, `GeosTest` 7/7, `RbacUsersTest` 14/14, `AuthTest` 10/10, `ModelsBehaviorTest`+`SeedersRunTest` 17/17.
+- Suite complète : voir résultat du run en cours (`/tmp/suite-complete.log`).
+
+---
+
 ## 🏁 État final du clone
 
 | Livrable | État |
 |---|---|
 | `routes/web.php` + `routes/console.php` | ✅ 1:1 (`route:list` diff = 0) |
 | `app/**` (contrôleurs, modèles, services, requests, middleware, enums, traits, helpers, commands) | ✅ 1:1 |
-| `database/**` (36 migrations, 32 factories, 37 seeders) | ✅ 1:1 |
+| `database/**` (38 migrations dont 1 `.txt` désactivé → 37 exécutées, 32 factories, 37 seeders) | ✅ 1:1 |
 | `config/**`, `bootstrap/app.php`, `composer.json`, `vite.config.js`, `.env.example` | ✅ 1:1 |
 | `lang/{en,fr}/**` (188 fichiers) | ✅ 1:1 |
 | `resources/views/**` (272 fichiers) | ✅ 1:1 (contenu adapté au thème Larkon : icônes, DataTables/Summernote conservés) |
