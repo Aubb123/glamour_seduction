@@ -16,6 +16,8 @@ use App\Http\Controllers\V1\CloudFileController as V1CloudFileController;
 use App\Http\Controllers\V1\CloudFolderController as V1CloudFolderController;
 use App\Http\Controllers\V1\CloudPlatformController as V1CloudPlatformController;
 use App\Http\Controllers\V1\ContactController as V1ContactController;
+use App\Http\Controllers\V1\CurrencyController as V1CurrencyController;
+use App\Http\Controllers\V1\CurrencyTranslationController as V1CurrencyTranslationController;
 use App\Http\Controllers\V1\FaqController as V1FaqController;
 use App\Http\Controllers\V1\FaqTranslationController as V1FaqTranslationController;
 use App\Http\Controllers\V1\FrontendController as V1FrontendController;
@@ -25,12 +27,22 @@ use App\Http\Controllers\V1\GeoContinentController as V1GeoContinentController;
 use App\Http\Controllers\V1\GeoContinentTranslationController as V1GeoContinentTranslationController;
 use App\Http\Controllers\V1\GeoCountryController as V1GeoCountryController;
 use App\Http\Controllers\V1\GeoCountryTranslationController as V1GeoCountryTranslationController;
-use App\Http\Controllers\V1\CurrencyController as V1CurrencyController;
-use App\Http\Controllers\V1\CurrencyTranslationController as V1CurrencyTranslationController;
 use App\Http\Controllers\V1\LangController as V1LangController;
 use App\Http\Controllers\V1\PermissionController as V1PermissionController;
 use App\Http\Controllers\V1\PlatformVersionController as V1PlatformVersionController;
 use App\Http\Controllers\V1\PlatformVersionTranslationController as V1PlatformVersionTranslationController;
+use App\Http\Controllers\V1\ProductBrandController as V1ProductBrandController;
+use App\Http\Controllers\V1\ProductBrandTranslationController as V1ProductBrandTranslationController;
+use App\Http\Controllers\V1\ProductCategoryController as V1ProductCategoryController;
+use App\Http\Controllers\V1\ProductCategoryTranslationController as V1ProductCategoryTranslationController;
+use App\Http\Controllers\V1\ProductAttributeController as V1ProductAttributeController;
+use App\Http\Controllers\V1\ProductAttributeTranslationController as V1ProductAttributeTranslationController;
+use App\Http\Controllers\V1\ProductAttributeValueController as V1ProductAttributeValueController;
+use App\Http\Controllers\V1\ProductAttributeValueTranslationController as V1ProductAttributeValueTranslationController;
+use App\Http\Controllers\V1\ProductController as V1ProductController;
+use App\Http\Controllers\V1\ProductTranslationController as V1ProductTranslationController;
+use App\Http\Controllers\V1\ProductTagController as V1ProductTagController;
+use App\Http\Controllers\V1\ProductTagTranslationController as V1ProductTagTranslationController;
 use App\Http\Controllers\V1\RoleController as V1RoleController;
 use App\Http\Controllers\V1\RoleTranslationController as V1RoleTranslationController;
 use App\Http\Controllers\V1\SettingController as V1SettingController;
@@ -175,28 +187,28 @@ if ($version && $version->code === 'v1') {
             Route::patch('/backend/geo-countries-translations/restore/{uuid}', 'backend_geocountries_translations_restore')->middleware(['permission:geo-countries-translations.restore'])->name('backend.geocountries.translation.restore');
             Route::delete('/backend/geo-countries-translations/force-destroy/{uuid}', 'backend_geocountries_translations_force_destroy')->middleware(['permission:geo-countries-translations.force_destroy'])->name('backend.geocountries.translation.force_destroy');
 
-        // Routes pour : Gestion des Devises
-        Route::controller(V1CurrencyController::class)->group(function () {
-            Route::get('/backend/currencies/index', 'backend_currencies_index')->middleware(['permission:currencies.index'])->name('backend.currencies.index');
-            Route::get('/backend/currencies/show/{currency}/{slug}', 'backend_currencies_show')->middleware(['permission:currencies.show'])->name('backend.currencies.show');
-            Route::get('/backend/currencies/countries/{currency}/{slug}', 'backend_currencies_countries')->middleware(['permission:currencies.show'])->name('backend.currencies.countries');
-            Route::get('/backend/currencies/audits/{currency}/{slug}', 'backend_currencies_audits')->middleware(['permission:currencies.audits'])->name('backend.currencies.audits');
-            Route::get('/backend/currencies/activity-logs/{currency}/{slug}', 'backend_currencies_activity_logs')->middleware(['permission:currencies.activity_logs'])->name('backend.currencies.activity-logs');
-            Route::get('/backend/currencies/edit/{currency}', 'backend_currencies_edit')->middleware(['permission:currencies.edit'])->name('backend.currencies.edit');
-            Route::put('/backend/currencies/update/{currency}', 'backend_currencies_update')->middleware(['permission:currencies.update'])->name('backend.currencies.update');
-            Route::patch('/backend/currencies/activate/{currency}', 'backend_currencies_activate')->middleware(['permission:currencies.activate'])->name('backend.currencies.activate');
-            Route::patch('/backend/currencies/deactivate/{currency}', 'backend_currencies_deactivate')->middleware(['permission:currencies.deactivate'])->name('backend.currencies.deactivate');
-            Route::delete('/backend/currencies/destroy/{currency}', 'backend_currencies_destroy')->middleware(['permission:currencies.destroy'])->name('backend.currencies.destroy');
-            Route::get('/backend/currencies/trashed', 'backend_currencies_trashed')->middleware(['permission:currencies.trashed'])->name('backend.currencies.trashed');
-            Route::patch('/backend/currencies/restore/{uuid}', 'backend_currencies_restore')->middleware(['permission:currencies.restore'])->name('backend.currencies.restore');
-            Route::delete('/backend/currencies/force-destroy/{uuid}', 'backend_currencies_force_destroy')->middleware(['permission:currencies.force_destroy'])->name('backend.currencies.force_destroy');
-        });
-        Route::controller(V1CurrencyTranslationController::class)->group(function () {
-            Route::delete('/backend/currency-translations/destroy/{currencyTranslation}', 'backend_currencies_translations_destroy')->middleware(['permission:currency-translations.destroy'])->name('backend.currencies.translation.destroy');
-            Route::get('/backend/currency-translations/trashed/{currency}', 'backend_currencies_translations_trashed')->middleware(['permission:currency-translations.trashed'])->name('backend.currencies.translation.trashed')->withTrashed();
-            Route::patch('/backend/currency-translations/restore/{uuid}', 'backend_currencies_translations_restore')->middleware(['permission:currency-translations.restore'])->name('backend.currencies.translation.restore');
-            Route::delete('/backend/currency-translations/force-destroy/{uuid}', 'backend_currencies_translations_force_destroy')->middleware(['permission:currency-translations.force_destroy'])->name('backend.currencies.translation.force_destroy');
-        });
+            // Routes pour : Gestion des Devises
+            Route::controller(V1CurrencyController::class)->group(function () {
+                Route::get('/backend/currencies/index', 'backend_currencies_index')->middleware(['permission:currencies.index'])->name('backend.currencies.index');
+                Route::get('/backend/currencies/show/{currency}/{slug}', 'backend_currencies_show')->middleware(['permission:currencies.show'])->name('backend.currencies.show');
+                Route::get('/backend/currencies/countries/{currency}/{slug}', 'backend_currencies_countries')->middleware(['permission:currencies.show'])->name('backend.currencies.countries');
+                Route::get('/backend/currencies/audits/{currency}/{slug}', 'backend_currencies_audits')->middleware(['permission:currencies.audits'])->name('backend.currencies.audits');
+                Route::get('/backend/currencies/activity-logs/{currency}/{slug}', 'backend_currencies_activity_logs')->middleware(['permission:currencies.activity_logs'])->name('backend.currencies.activity-logs');
+                Route::get('/backend/currencies/edit/{currency}', 'backend_currencies_edit')->middleware(['permission:currencies.edit'])->name('backend.currencies.edit');
+                Route::put('/backend/currencies/update/{currency}', 'backend_currencies_update')->middleware(['permission:currencies.update'])->name('backend.currencies.update');
+                Route::patch('/backend/currencies/activate/{currency}', 'backend_currencies_activate')->middleware(['permission:currencies.activate'])->name('backend.currencies.activate');
+                Route::patch('/backend/currencies/deactivate/{currency}', 'backend_currencies_deactivate')->middleware(['permission:currencies.deactivate'])->name('backend.currencies.deactivate');
+                Route::delete('/backend/currencies/destroy/{currency}', 'backend_currencies_destroy')->middleware(['permission:currencies.destroy'])->name('backend.currencies.destroy');
+                Route::get('/backend/currencies/trashed', 'backend_currencies_trashed')->middleware(['permission:currencies.trashed'])->name('backend.currencies.trashed');
+                Route::patch('/backend/currencies/restore/{uuid}', 'backend_currencies_restore')->middleware(['permission:currencies.restore'])->name('backend.currencies.restore');
+                Route::delete('/backend/currencies/force-destroy/{uuid}', 'backend_currencies_force_destroy')->middleware(['permission:currencies.force_destroy'])->name('backend.currencies.force_destroy');
+            });
+            Route::controller(V1CurrencyTranslationController::class)->group(function () {
+                Route::delete('/backend/currency-translations/destroy/{currencyTranslation}', 'backend_currencies_translations_destroy')->middleware(['permission:currency-translations.destroy'])->name('backend.currencies.translation.destroy');
+                Route::get('/backend/currency-translations/trashed/{currency}', 'backend_currencies_translations_trashed')->middleware(['permission:currency-translations.trashed'])->name('backend.currencies.translation.trashed')->withTrashed();
+                Route::patch('/backend/currency-translations/restore/{uuid}', 'backend_currencies_translations_restore')->middleware(['permission:currency-translations.restore'])->name('backend.currencies.translation.restore');
+                Route::delete('/backend/currency-translations/force-destroy/{uuid}', 'backend_currencies_translations_force_destroy')->middleware(['permission:currency-translations.force_destroy'])->name('backend.currencies.translation.force_destroy');
+            });
         });
 
         // Routes pour : Gestion des Roles et Permissions
@@ -260,6 +272,151 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/users/blog-posts/{user}/{slug}', 'backend_users_blog_posts')->middleware(['permission:users.blog_posts'])->name('backend.users.blog-posts');
             Route::get('/backend/users/blog-post-comments/{user}/{slug}', 'backend_users_blog_post_comments')->middleware(['permission:users.blog_post_comments'])->name('backend.users.blog-post-comments');
             Route::get('/backend/users/blog-post-comment-replies/{user}/{slug}', 'backend_users_blog_post_comment_replies')->middleware(['permission:users.blog_post_comment_replies'])->name('backend.users.blog-post-comment-replies');
+        });
+
+        // Routes pour : Gestion des Marques de Produits (module Boutique)
+        Route::controller(V1ProductBrandController::class)->group(function () {
+            Route::get('/backend/product-brands/index', 'backend_product_brands_index')->middleware(['permission:product-brands.index'])->name('backend.product-brands.index');
+            Route::get('/backend/product-brands/create', 'backend_product_brands_create')->middleware(['permission:product-brands.create'])->name('backend.product-brands.create');
+            Route::post('/backend/product-brands/store', 'backend_product_brands_store')->middleware(['permission:product-brands.store'])->name('backend.product-brands.store');
+            Route::get('/backend/product-brands/show/{productBrand}/{slug}', 'backend_product_brands_show')->middleware(['permission:product-brands.show'])->name('backend.product-brands.show');
+            Route::get('/backend/product-brands/audits/{productBrand}/{slug}', 'backend_product_brands_audits')->middleware(['permission:product-brands.audits'])->name('backend.product-brands.audits');
+            Route::get('/backend/product-brands/activity-logs/{productBrand}/{slug}', 'backend_product_brands_activity_logs')->middleware(['permission:product-brands.activity_logs'])->name('backend.product-brands.activity-logs');
+            Route::get('/backend/product-brands/edit/{productBrand}', 'backend_product_brands_edit')->middleware(['permission:product-brands.edit'])->name('backend.product-brands.edit');
+            Route::put('/backend/product-brands/update/{productBrand}', 'backend_product_brands_update')->middleware(['permission:product-brands.update'])->name('backend.product-brands.update');
+            Route::patch('/backend/product-brands/activate/{productBrand}', 'backend_product_brands_activate')->middleware(['permission:product-brands.activate'])->name('backend.product-brands.activate');
+            Route::patch('/backend/product-brands/deactivate/{productBrand}', 'backend_product_brands_deactivate')->middleware(['permission:product-brands.deactivate'])->name('backend.product-brands.deactivate');
+            Route::delete('/backend/product-brands/destroy/{productBrand}', 'backend_product_brands_destroy')->middleware(['permission:product-brands.destroy'])->name('backend.product-brands.destroy');
+            Route::get('/backend/product-brands/trashed', 'backend_product_brands_trashed')->middleware(['permission:product-brands.trashed'])->name('backend.product-brands.trashed');
+            Route::patch('/backend/product-brands/restore/{uuid}', 'backend_product_brands_restore')->middleware(['permission:product-brands.restore'])->name('backend.product-brands.restore');
+            Route::delete('/backend/product-brands/force-destroy/{uuid}', 'backend_product_brands_force_destroy')->middleware(['permission:product-brands.force_destroy'])->name('backend.product-brands.force_destroy');
+        });
+        Route::controller(V1ProductBrandTranslationController::class)->group(function () {
+            Route::delete('/backend/product-brand-translations/destroy/{uuid}', 'backend_product_brand_translations_destroy')->middleware(['permission:product-brand-translations.destroy'])->name('backend.product-brand-translations.destroy');
+            Route::get('/backend/product-brand-translations/trashed/{brand_uuid}', 'backend_product_brand_translations_trashed')->middleware(['permission:product-brand-translations.trashed'])->name('backend.product-brand-translations.trashed');
+            Route::patch('/backend/product-brand-translations/restore/{uuid}', 'backend_product_brand_translations_restore')->middleware(['permission:product-brand-translations.restore'])->name('backend.product-brand-translations.restore');
+            Route::delete('/backend/product-brand-translations/force-destroy/{uuid}', 'backend_product_brand_translations_force_destroy')->middleware(['permission:product-brand-translations.force_destroy'])->name('backend.product-brand-translations.force_destroy');
+        });
+
+        // Routes pour : Gestion des Tags de Produits (module Boutique)
+        Route::controller(V1ProductTagController::class)->group(function () {
+            Route::get('/backend/product-tags/index', 'backend_product_tags_index')->middleware(['permission:product-tags.index'])->name('backend.product-tags.index');
+            Route::get('/backend/product-tags/create', 'backend_product_tags_create')->middleware(['permission:product-tags.create'])->name('backend.product-tags.create');
+            Route::post('/backend/product-tags/store', 'backend_product_tags_store')->middleware(['permission:product-tags.store'])->name('backend.product-tags.store');
+            Route::get('/backend/product-tags/show/{productTag}/{slug}', 'backend_product_tags_show')->middleware(['permission:product-tags.show'])->name('backend.product-tags.show');
+            Route::get('/backend/product-tags/audits/{productTag}/{slug}', 'backend_product_tags_audits')->middleware(['permission:product-tags.audits'])->name('backend.product-tags.audits');
+            Route::get('/backend/product-tags/activity-logs/{productTag}/{slug}', 'backend_product_tags_activity_logs')->middleware(['permission:product-tags.activity_logs'])->name('backend.product-tags.activity-logs');
+            Route::get('/backend/product-tags/edit/{productTag}', 'backend_product_tags_edit')->middleware(['permission:product-tags.edit'])->name('backend.product-tags.edit');
+            Route::put('/backend/product-tags/update/{productTag}', 'backend_product_tags_update')->middleware(['permission:product-tags.update'])->name('backend.product-tags.update');
+            Route::patch('/backend/product-tags/activate/{productTag}', 'backend_product_tags_activate')->middleware(['permission:product-tags.activate'])->name('backend.product-tags.activate');
+            Route::patch('/backend/product-tags/deactivate/{productTag}', 'backend_product_tags_deactivate')->middleware(['permission:product-tags.deactivate'])->name('backend.product-tags.deactivate');
+            Route::delete('/backend/product-tags/destroy/{productTag}', 'backend_product_tags_destroy')->middleware(['permission:product-tags.destroy'])->name('backend.product-tags.destroy');
+            Route::get('/backend/product-tags/trashed', 'backend_product_tags_trashed')->middleware(['permission:product-tags.trashed'])->name('backend.product-tags.trashed');
+            Route::patch('/backend/product-tags/restore/{uuid}', 'backend_product_tags_restore')->middleware(['permission:product-tags.restore'])->name('backend.product-tags.restore');
+            Route::delete('/backend/product-tags/force-destroy/{uuid}', 'backend_product_tags_force_destroy')->middleware(['permission:product-tags.force_destroy'])->name('backend.product-tags.force_destroy');
+        });
+        Route::controller(V1ProductTagTranslationController::class)->group(function () {
+            Route::delete('/backend/product-tag-translations/destroy/{uuid}', 'backend_product_tag_translations_destroy')->middleware(['permission:product-tag-translations.destroy'])->name('backend.product-tag-translations.destroy');
+            Route::get('/backend/product-tag-translations/trashed/{tag_uuid}', 'backend_product_tag_translations_trashed')->middleware(['permission:product-tag-translations.trashed'])->name('backend.product-tag-translations.trashed');
+            Route::patch('/backend/product-tag-translations/restore/{uuid}', 'backend_product_tag_translations_restore')->middleware(['permission:product-tag-translations.restore'])->name('backend.product-tag-translations.restore');
+            Route::delete('/backend/product-tag-translations/force-destroy/{uuid}', 'backend_product_tag_translations_force_destroy')->middleware(['permission:product-tag-translations.force_destroy'])->name('backend.product-tag-translations.force_destroy');
+        });
+
+        // Routes pour : Gestion des Attributs de Produits (module Boutique)
+        Route::controller(V1ProductAttributeController::class)->group(function () {
+            Route::get('/backend/product-attributes/index', 'backend_product_attributes_index')->middleware(['permission:product-attributes.index'])->name('backend.product-attributes.index');
+            Route::get('/backend/product-attributes/create', 'backend_product_attributes_create')->middleware(['permission:product-attributes.create'])->name('backend.product-attributes.create');
+            Route::post('/backend/product-attributes/store', 'backend_product_attributes_store')->middleware(['permission:product-attributes.store'])->name('backend.product-attributes.store');
+            Route::get('/backend/product-attributes/show/{productAttribute}/{slug}', 'backend_product_attributes_show')->middleware(['permission:product-attributes.show'])->name('backend.product-attributes.show');
+            Route::get('/backend/product-attributes/audits/{productAttribute}/{slug}', 'backend_product_attributes_audits')->middleware(['permission:product-attributes.audits'])->name('backend.product-attributes.audits');
+            Route::get('/backend/product-attributes/activity-logs/{productAttribute}/{slug}', 'backend_product_attributes_activity_logs')->middleware(['permission:product-attributes.activity_logs'])->name('backend.product-attributes.activity-logs');
+            Route::get('/backend/product-attributes/edit/{productAttribute}', 'backend_product_attributes_edit')->middleware(['permission:product-attributes.edit'])->name('backend.product-attributes.edit');
+            Route::put('/backend/product-attributes/update/{productAttribute}', 'backend_product_attributes_update')->middleware(['permission:product-attributes.update'])->name('backend.product-attributes.update');
+            Route::patch('/backend/product-attributes/activate/{productAttribute}', 'backend_product_attributes_activate')->middleware(['permission:product-attributes.activate'])->name('backend.product-attributes.activate');
+            Route::patch('/backend/product-attributes/deactivate/{productAttribute}', 'backend_product_attributes_deactivate')->middleware(['permission:product-attributes.deactivate'])->name('backend.product-attributes.deactivate');
+            Route::delete('/backend/product-attributes/destroy/{productAttribute}', 'backend_product_attributes_destroy')->middleware(['permission:product-attributes.destroy'])->name('backend.product-attributes.destroy');
+            Route::get('/backend/product-attributes/trashed', 'backend_product_attributes_trashed')->middleware(['permission:product-attributes.trashed'])->name('backend.product-attributes.trashed');
+            Route::patch('/backend/product-attributes/restore/{uuid}', 'backend_product_attributes_restore')->middleware(['permission:product-attributes.restore'])->name('backend.product-attributes.restore');
+            Route::delete('/backend/product-attributes/force-destroy/{uuid}', 'backend_product_attributes_force_destroy')->middleware(['permission:product-attributes.force_destroy'])->name('backend.product-attributes.force_destroy');
+        });
+        Route::controller(V1ProductAttributeTranslationController::class)->group(function () {
+            Route::delete('/backend/product-attribute-translations/destroy/{uuid}', 'backend_product_attribute_translations_destroy')->middleware(['permission:product-attribute-translations.destroy'])->name('backend.product-attribute-translations.destroy');
+            Route::get('/backend/product-attribute-translations/trashed/{attribute_uuid}', 'backend_product_attribute_translations_trashed')->middleware(['permission:product-attribute-translations.trashed'])->name('backend.product-attribute-translations.trashed');
+            Route::patch('/backend/product-attribute-translations/restore/{uuid}', 'backend_product_attribute_translations_restore')->middleware(['permission:product-attribute-translations.restore'])->name('backend.product-attribute-translations.restore');
+            Route::delete('/backend/product-attribute-translations/force-destroy/{uuid}', 'backend_product_attribute_translations_force_destroy')->middleware(['permission:product-attribute-translations.force_destroy'])->name('backend.product-attribute-translations.force_destroy');
+        });
+
+        // Routes pour : Gestion des Valeurs d'Attributs de Produits (module Boutique)
+        Route::controller(V1ProductAttributeValueController::class)->group(function () {
+            Route::get('/backend/product-attribute-values/index', 'backend_product_attribute_values_index')->middleware(['permission:product-attribute-values.index'])->name('backend.product-attribute-values.index');
+            Route::get('/backend/product-attribute-values/create', 'backend_product_attribute_values_create')->middleware(['permission:product-attribute-values.create'])->name('backend.product-attribute-values.create');
+            Route::post('/backend/product-attribute-values/store', 'backend_product_attribute_values_store')->middleware(['permission:product-attribute-values.store'])->name('backend.product-attribute-values.store');
+            Route::get('/backend/product-attribute-values/show/{productAttributeValue}/{slug}', 'backend_product_attribute_values_show')->middleware(['permission:product-attribute-values.show'])->name('backend.product-attribute-values.show');
+            Route::get('/backend/product-attribute-values/audits/{productAttributeValue}/{slug}', 'backend_product_attribute_values_audits')->middleware(['permission:product-attribute-values.audits'])->name('backend.product-attribute-values.audits');
+            Route::get('/backend/product-attribute-values/activity-logs/{productAttributeValue}/{slug}', 'backend_product_attribute_values_activity_logs')->middleware(['permission:product-attribute-values.activity_logs'])->name('backend.product-attribute-values.activity-logs');
+            Route::get('/backend/product-attribute-values/edit/{productAttributeValue}', 'backend_product_attribute_values_edit')->middleware(['permission:product-attribute-values.edit'])->name('backend.product-attribute-values.edit');
+            Route::put('/backend/product-attribute-values/update/{productAttributeValue}', 'backend_product_attribute_values_update')->middleware(['permission:product-attribute-values.update'])->name('backend.product-attribute-values.update');
+            Route::patch('/backend/product-attribute-values/activate/{productAttributeValue}', 'backend_product_attribute_values_activate')->middleware(['permission:product-attribute-values.activate'])->name('backend.product-attribute-values.activate');
+            Route::patch('/backend/product-attribute-values/deactivate/{productAttributeValue}', 'backend_product_attribute_values_deactivate')->middleware(['permission:product-attribute-values.deactivate'])->name('backend.product-attribute-values.deactivate');
+            Route::delete('/backend/product-attribute-values/destroy/{productAttributeValue}', 'backend_product_attribute_values_destroy')->middleware(['permission:product-attribute-values.destroy'])->name('backend.product-attribute-values.destroy');
+            Route::get('/backend/product-attribute-values/trashed', 'backend_product_attribute_values_trashed')->middleware(['permission:product-attribute-values.trashed'])->name('backend.product-attribute-values.trashed');
+            Route::patch('/backend/product-attribute-values/restore/{uuid}', 'backend_product_attribute_values_restore')->middleware(['permission:product-attribute-values.restore'])->name('backend.product-attribute-values.restore');
+            Route::delete('/backend/product-attribute-values/force-destroy/{uuid}', 'backend_product_attribute_values_force_destroy')->middleware(['permission:product-attribute-values.force_destroy'])->name('backend.product-attribute-values.force_destroy');
+        });
+        Route::controller(V1ProductAttributeValueTranslationController::class)->group(function () {
+            Route::delete('/backend/product-attribute-value-translations/destroy/{uuid}', 'backend_product_attribute_value_translations_destroy')->middleware(['permission:product-attribute-value-translations.destroy'])->name('backend.product-attribute-value-translations.destroy');
+            Route::get('/backend/product-attribute-value-translations/trashed/{attribute_value_uuid}', 'backend_product_attribute_value_translations_trashed')->middleware(['permission:product-attribute-value-translations.trashed'])->name('backend.product-attribute-value-translations.trashed');
+            Route::patch('/backend/product-attribute-value-translations/restore/{uuid}', 'backend_product_attribute_value_translations_restore')->middleware(['permission:product-attribute-value-translations.restore'])->name('backend.product-attribute-value-translations.restore');
+            Route::delete('/backend/product-attribute-value-translations/force-destroy/{uuid}', 'backend_product_attribute_value_translations_force_destroy')->middleware(['permission:product-attribute-value-translations.force_destroy'])->name('backend.product-attribute-value-translations.force_destroy');
+        });
+
+        // Routes pour : Gestion des Produits (module Boutique)
+        Route::controller(V1ProductController::class)->group(function () {
+            Route::get('/backend/products/index', 'backend_products_index')->middleware(['permission:products.index'])->name('backend.products.index');
+            Route::get('/backend/products/create', 'backend_products_create')->middleware(['permission:products.create'])->name('backend.products.create');
+            Route::post('/backend/products/store', 'backend_products_store')->middleware(['permission:products.store'])->name('backend.products.store');
+            Route::get('/backend/products/show/{product}/{slug}', 'backend_products_show')->middleware(['permission:products.show'])->name('backend.products.show');
+            Route::get('/backend/products/audits/{product}/{slug}', 'backend_products_audits')->middleware(['permission:products.audits'])->name('backend.products.audits');
+            Route::get('/backend/products/activity-logs/{product}/{slug}', 'backend_products_activity_logs')->middleware(['permission:products.activity_logs'])->name('backend.products.activity-logs');
+            Route::get('/backend/products/edit/{product}', 'backend_products_edit')->middleware(['permission:products.edit'])->name('backend.products.edit');
+            Route::put('/backend/products/update/{product}', 'backend_products_update')->middleware(['permission:products.update'])->name('backend.products.update');
+            Route::patch('/backend/products/publish/{product}', 'backend_products_publish')->middleware(['permission:products.publish'])->name('backend.products.publish');
+            Route::patch('/backend/products/unpublish/{product}', 'backend_products_unpublish')->middleware(['permission:products.unpublish'])->name('backend.products.unpublish');
+            Route::patch('/backend/products/archive/{product}', 'backend_products_archive')->middleware(['permission:products.archive'])->name('backend.products.archive');
+            Route::delete('/backend/products/destroy/{product}', 'backend_products_destroy')->middleware(['permission:products.destroy'])->name('backend.products.destroy');
+            Route::get('/backend/products/trashed', 'backend_products_trashed')->middleware(['permission:products.trashed'])->name('backend.products.trashed');
+            Route::patch('/backend/products/restore/{uuid}', 'backend_products_restore')->middleware(['permission:products.restore'])->name('backend.products.restore');
+            Route::delete('/backend/products/force-destroy/{uuid}', 'backend_products_force_destroy')->middleware(['permission:products.force_destroy'])->name('backend.products.force_destroy');
+        });
+        Route::controller(V1ProductTranslationController::class)->group(function () {
+            Route::delete('/backend/product-translations/destroy/{uuid}', 'backend_product_translations_destroy')->middleware(['permission:product-translations.destroy'])->name('backend.product-translations.destroy');
+            Route::get('/backend/product-translations/trashed/{product_uuid}', 'backend_product_translations_trashed')->middleware(['permission:product-translations.trashed'])->name('backend.product-translations.trashed');
+            Route::patch('/backend/product-translations/restore/{uuid}', 'backend_product_translations_restore')->middleware(['permission:product-translations.restore'])->name('backend.product-translations.restore');
+            Route::delete('/backend/product-translations/force-destroy/{uuid}', 'backend_product_translations_force_destroy')->middleware(['permission:product-translations.force_destroy'])->name('backend.product-translations.force_destroy');
+        });
+
+        // Routes pour : Gestion des Catégories de Produits (module Boutique)
+        Route::controller(V1ProductCategoryController::class)->group(function () {
+            Route::get('/backend/product-categories/index', 'backend_product_categories_index')->middleware(['permission:product-categories.index'])->name('backend.product-categories.index');
+            Route::get('/backend/product-categories/create', 'backend_product_categories_create')->middleware(['permission:product-categories.create'])->name('backend.product-categories.create');
+            Route::post('/backend/product-categories/store', 'backend_product_categories_store')->middleware(['permission:product-categories.store'])->name('backend.product-categories.store');
+            Route::get('/backend/product-categories/show/{productCategory}/{slug}', 'backend_product_categories_show')->middleware(['permission:product-categories.show'])->name('backend.product-categories.show');
+            Route::get('/backend/product-categories/audits/{productCategory}/{slug}', 'backend_product_categories_audits')->middleware(['permission:product-categories.audits'])->name('backend.product-categories.audits');
+            Route::get('/backend/product-categories/activity-logs/{productCategory}/{slug}', 'backend_product_categories_activity_logs')->middleware(['permission:product-categories.activity_logs'])->name('backend.product-categories.activity-logs');
+            Route::get('/backend/product-categories/edit/{productCategory}', 'backend_product_categories_edit')->middleware(['permission:product-categories.edit'])->name('backend.product-categories.edit');
+            Route::put('/backend/product-categories/update/{productCategory}', 'backend_product_categories_update')->middleware(['permission:product-categories.update'])->name('backend.product-categories.update');
+            Route::patch('/backend/product-categories/activate/{productCategory}', 'backend_product_categories_activate')->middleware(['permission:product-categories.activate'])->name('backend.product-categories.activate');
+            Route::patch('/backend/product-categories/deactivate/{productCategory}', 'backend_product_categories_deactivate')->middleware(['permission:product-categories.deactivate'])->name('backend.product-categories.deactivate');
+            Route::delete('/backend/product-categories/destroy/{productCategory}', 'backend_product_categories_destroy')->middleware(['permission:product-categories.destroy'])->name('backend.product-categories.destroy');
+            Route::get('/backend/product-categories/trashed', 'backend_product_categories_trashed')->middleware(['permission:product-categories.trashed'])->name('backend.product-categories.trashed');
+            Route::patch('/backend/product-categories/restore/{uuid}', 'backend_product_categories_restore')->middleware(['permission:product-categories.restore'])->name('backend.product-categories.restore');
+            Route::delete('/backend/product-categories/force-destroy/{uuid}', 'backend_product_categories_force_destroy')->middleware(['permission:product-categories.force_destroy'])->name('backend.product-categories.force_destroy');
+        });
+        Route::controller(V1ProductCategoryTranslationController::class)->group(function () {
+            Route::delete('/backend/product-category-translations/destroy/{uuid}', 'backend_product_category_translations_destroy')->middleware(['permission:product-category-translations.destroy'])->name('backend.product-category-translations.destroy');
+            Route::get('/backend/product-category-translations/trashed/{category_uuid}', 'backend_product_category_translations_trashed')->middleware(['permission:product-category-translations.trashed'])->name('backend.product-category-translations.trashed');
+            Route::patch('/backend/product-category-translations/restore/{uuid}', 'backend_product_category_translations_restore')->middleware(['permission:product-category-translations.restore'])->name('backend.product-category-translations.restore');
+            Route::delete('/backend/product-category-translations/force-destroy/{uuid}', 'backend_product_category_translations_force_destroy')->middleware(['permission:product-category-translations.force_destroy'])->name('backend.product-category-translations.force_destroy');
         });
 
         // Routes pour : Gestion des Catégories de Blog

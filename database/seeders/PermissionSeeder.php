@@ -43,6 +43,18 @@ class PermissionSeeder extends Seeder
         'blog-post-comment-replies' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Réponses aux commentaires de blog
         'galleries' => ['toggle_active', 'audits', 'activity_logs'], // Galeries
         'gallery-translations' => [], // Traductions des galeries
+        'product-categories' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Catégories de produits (module Boutique)
+        'product-category-translations' => [], // Traductions des catégories de produits
+        'product-brands' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Marques de produits (module Boutique)
+        'product-brand-translations' => [], // Traductions des marques de produits
+        'product-tags' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Tags de produits (module Boutique)
+        'product-tag-translations' => [], // Traductions des tags de produits
+        'product-attributes' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Attributs de produits (module Boutique)
+        'product-attribute-translations' => [], // Traductions des attributs de produits
+        'product-attribute-values' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Valeurs d'attributs de produits
+        'product-attribute-value-translations' => [], // Traductions des valeurs d'attributs
+        'products' => ['publish', 'unpublish', 'archive', 'audits', 'activity_logs'], // Produits (module Boutique)
+        'product-translations' => [], // Traductions des produits
         'faqs' => ['toggle_active', 'audits', 'activity_logs'], // FAQs
         'faq-translations' => [], // Traductions des FAQs
         'subscribes' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Abonnés newsletter
@@ -95,6 +107,63 @@ class PermissionSeeder extends Seeder
             'currencies.edit',
             'currencies.update',
             // currency-translations (index, create, store, show, edit, update)
+
+            // product-categories
+            'product-categories.index',
+            'product-categories.show',
+            'product-categories.create',
+            'product-categories.store',
+            'product-categories.edit',
+            'product-categories.update',
+            // product-category-translations (index, create, store, show, edit, update)
+
+            // product-brands
+            'product-brands.index',
+            'product-brands.show',
+            'product-brands.create',
+            'product-brands.store',
+            'product-brands.edit',
+            'product-brands.update',
+            // product-brand-translations (index, create, store, show, edit, update)
+
+            // product-tags
+            'product-tags.index',
+            'product-tags.show',
+            'product-tags.create',
+            'product-tags.store',
+            'product-tags.edit',
+            'product-tags.update',
+            // product-tag-translations (index, create, store, show, edit, update)
+
+            // product-attributes
+            'product-attributes.index',
+            'product-attributes.show',
+            'product-attributes.create',
+            'product-attributes.store',
+            'product-attributes.edit',
+            'product-attributes.update',
+            // product-attribute-translations (index, create, store, show, edit, update)
+
+            // product-attribute-values
+            'product-attribute-values.index',
+            'product-attribute-values.show',
+            'product-attribute-values.create',
+            'product-attribute-values.store',
+            'product-attribute-values.edit',
+            'product-attribute-values.update',
+            // product-attribute-value-translations (index, create, store, show, edit, update)
+
+            // products
+            'products.index',
+            'products.show',
+            'products.create',
+            'products.store',
+            'products.edit',
+            'products.update',
+            'products.publish',
+            'products.unpublish',
+            'products.archive',
+            // product-translations (index, create, store, show, edit, update)
 
             // roles
             'roles.index',
@@ -184,7 +253,7 @@ class PermissionSeeder extends Seeder
             // Récupère le rôle par son nom (ex: administrator, developer, etc.)
             $role = Role::findByName($roleName);
 
-            if (!$role) {
+            if (! $role) {
                 // Log un avertissement si le rôle n'existe pas
                 $this->command->warn("Role '{$roleName}' not found, skipping permission assignment.");
 

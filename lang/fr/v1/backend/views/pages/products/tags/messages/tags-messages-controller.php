@@ -1,0 +1,138 @@
+<?php
+
+return [
+    'productTags' => [
+        'not_found' => 'Tentative d\'accès à une tag de produits introuvable (UUID: :uuid).',
+        'index' => [
+            'success' => 'Affichage de la liste des tags de produits',
+            'error' => 'Erreur lors de l\'affichage de la liste des tags de produits',
+        ],
+        'create' => [
+            'success' => 'Accès à la page de création d\'une tag de produits',
+            'error' => 'Erreur lors de l\'accès à la page de création d\'une tag de produits',
+        ],
+        'store' => [
+            'success' => 'Création d\'une nouvelle tag de produits : :name',
+            'error' => 'Erreur lors de la création d\'une tag de produits',
+            'flash_success' => 'Tag (:name) créée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'show' => [
+            'no_name' => 'Aucun nom trouvé',
+            'success' => 'Consultation des détails de la tag de produits : :name',
+            'warning' => 'Tentative de consultation d\'une tag inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation de la tag : :uuid',
+            'slug_mismatch' => 'Le slug de la tag de produits ne correspond pas au slug attendu.',
+        ],
+        'audits' => [
+            'success' => 'Consultation des audits de la tag de produits : :name',
+            'warning' => 'Tentative de consultation des audits d\'une tag inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des audits de la tag : :uuid',
+            'slug_mismatch' => 'Le slug de la tag de produits ne correspond pas au slug attendu.',
+        ],
+        'activity-logs' => [
+            'success' => 'Consultation des journaux d\'activité de la tag de produits : :name',
+            'warning' => 'Tentative de consultation des journaux d\'activité d\'une tag inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des journaux d\'activité de la tag : :uuid',
+            'slug_mismatch' => 'Le slug de la tag de produits ne correspond pas au slug attendu.',
+        ],
+
+        'edit' => [
+            'success' => 'Accès à la page de modification de la tag : :name',
+            'warning' => 'Tentative de modification d\'une tag inexistante : :uuid',
+            'error' => 'Erreur lors de l\'accès à la page de modification de la tag : :uuid',
+        ],
+        'update' => [
+            'success' => 'Mise à jour de la tag en base de données : :name',
+            'warning' => 'Tentative de mise à jour d\'une tag inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la mise à jour de la tag : :uuid',
+            'error' => 'Erreur lors de la mise à jour de la tag : :uuid',
+            'flash_success' => 'Tag (:name) mise à jour avec succès.',
+            'flash_warning' => 'Tag introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'activate' => [
+            'success' => 'Activation de la tag : :name',
+            'error' => 'Erreur lors de l\'activation de la tag : :uuid',
+            'flash_success' => 'Tag (:name) activée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative d\'activation d\'une tag inexistante : :uuid',
+            'flash_warning' => 'Tag introuvable.',
+            'warning_meta' => 'Erreur métier lors de l\'activation de la tag : :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Désactivation de la tag : :name',
+            'error' => 'Erreur lors de la désactivation de la tag : :uuid',
+            'flash_success' => 'Tag (:name) désactivée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative de désactivation d\'une tag inexistante : :uuid',
+            'flash_warning' => 'Tag introuvable.',
+            'warning_meta' => 'Erreur métier lors de la désactivation de la tag : :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Suppression de la tag en base de données : :name',
+            'warning' => 'Tentative de suppression d\'une tag inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression de la tag : :uuid',
+            'error' => 'Erreur lors de la suppression de la tag : :uuid',
+            'flash_success' => 'Tag (:name) supprimée avec succès.',
+            'flash_warning' => 'Tag introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+            'unknown' => 'Tag inconnue',
+        ],
+        'trashed' => [
+            'success' => 'Affichage de la liste des tags supprimées',
+            'error' => 'Erreur lors de l\'affichage de la liste des tags supprimées',
+        ],
+        'restore' => [
+            'success' => 'Restauration de la tag : :name',
+            'warning' => 'Tentative de restauration d\'une tag inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la restauration de la tag : :uuid',
+            'error' => 'Erreur lors de la restauration de la tag : :uuid',
+            'flash_success' => 'Tag (:name) restaurée avec succès.',
+            'flash_warning' => 'Tag introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'force_destroy' => [
+            'success' => 'Suppression définitive de la tag : :name',
+            'warning' => 'Tentative de suppression définitive d\'une tag inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression définitive de la tag : :uuid',
+            'error' => 'Erreur lors de la suppression définitive de la tag : :uuid',
+            'flash_success' => 'Tag supprimée définitivement avec succès.',
+            'flash_warning' => 'Tag introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+
+        'translations' => [
+            'not_found' => 'Tentative d\'accès à une traduction de tag de produits introuvable (UUID: :uuid).',
+            'destroy' => [
+                'success' => 'Suppression de la traduction : :uuid',
+                'warning' => 'Tentative de suppression d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la suppression de la traduction : :uuid',
+                'flash_success' => 'Traduction supprimée avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+            'trashed' => [
+                'accessed' => 'Affichage des traductions supprimées pour la tag : :name',
+                'not_found' => 'Tag introuvable pour l\'affichage des traductions supprimées : :uuid',
+                'error' => 'Erreur lors de l\'affichage des traductions supprimées : :uuid',
+            ],
+            'restore' => [
+                'success' => 'Restauration de la traduction : :uuid',
+                'warning' => 'Tentative de restauration d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la restauration de la traduction : :uuid',
+                'flash_success' => 'Traduction restaurée avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+            'force_destroy' => [
+                'success' => 'Suppression définitive de la traduction : :uuid',
+                'warning' => 'Tentative de suppression définitive d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la suppression définitive de la traduction : :uuid',
+                'flash_success' => 'Traduction supprimée définitivement avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+        ],
+    ],
+];

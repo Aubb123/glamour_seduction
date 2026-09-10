@@ -1,0 +1,138 @@
+<?php
+
+return [
+    'productBrands' => [
+        'not_found' => 'Attempt to access a non-existent product brand (UUID: :uuid).',
+        'index' => [
+            'success' => 'Viewing the product brands list',
+            'error' => 'Error viewing the product brands list',
+        ],
+        'create' => [
+            'success' => 'Access to the product brand creation page',
+            'error' => 'Error accessing the product brand creation page',
+        ],
+        'store' => [
+            'success' => 'Creating a new product brand: :name',
+            'error' => 'Error creating a product brand',
+            'flash_success' => 'Brand (:name) created successfully.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'show' => [
+            'no_name' => 'No name found',
+            'success' => 'Viewing product brand details: :name',
+            'warning' => 'Attempt to view a non-existent brand: :uuid',
+            'error' => 'Error viewing brand: :uuid',
+            'slug_mismatch' => 'The product brand slug does not match the expected slug.',
+        ],
+        'audits' => [
+            'success' => 'Viewing product brand audits: :name',
+            'warning' => 'Attempt to view audits of a non-existent brand: :uuid',
+            'error' => 'Error viewing brand audits: :uuid',
+            'slug_mismatch' => 'The product brand slug does not match the expected slug.',
+        ],
+        'activity-logs' => [
+            'success' => 'Viewing product brand activity logs: :name',
+            'warning' => 'Attempt to view activity logs of a non-existent brand: :uuid',
+            'error' => 'Error viewing brand activity logs: :uuid',
+            'slug_mismatch' => 'The product brand slug does not match the expected slug.',
+        ],
+
+        'edit' => [
+            'success' => 'Access to the brand modification page: :name',
+            'warning' => 'Attempt to modify a non-existent brand: :uuid',
+            'error' => 'Error accessing the brand modification page: :uuid',
+        ],
+        'update' => [
+            'success' => 'Updating brand in database: :name',
+            'warning' => 'Attempt to update a non-existent brand: :uuid',
+            'warning_meta' => 'Business error when updating brand: :uuid',
+            'error' => 'Error updating brand: :uuid',
+            'flash_success' => 'Brand (:name) updated successfully.',
+            'flash_warning' => 'Brand not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'activate' => [
+            'success' => 'Activating brand: :name',
+            'error' => 'Error activating brand: :uuid',
+            'flash_success' => 'Brand (:name) activated successfully.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to activate a non-existent brand: :uuid',
+            'flash_warning' => 'Brand not found.',
+            'warning_meta' => 'Business error when activating brand: :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Deactivating brand: :name',
+            'error' => 'Error deactivating brand: :uuid',
+            'flash_success' => 'Brand (:name) deactivated successfully.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to deactivate a non-existent brand: :uuid',
+            'flash_warning' => 'Brand not found.',
+            'warning_meta' => 'Business error when deactivating brand: :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Deleting brand from database: :name',
+            'warning' => 'Attempt to delete a non-existent brand: :uuid',
+            'warning_meta' => 'Business error when deleting brand: :uuid',
+            'error' => 'Error deleting brand: :uuid',
+            'flash_success' => 'Brand (:name) deleted successfully.',
+            'flash_warning' => 'Brand not found.',
+            'flash_error' => 'An error occurred.',
+            'unknown' => 'Unknown brand',
+        ],
+        'trashed' => [
+            'success' => 'Viewing the deleted brands list',
+            'error' => 'Error viewing the deleted brands list',
+        ],
+        'restore' => [
+            'success' => 'Restoring brand: :name',
+            'warning' => 'Attempt to restore a non-existent brand: :uuid',
+            'warning_meta' => 'Business error when restoring brand: :uuid',
+            'error' => 'Error restoring brand: :uuid',
+            'flash_success' => 'Brand (:name) restored successfully.',
+            'flash_warning' => 'Brand not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'force_destroy' => [
+            'success' => 'Permanently deleting brand: :name',
+            'warning' => 'Attempt to permanently delete a non-existent brand: :uuid',
+            'warning_meta' => 'Business error when permanently deleting brand: :uuid',
+            'error' => 'Error permanently deleting brand: :uuid',
+            'flash_success' => 'Brand permanently deleted successfully.',
+            'flash_warning' => 'Brand not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+
+        'translations' => [
+            'not_found' => 'Attempt to access a non-existent product brand translation (UUID: :uuid).',
+            'destroy' => [
+                'success' => 'Deleting translation: :uuid',
+                'warning' => 'Attempt to delete a non-existent translation: :uuid',
+                'error' => 'Error deleting translation: :uuid',
+                'flash_success' => 'Translation deleted successfully.',
+                'flash_warning' => 'Translation not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+            'trashed' => [
+                'accessed' => 'Viewing deleted translations for brand: :name',
+                'not_found' => 'Brand not found for viewing deleted translations: :uuid',
+                'error' => 'Error viewing deleted translations: :uuid',
+            ],
+            'restore' => [
+                'success' => 'Restoring translation: :uuid',
+                'warning' => 'Attempt to restore a non-existent translation: :uuid',
+                'error' => 'Error restoring translation: :uuid',
+                'flash_success' => 'Translation restored successfully.',
+                'flash_warning' => 'Translation not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+            'force_destroy' => [
+                'success' => 'Permanently deleting translation: :uuid',
+                'warning' => 'Attempt to permanently delete a non-existent translation: :uuid',
+                'error' => 'Error permanently deleting translation: :uuid',
+                'flash_success' => 'Translation permanently deleted successfully.',
+                'flash_warning' => 'Translation not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+        ],
+    ],
+];

@@ -14,7 +14,6 @@ uses(RefreshDatabase::class);
  *  - toutes les tables métier sont créées ;
  *  - les colonnes clés (uuid, enum status, softDeletes, contraintes) sont présentes.
  */
-
 it('crée toutes les tables du schéma de base', function () {
     $expectedTables = [
         'langs', 'platform_versions', 'platform_version_translations',
@@ -33,6 +32,12 @@ it('crée toutes les tables du schéma de base', function () {
         'faqs', 'faq_translations',
         'galleries', 'gallery_translations',
         'audits', 'activity_logs',
+        'product_categories', 'product_category_translations',
+        'product_brands', 'product_brand_translations',
+        'product_tags', 'product_tag_translations',
+        'product_attributes', 'product_attribute_translations',
+        'product_attribute_values', 'product_attribute_value_translations',
+        'products', 'product_translations', 'product_tag',
     ];
 
     $actualTables = Schema::getTableListing(null, false);

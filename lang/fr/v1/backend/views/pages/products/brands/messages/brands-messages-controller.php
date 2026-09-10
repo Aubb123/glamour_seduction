@@ -1,0 +1,138 @@
+<?php
+
+return [
+    'productBrands' => [
+        'not_found' => 'Tentative d\'accès à une marque de produits introuvable (UUID: :uuid).',
+        'index' => [
+            'success' => 'Affichage de la liste des marques de produits',
+            'error' => 'Erreur lors de l\'affichage de la liste des marques de produits',
+        ],
+        'create' => [
+            'success' => 'Accès à la page de création d\'une marque de produits',
+            'error' => 'Erreur lors de l\'accès à la page de création d\'une marque de produits',
+        ],
+        'store' => [
+            'success' => 'Création d\'une nouvelle marque de produits : :name',
+            'error' => 'Erreur lors de la création d\'une marque de produits',
+            'flash_success' => 'Marque (:name) créée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'show' => [
+            'no_name' => 'Aucun nom trouvé',
+            'success' => 'Consultation des détails de la marque de produits : :name',
+            'warning' => 'Tentative de consultation d\'une marque inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation de la marque : :uuid',
+            'slug_mismatch' => 'Le slug de la marque de produits ne correspond pas au slug attendu.',
+        ],
+        'audits' => [
+            'success' => 'Consultation des audits de la marque de produits : :name',
+            'warning' => 'Tentative de consultation des audits d\'une marque inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des audits de la marque : :uuid',
+            'slug_mismatch' => 'Le slug de la marque de produits ne correspond pas au slug attendu.',
+        ],
+        'activity-logs' => [
+            'success' => 'Consultation des journaux d\'activité de la marque de produits : :name',
+            'warning' => 'Tentative de consultation des journaux d\'activité d\'une marque inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des journaux d\'activité de la marque : :uuid',
+            'slug_mismatch' => 'Le slug de la marque de produits ne correspond pas au slug attendu.',
+        ],
+
+        'edit' => [
+            'success' => 'Accès à la page de modification de la marque : :name',
+            'warning' => 'Tentative de modification d\'une marque inexistante : :uuid',
+            'error' => 'Erreur lors de l\'accès à la page de modification de la marque : :uuid',
+        ],
+        'update' => [
+            'success' => 'Mise à jour de la marque en base de données : :name',
+            'warning' => 'Tentative de mise à jour d\'une marque inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la mise à jour de la marque : :uuid',
+            'error' => 'Erreur lors de la mise à jour de la marque : :uuid',
+            'flash_success' => 'Marque (:name) mise à jour avec succès.',
+            'flash_warning' => 'Marque introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'activate' => [
+            'success' => 'Activation de la marque : :name',
+            'error' => 'Erreur lors de l\'activation de la marque : :uuid',
+            'flash_success' => 'Marque (:name) activée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative d\'activation d\'une marque inexistante : :uuid',
+            'flash_warning' => 'Marque introuvable.',
+            'warning_meta' => 'Erreur métier lors de l\'activation de la marque : :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Désactivation de la marque : :name',
+            'error' => 'Erreur lors de la désactivation de la marque : :uuid',
+            'flash_success' => 'Marque (:name) désactivée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative de désactivation d\'une marque inexistante : :uuid',
+            'flash_warning' => 'Marque introuvable.',
+            'warning_meta' => 'Erreur métier lors de la désactivation de la marque : :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Suppression de la marque en base de données : :name',
+            'warning' => 'Tentative de suppression d\'une marque inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression de la marque : :uuid',
+            'error' => 'Erreur lors de la suppression de la marque : :uuid',
+            'flash_success' => 'Marque (:name) supprimée avec succès.',
+            'flash_warning' => 'Marque introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+            'unknown' => 'Marque inconnue',
+        ],
+        'trashed' => [
+            'success' => 'Affichage de la liste des marques supprimées',
+            'error' => 'Erreur lors de l\'affichage de la liste des marques supprimées',
+        ],
+        'restore' => [
+            'success' => 'Restauration de la marque : :name',
+            'warning' => 'Tentative de restauration d\'une marque inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la restauration de la marque : :uuid',
+            'error' => 'Erreur lors de la restauration de la marque : :uuid',
+            'flash_success' => 'Marque (:name) restaurée avec succès.',
+            'flash_warning' => 'Marque introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'force_destroy' => [
+            'success' => 'Suppression définitive de la marque : :name',
+            'warning' => 'Tentative de suppression définitive d\'une marque inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression définitive de la marque : :uuid',
+            'error' => 'Erreur lors de la suppression définitive de la marque : :uuid',
+            'flash_success' => 'Marque supprimée définitivement avec succès.',
+            'flash_warning' => 'Marque introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+
+        'translations' => [
+            'not_found' => 'Tentative d\'accès à une traduction de marque de produits introuvable (UUID: :uuid).',
+            'destroy' => [
+                'success' => 'Suppression de la traduction : :uuid',
+                'warning' => 'Tentative de suppression d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la suppression de la traduction : :uuid',
+                'flash_success' => 'Traduction supprimée avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+            'trashed' => [
+                'accessed' => 'Affichage des traductions supprimées pour la marque : :name',
+                'not_found' => 'Marque introuvable pour l\'affichage des traductions supprimées : :uuid',
+                'error' => 'Erreur lors de l\'affichage des traductions supprimées : :uuid',
+            ],
+            'restore' => [
+                'success' => 'Restauration de la traduction : :uuid',
+                'warning' => 'Tentative de restauration d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la restauration de la traduction : :uuid',
+                'flash_success' => 'Traduction restaurée avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+            'force_destroy' => [
+                'success' => 'Suppression définitive de la traduction : :uuid',
+                'warning' => 'Tentative de suppression définitive d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la suppression définitive de la traduction : :uuid',
+                'flash_success' => 'Traduction supprimée définitivement avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+        ],
+    ],
+];

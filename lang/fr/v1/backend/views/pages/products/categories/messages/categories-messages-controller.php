@@ -1,0 +1,138 @@
+<?php
+
+return [
+    'productCategories' => [
+        'not_found' => 'Tentative d\'accès à une catégorie de produits introuvable (UUID: :uuid).',
+        'index' => [
+            'success' => 'Affichage de la liste des catégories de produits',
+            'error' => 'Erreur lors de l\'affichage de la liste des catégories de produits',
+        ],
+        'create' => [
+            'success' => 'Accès à la page de création d\'une catégorie de produits',
+            'error' => 'Erreur lors de l\'accès à la page de création d\'une catégorie de produits',
+        ],
+        'store' => [
+            'success' => 'Création d\'une nouvelle catégorie de produits : :name',
+            'error' => 'Erreur lors de la création d\'une catégorie de produits',
+            'flash_success' => 'Catégorie (:name) créée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'show' => [
+            'no_name' => 'Aucun nom trouvé',
+            'success' => 'Consultation des détails de la catégorie de produits : :name',
+            'warning' => 'Tentative de consultation d\'une catégorie inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation de la catégorie : :uuid',
+            'slug_mismatch' => 'Le slug de la catégorie de produits ne correspond pas au slug attendu.',
+        ],
+        'audits' => [
+            'success' => 'Consultation des audits de la catégorie de produits : :name',
+            'warning' => 'Tentative de consultation des audits d\'une catégorie inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des audits de la catégorie : :uuid',
+            'slug_mismatch' => 'Le slug de la catégorie de produits ne correspond pas au slug attendu.',
+        ],
+        'activity-logs' => [
+            'success' => 'Consultation des journaux d\'activité de la catégorie de produits : :name',
+            'warning' => 'Tentative de consultation des journaux d\'activité d\'une catégorie inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des journaux d\'activité de la catégorie : :uuid',
+            'slug_mismatch' => 'Le slug de la catégorie de produits ne correspond pas au slug attendu.',
+        ],
+
+        'edit' => [
+            'success' => 'Accès à la page de modification de la catégorie : :name',
+            'warning' => 'Tentative de modification d\'une catégorie inexistante : :uuid',
+            'error' => 'Erreur lors de l\'accès à la page de modification de la catégorie : :uuid',
+        ],
+        'update' => [
+            'success' => 'Mise à jour de la catégorie en base de données : :name',
+            'warning' => 'Tentative de mise à jour d\'une catégorie inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la mise à jour de la catégorie : :uuid',
+            'error' => 'Erreur lors de la mise à jour de la catégorie : :uuid',
+            'flash_success' => 'Catégorie (:name) mise à jour avec succès.',
+            'flash_warning' => 'Catégorie introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'activate' => [
+            'success' => 'Activation de la catégorie : :name',
+            'error' => 'Erreur lors de l\'activation de la catégorie : :uuid',
+            'flash_success' => 'Catégorie (:name) activée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative d\'activation d\'une catégorie inexistante : :uuid',
+            'flash_warning' => 'Catégorie introuvable.',
+            'warning_meta' => 'Erreur métier lors de l\'activation de la catégorie : :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Désactivation de la catégorie : :name',
+            'error' => 'Erreur lors de la désactivation de la catégorie : :uuid',
+            'flash_success' => 'Catégorie (:name) désactivée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative de désactivation d\'une catégorie inexistante : :uuid',
+            'flash_warning' => 'Catégorie introuvable.',
+            'warning_meta' => 'Erreur métier lors de la désactivation de la catégorie : :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Suppression de la catégorie en base de données : :name',
+            'warning' => 'Tentative de suppression d\'une catégorie inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression de la catégorie : :uuid',
+            'error' => 'Erreur lors de la suppression de la catégorie : :uuid',
+            'flash_success' => 'Catégorie (:name) supprimée avec succès.',
+            'flash_warning' => 'Catégorie introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+            'unknown' => 'Catégorie inconnue',
+        ],
+        'trashed' => [
+            'success' => 'Affichage de la liste des catégories supprimées',
+            'error' => 'Erreur lors de l\'affichage de la liste des catégories supprimées',
+        ],
+        'restore' => [
+            'success' => 'Restauration de la catégorie : :name',
+            'warning' => 'Tentative de restauration d\'une catégorie inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la restauration de la catégorie : :uuid',
+            'error' => 'Erreur lors de la restauration de la catégorie : :uuid',
+            'flash_success' => 'Catégorie (:name) restaurée avec succès.',
+            'flash_warning' => 'Catégorie introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'force_destroy' => [
+            'success' => 'Suppression définitive de la catégorie : :name',
+            'warning' => 'Tentative de suppression définitive d\'une catégorie inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression définitive de la catégorie : :uuid',
+            'error' => 'Erreur lors de la suppression définitive de la catégorie : :uuid',
+            'flash_success' => 'Catégorie supprimée définitivement avec succès.',
+            'flash_warning' => 'Catégorie introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+
+        'translations' => [
+            'not_found' => 'Tentative d\'accès à une traduction de catégorie de produits introuvable (UUID: :uuid).',
+            'destroy' => [
+                'success' => 'Suppression de la traduction : :uuid',
+                'warning' => 'Tentative de suppression d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la suppression de la traduction : :uuid',
+                'flash_success' => 'Traduction supprimée avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+            'trashed' => [
+                'accessed' => 'Affichage des traductions supprimées pour la catégorie : :name',
+                'not_found' => 'Catégorie introuvable pour l\'affichage des traductions supprimées : :uuid',
+                'error' => 'Erreur lors de l\'affichage des traductions supprimées : :uuid',
+            ],
+            'restore' => [
+                'success' => 'Restauration de la traduction : :uuid',
+                'warning' => 'Tentative de restauration d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la restauration de la traduction : :uuid',
+                'flash_success' => 'Traduction restaurée avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+            'force_destroy' => [
+                'success' => 'Suppression définitive de la traduction : :uuid',
+                'warning' => 'Tentative de suppression définitive d\'une traduction inexistante : :uuid',
+                'error' => 'Erreur lors de la suppression définitive de la traduction : :uuid',
+                'flash_success' => 'Traduction supprimée définitivement avec succès.',
+                'flash_warning' => 'Traduction introuvable.',
+                'flash_error' => 'Une erreur est survenue.',
+            ],
+        ],
+    ],
+];

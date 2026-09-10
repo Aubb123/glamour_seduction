@@ -516,6 +516,18 @@ class BackendHelper
                         ],
                     ],
                     [
+                        'label' => 'Boutique',
+                        'icon' => 'ti ti-shopping-cart',
+                        'children' => [
+                            ['label' => 'Catégories', 'route' => 'backend.product-categories.index', 'patterns' => ['backend.product-categories.*', 'backend.product-category-translations.*']],
+                            ['label' => 'Marques', 'route' => 'backend.product-brands.index', 'patterns' => ['backend.product-brands.*', 'backend.product-brand-translations.*']],
+                            ['label' => 'Tags', 'route' => 'backend.product-tags.index', 'patterns' => ['backend.product-tags.*', 'backend.product-tag-translations.*']],
+                            ['label' => 'Attributs', 'route' => 'backend.product-attributes.index', 'patterns' => ['backend.product-attributes.*', 'backend.product-attribute-translations.*']],
+                            ['label' => "Valeurs d'attributs", 'route' => 'backend.product-attribute-values.index', 'patterns' => ['backend.product-attribute-values.*', 'backend.product-attribute-value-translations.*']],
+                            ['label' => 'Produits', 'route' => 'backend.products.index', 'patterns' => ['backend.products.*', 'backend.product-translations.*']],
+                        ],
+                    ],
+                    [
                         'label' => 'Blog',
                         'icon' => 'ti ti-brand-blogger',
                         'children' => [
@@ -616,6 +628,42 @@ class BackendHelper
                 'icon' => 'ti ti-help',
                 'route' => 'backend.faqs.create',
                 'permission' => 'faqs.create',
+            ],
+            [
+                'label' => __('Catégorie produit'),
+                'icon' => 'ti ti-category',
+                'route' => 'backend.product-categories.create',
+                'permission' => 'product-categories.create',
+            ],
+            [
+                'label' => __('Marque'),
+                'icon' => 'ti ti-tag',
+                'route' => 'backend.product-brands.create',
+                'permission' => 'product-brands.create',
+            ],
+            [
+                'label' => __('Tag produit'),
+                'icon' => 'ti ti-bookmark',
+                'route' => 'backend.product-tags.create',
+                'permission' => 'product-tags.create',
+            ],
+            [
+                'label' => __('Attribut produit'),
+                'icon' => 'ti ti-adjustments',
+                'route' => 'backend.product-attributes.create',
+                'permission' => 'product-attributes.create',
+            ],
+            [
+                'label' => __('Produit'),
+                'icon' => 'ti ti-box',
+                'route' => 'backend.products.create',
+                'permission' => 'products.create',
+            ],
+            [
+                'label' => __("Valeur d'attribut"),
+                'icon' => 'ti ti-list-details',
+                'route' => 'backend.product-attribute-values.create',
+                'permission' => 'product-attribute-values.create',
             ],
             [
                 'label' => __('Cloud'),

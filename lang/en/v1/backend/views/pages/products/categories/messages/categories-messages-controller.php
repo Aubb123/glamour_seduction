@@ -1,0 +1,138 @@
+<?php
+
+return [
+    'productCategories' => [
+        'not_found' => 'Attempt to access a non-existent product category (UUID: :uuid).',
+        'index' => [
+            'success' => 'Viewing the product categories list',
+            'error' => 'Error viewing the product categories list',
+        ],
+        'create' => [
+            'success' => 'Access to the product category creation page',
+            'error' => 'Error accessing the product category creation page',
+        ],
+        'store' => [
+            'success' => 'Creating a new product category: :name',
+            'error' => 'Error creating a product category',
+            'flash_success' => 'Category (:name) created successfully.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'show' => [
+            'no_name' => 'No name found',
+            'success' => 'Viewing product category details: :name',
+            'warning' => 'Attempt to view a non-existent category: :uuid',
+            'error' => 'Error viewing category: :uuid',
+            'slug_mismatch' => 'The product category slug does not match the expected slug.',
+        ],
+        'audits' => [
+            'success' => 'Viewing product category audits: :name',
+            'warning' => 'Attempt to view audits of a non-existent category: :uuid',
+            'error' => 'Error viewing category audits: :uuid',
+            'slug_mismatch' => 'The product category slug does not match the expected slug.',
+        ],
+        'activity-logs' => [
+            'success' => 'Viewing product category activity logs: :name',
+            'warning' => 'Attempt to view activity logs of a non-existent category: :uuid',
+            'error' => 'Error viewing category activity logs: :uuid',
+            'slug_mismatch' => 'The product category slug does not match the expected slug.',
+        ],
+
+        'edit' => [
+            'success' => 'Access to the category modification page: :name',
+            'warning' => 'Attempt to modify a non-existent category: :uuid',
+            'error' => 'Error accessing the category modification page: :uuid',
+        ],
+        'update' => [
+            'success' => 'Updating category in database: :name',
+            'warning' => 'Attempt to update a non-existent category: :uuid',
+            'warning_meta' => 'Business error when updating category: :uuid',
+            'error' => 'Error updating category: :uuid',
+            'flash_success' => 'Category (:name) updated successfully.',
+            'flash_warning' => 'Category not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'activate' => [
+            'success' => 'Activating category: :name',
+            'error' => 'Error activating category: :uuid',
+            'flash_success' => 'Category (:name) activated successfully.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to activate a non-existent category: :uuid',
+            'flash_warning' => 'Category not found.',
+            'warning_meta' => 'Business error when activating category: :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Deactivating category: :name',
+            'error' => 'Error deactivating category: :uuid',
+            'flash_success' => 'Category (:name) deactivated successfully.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to deactivate a non-existent category: :uuid',
+            'flash_warning' => 'Category not found.',
+            'warning_meta' => 'Business error when deactivating category: :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Deleting category from database: :name',
+            'warning' => 'Attempt to delete a non-existent category: :uuid',
+            'warning_meta' => 'Business error when deleting category: :uuid',
+            'error' => 'Error deleting category: :uuid',
+            'flash_success' => 'Category (:name) deleted successfully.',
+            'flash_warning' => 'Category not found.',
+            'flash_error' => 'An error occurred.',
+            'unknown' => 'Unknown category',
+        ],
+        'trashed' => [
+            'success' => 'Viewing the deleted categories list',
+            'error' => 'Error viewing the deleted categories list',
+        ],
+        'restore' => [
+            'success' => 'Restoring category: :name',
+            'warning' => 'Attempt to restore a non-existent category: :uuid',
+            'warning_meta' => 'Business error when restoring category: :uuid',
+            'error' => 'Error restoring category: :uuid',
+            'flash_success' => 'Category (:name) restored successfully.',
+            'flash_warning' => 'Category not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'force_destroy' => [
+            'success' => 'Permanently deleting category: :name',
+            'warning' => 'Attempt to permanently delete a non-existent category: :uuid',
+            'warning_meta' => 'Business error when permanently deleting category: :uuid',
+            'error' => 'Error permanently deleting category: :uuid',
+            'flash_success' => 'Category permanently deleted successfully.',
+            'flash_warning' => 'Category not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+
+        'translations' => [
+            'not_found' => 'Attempt to access a non-existent product category translation (UUID: :uuid).',
+            'destroy' => [
+                'success' => 'Deleting translation: :uuid',
+                'warning' => 'Attempt to delete a non-existent translation: :uuid',
+                'error' => 'Error deleting translation: :uuid',
+                'flash_success' => 'Translation deleted successfully.',
+                'flash_warning' => 'Translation not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+            'trashed' => [
+                'accessed' => 'Viewing deleted translations for category: :name',
+                'not_found' => 'Category not found for viewing deleted translations: :uuid',
+                'error' => 'Error viewing deleted translations: :uuid',
+            ],
+            'restore' => [
+                'success' => 'Restoring translation: :uuid',
+                'warning' => 'Attempt to restore a non-existent translation: :uuid',
+                'error' => 'Error restoring translation: :uuid',
+                'flash_success' => 'Translation restored successfully.',
+                'flash_warning' => 'Translation not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+            'force_destroy' => [
+                'success' => 'Permanently deleting translation: :uuid',
+                'warning' => 'Attempt to permanently delete a non-existent translation: :uuid',
+                'error' => 'Error permanently deleting translation: :uuid',
+                'flash_success' => 'Translation permanently deleted successfully.',
+                'flash_warning' => 'Translation not found.',
+                'flash_error' => 'An error occurred.',
+            ],
+        ],
+    ],
+];

@@ -50,6 +50,20 @@ class DatabaseSeeder extends Seeder
             FaqTranslationSeeder::class,
             GallerySeeder::class,
             GalleryTranslationSeeder::class,
+
+            ProductCategorySeeder::class,
+            ProductCategoryTranslationSeeder::class,
+
+            ProductBrandSeeder::class,
+            ProductBrandTranslationSeeder::class,
+            ProductTagSeeder::class,
+            ProductTagTranslationSeeder::class,
+            ProductAttributeSeeder::class,
+            ProductAttributeTranslationSeeder::class,
+            ProductAttributeValueSeeder::class,
+            ProductAttributeValueTranslationSeeder::class,
+            ProductSeeder::class,
+            ProductTranslationSeeder::class,
         ]);
 
     }
