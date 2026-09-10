@@ -1,0 +1,100 @@
+<?php
+
+return [
+    'productWarehouses' => [
+        'not_found' => 'Attempt to access a missing warehouse (UUID: :uuid).',
+        'index' => [
+            'success' => 'Displaying the warehouses list',
+            'error' => 'Error while displaying the warehouses list',
+        ],
+        'create' => [
+            'success' => 'Access to the warehouse creation page',
+            'error' => 'Error while accessing the warehouse creation page',
+        ],
+        'store' => [
+            'success' => 'Creating a new warehouse: :code',
+            'error' => 'Error while creating the warehouse',
+            'flash_success' => 'Warehouse (:code) successfully created.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'show' => [
+            'success' => 'Viewing warehouse details: :code',
+            'warning' => 'Attempt to view a missing warehouse: :uuid',
+            'error' => 'Error while viewing the warehouse: :uuid',
+        ],
+        'audits' => [
+            'success' => 'Viewing warehouse audits: :code',
+            'warning' => 'Attempt to view audits of a missing warehouse: :uuid',
+            'error' => 'Error while viewing the warehouse audits: :uuid',
+        ],
+        'activity-logs' => [
+            'success' => 'Viewing warehouse activity logs: :code',
+            'warning' => 'Attempt to view activity logs of a missing warehouse: :uuid',
+            'error' => 'Error while viewing the warehouse activity logs: :uuid',
+        ],
+        'edit' => [
+            'success' => 'Access to the warehouse edit page: :code',
+            'warning' => 'Attempt to edit a missing warehouse: :uuid',
+            'error' => 'Error while accessing the warehouse edit page: :uuid',
+        ],
+        'update' => [
+            'success' => 'Updating the warehouse in database: :code',
+            'warning' => 'Attempt to update a missing warehouse: :uuid',
+            'warning_meta' => 'Business error while updating the warehouse: :uuid',
+            'error' => 'Error while updating the warehouse: :uuid',
+            'flash_success' => 'Warehouse (:code) successfully updated.',
+            'flash_warning' => 'Warehouse not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'activate' => [
+            'success' => 'Activating the warehouse: :code',
+            'error' => 'Error while activating the warehouse: :uuid',
+            'flash_success' => 'Warehouse (:code) successfully activated.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to activate a missing warehouse: :uuid',
+            'flash_warning' => 'Warehouse not found.',
+            'warning_meta' => 'Business error while activating the warehouse: :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Deactivating the warehouse: :code',
+            'error' => 'Error while deactivating the warehouse: :uuid',
+            'flash_success' => 'Warehouse (:code) successfully deactivated.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to deactivate a missing warehouse: :uuid',
+            'flash_warning' => 'Warehouse not found.',
+            'warning_meta' => 'Business error while deactivating the warehouse: :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Deleting the warehouse: :code',
+            'warning' => 'Attempt to delete a missing warehouse: :uuid',
+            'warning_meta' => 'Business error while deleting the warehouse: :uuid',
+            'error' => 'Error while deleting the warehouse: :uuid',
+            'flash_success' => 'Warehouse (:code) successfully deleted.',
+            'flash_warning' => 'Warehouse not found.',
+            'flash_error' => 'An error occurred.',
+            'unknown' => 'Unknown warehouse',
+        ],
+        'trashed' => [
+            'success' => 'Displaying the deleted warehouses list',
+            'error' => 'Error while displaying the deleted warehouses list',
+        ],
+        'restore' => [
+            'success' => 'Restoring the warehouse: :code',
+            'warning' => 'Attempt to restore a missing warehouse: :uuid',
+            'warning_meta' => 'Business error while restoring the warehouse: :uuid',
+            'error' => 'Error while restoring the warehouse: :uuid',
+            'flash_success' => 'Warehouse (:code) successfully restored.',
+            'flash_warning' => 'Warehouse not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'force_destroy' => [
+            'success' => 'Permanently deleting the warehouse: :code',
+            'warning' => 'Attempt to permanently delete a missing warehouse: :uuid',
+            'warning_meta' => 'Business error while permanently deleting the warehouse: :uuid',
+            'error' => 'Error while permanently deleting the warehouse: :uuid',
+            'flash_success' => 'Warehouse successfully deleted permanently.',
+            'flash_warning' => 'Warehouse not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+    ],
+];

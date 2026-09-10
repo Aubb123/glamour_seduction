@@ -157,6 +157,75 @@
                 </div>
             </div>
 
+            <div class="col-md-12">
+                <div class="card border">
+                    <div class="card-header bg-light py-2 d-flex align-items-center justify-content-between">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bx bx-layer me-2 text-primary"></i>Variantes
+                        </h6>
+                        <a href="{{ route('backend.product-variants.create') }}" class="btn btn-sm btn-primary">
+                            <i class="bx bx-plus me-1"></i> Nouvelle variante
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-centered mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>SKU</th>
+                                        <th>Valeurs d'attributs</th>
+                                        <th>Prix</th>
+                                        <th>Statut</th>
+                                        <th>Par défaut</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($variants as $variant)
+                                        <tr>
+                                            <td><code>{{ $variant->sku }}</code></td>
+                                            <td>
+                                                @forelse ($variant->attributeValues as $value)
+                                                    <span class="badge badge-soft-primary me-1">{{ $value->active_translation?->label ?? $value->value }}</span>
+                                                @empty
+                                                    <span class="text-muted">—</span>
+                                                @endforelse
+                                            </td>
+                                            <td>
+                                                @if ($variant->price)
+                                                    <span class="fw-bold">{{ number_format((float) $variant->price, 2, ',', ' ') }}</span>
+                                                @else
+                                                    <span class="text-muted">Hérite du produit</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <span class="badge {{ $variant->status->badgeClass() }}">{{ $variant->status->label() }}</span>
+                                            </td>
+                                            <td>
+                                                @if ($variant->is_default)
+                                                    <span class="badge badge-soft-success">Par défaut</span>
+                                                @else
+                                                    <span class="badge badge-soft-secondary">—</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="{{ route('backend.product-variants.show', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-secondary" title="Détails">
+                                                    <i class="bx bx-show"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4">Aucune variante pour ce produit.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     @include('v1.backend.pages.products.products.partials._show-end', ['product' => $product])

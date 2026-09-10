@@ -35,7 +35,7 @@ beforeEach(function () {
     bootV1WebRoutes();
 });
 
-function productAdmin(): User
+function productCategoryAdmin(): User
 {
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
 
@@ -78,7 +78,7 @@ function productCategoryPayload(array $overrides = []): array
 }
 
 it('liste les catégories de produits avec DataTables', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $html = $this->actingAs($admin)
         ->get(route('backend.product-categories.index'))
@@ -90,7 +90,7 @@ it('liste les catégories de produits avec DataTables', function () {
 });
 
 it('affiche la page de création de catégorie', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)
         ->get(route('backend.product-categories.create'))
@@ -98,7 +98,7 @@ it('affiche la page de création de catégorie', function () {
 });
 
 it('crée une catégorie racine avec image et traductions', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)
         ->post(route('backend.product-categories.store'), productCategoryPayload())
@@ -112,7 +112,7 @@ it('crée une catégorie racine avec image et traductions', function () {
 });
 
 it('crée une sous-catégorie rattachée à sa catégorie parente', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $parent = ProductCategory::firstOrFail();
@@ -130,7 +130,7 @@ it('crée une sous-catégorie rattachée à sa catégorie parente', function () 
 });
 
 it('affiche le détail d’une catégorie (show avec slug)', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
 
@@ -143,7 +143,7 @@ it('affiche le détail d’une catégorie (show avec slug)', function () {
 });
 
 it('met à jour une catégorie et ses traductions', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $category = ProductCategory::firstOrFail();
@@ -162,7 +162,7 @@ it('met à jour une catégorie et ses traductions', function () {
 });
 
 it('refuse de rattacher une catégorie à elle-même (cycle)', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $category = ProductCategory::firstOrFail();
@@ -182,7 +182,7 @@ it('refuse de rattacher une catégorie à elle-même (cycle)', function () {
 });
 
 it('active et désactive une catégorie', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $category = ProductCategory::firstOrFail();
@@ -201,7 +201,7 @@ it('active et désactive une catégorie', function () {
 });
 
 it('refuse la suppression d’une catégorie active puis autorise après désactivation', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $category = ProductCategory::firstOrFail();
@@ -226,7 +226,7 @@ it('refuse la suppression d’une catégorie active puis autorise après désact
 });
 
 it('refuse la suppression d’une catégorie parente ayant des sous-catégories', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $parent = ProductCategory::firstOrFail();
@@ -249,7 +249,7 @@ it('refuse la suppression d’une catégorie parente ayant des sous-catégories'
 });
 
 it('passe une catégorie en corbeille puis la restaure', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $category = ProductCategory::firstOrFail();
@@ -270,7 +270,7 @@ it('passe une catégorie en corbeille puis la restaure', function () {
 });
 
 it('déclare products et children comme relations bloquantes (dependentRelations)', function () {
-    $admin = productAdmin();
+    $admin = productCategoryAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $category = ProductCategory::firstOrFail();

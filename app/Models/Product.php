@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -23,12 +24,12 @@ class Product extends Model
     // Modèle de traduction lié au produit
     protected string $translationModel = ProductTranslation::class;
 
-    // Relations enfants dont la présence bloque la suppression de ce produit.
-    // NB : 'variants' (pivot product_variant_attribute_value) sera ajouté lors de
-    // l'intégration du module Variantes.
+    // Relations enfants dont la présence bloque la suppression de ce produit
+    // (delete / force_delete) lors d'une suppression temporaire (BackendHelper::destroy_function)
+    // ou définitive (BackendHelper::force_destroy_function).
     // NB : 'tags' (lien N-N via la table pivot `product_tag`) ne bloque volontairement PAS :
     // les tags sont optionnels et peuvent être détachés sans bloquer la suppression.
-    protected array $dependentRelations = [];
+    protected array $dependentRelations = ['variants'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -84,6 +85,14 @@ class Product extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(ProductTag::class, 'product_tag', 'product_id', 'tag_id');
+    }
+
+    /**
+     * Relation : un produit possède plusieurs variantes (module Variantes).
+     */
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class, 'product_id');
     }
 
     /**

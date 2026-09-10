@@ -1,0 +1,100 @@
+<?php
+
+return [
+    'productVariants' => [
+        'not_found' => 'Tentative d\'accès à une variante de produit introuvable (UUID: :uuid).',
+        'index' => [
+            'success' => 'Affichage de la liste des variantes de produits',
+            'error' => 'Erreur lors de l\'affichage de la liste des variantes de produits',
+        ],
+        'create' => [
+            'success' => 'Accès à la page de création d\'une variante de produit',
+            'error' => 'Erreur lors de l\'accès à la page de création d\'une variante de produit',
+        ],
+        'store' => [
+            'success' => 'Création d\'une nouvelle variante de produit : :sku',
+            'error' => 'Erreur lors de la création de la variante de produit',
+            'flash_success' => 'Variante (:sku) créée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'show' => [
+            'success' => 'Consultation des détails de la variante : :sku',
+            'warning' => 'Tentative de consultation d\'une variante inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation de la variante : :uuid',
+        ],
+        'audits' => [
+            'success' => 'Consultation des audits de la variante : :sku',
+            'warning' => 'Tentative de consultation des audits d\'une variante inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des audits de la variante : :uuid',
+        ],
+        'activity-logs' => [
+            'success' => 'Consultation des journaux d\'activité de la variante : :sku',
+            'warning' => 'Tentative de consultation des journaux d\'activité d\'une variante inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des journaux d\'activité de la variante : :uuid',
+        ],
+        'edit' => [
+            'success' => 'Accès à la page de modification de la variante : :sku',
+            'warning' => 'Tentative de modification d\'une variante inexistante : :uuid',
+            'error' => 'Erreur lors de l\'accès à la page de modification de la variante : :uuid',
+        ],
+        'update' => [
+            'success' => 'Mise à jour de la variante en base de données : :sku',
+            'warning' => 'Tentative de mise à jour d\'une variante inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la mise à jour de la variante : :uuid',
+            'error' => 'Erreur lors de la mise à jour de la variante : :uuid',
+            'flash_success' => 'Variante (:sku) mise à jour avec succès.',
+            'flash_warning' => 'Variante introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'activate' => [
+            'success' => 'Activation de la variante : :sku',
+            'error' => 'Erreur lors de l\'activation de la variante : :uuid',
+            'flash_success' => 'Variante (:sku) activée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative d\'activation d\'une variante inexistante : :uuid',
+            'flash_warning' => 'Variante introuvable.',
+            'warning_meta' => 'Erreur métier lors de l\'activation de la variante : :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Désactivation de la variante : :sku',
+            'error' => 'Erreur lors de la désactivation de la variante : :uuid',
+            'flash_success' => 'Variante (:sku) désactivée avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative de désactivation d\'une variante inexistante : :uuid',
+            'flash_warning' => 'Variante introuvable.',
+            'warning_meta' => 'Erreur métier lors de la désactivation de la variante : :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Suppression de la variante : :sku',
+            'warning' => 'Tentative de suppression d\'une variante inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression de la variante : :uuid',
+            'error' => 'Erreur lors de la suppression de la variante : :uuid',
+            'flash_success' => 'Variante (:sku) supprimée avec succès.',
+            'flash_warning' => 'Variante introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+            'unknown' => 'Variante inconnue',
+        ],
+        'trashed' => [
+            'success' => 'Affichage de la liste des variantes supprimées',
+            'error' => 'Erreur lors de l\'affichage de la liste des variantes supprimées',
+        ],
+        'restore' => [
+            'success' => 'Restauration de la variante : :sku',
+            'warning' => 'Tentative de restauration d\'une variante inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la restauration de la variante : :uuid',
+            'error' => 'Erreur lors de la restauration de la variante : :uuid',
+            'flash_success' => 'Variante (:sku) restaurée avec succès.',
+            'flash_warning' => 'Variante introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'force_destroy' => [
+            'success' => 'Suppression définitive de la variante : :sku',
+            'warning' => 'Tentative de suppression définitive d\'une variante inexistante : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression définitive de la variante : :uuid',
+            'error' => 'Erreur lors de la suppression définitive de la variante : :uuid',
+            'flash_success' => 'Variante supprimée définitivement avec succès.',
+            'flash_warning' => 'Variante introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+    ],
+];

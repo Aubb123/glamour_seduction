@@ -55,6 +55,8 @@ class PermissionSeeder extends Seeder
         'product-attribute-value-translations' => [], // Traductions des valeurs d'attributs
         'products' => ['publish', 'unpublish', 'archive', 'audits', 'activity_logs'], // Produits (module Boutique)
         'product-translations' => [], // Traductions des produits
+        'product-variants' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Variantes de produits (module Boutique)
+        'product-warehouses' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Entrepôts de produits (module Boutique)
         'faqs' => ['toggle_active', 'audits', 'activity_logs'], // FAQs
         'faq-translations' => [], // Traductions des FAQs
         'subscribes' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Abonnés newsletter
@@ -164,6 +166,27 @@ class PermissionSeeder extends Seeder
             'products.unpublish',
             'products.archive',
             // product-translations (index, create, store, show, edit, update)
+
+            // product-variants
+            'product-variants.index',
+            'product-variants.show',
+            'product-variants.create',
+            'product-variants.store',
+            'product-variants.edit',
+            'product-variants.update',
+            'product-variants.activate',
+            'product-variants.deactivate',
+            // product-variant-attribute-values (index, create, store, show, edit, update)
+
+            // product-warehouses
+            'product-warehouses.index',
+            'product-warehouses.show',
+            'product-warehouses.create',
+            'product-warehouses.store',
+            'product-warehouses.edit',
+            'product-warehouses.update',
+            'product-warehouses.activate',
+            'product-warehouses.deactivate',
 
             // roles
             'roles.index',

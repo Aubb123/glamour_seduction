@@ -300,9 +300,9 @@ it('refuse la suppression d\'une marque possédant des produits (dependentRelati
     expect(ProductBrand::find($setup['brand']->id))->not->toBeNull();
 });
 
-it('déclare dependentRelations vide pour Product (variants ajoutés au module 6)', function () {
+it('déclare variants comme relation bloquante pour Product (dependentRelations, module 6)', function () {
     $product = new Product;
 
     $property = new ReflectionProperty($product, 'dependentRelations');
-    expect($property->getValue($product))->toBe([]);
+    expect($property->getValue($product))->toBe(['variants']);
 });

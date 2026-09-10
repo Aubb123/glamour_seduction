@@ -29,7 +29,7 @@ beforeEach(function () {
     bootV1WebRoutes();
 });
 
-function productAdmin(): User
+function productTagAdmin(): User
 {
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
 
@@ -68,7 +68,7 @@ function productTagPayload(array $overrides = []): array
 }
 
 it('liste les tags de produits avec DataTables', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $html = $this->actingAs($admin)
         ->get(route('backend.product-tags.index'))
@@ -80,7 +80,7 @@ it('liste les tags de produits avec DataTables', function () {
 });
 
 it('affiche la page de création de tag', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)
         ->get(route('backend.product-tags.create'))
@@ -88,7 +88,7 @@ it('affiche la page de création de tag', function () {
 });
 
 it('crée un tag avec ses traductions', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)
         ->post(route('backend.product-tags.store'), productTagPayload())
@@ -100,7 +100,7 @@ it('crée un tag avec ses traductions', function () {
 });
 
 it('affiche le détail d’un tag (show avec slug)', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
 
@@ -113,7 +113,7 @@ it('affiche le détail d’un tag (show avec slug)', function () {
 });
 
 it('met à jour un tag et ses traductions', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
     $tag = ProductTag::firstOrFail();
@@ -132,7 +132,7 @@ it('met à jour un tag et ses traductions', function () {
 });
 
 it('active et désactive un tag', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
     $tag = ProductTag::firstOrFail();
@@ -151,7 +151,7 @@ it('active et désactive un tag', function () {
 });
 
 it('refuse la suppression d’un tag actif puis autorise après désactivation', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
     $tag = ProductTag::firstOrFail();
@@ -176,7 +176,7 @@ it('refuse la suppression d’un tag actif puis autorise après désactivation',
 });
 
 it('passe un tag en corbeille puis le restaure', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
     $tag = ProductTag::firstOrFail();
@@ -197,7 +197,7 @@ it('passe un tag en corbeille puis le restaure', function () {
 });
 
 it('déclare une liste vide de dependentRelations (étendue au pivot du module Produits)', function () {
-    $admin = productAdmin();
+    $admin = productTagAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
     $tag = ProductTag::firstOrFail();

@@ -35,7 +35,7 @@ beforeEach(function () {
     bootV1WebRoutes();
 });
 
-function productAdmin(): User
+function productBrandAdmin(): User
 {
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
 
@@ -77,7 +77,7 @@ function productBrandPayload(array $overrides = []): array
 }
 
 it('liste les marques de produits avec DataTables', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $html = $this->actingAs($admin)
         ->get(route('backend.product-brands.index'))
@@ -89,7 +89,7 @@ it('liste les marques de produits avec DataTables', function () {
 });
 
 it('affiche la page de création de marque', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)
         ->get(route('backend.product-brands.create'))
@@ -97,7 +97,7 @@ it('affiche la page de création de marque', function () {
 });
 
 it('crée une marque avec image et traductions', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)
         ->post(route('backend.product-brands.store'), productBrandPayload())
@@ -110,7 +110,7 @@ it('crée une marque avec image et traductions', function () {
 });
 
 it('affiche le détail d’une marque (show avec slug)', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
 
@@ -123,7 +123,7 @@ it('affiche le détail d’une marque (show avec slug)', function () {
 });
 
 it('met à jour une marque et ses traductions', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
     $brand = ProductBrand::firstOrFail();
@@ -142,7 +142,7 @@ it('met à jour une marque et ses traductions', function () {
 });
 
 it('active et désactive une marque', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
     $brand = ProductBrand::firstOrFail();
@@ -161,7 +161,7 @@ it('active et désactive une marque', function () {
 });
 
 it('refuse la suppression d’une marque active puis autorise après désactivation', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
     $brand = ProductBrand::firstOrFail();
@@ -186,7 +186,7 @@ it('refuse la suppression d’une marque active puis autorise après désactivat
 });
 
 it('passe une marque en corbeille puis la restaure', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
     $brand = ProductBrand::firstOrFail();
@@ -207,7 +207,7 @@ it('passe une marque en corbeille puis la restaure', function () {
 });
 
 it('déclare products comme relation bloquante (dependentRelations, module Produits)', function () {
-    $admin = productAdmin();
+    $admin = productBrandAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
     $brand = ProductBrand::firstOrFail();

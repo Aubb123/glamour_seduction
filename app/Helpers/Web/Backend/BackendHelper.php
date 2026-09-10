@@ -20,7 +20,7 @@ class BackendHelper
         // $format = $format ?? 'D MMMM YYYY - HH:mm:ss'; // Format par défaut si aucun format n'est fourni
 
         // Si la date est nulle, retourne un tiret ou une valeur par défaut
-        if (! $date) {
+        if (!$date) {
             return '—';
         }
 
@@ -525,6 +525,8 @@ class BackendHelper
                             ['label' => 'Attributs', 'route' => 'backend.product-attributes.index', 'patterns' => ['backend.product-attributes.*', 'backend.product-attribute-translations.*']],
                             ['label' => "Valeurs d'attributs", 'route' => 'backend.product-attribute-values.index', 'patterns' => ['backend.product-attribute-values.*', 'backend.product-attribute-value-translations.*']],
                             ['label' => 'Produits', 'route' => 'backend.products.index', 'patterns' => ['backend.products.*', 'backend.product-translations.*']],
+                            ['label' => 'Variantes', 'route' => 'backend.product-variants.index', 'patterns' => ['backend.product-variants.*']],
+                            ['label' => 'Entrepôts', 'route' => 'backend.product-warehouses.index', 'patterns' => ['backend.product-warehouses.*']],
                         ],
                     ],
                     [
@@ -658,6 +660,12 @@ class BackendHelper
                 'icon' => 'ti ti-box',
                 'route' => 'backend.products.create',
                 'permission' => 'products.create',
+            ],
+            [
+                'label' => __('Entrepôt'),
+                'icon' => 'ti ti-building-warehouse',
+                'route' => 'backend.product-warehouses.create',
+                'permission' => 'product-warehouses.create',
             ],
             [
                 'label' => __("Valeur d'attribut"),

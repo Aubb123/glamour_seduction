@@ -31,7 +31,7 @@ beforeEach(function () {
     bootV1WebRoutes();
 });
 
-function productAdmin(): User
+function productAttributeAdmin(): User
 {
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
 
@@ -86,7 +86,7 @@ function createAttribute(): ProductAttribute
 }
 
 it('liste les attributs de produits avec DataTables', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
 
     $html = $this->actingAs($admin)
         ->get(route('backend.product-attributes.index'))
@@ -97,7 +97,7 @@ it('liste les attributs de produits avec DataTables', function () {
 });
 
 it('affiche la page de création d\'attribut', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
 
     $this->actingAs($admin)
         ->get(route('backend.product-attributes.create'))
@@ -105,7 +105,7 @@ it('affiche la page de création d\'attribut', function () {
 });
 
 it('crée un attribut avec ses traductions (slug auto-généré)', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
 
     $this->actingAs($admin)
         ->post(route('backend.product-attributes.store'), productAttributePayload())
@@ -118,7 +118,7 @@ it('crée un attribut avec ses traductions (slug auto-généré)', function () {
 });
 
 it('affiche le détail d\'un attribut (show avec slug)', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
     $attribute = createAttribute();
     $slug = $attribute->active_translation?->slug ?? 'null';
 
@@ -128,7 +128,7 @@ it('affiche le détail d\'un attribut (show avec slug)', function () {
 });
 
 it('met à jour un attribut et ses traductions', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
     $this->actingAs($admin)->post(route('backend.product-attributes.store'), productAttributePayload());
     $attribute = ProductAttribute::firstOrFail();
 
@@ -146,7 +146,7 @@ it('met à jour un attribut et ses traductions', function () {
 });
 
 it('active et désactive un attribut', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
     $this->actingAs($admin)->post(route('backend.product-attributes.store'), productAttributePayload());
     $attribute = ProductAttribute::firstOrFail();
 
@@ -164,7 +164,7 @@ it('active et désactive un attribut', function () {
 });
 
 it('refuse la suppression d\'un attribut actif puis autorise après désactivation', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
     $this->actingAs($admin)->post(route('backend.product-attributes.store'), productAttributePayload());
     $attribute = ProductAttribute::firstOrFail();
 
@@ -188,7 +188,7 @@ it('refuse la suppression d\'un attribut actif puis autorise après désactivati
 });
 
 it('refuse la suppression d\'un attribut possédant des valeurs (dependentRelations)', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
     $attribute = createAttribute();
     $attribute->update(['status' => 'inactive']);
 
@@ -209,7 +209,7 @@ it('refuse la suppression d\'un attribut possédant des valeurs (dependentRelati
 });
 
 it('declare dependentRelations = [values] pour ProductAttribute', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
     $attribute = createAttribute();
 
     $property = new ReflectionProperty($attribute, 'dependentRelations');
@@ -235,7 +235,7 @@ function productAttributeValuePayload(int $attributeId, array $overrides = []): 
 }
 
 it('liste les valeurs d\'attributs avec DataTables', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
 
     $html = $this->actingAs($admin)
         ->get(route('backend.product-attribute-values.index'))
@@ -246,7 +246,7 @@ it('liste les valeurs d\'attributs avec DataTables', function () {
 });
 
 it('affiche la page de création de valeur d\'attribut', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
 
     $this->actingAs($admin)
         ->get(route('backend.product-attribute-values.create'))
@@ -254,7 +254,7 @@ it('affiche la page de création de valeur d\'attribut', function () {
 });
 
 it('crée une valeur d\'attribut avec ses traductions', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
     $attribute = createAttribute();
 
     $this->actingAs($admin)
@@ -267,7 +267,7 @@ it('crée une valeur d\'attribut avec ses traductions', function () {
 });
 
 it('refuse la création d\'une valeur sans attribut parent valide', function () {
-    $admin = productAdmin();
+    $admin = productAttributeAdmin();
 
     $this->actingAs($admin)
         ->post(route('backend.product-attribute-values.store'), productAttributeValuePayload(999999))

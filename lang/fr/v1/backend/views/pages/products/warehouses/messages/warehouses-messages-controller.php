@@ -1,0 +1,100 @@
+<?php
+
+return [
+    'productWarehouses' => [
+        'not_found' => 'Tentative d\'accès à un entrepôt introuvable (UUID: :uuid).',
+        'index' => [
+            'success' => 'Affichage de la liste des entrepôts',
+            'error' => 'Erreur lors de l\'affichage de la liste des entrepôts',
+        ],
+        'create' => [
+            'success' => 'Accès à la page de création d\'un entrepôt',
+            'error' => 'Erreur lors de l\'accès à la page de création d\'un entrepôt',
+        ],
+        'store' => [
+            'success' => 'Création d\'un nouvel entrepôt : :code',
+            'error' => 'Erreur lors de la création de l\'entrepôt',
+            'flash_success' => 'Entrepôt (:code) créé avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'show' => [
+            'success' => 'Consultation des détails de l\'entrepôt : :code',
+            'warning' => 'Tentative de consultation d\'un entrepôt inexistant : :uuid',
+            'error' => 'Erreur lors de la consultation de l\'entrepôt : :uuid',
+        ],
+        'audits' => [
+            'success' => 'Consultation des audits de l\'entrepôt : :code',
+            'warning' => 'Tentative de consultation des audits d\'un entrepôt inexistant : :uuid',
+            'error' => 'Erreur lors de la consultation des audits de l\'entrepôt : :uuid',
+        ],
+        'activity-logs' => [
+            'success' => 'Consultation des journaux d\'activité de l\'entrepôt : :code',
+            'warning' => 'Tentative de consultation des journaux d\'activité d\'un entrepôt inexistant : :uuid',
+            'error' => 'Erreur lors de la consultation des journaux d\'activité de l\'entrepôt : :uuid',
+        ],
+        'edit' => [
+            'success' => 'Accès à la page de modification de l\'entrepôt : :code',
+            'warning' => 'Tentative de modification d\'un entrepôt inexistant : :uuid',
+            'error' => 'Erreur lors de l\'accès à la page de modification de l\'entrepôt : :uuid',
+        ],
+        'update' => [
+            'success' => 'Mise à jour de l\'entrepôt en base de données : :code',
+            'warning' => 'Tentative de mise à jour d\'un entrepôt inexistant : :uuid',
+            'warning_meta' => 'Erreur métier lors de la mise à jour de l\'entrepôt : :uuid',
+            'error' => 'Erreur lors de la mise à jour de l\'entrepôt : :uuid',
+            'flash_success' => 'Entrepôt (:code) mis à jour avec succès.',
+            'flash_warning' => 'Entrepôt introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'activate' => [
+            'success' => 'Activation de l\'entrepôt : :code',
+            'error' => 'Erreur lors de l\'activation de l\'entrepôt : :uuid',
+            'flash_success' => 'Entrepôt (:code) activé avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative d\'activation d\'un entrepôt inexistant : :uuid',
+            'flash_warning' => 'Entrepôt introuvable.',
+            'warning_meta' => 'Erreur métier lors de l\'activation de l\'entrepôt : :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Désactivation de l\'entrepôt : :code',
+            'error' => 'Erreur lors de la désactivation de l\'entrepôt : :uuid',
+            'flash_success' => 'Entrepôt (:code) désactivé avec succès.',
+            'flash_error' => 'Une erreur est survenue.',
+            'warning' => 'Tentative de désactivation d\'un entrepôt inexistant : :uuid',
+            'flash_warning' => 'Entrepôt introuvable.',
+            'warning_meta' => 'Erreur métier lors de la désactivation de l\'entrepôt : :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Suppression de l\'entrepôt : :code',
+            'warning' => 'Tentative de suppression d\'un entrepôt inexistant : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression de l\'entrepôt : :uuid',
+            'error' => 'Erreur lors de la suppression de l\'entrepôt : :uuid',
+            'flash_success' => 'Entrepôt (:code) supprimé avec succès.',
+            'flash_warning' => 'Entrepôt introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+            'unknown' => 'Entrepôt inconnu',
+        ],
+        'trashed' => [
+            'success' => 'Affichage de la liste des entrepôts supprimés',
+            'error' => 'Erreur lors de l\'affichage de la liste des entrepôts supprimés',
+        ],
+        'restore' => [
+            'success' => 'Restauration de l\'entrepôt : :code',
+            'warning' => 'Tentative de restauration d\'un entrepôt inexistant : :uuid',
+            'warning_meta' => 'Erreur métier lors de la restauration de l\'entrepôt : :uuid',
+            'error' => 'Erreur lors de la restauration de l\'entrepôt : :uuid',
+            'flash_success' => 'Entrepôt (:code) restauré avec succès.',
+            'flash_warning' => 'Entrepôt introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+        'force_destroy' => [
+            'success' => 'Suppression définitive de l\'entrepôt : :code',
+            'warning' => 'Tentative de suppression définitive d\'un entrepôt inexistant : :uuid',
+            'warning_meta' => 'Erreur métier lors de la suppression définitive de l\'entrepôt : :uuid',
+            'error' => 'Erreur lors de la suppression définitive de l\'entrepôt : :uuid',
+            'flash_success' => 'Entrepôt supprimé définitivement avec succès.',
+            'flash_warning' => 'Entrepôt introuvable.',
+            'flash_error' => 'Une erreur est survenue.',
+        ],
+    ],
+];

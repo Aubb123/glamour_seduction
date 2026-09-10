@@ -1,0 +1,100 @@
+<?php
+
+return [
+    'productVariants' => [
+        'not_found' => 'Attempt to access a missing product variant (UUID: :uuid).',
+        'index' => [
+            'success' => 'Displaying the product variants list',
+            'error' => 'Error while displaying the product variants list',
+        ],
+        'create' => [
+            'success' => 'Access to the product variant creation page',
+            'error' => 'Error while accessing the product variant creation page',
+        ],
+        'store' => [
+            'success' => 'Creating a new product variant: :sku',
+            'error' => 'Error while creating the product variant',
+            'flash_success' => 'Variant (:sku) successfully created.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'show' => [
+            'success' => 'Viewing variant details: :sku',
+            'warning' => 'Attempt to view a missing variant: :uuid',
+            'error' => 'Error while viewing the variant: :uuid',
+        ],
+        'audits' => [
+            'success' => 'Viewing variant audits: :sku',
+            'warning' => 'Attempt to view audits of a missing variant: :uuid',
+            'error' => 'Error while viewing the variant audits: :uuid',
+        ],
+        'activity-logs' => [
+            'success' => 'Viewing variant activity logs: :sku',
+            'warning' => 'Attempt to view activity logs of a missing variant: :uuid',
+            'error' => 'Error while viewing the variant activity logs: :uuid',
+        ],
+        'edit' => [
+            'success' => 'Access to the variant edit page: :sku',
+            'warning' => 'Attempt to edit a missing variant: :uuid',
+            'error' => 'Error while accessing the variant edit page: :uuid',
+        ],
+        'update' => [
+            'success' => 'Updating the variant in database: :sku',
+            'warning' => 'Attempt to update a missing variant: :uuid',
+            'warning_meta' => 'Business error while updating the variant: :uuid',
+            'error' => 'Error while updating the variant: :uuid',
+            'flash_success' => 'Variant (:sku) successfully updated.',
+            'flash_warning' => 'Variant not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'activate' => [
+            'success' => 'Activating the variant: :sku',
+            'error' => 'Error while activating the variant: :uuid',
+            'flash_success' => 'Variant (:sku) successfully activated.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to activate a missing variant: :uuid',
+            'flash_warning' => 'Variant not found.',
+            'warning_meta' => 'Business error while activating the variant: :uuid',
+        ],
+        'deactivate' => [
+            'success' => 'Deactivating the variant: :sku',
+            'error' => 'Error while deactivating the variant: :uuid',
+            'flash_success' => 'Variant (:sku) successfully deactivated.',
+            'flash_error' => 'An error occurred.',
+            'warning' => 'Attempt to deactivate a missing variant: :uuid',
+            'flash_warning' => 'Variant not found.',
+            'warning_meta' => 'Business error while deactivating the variant: :uuid',
+        ],
+        'destroy' => [
+            'success' => 'Deleting the variant: :sku',
+            'warning' => 'Attempt to delete a missing variant: :uuid',
+            'warning_meta' => 'Business error while deleting the variant: :uuid',
+            'error' => 'Error while deleting the variant: :uuid',
+            'flash_success' => 'Variant (:sku) successfully deleted.',
+            'flash_warning' => 'Variant not found.',
+            'flash_error' => 'An error occurred.',
+            'unknown' => 'Unknown variant',
+        ],
+        'trashed' => [
+            'success' => 'Displaying the deleted variants list',
+            'error' => 'Error while displaying the deleted variants list',
+        ],
+        'restore' => [
+            'success' => 'Restoring the variant: :sku',
+            'warning' => 'Attempt to restore a missing variant: :uuid',
+            'warning_meta' => 'Business error while restoring the variant: :uuid',
+            'error' => 'Error while restoring the variant: :uuid',
+            'flash_success' => 'Variant (:sku) successfully restored.',
+            'flash_warning' => 'Variant not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+        'force_destroy' => [
+            'success' => 'Permanently deleting the variant: :sku',
+            'warning' => 'Attempt to permanently delete a missing variant: :uuid',
+            'warning_meta' => 'Business error while permanently deleting the variant: :uuid',
+            'error' => 'Error while permanently deleting the variant: :uuid',
+            'flash_success' => 'Variant successfully deleted permanently.',
+            'flash_warning' => 'Variant not found.',
+            'flash_error' => 'An error occurred.',
+        ],
+    ],
+];

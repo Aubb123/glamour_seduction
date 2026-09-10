@@ -153,13 +153,16 @@ class ProductController extends Controller
             // Récupère toutes les traductions supprimées (soft deleted) de ce produit
             $productTranslations = ProductTranslation::onlyTrashed()->where('product_id', $product->id)->get();
 
+            // Charge les variantes du produit (onglet « Variantes »)
+            $variants = $product->variants()->with(['attributeValues'])->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+
             $productName = $product->active_translation?->name ?? __("{$this->langPath}.show.no_name");
 
             // Log de la consultation du détail d'un produit
             $this->logActivity(type: 'info', action: 'backend.products.show', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.show.success", ['name' => $productName]), is_success: true, loggable: $product);
 
             // Retourne la vue du produit avec les données nécessaires
-            return view('v1.backend.pages.products.products.show', compact('product', 'langs', 'productTranslations'));
+            return view('v1.backend.pages.products.products.show', compact('product', 'langs', 'productTranslations', 'variants'));
 
         } catch (\Exception $e) {
 

@@ -330,5 +330,3 @@ Routes, sidebar Boutique (entrée **Mouvements de stock**), `PermissionSeeder` (
 ```
 
 **Temps/impact estimé par module complet** : Module 2 à 4 → ~même volume que le Module 1 (≈ 35-40 fichiers chacun) ; Module 5 (Produits) → le plus lourd (~50 fichiers + pivot + galerie + dépendances sur modules précédents) ; Modules 7-9 → plus légers (pas de traductions/images) ; Module 10 → transverse mais ciblé (~10 fichiers).
-
-Dès que vous validez, on attaque le **Module 2 — Marques** en mode Act.

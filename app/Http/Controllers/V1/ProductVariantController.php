@@ -1,0 +1,444 @@
+<?php
+
+namespace App\Http\Controllers\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\Products\Variants\StoreProductVariantRequest;
+use App\Http\Requests\V1\Products\Variants\UpdateProductVariantRequest;
+use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeValue;
+use App\Models\ProductVariant;
+use App\Services\V1\Controllers\ProductVariantService;
+use App\Traits\LogActivity;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+// Alias pour les chemins de traduction
+use function __;
+
+class ProductVariantController extends Controller
+{
+    use LogActivity; // Trait pour le logging d'activité
+
+    // Chemin de base pour les traductions (centralisé)
+    protected string $langPath = 'v1/backend/views/pages/products/variants/messages/variants-messages-controller.productVariants';
+
+    // Injection de dépendance du service de gestion des variantes
+    public function __construct(protected ProductVariantService $productVariantService) {}
+
+    // ─────────────────────────────────────────────
+    // INDEX
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_index(): View
+    {
+        try {
+
+            // ✅ Récupère toutes les variantes avec leur produit, triées par date de création décroissante
+            $variants = ProductVariant::with(['product', 'attributeValues'])->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+
+            // Log de l'accès à la liste des variantes
+            $this->logActivity(type: 'info', action: 'backend.product-variants.index', context: ['count' => $variants->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
+
+            // Affiche la vue avec les variantes récupérées
+            return view('v1.backend.pages.products.variants.index', compact('variants'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur avec le message d'exception
+            $this->logActivity(type: 'error', action: 'backend.product-variants.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
+
+            abort(500); // Erreur serveur générique en cas de problème lors de la récupération des variantes
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // CREATE
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_create(): View
+    {
+        try {
+
+            // Données pour les selects du formulaire
+            $products = Product::withActiveTranslation()->orderBy('created_at', 'desc')->get();
+            $attributes = ProductAttribute::withActiveTranslation()->orderBy('sort_order', 'desc')->with('values.activeTranslation')->get();
+
+            // Log de l'accès à la page de création d'une variante
+            $this->logActivity(type: 'info', action: 'backend.product-variants.create', context: [], message: null, activity: __("{$this->langPath}.create.success"), is_success: true);
+
+            // Affiche la vue de création d'une variante
+            return view('v1.backend.pages.products.variants.create', compact('products', 'attributes'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de l'accès à la page de création d'une variante
+            $this->logActivity(type: 'error', action: 'backend.product-variants.create', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.create.error"), is_success: false);
+
+            abort(500); // Erreur serveur générique en cas de problème lors de l'accès à la page de création
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // STORE
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_store(StoreProductVariantRequest $request): RedirectResponse
+    {
+        try {
+
+            // Création de la variante via le service, en passant les données validées du formulaire
+            $variant = $this->productVariantService->store($request->validated());
+
+            // Log de la création de la variante avec le SKU de la variante créée
+            $this->logActivity(type: 'info', action: 'backend.product-variants.store', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->langPath}.store.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
+
+            // Redirection vers le show de la variante avec un message de succès
+            return redirect()->route('backend.product-variants.show', ['productVariant' => $variant->uuid])->with('success', __("{$this->langPath}.store.flash_success", ['sku' => $variant->sku]));
+
+        } catch (\InvalidArgumentException $e) {
+
+            // Log de l'erreur métier lors de la création de la variante
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->langPath}.store.error"), is_success: false);
+
+            // Redirection avec le message métier explicite
+            return redirect()->back()->with('error', $e->getMessage())->withInput();
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la création de la variante
+            $this->logActivity(type: 'error', action: 'backend.product-variants.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->langPath}.store.error"), is_success: false);
+
+            // Redirection avec un message d'erreur en cas de problème, en conservant les données du formulaire
+            return redirect()->back()->with('error', __("{$this->langPath}.store.flash_error"))->withInput();
+        }
+    }
+ 
+    // ─────────────────────────────────────────────
+    // SHOW
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_show(ProductVariant $productVariant): View
+    {
+        try {
+
+            // Charge les compteurs (withCount)
+            $productVariant->loadCount(['audits', 'activityLogs']);
+
+            // Log de la consultation du détail d'une variante
+            $this->logActivity(type: 'info', action: 'backend.product-variants.show', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->langPath}.show.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+
+            $variant = $productVariant;
+
+            // Retourne la vue de la variante avec les données nécessaires
+            return view('v1.backend.pages.products.variants.show', compact('variant'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la consultation du détail d'une variante
+            $this->logActivity(type: 'error', action: 'backend.product-variants.show', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            abort(500); // Erreur serveur générique en cas de problème lors de la récupération de la variante
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // AUDITS
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_audits(ProductVariant $productVariant): View
+    {
+        try {
+
+            // Récupère les audits de la variante
+            $audits = $productVariant->audits()->orderBy('created_at', 'desc')->get();
+
+            // Log de la consultation des audits de la variante
+            $this->logActivity(type: 'info', action: 'backend.product-variants.audits', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->langPath}.audits.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+
+            $variant = $productVariant;
+
+            return view('v1.backend.pages.products.variants.others.audits', compact('variant', 'audits'));
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.audits', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // ACTIVITY LOGS
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_activity_logs(ProductVariant $productVariant): View
+    {
+        try {
+
+            // Récupère les journaux d'activité de la variante
+            $logs = $productVariant->activityLogs()->orderBy('created_at', 'desc')->get();
+
+            // Log de la consultation des journaux d'activité de la variante
+            $this->logActivity(type: 'info', action: 'backend.product-variants.activity-logs', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->langPath}.activity-logs.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+
+            $variant = $productVariant;
+
+            return view('v1.backend.pages.products.variants.others.activity-logs', compact('variant', 'logs'));
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.activity-logs', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // EDIT
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_edit(ProductVariant $productVariant): View
+    {
+        try {
+
+            // Données pour les selects du formulaire
+            $products = Product::withActiveTranslation()->orderBy('created_at', 'desc')->get();
+            $attributes = ProductAttribute::withActiveTranslation()->orderBy('sort_order', 'desc')->with('values.activeTranslation')->get();
+
+            // Log de l'accès à la page de modification d'une variante
+            $this->logActivity(type: 'info', action: 'backend.product-variants.edit', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->langPath}.edit.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+
+            $variant = $productVariant;
+
+            return view('v1.backend.pages.products.variants.edit', compact('variant', 'products', 'attributes'));
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.edit', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.edit.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // UPDATE
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_update(UpdateProductVariantRequest $request, ProductVariant $productVariant): RedirectResponse
+    {
+        try {
+
+            $variantSku = $productVariant->sku;
+
+            $this->productVariantService->update($productVariant, $request->validated());
+
+            $this->logActivity(type: 'info', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.update.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
+
+            return redirect()->route('backend.product-variants.show', ['productVariant' => $productVariant->uuid])->with('success', __("{$this->langPath}.update.flash_success", ['sku' => $variantSku]));
+
+        } catch (ModelNotFoundException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.warning", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            abort(404);
+
+        } catch (\InvalidArgumentException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.warning_meta", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', $e->getMessage())->withInput();
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', __("{$this->langPath}.update.flash_error"));
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // ACTIVATE
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_activate(Request $request, ProductVariant $productVariant): RedirectResponse
+    {
+        try {
+
+            $variantSku = $productVariant->sku;
+
+            $this->productVariantService->activate($productVariant);
+
+            $this->logActivity(type: 'info', action: 'backend.product-variants.activate', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.activate.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
+
+            return back()->with('success', __("{$this->langPath}.activate.flash_success", ['sku' => $variantSku]));
+
+        } catch (\InvalidArgumentException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.activate', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.warning_meta", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', $e->getMessage());
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.activate', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', __("{$this->langPath}.activate.flash_error"));
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // DEACTIVATE
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_deactivate(Request $request, ProductVariant $productVariant): RedirectResponse
+    {
+        try {
+
+            $variantSku = $productVariant->sku;
+
+            $this->productVariantService->deactivate($productVariant);
+
+            $this->logActivity(type: 'info', action: 'backend.product-variants.deactivate', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.deactivate.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
+
+            return back()->with('success', __("{$this->langPath}.deactivate.flash_success", ['sku' => $variantSku]));
+
+        } catch (\InvalidArgumentException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.deactivate', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.warning_meta", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', $e->getMessage());
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.deactivate', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', __("{$this->langPath}.deactivate.flash_error"));
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // DESTROY
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_destroy(ProductVariant $productVariant): RedirectResponse
+    {
+        try {
+
+            $variantSku = $productVariant->sku;
+
+            $this->productVariantService->destroy($productVariant);
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.destroy', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.destroy.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
+
+            return redirect()->route('backend.product-variants.index')->with('success', __("{$this->langPath}.destroy.flash_success", ['sku' => $variantSku]));
+
+        } catch (ModelNotFoundException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.destroy', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            abort(404);
+
+        } catch (\InvalidArgumentException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.destroy', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning_meta", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', $e->getMessage())->withInput();
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.destroy', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $productVariant->uuid]), is_success: false);
+
+            return back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // TRASHED
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_trashed(): View
+    {
+        try {
+
+            $variants = ProductVariant::onlyTrashed()->with(['product', 'attributeValues'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+
+            $this->logActivity(type: 'info', action: 'backend.product-variants.trashed', context: ['count' => $variants->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);
+
+            return view('v1.backend.pages.products.variants.trashed', compact('variants'));
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.trashed', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // RESTORE
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_restore(string $uuid): RedirectResponse
+    {
+        try {
+
+            // Récupère la variante supprimée par son UUID ou échoue
+            $variant = ProductVariant::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
+
+            $variantSku = $variant->sku;
+
+            $this->productVariantService->restore($variant);
+
+            $this->logActivity(type: 'info', action: 'backend.product-variants.restore', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.restore.success", ['sku' => $variantSku]), is_success: true, loggable: $variant);
+
+            return back()->with('success', __("{$this->langPath}.restore.flash_success", ['sku' => $variantSku]));
+
+        } catch (ModelNotFoundException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.restore', context: ['variant_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
+
+            abort(404);
+
+        } catch (\InvalidArgumentException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.restore', context: ['variant_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
+
+            return back()->with('error', $e->getMessage())->withInput();
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.restore', context: ['variant_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
+
+            return back()->with('error', __("{$this->langPath}.restore.flash_error"));
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // FORCE DESTROY
+    // ─────────────────────────────────────────────
+    public function backend_product_variants_force_destroy(string $uuid): RedirectResponse
+    {
+        try {
+
+            // Récupère la variante supprimée par son UUID ou échoue
+            $variant = ProductVariant::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
+
+            $variantSku = $variant->sku;
+
+            $this->productVariantService->forceDestroy($variant);
+
+            $this->logActivity(type: 'info', action: 'backend.product-variants.force_destroy', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.force_destroy.success", ['sku' => $variantSku]), is_success: true, loggable: $variant);
+
+            return back()->with('success', __("{$this->langPath}.force_destroy.flash_success", ['sku' => $variantSku]));
+
+        } catch (ModelNotFoundException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.force_destroy', context: ['variant_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+
+            abort(404);
+
+        } catch (\InvalidArgumentException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.force_destroy', context: ['variant_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+
+            return back()->with('error', $e->getMessage())->withInput();
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-variants.force_destroy', context: ['variant_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+
+            return back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
+        }
+    }
+}
