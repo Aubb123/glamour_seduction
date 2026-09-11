@@ -22,10 +22,11 @@ return new class extends Migration
             $table->integer('sort_order')->unique(); // Utile dans les selects/listes // Pour l'ordre d'affichage : 0 en premier
             $table->boolean('is_default')->default(false); // Devise par défaut de la plateforme (une seule doit être true)
             $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si la devise est active
-            //
+            // Taux de change par rapport à la devise par défaut de la boutique
+            // 1 devise par défaut = exchange_rate devise
+            $table->decimal('exchange_rate', 10, 6)->default(1.000000);
             $table->timestamps();
             $table->softDeletes();
-            // Index pour les filtres courants
             $table->index(['status', 'is_default', 'deleted_at']); // Index pour les filtres courants
         });
     }

@@ -5,6 +5,19 @@ return [
     'currencies' => [
 
         // ─────────────────────────────────────────────
+        // UPDATE (Module 10 : taux de change)
+        // ─────────────────────────────────────────────
+        'update' => [
+            'exchange_rate_default_forbidden' => 'La devise par défaut est la base de saisie des prix : son taux de change doit rester fixé à 1.000000.',
+        ],
+
+        // ─────────────────────────────────────────────
+        // PRICING (Module 10 : prix multi-devise)
+        // ─────────────────────────────────────────────
+        'pricing' => [
+            'invalid_exchange_rate' => 'Conversion impossible : le taux de change de la devise « :code » est invalide ou non renseigné.',
+        ],
+        // ─────────────────────────────────────────────
         // ACTIVATE
         // ─────────────────────────────────────────────
         'activate' => [

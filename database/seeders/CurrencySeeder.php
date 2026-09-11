@@ -10,6 +10,34 @@ use Illuminate\Database\Seeder;
 class CurrencySeeder extends Seeder
 {
     /**
+     * Taux de change indicatifs par rapport à la devise par défaut (EUR) —
+     * maintenables manuellement via le back-office (champ « Taux de change »).
+     * Les devises absentes de cette table partent du défaut 1.000000.
+     */
+    protected array $exchangeRates = [
+        'EUR' => 1.000000,
+        'USD' => 1.080000,
+        'GBP' => 0.920000,
+        'CHF' => 0.960000,
+        'CAD' => 1.470000,
+        'JPY' => 168.000000,
+        'MAD' => 10.850000,
+        'DZD' => 145.000000,
+        'TND' => 3.350000,
+        'XOF' => 655.957000,
+        'XAF' => 655.957000,
+        'XPF' => 119.331742,
+        'BIF' => 3100.000000,
+        'CDF' => 2800.000000,
+        'GNF' => 9250.000000,
+        'RWF' => 1350.000000,
+        'KMF' => 492.000000,
+        'MGA' => 4650.000000,
+        'MUR' => 49.000000,
+        'SCR' => 15.000000,
+    ];
+
+    /**
      * Devise par défaut de la plateforme : EUR (is_default => true).
      * Les devises sont dérivées du catalogue des pays (GeoCountrySeeder).
      */
@@ -1880,6 +1908,7 @@ class CurrencySeeder extends Seeder
                     'decimal_places' => $data['decimal_places'],
                     'sort_order' => $index + 1,
                     'is_default' => $data['is_default'],
+                    'exchange_rate' => $this->exchangeRates[$data['code']] ?? 1.000000, // Taux (Module 10)
                     'status' => $data['status'],
                 ]
             );

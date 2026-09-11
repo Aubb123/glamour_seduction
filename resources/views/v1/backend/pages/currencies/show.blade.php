@@ -74,6 +74,14 @@
                                 <hr class="my-2">
 
                                 <div class="row mb-3 align-items-center">
+                                    <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/currencies/show.tauxDeChange') }}</div>
+                                    <div class="col-8">
+                                        <span class="badge badge-soft-info fs-13">{{ number_format((float) $currency->exchange_rate, 6, ',', ' ') }}</span>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+
+                                <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('v1/backend/views/pages/currencies/show.deviseParDefaut') }}</div>
                                     <div class="col-8">
                                         @if ($currency->is_default)

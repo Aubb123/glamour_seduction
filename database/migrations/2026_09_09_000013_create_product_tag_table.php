@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_tag, enregistre la relation many-to-many entre les produits et les tags
+        // Un produit peut avoir plusieurs tags et un tag peut être associé à plusieurs produits
+        // Exemple de relation : "T-shirt rouge" (produit) > "Nouveauté" (tag) et "Promotion" (tag)
         Schema::create('product_tag', function (Blueprint $table) {
             $table->id(); // Clé primaire auto-incrémentée
             //

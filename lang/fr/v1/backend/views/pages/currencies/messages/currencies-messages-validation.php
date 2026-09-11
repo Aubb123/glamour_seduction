@@ -40,6 +40,13 @@ return [
         'unique' => 'Cet ordre d\'affichage est déjà utilisé par une autre devise.',
     ],
 
+    // Taux de change (Module 10 : prix multi-devise)
+    'exchange_rate' => [
+        'required' => 'Le taux de change est obligatoire.',
+        'numeric' => 'Le taux de change doit être un nombre.',
+        'min' => 'Le taux de change doit être strictement supérieur à zéro.',
+    ],
+
     // Devise par défaut
     'is_default' => [
         'boolean' => 'Le champ devise par défaut doit être un booléen.',

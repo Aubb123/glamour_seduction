@@ -22,8 +22,8 @@ class ProductWarehouse extends Model
     protected bool $hasTranslations = false;
 
     // Relations enfants dont la présence bloque la suppression de cet entrepôt.
-    // NB : 'stocks' sera ajouté lors de l'intégration du module Stocks (module 8).
-    protected array $dependentRelations = [];
+    // NB : destroy refusé si des stocks ou des mouvements existent (relations ajoutées aux modules 8-9).
+    protected array $dependentRelations = ['stocks', 'movements'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [

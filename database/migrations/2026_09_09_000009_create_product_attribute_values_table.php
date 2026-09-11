@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_attribute_values, enregistre les valeurs des attributs de produits
+        // Une valeur appartient à un seul attribut (relation one-to-many)
+        // Exemple de valeurs : "Rouge", "XL", "Medical Silicone"
         Schema::create('product_attribute_values', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

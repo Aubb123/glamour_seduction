@@ -45,6 +45,8 @@ use App\Http\Controllers\V1\ProductTagController as V1ProductTagController;
 use App\Http\Controllers\V1\ProductTagTranslationController as V1ProductTagTranslationController;
 use App\Http\Controllers\V1\ProductVariantController as V1ProductVariantController;
 use App\Http\Controllers\V1\ProductWarehouseController as V1ProductWarehouseController;
+use App\Http\Controllers\V1\ProductWarehouseStockController as V1ProductWarehouseStockController;
+use App\Http\Controllers\V1\ProductStockMovementController as V1ProductStockMovementController;
 use App\Http\Controllers\V1\RoleController as V1RoleController;
 use App\Http\Controllers\V1\RoleTranslationController as V1RoleTranslationController;
 use App\Http\Controllers\V1\SettingController as V1SettingController;
@@ -415,6 +417,34 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-variants/force-destroy/{uuid}', 'backend_product_variants_force_destroy')->middleware(['permission:product-variants.force_destroy'])->name('backend.product-variants.force_destroy');
         });
 
+        // Routes pour : Gestion des Stocks (entrepôt × variante, module Boutique)
+        Route::controller(V1ProductWarehouseStockController::class)->group(function () {
+            Route::get('/backend/product-warehouse-stocks/index', 'backend_product_warehouse_stocks_index')->middleware(['permission:product-warehouse-stocks.index'])->name('backend.product-warehouse-stocks.index');
+            Route::get('/backend/product-warehouse-stocks/create', 'backend_product_warehouse_stocks_create')->middleware(['permission:product-warehouse-stocks.create'])->name('backend.product-warehouse-stocks.create');
+            Route::post('/backend/product-warehouse-stocks/store', 'backend_product_warehouse_stocks_store')->middleware(['permission:product-warehouse-stocks.store'])->name('backend.product-warehouse-stocks.store');
+            Route::get('/backend/product-warehouse-stocks/show/{productWarehouseStock}', 'backend_product_warehouse_stocks_show')->middleware(['permission:product-warehouse-stocks.show'])->name('backend.product-warehouse-stocks.show');
+            Route::get('/backend/product-warehouse-stocks/audits/{productWarehouseStock}', 'backend_product_warehouse_stocks_audits')->middleware(['permission:product-warehouse-stocks.audits'])->name('backend.product-warehouse-stocks.audits');
+            Route::get('/backend/product-warehouse-stocks/activity-logs/{productWarehouseStock}', 'backend_product_warehouse_stocks_activity_logs')->middleware(['permission:product-warehouse-stocks.activity_logs'])->name('backend.product-warehouse-stocks.activity-logs');
+            Route::get('/backend/product-warehouse-stocks/edit/{productWarehouseStock}', 'backend_product_warehouse_stocks_edit')->middleware(['permission:product-warehouse-stocks.edit'])->name('backend.product-warehouse-stocks.edit');
+            Route::put('/backend/product-warehouse-stocks/update/{productWarehouseStock}', 'backend_product_warehouse_stocks_update')->middleware(['permission:product-warehouse-stocks.update'])->name('backend.product-warehouse-stocks.update');
+            Route::delete('/backend/product-warehouse-stocks/destroy/{productWarehouseStock}', 'backend_product_warehouse_stocks_destroy')->middleware(['permission:product-warehouse-stocks.destroy'])->name('backend.product-warehouse-stocks.destroy');
+            Route::get('/backend/product-warehouse-stocks/trashed', 'backend_product_warehouse_stocks_trashed')->middleware(['permission:product-warehouse-stocks.trashed'])->name('backend.product-warehouse-stocks.trashed');
+            Route::patch('/backend/product-warehouse-stocks/restore/{uuid}', 'backend_product_warehouse_stocks_restore')->middleware(['permission:product-warehouse-stocks.restore'])->name('backend.product-warehouse-stocks.restore');
+            Route::delete('/backend/product-warehouse-stocks/force-destroy/{uuid}', 'backend_product_warehouse_stocks_force_destroy')->middleware(['permission:product-warehouse-stocks.force_destroy'])->name('backend.product-warehouse-stocks.force-destroy');
+        });
+
+        // Routes pour : Gestion des Mouvements de stock (module Boutique)
+        Route::controller(V1ProductStockMovementController::class)->group(function () {
+            Route::get('/backend/product-stock-movements/index', 'backend_product_stock_movements_index')->middleware(['permission:product-stock-movements.index'])->name('backend.product-stock-movements.index');
+            Route::get('/backend/product-stock-movements/create', 'backend_product_stock_movements_create')->middleware(['permission:product-stock-movements.create'])->name('backend.product-stock-movements.create');
+            Route::post('/backend/product-stock-movements/store', 'backend_product_stock_movements_store')->middleware(['permission:product-stock-movements.store'])->name('backend.product-stock-movements.store');
+            Route::get('/backend/product-stock-movements/show/{productStockMovement}', 'backend_product_stock_movements_show')->middleware(['permission:product-stock-movements.show'])->name('backend.product-stock-movements.show');
+            Route::delete('/backend/product-stock-movements/destroy/{productStockMovement}', 'backend_product_stock_movements_destroy')->middleware(['permission:product-stock-movements.destroy'])->name('backend.product-stock-movements.destroy');
+            Route::get('/backend/product-stock-movements/trashed', 'backend_product_stock_movements_trashed')->middleware(['permission:product-stock-movements.trashed'])->name('backend.product-stock-movements.trashed');
+            Route::patch('/backend/product-stock-movements/restore/{uuid}', 'backend_product_stock_movements_restore')->middleware(['permission:product-stock-movements.restore'])->name('backend.product-stock-movements.restore');
+            Route::delete('/backend/product-stock-movements/force-destroy/{uuid}', 'backend_product_stock_movements_force_destroy')->middleware(['permission:product-stock-movements.force_destroy'])->name('backend.product-stock-movements.force-destroy');
+        });
+
         // Routes pour : Gestion des Entrepôts (module Boutique)
         Route::controller(V1ProductWarehouseController::class)->group(function () {
             Route::get('/backend/product-warehouses/index', 'backend_product_warehouses_index')->middleware(['permission:product-warehouses.index'])->name('backend.product-warehouses.index');
@@ -722,6 +752,9 @@ if ($version && $version->code === 'v1') {
     // //////////////////////////////////////////////////////////////////////////////// Route frontend ///////////////////////////////
     Route::controller(V1FrontendController::class)->group(function () {
         Route::get('/', 'frontend_index')->name('frontend.index');
+
+        // Module 10 : sélecteur de devise du frontend (utilisateur connecté → users.currency_id ; visiteur → session)
+        Route::post('/currency/switch', 'frontend_currencies_switch')->name('frontend.currencies.switch');
     });
 
 }

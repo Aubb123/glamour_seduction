@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_brand_translations, enregistre les traductions des marques de produits
+        // Une marque peut avoir plusieurs traductions, une par langue et une traduction appartient à une seule marque
+        // Exemple de traduction : "Nike" (fr) > "Nike" (en) > "Nike" (es)
         Schema::create('product_brand_translations', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

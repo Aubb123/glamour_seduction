@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_variants, enregistre les variantes de produits
+        // Une variante appartient à un seul produit (relation one-to-many)
+        // Exemple de variante : "T-shirt rouge, taille M" (variante du produit "T-shirt rouge")
         Schema::create('product_variants', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

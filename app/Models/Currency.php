@@ -35,6 +35,7 @@ class Currency extends Model
         'numeric_code',
         'sort_order',
         'is_default',
+        'exchange_rate',
         'status',
     ];
 
@@ -43,6 +44,7 @@ class Currency extends Model
         'status' => CurrencyStatus::class,
         'decimal_places' => 'integer',
         'is_default' => 'boolean',
+        'exchange_rate' => 'decimal:6',
     ];
 
     /**

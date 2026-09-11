@@ -313,9 +313,9 @@ it('déclare variants comme relation bloquante pour Product (dependentRelations)
     expect($property->getValue($product))->toBe(['variants']);
 });
 
-it('déclare une liste vide de dependentRelations pour ProductVariant (stocks/mouvements aux modules 8-9)', function () {
+it('déclare stocks/movements comme relations bloquantes pour ProductVariant (modules 8-9)', function () {
     $variant = new ProductVariant;
 
     $property = new ReflectionProperty($variant, 'dependentRelations');
-    expect($property->getValue($variant))->toBe([]);
+    expect($property->getValue($variant))->toBe(['stocks', 'movements']);
 });

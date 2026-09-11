@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_attribute_translations, enregistre les traductions des attributs de produits
+        // Un attribut peut avoir plusieurs traductions, une par langue et une traduction appartient à un seul attribut
+        // Exemple de traduction : "Couleur" (fr) > "Color" (en) > "Color" (es)
         Schema::create('product_attribute_translations', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

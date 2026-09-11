@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_attributes, enregistre les attributs de produits
+        // Un attribut peut avoir plusieurs produits (relation many-to-many via product_attribute_product)
+        // Exemple d'attributs : "Couleur", "Taille", "Matériau"
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

@@ -62,6 +62,7 @@ return [
         // UPDATE
         // ─────────────────────────────────────────────
         'update' => [
+            'exchange_rate_changed' => 'Exchange rate of currency " :code" updated: :rate',
             'success' => 'The currency ":name" has been successfully updated.',
             'warning' => 'Attempt to update a non-existent currency (UUID: :uuid).',
             'warning_meta' => 'Business error while updating the currency (UUID: :uuid).',

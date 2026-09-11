@@ -57,6 +57,8 @@ class PermissionSeeder extends Seeder
         'product-translations' => [], // Traductions des produits
         'product-variants' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Variantes de produits (module Boutique)
         'product-warehouses' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Entrepôts de produits (module Boutique)
+        'product-warehouse-stocks' => ['audits', 'activity_logs'], // Stocks (entrepôt × variante) (module Boutique)
+        'product-stock-movements' => [], // Mouvements de stock (audit & traçabilité) (module Boutique)
         'faqs' => ['toggle_active', 'audits', 'activity_logs'], // FAQs
         'faq-translations' => [], // Traductions des FAQs
         'subscribes' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Abonnés newsletter
@@ -187,6 +189,23 @@ class PermissionSeeder extends Seeder
             'product-warehouses.update',
             'product-warehouses.activate',
             'product-warehouses.deactivate',
+
+            // product-warehouse-stocks
+            'product-warehouse-stocks.index',
+            'product-warehouse-stocks.show',
+            'product-warehouse-stocks.create',
+            'product-warehouse-stocks.store',
+            'product-warehouse-stocks.edit',
+            'product-warehouse-stocks.update',
+
+            // product-stock-movements
+            'product-stock-movements.index',
+            'product-stock-movements.show',
+            'product-stock-movements.create',
+            'product-stock-movements.store',
+            'product-stock-movements.trashed',
+            'product-stock-movements.restore',
+            'product-stock-movements.force_destroy',
 
             // roles
             'roles.index',

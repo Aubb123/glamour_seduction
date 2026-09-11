@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_brands, enregistre les marques de produits
+        // Une marque peut avoir plusieurs produits (relation one-to-many)
+        // Exemple de marques : "Nike", "Adidas", "Puma"
         Schema::create('product_brands', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

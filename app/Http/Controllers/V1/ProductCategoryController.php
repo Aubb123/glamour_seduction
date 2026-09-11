@@ -148,8 +148,9 @@ class ProductCategoryController extends Controller
             // Vérifie que le slug correspond
             $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.show', 'show');
 
-            // Charge les compteurs (withCount)
-            $category->loadCount(['children', 'audits', 'activityLogs']);
+            // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
+            // + les compteurs (withCount)
+            $category->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['children', 'audits', 'activityLogs']);
 
             // Récupère toutes les traductions supprimées (soft deleted) de cette catégorie
             $productCategoryTranslations = ProductCategoryTranslation::onlyTrashed()->where('category_id', $category->id)->get();

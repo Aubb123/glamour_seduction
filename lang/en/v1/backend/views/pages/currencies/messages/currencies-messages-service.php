@@ -5,6 +5,19 @@ return [
     'currencies' => [
 
         // ─────────────────────────────────────────────
+        // UPDATE (Module 10 : exchange rate)
+        // ─────────────────────────────────────────────
+        'update' => [
+            'exchange_rate_default_forbidden' => 'The default currency is the pricing base: its exchange rate must stay fixed at 1.000000.',
+        ],
+
+        // ─────────────────────────────────────────────
+        // PRICING (Module 10 : multi-currency pricing)
+        // ─────────────────────────────────────────────
+        'pricing' => [
+            'invalid_exchange_rate' => 'Conversion impossible: the exchange rate of currency “:code” is invalid or missing.',
+        ],
+        // ─────────────────────────────────────────────
         // ACTIVATE
         // ─────────────────────────────────────────────
         'activate' => [

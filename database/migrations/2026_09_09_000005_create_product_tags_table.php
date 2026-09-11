@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_tags, enregistre les tags de produits
+        // Un tag peut avoir plusieurs produits (relation many-to-many via product_tag_product)
+        // Exemple de tags : "Nouveauté", "Promotion", "Best-seller"
         Schema::create('product_tags', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

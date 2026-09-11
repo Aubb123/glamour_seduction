@@ -85,7 +85,13 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
+                                    <label for="exchange_rate" class="form-label">{{ __('v1/backend/views/pages/currencies/edit.tauxDeChange') }} <span class="text-danger">*</span></label>
+                                    <input type="number" name="exchange_rate" id="exchange_rate" step="0.000001" min="0.000001" required class="form-control @error('exchange_rate') is-invalid @enderror" placeholder="ex : 655.957000" value="{{ old('exchange_rate', $currency->exchange_rate) }}" />
+                                    @error('exchange_rate') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                    <small class="text-muted">{{ __('v1/backend/views/pages/currencies/edit.tauxDeChangeAide') }}</small>
+                                </div>
+                                <div class="col-md-6">
                                     <div class="form-check form-switch">
                                         <input type="hidden" name="is_default" value="0" />
                                         <input type="checkbox" name="is_default" id="is_default" value="1" class="form-check-input @error('is_default') is-invalid @enderror" {{ old('is_default', $currency->is_default) ? 'checked' : '' }} />
@@ -93,6 +99,7 @@
                                         @error('is_default') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
                                     <small class="text-muted">{{ __('v1/backend/views/pages/currencies/edit.deviseParDefautAide') }}</small>
+                                </div>
                                 </div>
                             </div>
 

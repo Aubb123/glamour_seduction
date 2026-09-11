@@ -40,6 +40,13 @@ return [
         'unique' => 'This sort order is already used by another currency.',
     ],
 
+    // Exchange rate (Module 10 : multi-currency pricing)
+    'exchange_rate' => [
+        'required' => 'The exchange rate is required.',
+        'numeric' => 'The exchange rate must be a number.',
+        'min' => 'The exchange rate must be strictly greater than zero.',
+    ],
+
     // Default currency
     'is_default' => [
         'boolean' => 'The default currency field must be a boolean.',

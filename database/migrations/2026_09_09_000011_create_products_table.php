@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: products, enregistre les produits
+        // Un produit appartient à une catégorie et peut appartenir à une marque (relation one-to-many)
+        // Un produit peut avoir plusieurs tags et attributs (relation many-to-many via product_tag_product et product_attribute_product)
+        // Exemple de produit : "T-shirt rouge Nike" (catégorie: "T-shirts", marque: "Nike", tags: "Nouveauté", attribut
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

@@ -231,6 +231,11 @@ class CurrencyController extends Controller
             // Mise à jour de la devise via le service, en passant les données validées du formulaire
             $this->currencyService->update($currency, $request->validated());
 
+            // Log dédié (Module 10) lorsque le taux de change a été modifié (traçabilité multi-devise)
+            if ($currency->wasChanged('exchange_rate')) {
+                $this->logActivity(type: 'info', action: 'backend.currencies.update', context: ['currency_uuid' => $currency->uuid, 'exchange_rate' => $currency->exchange_rate], message: null, activity: __("{$this->langPath}.update.exchange_rate_changed", ['code' => $currency->code, 'rate' => $currency->exchange_rate]), is_success: true, loggable: $currency);
+            }
+
             // Log de la mise à jour de la devise
             $this->logActivity(type: 'info', action: 'backend.currencies.update', context: ['currency_uuid' => $currency->uuid, 'currency_code' => $currency->code, 'changes' => $currency->getChanges()], message: null, activity: __("{$this->langPath}.update.success", ['name' => $currency->active_translation?->name ?? $currency->code]), is_success: true, loggable: $currency);
 

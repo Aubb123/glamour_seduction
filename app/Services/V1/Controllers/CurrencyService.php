@@ -36,12 +36,22 @@ class CurrencyService
                     ->update(['is_default' => false]);
             }
 
+            // Garde métier (Module 10) : la devise par défaut est la base de saisie des prix
+            // → son taux de change reste toujours fixé à 1.000000.
+            $exchangeRate = (float) ($data['exchange_rate'] ?? $currency->exchange_rate ?? 1);
+
+            if ($isDefault && abs($exchangeRate - 1.0) > 0.0000005) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.update.exchange_rate_default_forbidden"));
+            }
+
             $attributes = [
                 // Champs obligatoires : toujours présents dans les données validées
                 'code' => $data['code'],
                 'symbol' => $data['symbol'],
                 'decimal_places' => $data['decimal_places'],
                 'sort_order' => $data['sort_order'],
+                // Taux de change (Module 10 : prix multi-devise)
+                'exchange_rate' => $exchangeRate,
                 // Statut : la case à cocher est absente du payload = devise masquée (convention formulaire)
                 'status' => ($data['status'] ?? null) === CurrencyStatus::Active->value
                     ? CurrencyStatus::Active

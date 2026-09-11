@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_variant_attribute_value, enregistre la relation many-to-many entre les variantes de produits et les valeurs d'attributs
+        // Une variante de produit peut avoir plusieurs valeurs d'attributs et une valeur d'attribut peut être associée à plusieurs variantes de produits
+        // Exemple de relation : "T-shirt rouge, taille M" (variante) > "Rouge" (valeur d'attribut) et "M" (valeur d'attribut)
         Schema::create('product_variant_attribute_value', function (Blueprint $table) {
             $table->id(); // Clé primaire auto-incrémentée
             //

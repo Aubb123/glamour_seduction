@@ -63,6 +63,7 @@ return [
         // ─────────────────────────────────────────────
         'update' => [
             'success' => 'La devise ":name" a été mise à jour avec succès.',
+            'exchange_rate_changed' => 'Taux de change de la devise " :code" mis à jour : :rate',
             'warning' => 'Tentative de mise à jour d\'une devise inexistante (UUID: :uuid).',
             'warning_meta' => 'Erreur métier lors de la mise à jour de la devise (UUID: :uuid).',
             'error' => 'Erreur lors de la mise à jour de la devise (UUID: :uuid).',

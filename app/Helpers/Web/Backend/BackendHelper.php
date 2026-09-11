@@ -527,6 +527,8 @@ class BackendHelper
                             ['label' => 'Produits', 'route' => 'backend.products.index', 'patterns' => ['backend.products.*', 'backend.product-translations.*']],
                             ['label' => 'Variantes', 'route' => 'backend.product-variants.index', 'patterns' => ['backend.product-variants.*']],
                             ['label' => 'Entrepôts', 'route' => 'backend.product-warehouses.index', 'patterns' => ['backend.product-warehouses.*']],
+                            ['label' => 'Stocks', 'route' => 'backend.product-warehouse-stocks.index', 'patterns' => ['backend.product-warehouse-stocks.*']],
+                            ['label' => 'Mouvements de stock', 'route' => 'backend.product-stock-movements.index', 'patterns' => ['backend.product-stock-movements.*']],
                         ],
                     ],
                     [
@@ -666,6 +668,18 @@ class BackendHelper
                 'icon' => 'ti ti-building-warehouse',
                 'route' => 'backend.product-warehouses.create',
                 'permission' => 'product-warehouses.create',
+            ],
+            [
+                'label' => __('Stock'),
+                'icon' => 'ti ti-packages',
+                'route' => 'backend.product-warehouse-stocks.create',
+                'permission' => 'product-warehouse-stocks.create',
+            ],
+            [
+                'label' => __('Mouvement de stock'),
+                'icon' => 'ti ti-arrows-exchange',
+                'route' => 'backend.product-stock-movements.create',
+                'permission' => 'product-stock-movements.create',
             ],
             [
                 'label' => __("Valeur d'attribut"),

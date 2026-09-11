@@ -218,9 +218,9 @@ it('passe un entrepôt en corbeille puis le restaure', function () {
     expect(ProductWarehouse::find($warehouse->id))->not->toBeNull();
 });
 
-it('déclare dependentRelations vide pour ProductWarehouse (stocks ajoutés au module 8)', function () {
+it('déclare dependentRelations = [stocks, movements] pour ProductWarehouse (modules 8-9 livrés)', function () {
     $warehouse = new ProductWarehouse;
 
     $property = new ReflectionProperty($warehouse, 'dependentRelations');
-    expect($property->getValue($warehouse))->toBe([]);
+    expect($property->getValue($warehouse))->toBe(['stocks', 'movements']);
 });

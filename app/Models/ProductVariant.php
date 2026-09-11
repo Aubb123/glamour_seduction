@@ -25,7 +25,7 @@ class ProductVariant extends Model
 
     // Relations enfants dont la présence bloque la suppression de cette variante.
     // NB : 'stocks' (module 8) et 'movements' (module 9) seront ajoutés plus tard.
-    protected array $dependentRelations = [];
+    protected array $dependentRelations = ['stocks', 'movements']; // Destroy refusé si stocks/mouvements existent (modules 8-9)
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [

@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Table: product_warehouses, enregistre les entrepôts de produits
+        // Un entrepôt peut contenir plusieurs produits (relation one-to-many)
+        // Exemple d'entrepôts : "Entrepôt de Paris", "Entrepôt de Lyon", "Entrepôt de Marseille"
         Schema::create('product_warehouses', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

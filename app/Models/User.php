@@ -99,6 +99,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Relation vers la devise d'affichage de l'utilisateur (Module 10 : prix multi-devise).
+     */
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
+
+    /**
      * Relation : un utilisateur a plusieurs galeries.
      */
     public function galleries(): HasMany
