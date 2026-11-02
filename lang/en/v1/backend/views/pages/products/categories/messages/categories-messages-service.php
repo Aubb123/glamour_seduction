@@ -29,6 +29,9 @@ return [
         'force_destroy' => [
             'not_trashed_forbidden' => 'Only trashed categories can be permanently deleted.',
         ],
+
+        // Refusal to update a translation sitting in the trash (syncTranslations guard)
+        'trashedTranslationConflict' => 'Cannot update this product category translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
     ],
 
     'productCategoriesTranslations' => [
