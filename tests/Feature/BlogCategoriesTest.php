@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\BlogCategory;
+use App\Models\BlogCategoryTranslation;
 use App\Models\GeoCountry;
 use App\Models\User;
 use Database\Seeders\CloudFolderSeeder;
@@ -194,4 +195,43 @@ it('déclare posts comme relation bloquante (dependentRelations)', function () {
 
     $property = new ReflectionProperty($category, 'dependentRelations');
     expect($property->getValue($category))->toBe(['posts']);
+});
+
+it('refuse la mise à jour d\'une traduction se trouvant en corbeille (garde syncTranslations)', function () {
+    $admin = blogAdmin();
+
+    // Création d'une catégorie avec ses traductions
+    $this->actingAs($admin)->post(route('backend.blog-categories.store'), categoryPayload());
+    $category = BlogCategory::firstOrFail();
+
+    $langFr = \App\Models\Lang::where('code', 'fr')->firstOrFail();
+
+    // Passage de la traduction FR en corbeille (soft delete direct, simulant une
+    // traduction supprimée via le gestionnaire de traductions)
+    $translation = BlogCategoryTranslation::where('category_id', $category->id)
+        ->where('lang_id', $langFr->id)
+        ->firstOrFail();
+    $translation->delete();
+
+    // Tentative de mise à jour de la catégorie en resoumettant la traduction FR :
+    // le garde de syncTranslations doit lever une exception (traduction trashed)
+    // au lieu de la mettre à jour silencieusement.
+    $payload = categoryPayload([
+        'sort_order' => random_int(1000, 99999),
+        'status' => 'active',
+    ]);
+
+    $this->actingAs($admin)
+        ->from(route('backend.blog-categories.index'))
+        ->put(route('backend.blog-categories.update', ['blogCategory' => $category->uuid]), $payload)
+        ->assertRedirect()
+        ->assertSessionHas('error');
+
+    // La traduction reste en corbeille, non modifiée
+    $trashedTranslation = BlogCategoryTranslation::withTrashed()
+        ->where('category_id', $category->id)
+        ->where('lang_id', $langFr->id)
+        ->firstOrFail();
+
+    expect($trashedTranslation->trashed())->toBeTrue();
 });
