@@ -139,6 +139,15 @@ class GeoCountryService
             // Si une traduction existante est trouvée
             if ($existingTranslation) {
 
+                // Une traduction en corbeille ne doit pas être modifiée silencieusement
+                if ($existingTranslation->trashed()) {
+                    throw new \InvalidArgumentException(
+                        __('v1/backend/others/helpers/backend-helper-messages.trashedTranslationConflict', [
+                            'lang_id' => $translation['lang_id'],
+                        ])
+                    );
+                }
+
                 // Si la traduction existe déjà, on la met à jour avec les nouvelles données.
                 // NB : le slug n'est PAS défini manuellement ici — le trait HasSlug le régénère
                 // automatiquement (avec garantie d'unicité par langue) si le nom change.
