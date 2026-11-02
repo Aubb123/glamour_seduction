@@ -18,9 +18,9 @@ return [
             'last_translation_forbidden' => 'Cette traduction ne peut pas être supprimée définitivement car c\'est la dernière traduction restante pour ce continent.',
             'not_trashed_forbidden' => 'Seules les traductions supprimées peuvent être supprimées définitivement.',
         ],
-    ],
 
-    // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
-    'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du continent (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
+        // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
+        'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du continent (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
+    ],
 
 ];
