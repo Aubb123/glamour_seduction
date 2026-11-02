@@ -219,10 +219,15 @@ class CurrencyService
             // Si une traduction existante est trouvée
             if ($existingTranslation) {
 
-                // Si la traduction existante est en corbeille, on la restaure d'abord
-                // (un update() sur un modèle soft-deleted ne le restaure pas).
+                // Une traduction en corbeille ne doit pas être modifiée silencieusement :
+                // elle doit être restaurée manuellement depuis la corbeille avant de pouvoir
+                // être mise à jour (remplace l'ancienne restauration automatique).
                 if ($existingTranslation->trashed()) {
-                    $existingTranslation->restore();
+                    throw new \InvalidArgumentException(
+                        __('v1/backend/others/helpers/backend-helper-messages.trashedTranslationConflict', [
+                            'lang_id' => $langId,
+                        ])
+                    );
                 }
 
                 // NB : le slug n'est PAS défini manuellement ici — le trait HasSlug le régénère
