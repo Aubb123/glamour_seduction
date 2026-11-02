@@ -47,7 +47,7 @@
                                         </div>
                                         <div class="card-body d-flex flex-column align-items-center justify-content-center">
                                             @if($file->file_type === 'image')
-                                                <a href="{{ route('cloud-file.show', ['uuid' => $file->uuid]) }}" target="_blank" rel="noopener noreferrer">
+                                                <a href="{{ route('cloud-file.show', ['uuid' => $file->uuid]) }}" ttarget="_blank" rrel="noopener noreferrer">
                                                     <img src="{{ route('cloud-file.show', ['uuid' => $file->uuid]) }}" alt="{{ $file->file_name }}" class="img-fluid rounded shadow-sm" style="max-width: 100%; max-height: 500px; object-fit: contain;">
                                                 </a>
                                                 <small class="text-muted mt-3">
@@ -190,7 +190,7 @@
                                                 <div class="col-4 text-muted fw-semibold">{{ __('Lien partageable') }}</div>
                                                 <div class="col-8">
                                                     @if($file->shareable_link)
-                                                        <a href="{{ $file->shareable_link }}" target="_blank" rel="noopener noreferrer" class="text-primary text-decoration-none">
+                                                        <a href="{{ $file->shareable_link }}" ttarget="_blank" rrel="noopener noreferrer" class="text-primary text-decoration-none">
                                                             <i class="bx bx-link-external me-1"></i>{{ __('Ouvrir') }}
                                                         </a>
                                                     @else

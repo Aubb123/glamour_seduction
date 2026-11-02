@@ -45,6 +45,7 @@ class ProductCategoryService
                     throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la catégorie créée
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],
@@ -69,20 +70,25 @@ class ProductCategoryService
             // ni l'un de ses descendants (prévention des cycles dans l'arborescence)
             $this->assertValidParent($category, $data['parent_id'] ?? null);
 
+            // $updateData contient les champs à mettre à jour pour la catégorie
             $updateData = [
                 'parent_id' => $data['parent_id'] ?? null,
             ];
 
+            // Si sort_order est fourni, on l'ajoute aux données à mettre à jour
             if (isset($data['sort_order'])) {
                 $updateData['sort_order'] = $data['sort_order'];
             }
 
-            $updateData['status'] = ($data['status'] ?? null) === ProductCategoryStatus::Active->value
-                ? ProductCategoryStatus::Active
-                : ProductCategoryStatus::Inactive;
+            // Si status est fourni, on l'ajoute aux données à mettre à jour
+            if (isset($data['status'])) {
+                $updateData['status'] = ($data['status'] ?? null) === ProductCategoryStatus::Active->value ? ProductCategoryStatus::Active : ProductCategoryStatus::Inactive;
+            }
 
+            // Mise à jour de la catégorie avec les données fournies (sauf les traductions)
             $category->update($updateData);
 
+            // Synchronisation des traductions (création ou mise à jour)
             if (isset($data['translations'])) {
                 $this->syncTranslations($category, $data['translations']);
             }
@@ -95,6 +101,7 @@ class ProductCategoryService
                     throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la catégorie mise à jour
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],
@@ -161,15 +168,12 @@ class ProductCategoryService
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
             }
 
-            // Une catégorie parente ne peut pas être supprimée tant qu'elle a des sous-catégories
-            if ($category->children()->exists()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.has_children_forbidden"));
-            }
-
-            // Suppression simple (soft delete)
+            // Si la catégorie est déjà supprimée (soft delete), on ne peut pas la supprimer à nouveau
             if ($category->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
+
+            // Suppression temporaire (soft delete)
             destroy_function($category); // ← suppression de la catégorie et de ses traductions associées
 
         });
@@ -218,6 +222,9 @@ class ProductCategoryService
      * Vérifie que le parent proposé ne crée pas de cycle dans l'arborescence :
      * une catégorie ne peut pas devenir son propre parent ni être rattachée
      * à l'un de ses propres descendants.
+     * 
+     * le rôle de assertValidParent() est essentiellement :
+     * « Vérifie que le parent que je veux donner à cette catégorie ne va pas créer une boucle dans mon arbre de catégories. »
      */
     private function assertValidParent(ProductCategory $category, ?int $parentId): void
     {
@@ -233,13 +240,20 @@ class ProductCategoryService
 
         // On remonte la chaîne des parents du candidat : si on retombe sur la
         // catégorie courante, alors le candidat est l'un de ses descendants.
+        // $parentId est l'ID du parent proposé pour la catégorie courante.
         $ancestor = ProductCategory::find($parentId);
 
+        // On remonte la chaîne des parents jusqu'à la racine (parent_id = null)
         while ($ancestor !== null) {
+
+            // Si on retombe sur la catégorie courante, alors le parent proposé est l'un de ses descendants
             if ($ancestor->id === $category->id) {
+                // On a trouvé un cycle : la catégorie courante est un ancêtre du parent proposé
+                // Levée une exception pour signaler que l'opération est interdite
                 throw new \InvalidArgumentException(__("{$this->langPath}.update.parent_descendant_forbidden"));
             }
 
+            // $ancestor devient le parent de l'ancêtre actuel pour continuer la remontée
             $ancestor = $ancestor->parent_id !== null ? ProductCategory::find($ancestor->parent_id) : null;
         }
     }
@@ -307,3 +321,4 @@ class ProductCategoryService
         }
     }
 }
+ 

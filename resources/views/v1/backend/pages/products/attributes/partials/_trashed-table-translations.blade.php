@@ -15,7 +15,7 @@
         <div class="card">
 
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="card-title mb-0">Traductions supprimées</h5>
+                <h5 class="card-title mb-0">{{ __('Traductions supprimées') }}</h5>
                 <div class="dropdown">
                     #
                 </div>
@@ -27,23 +27,21 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Langue</th>
-                                <th scope="col">Nom</th>
-                                <th scope="col">Description</th>
-                                <th scope="col">Créé le</th>
-                                <th scope="col">Modifié le</th>
+                                <th scope="col">{{ __('Langue') }}</th>
+                                <th scope="col">{{ __('Nom') }}</th>
+                                <th scope="col">{{ __('Description') }}</th>
+                                <th scope="col">{{ __('Créé le') }}</th>
+                                <th scope="col">{{ __('Modifié le') }}</th>
                                 @if(request()->routeIs('backend.product-attribute-translations.trashed'))
-                                    <th scope="col">Supprimé le</th>
+                                    <th scope="col">{{ __('Supprimé le') }}</th>
                                 @endif
-                                <th scope="col">Actions</th>
+                                <th scope="col">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($productAttributeTranslations as $translation)
                                 <tr>
-                                    <td>
-                                        {{ $loop->iteration }}
-                                    </td>
+                                    <td>{{ $loop->iteration }}</td>
 
                                     <td>
                                         <span class="badge badge-soft-primary">
@@ -75,12 +73,11 @@
 
                                     <td>
                                         @if($translation->trashed())
-                                            <div class="hstack gap-2 fs-15">
-
+                                            <div class="hstack gap-2">
                                                 <form action="{{ route('backend.product-attribute-translations.restore', ['uuid' => $translation->uuid]) }}" method="POST" class="d-inline" id="restore-form-{{ $translation->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-soft-success" title="Restaurer" onclick="confirmAction('restore-form-{{ $translation->uuid }}', 'Restaurer cette traduction ?', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('Restaurer cette traduction ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -88,20 +85,19 @@
                                                 <form action="{{ route('backend.product-attribute-translations.force_destroy', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $translation->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="Supprimer définitivement" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', 'Supprimer définitivement cette traduction ? Cette action est irréversible.')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', '{{ __('Supprimer définitivement cette traduction ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
-
                                             </div>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.product-attribute-translations.trashed') ? 8 : 7 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
-                                        Aucune traduction trouvée.
+                                        {{ __('Aucune traduction trouvée.') }}
                                     </td>
                                 </tr>
                             @endforelse

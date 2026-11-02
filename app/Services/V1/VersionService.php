@@ -47,8 +47,8 @@ class VersionService
         $version = $query->orderByDesc('created_at')->first();
 
         if (! $version) {
-            $this->logActivity(type: 'warning', action: 'apply_version', context: [], message: 'Aucune version publiée trouvée', activity: 'Aucune version publiée trouvée dans VersionService::getActive()', is_success: false
-            );
+
+            $this->logActivity(type: 'warning', action: 'apply_version', context: [], message: 'Aucune version publiée trouvée', activity: 'Aucune version publiée trouvée dans VersionService::getActive()', is_success: false);
 
             if (app()->runningInConsole()) {
                 return null;

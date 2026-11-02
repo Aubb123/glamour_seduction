@@ -32,6 +32,7 @@ class ProductBrandTranslationService
                 // Compte le nombre de traductions associées à la marque, en excluant les traductions soft-deleted
                 $translationsCount = $brand->translations()->count();
 
+                // Empêche la suppression de la traduction si c'est la dernière traduction restante de la marque
                 if ($translationsCount <= 1) {
                     throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
                 }
@@ -41,6 +42,7 @@ class ProductBrandTranslationService
             if ($translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
+
             destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
 
         });
@@ -68,8 +70,11 @@ class ProductBrandTranslationService
                     'slug'
                 );
 
-                restore_function($translation); // ← restauration de la traduction de la marque sélectionnée
+                // ← restauration de la traduction de la marque sélectionnée
+                restore_function($translation); 
+
             } else {
+                // Lever une exception si la traduction n'est pas en corbeille (soft-deleted) et qu'on tente de la restaurer.
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
 
@@ -101,8 +106,12 @@ class ProductBrandTranslationService
 
             // Suppression définitive (forceDelete)
             if ($translation->trashed()) {
-                force_destroy_function($translation); // ← suppression définitive de la traduction de la marque sélectionnée
+                
+                // ← suppression définitive de la traduction de la marque sélectionnée
+                force_destroy_function($translation); 
+
             } else {
+                // Lever une exception si la traduction n'est pas en corbeille (soft-deleted) et qu'on tente de la supprimer définitivement.
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
 

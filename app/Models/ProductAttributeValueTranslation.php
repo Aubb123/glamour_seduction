@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductAttributeValueTranslation extends Model
 {
-    // Comportements partagés entre modèles (ex. UUID, slug, timestamps personnalisés)
+    // Comportements parvaleurés entre modèles (ex. UUID, slug, timestamps personnalisés)
     use HasModelBehaviors;
 
     // Table de traduction des valeurs d'attributs de produits
@@ -22,7 +22,6 @@ class ProductAttributeValueTranslation extends Model
         'attribute_value_id', // clé étrangère vers product_attribute_values
         'lang_id',            // clé étrangère vers langs
         'label',              // libellé affiché de la valeur traduit (ex : Rouge, XL)
-        'slug',               // slug SEO de la valeur traduite
     ];
 
     /**

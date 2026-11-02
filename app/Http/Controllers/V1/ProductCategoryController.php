@@ -65,7 +65,8 @@ class ProductCategoryController extends Controller
     {
         try {
 
-            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs']; 
 
             // Catégories existantes pour le select « catégorie parente »
             $parents = ProductCategory::withActiveTranslation()->orderBy('sort_order')->get();
@@ -81,7 +82,8 @@ class ProductCategoryController extends Controller
             // Log de l'erreur serveur lors de l'accès à la page de création d'une catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.create', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.create.error"), is_success: false);
 
-            abort(500); // Erreur serveur générique en cas de problème lors de l'accès à la page de création
+            // Erreur serveur générique en cas de problème lors de l'accès à la page de création
+            abort(500); 
         }
     }
 
@@ -124,12 +126,15 @@ class ProductCategoryController extends Controller
     // ─────────────────────────────────────────────
     private function resolveCategoryWithSlugCheck(ProductCategory $productCategory, string $slug, string $action, string $langKey): ProductCategory
     {
+        // $expectedSlug prend la valeur du slug de la catégorie, ou le slug de la traduction active si le slug 
+        // principal est null, sinon 'null'
         $expectedSlug = $productCategory->slug ?? $productCategory->active_translation?->slug ?? 'null';
 
         if ($expectedSlug !== $slug) {
             // Log de l'erreur de correspondance du slug avec un message d'avertissement
             $this->logActivity(type: 'warning', action: $action, context: ['category_uuid' => $productCategory->uuid, 'category_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->langPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $productCategory);
 
+            // Si le slug ne correspond pas, on retourne une erreur 404
             abort(404);
         }
 
@@ -143,7 +148,8 @@ class ProductCategoryController extends Controller
     {
         try {
 
-            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs']; 
 
             // Vérifie que le slug correspond
             $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.show', 'show');
@@ -155,6 +161,7 @@ class ProductCategoryController extends Controller
             // Récupère toutes les traductions supprimées (soft deleted) de cette catégorie
             $productCategoryTranslations = ProductCategoryTranslation::onlyTrashed()->where('category_id', $category->id)->get();
 
+            // $categoryName prend le nom de la traduction active si elle existe, sinon un message par défaut "no_name"
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.show.no_name");
 
             // Log de la consultation du détail d'une catégorie
@@ -168,7 +175,8 @@ class ProductCategoryController extends Controller
             // Log de l'erreur serveur lors de la consultation du détail d'une catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.show', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $productCategory->uuid]), is_success: false);
 
-            abort(500); // Erreur serveur générique en cas de problème lors de la récupération de la catégorie
+            // Erreur serveur générique en cas de problème lors de la récupération de la catégorie
+            abort(500); 
         }
     }
 
@@ -185,18 +193,25 @@ class ProductCategoryController extends Controller
             // Charge les compteurs (withCount)
             $category->loadCount(['children', 'audits', 'activityLogs']);
 
+            // $categoryName prend le nom de la traduction active si elle existe, sinon une chaîne vide
             $categoryName = $category->active_translation?->name ?? '';
 
+            // $audits contient les audits de la catégorie, avec les relations 'user' et 'auditable',
+            //  triés par date de création décroissante
             $audits = $category->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
+            // Log de la consultation des audits d'une catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.audits', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.audits.success", ['name' => $categoryName]), is_success: true, loggable: $category);
 
+            // Retourne la vue des audits de la catégorie avec les données nécessaires
             return view('v1.backend.pages.products.categories.others.audits', compact('category', 'audits'));
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la consultation des audits d'une catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.audits', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $productCategory->uuid]), is_success: false);
 
+            // Retourne une erreur serveur générique en cas de problème lors de la récupération des audits
             abort(500);
         }
     }
@@ -214,18 +229,25 @@ class ProductCategoryController extends Controller
             // Charge les compteurs (withCount)
             $category->loadCount(['children', 'audits', 'activityLogs']);
 
+            // $categoryName prend le nom de la traduction active si elle existe, sinon une chaîne vide
             $categoryName = $category->active_translation?->name ?? '';
 
+            // $logs contient les journaux d'activité de la catégorie, avec la relation 'user', 
+            // triés par date de création décroissante
             $logs = $category->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
 
+            // Log de la consultation des journaux d'activité d'une catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.activity-logs', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.activity-logs.success", ['name' => $categoryName]), is_success: true, loggable: $category);
 
+            // Retourne la vue des journaux d'activité de la catégorie avec les données nécessaires
             return view('v1.backend.pages.products.categories.others.activity-logs', compact('category', 'logs'));
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la consultation des journaux d'activité d'une catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.activity-logs', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $productCategory->uuid]), is_success: false);
 
+            // Retourne une erreur serveur générique en cas de problème lors de la récupération des journaux d'activité
             abort(500);
         }
     }
@@ -237,11 +259,13 @@ class ProductCategoryController extends Controller
     {
         try {
 
-            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs']; 
 
             // Log de l'accès à la page de modification d'une catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.edit', context: ['category_uuid' => $productCategory->uuid, 'category_name' => $productCategory->active_translation?->name], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $productCategory->active_translation?->name ?? '']), is_success: true, loggable: $productCategory);
 
+            // $category est l'instance de la catégorie à modifier
             $category = $productCategory;
 
             // Catégories candidates comme parent : toutes sauf la catégorie courante
@@ -256,7 +280,8 @@ class ProductCategoryController extends Controller
             // Log de l'erreur serveur lors de l'accès à la page de modification d'une catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.edit', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.edit.error", ['uuid' => $productCategory->uuid]), is_success: false);
 
-            abort(500); // Erreur serveur générique en cas de problème lors de la récupération de la catégorie
+            // Erreur serveur générique en cas de problème lors de la récupération de la catégorie
+            abort(500); 
         }
     }
 
@@ -273,6 +298,7 @@ class ProductCategoryController extends Controller
             // Récupère une instance fraîche pour capturer les vrais changements
             $category = $productCategory->refresh();
 
+            // $categoryName prend le nom de la traduction active si elle existe, sinon une chaîne vide
             $categoryName = $category->active_translation?->name ?? '';
 
             // Log de la mise à jour de la catégorie avec le uuid et les changements effectués
@@ -309,7 +335,10 @@ class ProductCategoryController extends Controller
             // Activation de la catégorie via le service
             $this->productCategoryService->activate($productCategory);
 
+            // $category est l'instance de la catégorie activée
             $category = $productCategory;
+
+            // $categoryName prend le nom de la traduction active si elle existe, sinon une chaîne vide
             $categoryName = $category->active_translation?->name ?? '';
 
             // Log de l'activation de la catégorie
@@ -320,14 +349,18 @@ class ProductCategoryController extends Controller
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de l'activation de la catégorie
             $this->logActivity(type: 'warning', action: 'backend.product-categories.activate', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.warning_meta", ['uuid' => $productCategory->uuid]), is_success: false);
 
+            // Redirection avec le message métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de l'activation de la catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.activate', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.error"), is_success: false);
 
+            // Redirection avec un message d'erreur en cas de problème
             return back()->with('error', __("{$this->langPath}.activate.flash_error"));
         }
     }
@@ -342,7 +375,10 @@ class ProductCategoryController extends Controller
             // Désactivation de la catégorie via le service
             $this->productCategoryService->deactivate($productCategory);
 
+            // $category est l'instance de la catégorie désactivée
             $category = $productCategory;
+
+            // $categoryName prend le nom de la traduction active si elle existe, sinon une chaîne vide
             $categoryName = $category->active_translation?->name ?? '';
 
             // Log de la désactivation de la catégorie
@@ -353,14 +389,18 @@ class ProductCategoryController extends Controller
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de la désactivation de la catégorie
             $this->logActivity(type: 'warning', action: 'backend.product-categories.deactivate', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.warning_meta", ['uuid' => $productCategory->uuid]), is_success: false);
 
+            // Redirection avec le message métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la désactivation de la catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.deactivate', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.error"), is_success: false);
 
+            // Redirection avec un message d'erreur en cas de problème
             return back()->with('error', __("{$this->langPath}.deactivate.flash_error"));
         }
     }
@@ -372,8 +412,10 @@ class ProductCategoryController extends Controller
     {
         try {
 
+            // $category est l'instance de la catégorie à supprimer
             $category = $productCategory;
 
+            // $categoryName prend le nom de la traduction active si elle existe, sinon un message par défaut "unknown"
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la catégorie via le service
@@ -398,6 +440,7 @@ class ProductCategoryController extends Controller
             // Log de l'erreur serveur lors de la suppression de la catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.destroy', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $productCategory->uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.destroy.flash_error"));
         }
     }
@@ -409,17 +452,21 @@ class ProductCategoryController extends Controller
     {
         try {
 
+            // $categories récupère toutes les catégories supprimées (soft deleted) avec leurs traductions actives, leurs fichiers cloud et les compteurs, triées par date de suppression décroissante
             $categories = ProductCategory::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['children', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des catégories
             $this->logActivity(type: 'info', action: 'backend.product-categories.trashed', context: ['count' => $categories->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);
 
+            // Retourne la vue de la corbeille des catégories avec les données nécessaires
             return view('v1.backend.pages.products.categories.trashed', compact('categories'));
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la consultation de la corbeille des catégories
             $this->logActivity(type: 'error', action: 'backend.product-categories.trashed', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
 
+            // Retourne une erreur serveur générique en cas de problème lors de la récupération des catégories supprimées
             abort(500);
         }
     }
@@ -437,29 +484,37 @@ class ProductCategoryController extends Controller
             // Restauration via le service
             $this->productCategoryService->restore($category);
 
+            // $categoryName prend le nom de la traduction active si elle existe, sinon un message par défaut "unknown"
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.restore.unknown");
 
             // Log de la restauration de la catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.restore', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $categoryName]), is_success: true, loggable: $category);
 
+            // Redirection vers la liste des catégories avec un message de succès
             return back()->with('success', __("{$this->langPath}.restore.flash_success", ['name' => $categoryName]));
 
         } catch (ModelNotFoundException $e) {
 
+            // Log de l'erreur de non-trouvabilité de la catégorie à restaurer
             $this->logActivity(type: 'warning', action: 'backend.product-categories.restore', context: ['category_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
 
+            // Si la catégorie n'est pas trouvée, on retourne une erreur 404
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de la restauration de la catégorie
             $this->logActivity(type: 'warning', action: 'backend.product-categories.restore', context: ['category_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la restauration de la catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.restore', context: ['category_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.restore.flash_error"));
         }
     }
@@ -474,6 +529,7 @@ class ProductCategoryController extends Controller
             // Récupère la catégorie supprimée par son UUID ou échoue
             $category = ProductCategory::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
+            // $categoryName prend le nom de la traduction active si elle existe, sinon un message par défaut "unknown"
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
@@ -482,24 +538,31 @@ class ProductCategoryController extends Controller
             // Log de la suppression définitive de la catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.force_destroy', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $categoryName]), is_success: true, loggable: $category);
 
+            // Redirection vers la liste des catégories avec un message de succès
             return back()->with('success', __("{$this->langPath}.force_destroy.flash_success", ['name' => $categoryName]));
 
         } catch (ModelNotFoundException $e) {
 
+            // Log de l'erreur de non-trouvabilité de la catégorie à supprimer définitivement
             $this->logActivity(type: 'warning', action: 'backend.product-categories.force_destroy', context: ['category_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
+            // Retourne une erreur 404 si la catégorie n'est pas trouvée
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de la suppression définitive de la catégorie
             $this->logActivity(type: 'warning', action: 'backend.product-categories.force_destroy', context: ['category_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la suppression définitive de la catégorie
             $this->logActivity(type: 'error', action: 'backend.product-categories.force_destroy', context: ['category_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
         }
     }

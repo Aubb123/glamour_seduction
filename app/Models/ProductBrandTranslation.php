@@ -45,7 +45,7 @@ class ProductBrandTranslation extends Model
     /**
      * Retourne la langue de cette traduction.
      */
-    public function lang(): BelongsTo
+    public function lang(): BelongsTo 
     {
         return $this->belongsTo(Lang::class);
     }

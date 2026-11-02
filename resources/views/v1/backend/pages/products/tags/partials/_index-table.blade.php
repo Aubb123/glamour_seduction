@@ -60,7 +60,7 @@
                     <ul class="dropdown-menu dropdown-menu-end text-nowrap">
                         @include('v1.backend.layouts.partials._card_actions_menu', [
                             'actions' => [
-                                ['label' => 'Créer une tag', 'icon' => 'bx bx-plus', 'route' => 'backend.product-tags.create'],
+                                ['label' => 'Créer un tag', 'icon' => 'bx bx-plus', 'route' => 'backend.product-tags.create'],
                                 ['label' => 'Liste des tags', 'icon' => 'bx bx-list-ul', 'route' => 'backend.product-tags.index'],
                                 ['label' => 'Corbeille', 'icon' => 'bx bx-trash', 'route' => 'backend.product-tags.trashed'],
                             ]
@@ -171,7 +171,7 @@
                                                     <form action="{{ route('backend.product-tags.deactivate', ['productTag' => $tag->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $tag->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $tag->uuid }}', 'Désactiver cette tag ?', 'Désactiver', 'warning')" title="Désactiver">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $tag->uuid }}', '{{ __('Désactiver cette tag ?') }}', '{{ __('Désactiver') }}', 'warning')" title="Désactiver">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -179,7 +179,7 @@
                                                     <form action="{{ route('backend.product-tags.activate', ['productTag' => $tag->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $tag->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $tag->uuid }}', 'Activer cette tag ?', 'Activer', 'success')" title="Activer">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $tag->uuid }}', '{{ __('Activer cette tag ?') }}', '{{ __('Activer') }}', 'success')" title="Activer">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -188,7 +188,7 @@
                                                 <form action="{{ route('backend.product-tags.destroy', ['productTag' => $tag->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $tag->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $tag->uuid }}', 'Supprimer cette tag ?', 'Supprimer', 'warning')" title="Supprimer">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $tag->uuid }}', '{{ __('Supprimer cette tag ?') }}', '{{ __('Supprimer') }}', 'warning')" title="Supprimer">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -200,7 +200,7 @@
                                 <tr>
                                     <td colspan="{{ request()->routeIs('backend.product-tags.trashed') ? 10 : 9 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
-                                        Aucune tag trouvée.
+                                        {{ __('Aucun tag trouvé.') }}
                                     </td>
                                 </tr>
                             @endforelse

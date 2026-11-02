@@ -76,7 +76,7 @@ return [
             'warning' => 'Attempt to permanently delete a non-existent post: :uuid',
             'warning_meta' => 'Business error when permanently deleting post: :uuid',
             'error' => 'Error permanently deleting post: :uuid',
-            'flash_success' => 'Post permanently deleted successfully.',
+            'flash_success' => 'Post ":name" permanently deleted successfully.',
             'flash_warning' => 'Post not found.',
             'flash_error' => 'An error occurred.',
         ],

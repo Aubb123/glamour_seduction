@@ -95,7 +95,7 @@
                                     <td>{{ $loop->iteration }}</td>
 
                                     <td>
-                                        <a href="{{ $brand->getFirstImage()['url_img'] }}" target="_blank" rel="noopener noreferrer">
+                                        <a href="{{ $brand->getFirstImage()['url_img'] }}" ttarget="_blank" rrel="noopener noreferrer">
                                             <img src="{{ $brand->getFirstImage()['url_img'] }}" alt="{{ $brand->active_translation?->name ?? 'Logo marque' }}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
                                         </a>
                                     </td>

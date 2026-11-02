@@ -8,9 +8,17 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
+/**
+ * Requête de validation pour la création d'une catégorie de produit.
+ *
+ * Valide les données entrantes pour la création d'une catégorie (product_categories)
+ * avec ses traductions associées (product_category_translations).
+ */
 class StoreProductCategoryRequest extends FormRequest
 {
-    // Chemin de base pour les traductions (centralisé)
+    /**
+     * Chemin de base pour les traductions des messages de validation.
+     */
     protected string $langPath = 'v1/backend/views/pages/products/categories/messages/categories-messages-validation.productCategories';
 
     /**
@@ -25,7 +33,6 @@ class StoreProductCategoryRequest extends FormRequest
      * Règles de validation.
      *
      * NOTE IMPORTANTE :
-     * Les règles "unique" sur translations.*.name et translations.*.slug
      * ne peuvent PAS être écrites en syntaxe statique de type :
      *   'unique:product_category_translations,name,NULL,id,lang_id,{translations.*.lang_id}'
      * car Laravel n'interprète PAS "{translations.*.lang_id}" comme une référence
@@ -46,10 +53,13 @@ class StoreProductCategoryRequest extends FormRequest
             // sort_order doit être unique sur toute la table product_categories
             'sort_order' => ['required', 'integer', 'min:0', 'unique:product_categories,sort_order'],
 
+            // Le statut doit être l'une des valeurs définies dans l'énumération ProductCategoryStatus  
             'status' => ['required', Rule::in(ProductCategoryStatus::values())],
 
+            // La catégorie doit être associée à une plateforme cloud existante
             'cloud_platform_uuid' => ['required', 'exists:cloud_platforms,uuid'],
 
+           // L'image de la catégorie est obligatoire et doit être un fichier image valide (jpg, png, webp) de taille maximale 2 Mo
             'image' => ['required', 'image', 'mimes:jpg,png,webp', 'max:2048'], // 2 Mo
 
             // Le tableau de traductions lui-même
@@ -63,9 +73,9 @@ class StoreProductCategoryRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
-        // Génération dynamique des règles "unique par langue"
-        // pour "name" et "slug", basées sur les données réellement
-        // envoyées dans la requête (accessible via $this->input()).
+        // Génération dynamique des règles "unique par langue",
+        // basées sur les données réellement envoyées dans la requête
+        // (accessible via $this->input()).
         // ────────────────────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
@@ -89,17 +99,6 @@ class StoreProductCategoryRequest extends FormRequest
                     ->whereNull('deleted_at'),
             ];
 
-            // Même logique pour "slug", si ce champ est envoyé.
-            if (array_key_exists('slug', $translation)) {
-                $rules["translations.{$index}.slug"] = [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('product_category_translations', 'slug')
-                        ->where(fn ($query) => $query->where('lang_id', $langId))
-                        ->whereNull('deleted_at'),
-                ];
-            }
         }
 
         return $rules;
@@ -140,11 +139,6 @@ class StoreProductCategoryRequest extends FormRequest
             'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
             'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
-
-            'translations.*.slug.required' => __("{$this->langPath}.translations.slug.required"),
-            'translations.*.slug.string' => __("{$this->langPath}.translations.slug.string"),
-            'translations.*.slug.max' => __("{$this->langPath}.translations.slug.max"),
-            'translations.*.slug.unique' => __("{$this->langPath}.translations.slug.unique"),
 
             'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
             'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),

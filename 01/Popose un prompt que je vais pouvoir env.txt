@@ -1,0 +1,978 @@
+Popose un prompt que je vais pouvoir envoyer à l'agent ia que j'utilisa grace à l'extension vs-code cline qui lui dira d'analyser tout le projet laravel (base_clone) que ce soit les Controllers, les Models, les Migrations, 
+les Routes, les Views, les fichiers RequestForm, les Traits, les fichiers Enums, les Services, les Middlewares, les fichiers de traductions par lang/fr et lang/en pour en faire sortire un plan qui consiste 
+à reproduire le projet Laravel (base_clone) à l'identique dans un autre environnement. Le plan doit inclure les étapes nécessaires pour configurer l'environnement, installer les dépendances, migrer la base de données, 
+configurer les routes et les vues, ainsi que toute autre configuration spécifique au projet. A l'exception des fichiers de vues (views) dont le designe sera différent car un autres template backend sera utiliser
+mais l'architecture du dossier views doit rester la même. L'objectif est de garder la structure et la logique du projet tout en adaptant le design des vues à un nouveau template backend.
+
+
+
+
+
+Tu es un architecte logiciel senior spécialisé en Laravel et en migration/reproduction de projets existants.
+
+Ta mission est d'effectuer un AUDIT COMPLET du projet Laravel nommé `base_clone`, puis de produire un PLAN TECHNIQUE EXHAUSTIF permettant de reproduire ce projet dans un nouvel environnement, 
+en conservant au maximum son architecture, sa logique métier, ses fonctionnalités, ses dépendances et son comportement.
+
+IMPORTANT :
+- Pour cette première phase, NE MODIFIE AUCUN FICHIER.
+- Ne crée aucun fichier.
+- Ne supprime rien.
+- Ne lance aucune commande susceptible de modifier le projet ou sa base de données.
+- Ton travail doit être exclusivement de l'analyse, de l'exploration et de la documentation.
+- Tu dois réellement inspecter les fichiers du projet avant de tirer des conclusions.
+- Ne te contente pas de déduire la structure à partir des noms de fichiers.
+- Lorsque tu n'es pas certain d'une information, indique clairement qu'elle doit être vérifiée.
+- Distingue toujours les éléments que tu as réellement vérifiés des hypothèses ou déductions.
+
+==================================================
+1. OBJECTIF GLOBAL
+==================================================
+
+Je veux reproduire le projet Laravel `base_clone` dans un autre environnement.
+
+L'objectif est de conserver :
+
+- la même architecture générale ;
+- la même organisation du code ;
+- la même logique métier ;
+- les mêmes fonctionnalités ;
+- les mêmes relations entre les composants ;
+- les mêmes routes et comportements backend ;
+- les mêmes modèles et relations Eloquent ;
+- les mêmes migrations et structure de base de données ;
+- les mêmes validations ;
+- les mêmes middlewares ;
+- les mêmes services ;
+- les mêmes traits ;
+- les mêmes enums ;
+- les mêmes règles métier ;
+- les mêmes mécanismes d'authentification et d'autorisation ;
+- les mêmes traductions disponibles ;
+- les mêmes dépendances nécessaires ;
+- les mêmes configurations importantes ;
+- les mêmes commandes ou processus spécifiques au projet.
+
+EXCEPTION IMPORTANTE CONCERNANT LES VIEWS :
+
+Les fichiers Blade et leur design ne seront PAS reproduits visuellement à l'identique.
+
+Un nouveau template backend sera utilisé dans le nouvel environnement.
+
+Cependant :
+
+- l'architecture du dossier `resources/views` doit rester cohérente avec celle de `base_clone` ;
+- les noms et responsabilités des vues doivent être conservés autant que possible ;
+- les relations entre les vues, layouts, partials, composants et contrôleurs doivent être conservées ;
+- la logique PHP/Blade importante doit être identifiée ;
+- les variables attendues par les vues doivent être identifiées ;
+- les routes utilisées par les vues doivent être identifiées ;
+- les formulaires, actions, validations, permissions et comportements doivent être conservés ;
+- seul le DESIGN / markup visuel pourra être adapté au nouveau template backend.
+
+Le résultat final doit donc être une reproduction fonctionnelle et architecturale du projet, avec une nouvelle couche de présentation.
+
+==================================================
+2. ANALYSE COMPLÈTE DU PROJET
+==================================================
+
+Commence par explorer méthodiquement l'ensemble du projet `base_clone`.
+
+Tu dois analyser au minimum les éléments suivants :
+
+--------------------------------------------------
+A. RACINE DU PROJET
+--------------------------------------------------
+
+Analyse notamment :
+
+- composer.json
+- composer.lock
+- package.json
+- package-lock.json / yarn.lock / pnpm-lock.yaml si présents
+- artisan
+- phpunit.xml
+- vite.config.* / webpack.mix.js / autres fichiers frontend
+- .env.example
+- .env (si accessible, mais NE COPIE JAMAIS les secrets dans ton rapport)
+- .gitignore
+- README.md
+- fichiers de configuration spécifiques
+- scripts éventuels
+- Dockerfile
+- docker-compose.yml
+- compose.yaml
+- fichiers liés à Laravel Sail
+- fichiers CI/CD
+- fichiers GitHub Actions
+- fichiers de déploiement
+- autres fichiers spécifiques présents à la racine
+
+Identifie les dépendances PHP et JavaScript réellement utilisées.
+
+--------------------------------------------------
+B. APP/
+--------------------------------------------------
+
+Analyse complètement :
+
+app/Http/Controllers/
+app/Http/Requests/
+app/Models/
+app/Services/
+app/Traits/
+app/Enums/
+app/Http/Middleware/
+app/Providers/
+app/Policies/
+app/Rules/
+app/Repositories/
+app/Events/
+app/Listeners/
+app/Jobs/
+app/Notifications/
+app/Mail/
+app/Exceptions/
+app/Console/
+app/View/
+app/View/Components/
+
+et tout autre sous-dossier présent dans `app/`.
+
+Pour chaque catégorie, explique :
+
+- son rôle ;
+- les fichiers présents ;
+- les dépendances importantes ;
+- les relations entre les classes ;
+- les classes utilisées par d'autres parties du projet ;
+- les éventuelles règles métier ;
+- les éléments indispensables à la reproduction.
+
+--------------------------------------------------
+C. CONTROLLERS
+--------------------------------------------------
+
+Analyse chaque Controller.
+
+Pour chacun, indique :
+
+- ses méthodes ;
+- les routes qui l'appellent ;
+- les Requests utilisées ;
+- les Models utilisés ;
+- les Services utilisés ;
+- les vues retournées ;
+- les données transmises aux vues ;
+- les middlewares appliqués ;
+- les permissions/Policies utilisées ;
+- les redirections ;
+- les réponses JSON éventuelles ;
+- les opérations CRUD ;
+- les règles métier importantes.
+
+Construis si possible une correspondance :
+
+Route → Controller → méthode → Service/Model → View/Response
+
+--------------------------------------------------
+D. MODELS
+--------------------------------------------------
+
+Analyse chaque modèle Eloquent.
+
+Pour chaque Model :
+
+- table utilisée ;
+- clé primaire ;
+- casts ;
+- fillable/guarded ;
+- relations ;
+- accessors ;
+- mutators ;
+- scopes ;
+- méthodes métier ;
+- events/hooks ;
+- traits utilisés ;
+- relations avec les autres modèles ;
+- dépendances ;
+- logique particulière.
+
+Construis une cartographie des relations entre les Models.
+
+--------------------------------------------------
+E. MIGRATIONS
+--------------------------------------------------
+
+Analyse TOUTES les migrations.
+
+Détermine :
+
+- toutes les tables ;
+- toutes les colonnes ;
+- types ;
+- nullable ;
+- valeurs par défaut ;
+- indexes ;
+- unique ;
+- foreign keys ;
+- contraintes ;
+- tables pivot ;
+- ordre d'exécution des migrations ;
+- dépendances entre tables.
+
+Produis une représentation claire du schéma de base de données.
+
+Identifie également les éventuels problèmes ou dépendances qui pourraient empêcher une migration propre vers un nouvel environnement.
+
+--------------------------------------------------
+F. SEEDERS ET FACTORIES
+--------------------------------------------------
+
+Analyse :
+
+- database/seeders/
+- database/factories/
+
+Identifie :
+
+- données initiales nécessaires ;
+- rôles ;
+- permissions ;
+- utilisateurs par défaut ;
+- paramètres système ;
+- données de démonstration ;
+- dépendances entre seeders ;
+- factories utilisées par les tests ou fonctionnalités.
+
+Explique comment la base pourrait être initialisée dans le nouvel environnement.
+
+--------------------------------------------------
+G. ROUTES
+--------------------------------------------------
+
+Analyse complètement :
+
+- routes/web.php
+- routes/api.php
+- routes/console.php
+- routes/channels.php
+- tout autre fichier de routes présent.
+
+Pour chaque route, identifie :
+
+- méthode HTTP ;
+- URL ;
+- nom ;
+- Controller ;
+- middleware ;
+- paramètres ;
+- rôle/permission nécessaire ;
+- vue éventuelle ;
+- comportement ;
+- dépendances.
+
+Produis une cartographie complète :
+
+HTTP method + URL → route name → middleware → Controller → action → View/Response
+
+--------------------------------------------------
+H. REQUESTS / VALIDATION
+--------------------------------------------------
+
+Analyse tous les fichiers :
+
+app/Http/Requests/
+
+Pour chaque FormRequest :
+
+- règles de validation ;
+- messages personnalisés ;
+- attributs personnalisés ;
+- authorize() ;
+- logique particulière ;
+- Controller qui l'utilise ;
+- Model ou Service concerné.
+
+Identifie les règles de validation importantes qui devront absolument être conservées.
+
+--------------------------------------------------
+I. SERVICES
+--------------------------------------------------
+
+Analyse tous les Services.
+
+Pour chacun :
+
+- responsabilité ;
+- méthodes ;
+- Controllers qui l'utilisent ;
+- Models utilisés ;
+- autres Services utilisés ;
+- transactions DB ;
+- appels API externes ;
+- fichiers manipulés ;
+- logique métier ;
+- événements déclenchés ;
+- jobs éventuels.
+
+Identifie les Services critiques pour le fonctionnement du projet.
+
+--------------------------------------------------
+J. TRAITS
+--------------------------------------------------
+
+Analyse tous les Traits.
+
+Pour chacun :
+
+- responsabilité ;
+- classes qui l'utilisent ;
+- propriétés ajoutées ;
+- méthodes ajoutées ;
+- dépendances ;
+- logique métier.
+
+--------------------------------------------------
+K. ENUMS
+--------------------------------------------------
+
+Analyse tous les fichiers Enum.
+
+Pour chaque Enum :
+
+- valeurs ;
+- utilisation ;
+- Models concernés ;
+- validation ;
+- affichage ;
+- logique métier ;
+- impact sur la base de données.
+
+--------------------------------------------------
+L. MIDDLEWARES
+--------------------------------------------------
+
+Analyse tous les middlewares.
+
+Pour chacun :
+
+- rôle ;
+- routes concernées ;
+- ordre d'exécution si identifiable ;
+- dépendances ;
+- règles d'accès ;
+- redirections ;
+- logique spécifique.
+
+--------------------------------------------------
+M. AUTHENTIFICATION / AUTORISATION
+--------------------------------------------------
+
+Analyse complètement le système d'authentification.
+
+Cherche notamment :
+
+- config/auth.php
+- User Model
+- Guards
+- Providers
+- middleware auth
+- Policies
+- Gates
+- rôles
+- permissions
+- login
+- logout
+- register
+- password reset
+- email verification
+- sessions
+- tokens
+- Sanctum / Passport / autre système éventuel
+- packages d'authentification utilisés.
+
+Décris précisément comment fonctionne l'authentification et l'autorisation.
+
+--------------------------------------------------
+N. VIEWS
+--------------------------------------------------
+
+Analyse l'intégralité de :
+
+resources/views/
+
+Même si le design sera remplacé, analyse :
+
+- architecture des dossiers ;
+- layouts ;
+- pages ;
+- partials ;
+- composants Blade ;
+- includes ;
+- extends ;
+- sections ;
+- slots ;
+- variables utilisées ;
+- formulaires ;
+- routes appelées ;
+- messages de validation ;
+- permissions ;
+- conditions Blade ;
+- boucles ;
+- appels éventuels à des helpers ;
+- logique PHP/Blade ;
+- dépendances JavaScript ;
+- dépendances CSS.
+
+IMPORTANT :
+
+Ne propose PAS de reproduire le design actuel.
+
+Le nouveau projet utilisera un autre template backend.
+
+Ton objectif est de déterminer comment conserver la même architecture fonctionnelle des views tout en remplaçant leur présentation.
+
+--------------------------------------------------
+O. TRADUCTIONS
+--------------------------------------------------
+
+Analyse complètement :
+
+lang/fr/
+lang/en/
+
+ou :
+
+resources/lang/fr/
+resources/lang/en/
+
+selon la structure du projet.
+
+Identifie :
+
+- fichiers de traduction ;
+- organisation ;
+- clés utilisées ;
+- différences entre français et anglais ;
+- traductions manquantes ;
+- utilisation des traductions dans Controllers, Models, Requests, Services et Views.
+
+Le nouveau projet devra conserver le système de traduction et son organisation.
+
+--------------------------------------------------
+P. CONFIG/
+--------------------------------------------------
+
+Analyse tous les fichiers de :
+
+config/
+
+Porte une attention particulière à :
+
+- auth.php
+- database.php
+- app.php
+- cache.php
+- filesystems.php
+- mail.php
+- queue.php
+- services.php
+- session.php
+- logging.php
+- broadcasting.php
+- sanctum.php
+- cors.php
+- permission/roles si présents
+- toute configuration personnalisée.
+
+Identifie toutes les variables d'environnement nécessaires.
+
+--------------------------------------------------
+Q. STORAGE / PUBLIC
+--------------------------------------------------
+
+Analyse :
+
+- public/
+- storage/
+- storage/app/
+- storage/framework/ si pertinent
+- storage/logs/ si nécessaire pour comprendre la configuration
+
+Identifie :
+
+- assets ;
+- uploads ;
+- fichiers statiques ;
+- liens storage ;
+- répertoires nécessaires ;
+- fichiers générés ;
+- dépendances entre public et storage.
+
+Ne copie pas les secrets ou données sensibles dans ton rapport.
+
+--------------------------------------------------
+R. FRONTEND
+--------------------------------------------------
+
+Analyse :
+
+- package.json
+- resources/js/
+- resources/css/
+- Vite / Webpack / Mix
+- Tailwind
+- Bootstrap
+- Alpine.js
+- Vue
+- React
+- jQuery
+- plugins JavaScript
+- bibliothèques CSS
+- composants frontend.
+
+Même si le design sera remplacé, identifie les dépendances frontend qui contiennent de la logique fonctionnelle.
+
+Distingue :
+
+1. dépendances purement visuelles qui pourront être abandonnées ;
+2. dépendances nécessaires au fonctionnement.
+
+--------------------------------------------------
+S. JOBS / QUEUES / EVENTS
+--------------------------------------------------
+
+Analyse :
+
+- Jobs
+- Events
+- Listeners
+- Notifications
+- Mail
+- Queues
+- Scheduled Tasks
+- Commands Artisan
+
+Identifie les processus asynchrones et les tâches planifiées indispensables.
+
+--------------------------------------------------
+T. API ET SERVICES EXTERNES
+--------------------------------------------------
+
+Recherche toutes les intégrations externes :
+
+- API
+- SMTP
+- services de paiement
+- stockage cloud
+- services SMS
+- services email
+- OAuth
+- Google
+- Facebook
+- AWS
+- Stripe
+- PayPal
+- etc.
+
+Pour chaque intégration :
+
+- package utilisé ;
+- configuration ;
+- variables .env nécessaires ;
+- endroits du code qui l'utilisent ;
+- rôle ;
+- dépendances ;
+- étapes nécessaires pour la reproduire.
+
+NE REVELE AUCUNE CLÉ API OU SECRET.
+
+--------------------------------------------------
+U. LOGIQUE MÉTIER
+--------------------------------------------------
+
+Identifie les principaux domaines fonctionnels du projet.
+
+Par exemple :
+
+- utilisateurs ;
+- authentification ;
+- dashboard ;
+- gestion des rôles ;
+- gestion des permissions ;
+- produits ;
+- commandes ;
+- paiements ;
+- notifications ;
+- rapports ;
+- etc.
+
+Ne suppose pas ces modules : déduis-les du code réellement présent.
+
+Pour chaque domaine, explique :
+
+- Models ;
+- Controllers ;
+- Services ;
+- Routes ;
+- Requests ;
+- Views ;
+- migrations ;
+- Policies ;
+- Events/Jobs ;
+- relations avec les autres domaines.
+
+--------------------------------------------------
+V. TESTS
+--------------------------------------------------
+
+Analyse :
+
+- tests unitaires ;
+- tests Feature ;
+- tests HTTP ;
+- tests d'authentification ;
+- tests de validation ;
+- factories utilisées ;
+- données nécessaires.
+
+Identifie ce qui devra être conservé ou recréé dans le nouvel environnement.
+
+==================================================
+3. DÉPENDANCES ET ENVIRONNEMENT
+==================================================
+
+Détermine précisément :
+
+- version PHP nécessaire ;
+- version Laravel ;
+- extensions PHP nécessaires ;
+- version Node.js ;
+- gestionnaire de packages ;
+- version éventuelle de MySQL/MariaDB/PostgreSQL ;
+- Redis si utilisé ;
+- serveur web ;
+- queue worker ;
+- cron/scheduler ;
+- stockage ;
+- autres services nécessaires.
+
+À partir de composer.json, composer.lock, package.json et du code réel, établis une liste des dépendances nécessaires.
+
+==================================================
+4. VARIABLES D'ENVIRONNEMENT
+==================================================
+
+Dresse une liste des variables `.env` nécessaires au fonctionnement du projet.
+
+Pour chaque variable :
+
+- nom ;
+- rôle ;
+- obligatoire ou optionnelle ;
+- composant qui l'utilise ;
+- exemple de valeur NON SENSIBLE si possible.
+
+Ne révèle jamais les valeurs réelles des secrets.
+
+Classe les variables par catégorie :
+
+- Application
+- Database
+- Cache
+- Session
+- Mail
+- Queue
+- Storage
+- API externes
+- Authentication
+- Services tiers
+- etc.
+
+==================================================
+5. ARCHITECTURE DU NOUVEAU PROJET
+==================================================
+
+À partir de ton analyse, propose une architecture cible pour le nouvel environnement.
+
+Elle doit conserver :
+
+- l'architecture backend ;
+- les Models ;
+- Controllers ;
+- Requests ;
+- Services ;
+- Traits ;
+- Enums ;
+- Middlewares ;
+- Policies ;
+- Routes ;
+- Migrations ;
+- Seeders ;
+- Jobs ;
+- Events ;
+- Notifications ;
+- traductions ;
+- etc.
+
+Pour `resources/views`, conserve la même organisation logique de dossiers mais adapte le contenu au nouveau template backend.
+
+Explique clairement ce qui sera :
+
+1. COPIÉ À L'IDENTIQUE
+2. ADAPTÉ
+3. RECRÉÉ
+4. REMPLACÉ
+5. ABANDONNÉ
+
+==================================================
+6. PLAN DE REPRODUCTION
+==================================================
+
+Après l'audit, construis un PLAN D'EXÉCUTION détaillé et ordonné.
+
+Le plan doit permettre à un développeur ou à un autre agent IA de reproduire le projet sans devoir refaire toute l'analyse.
+
+Organise le plan en phases.
+
+Exemple :
+
+PHASE 1 — Préparation de l'environnement
+PHASE 2 — Création du projet Laravel
+PHASE 3 — Installation des dépendances Composer
+PHASE 4 — Installation des dépendances NPM
+PHASE 5 — Configuration .env
+PHASE 6 — Configuration de la base de données
+PHASE 7 — Migrations
+PHASE 8 — Seeders / données initiales
+PHASE 9 — Models
+PHASE 10 — Controllers
+PHASE 11 — Form Requests
+PHASE 12 — Services
+PHASE 13 — Traits
+PHASE 14 — Enums
+PHASE 15 — Middlewares
+PHASE 16 — Policies / permissions
+PHASE 17 — Routes
+PHASE 18 — Jobs / Events / Notifications
+PHASE 19 — API externes
+PHASE 20 — Traductions FR/EN
+PHASE 21 — Architecture des Views
+PHASE 22 — Adaptation au nouveau template backend
+PHASE 23 — Assets frontend
+PHASE 24 — Storage
+PHASE 25 — Scheduler / queues
+PHASE 26 — Tests
+PHASE 27 — Vérification fonctionnelle
+PHASE 28 — Déploiement
+
+Adapte et complète ces phases en fonction de ce que tu découvriras réellement dans `base_clone`.
+
+==================================================
+7. ORDRE DES DÉPENDANCES
+==================================================
+
+Identifie les dépendances entre les différentes parties.
+
+Par exemple :
+
+Migration
+   ↓
+Model
+   ↓
+Service
+   ↓
+Controller
+   ↓
+Route
+   ↓
+View
+
+Mais construis cette représentation à partir du projet réel.
+
+Identifie également les éléments qui doivent être créés avant d'autres éléments.
+
+==================================================
+8. MATRICE DE TRAÇABILITÉ
+==================================================
+
+Crée une matrice permettant de vérifier que rien n'a été oublié.
+
+Exemple :
+
+Fonctionnalité
+→ Route
+→ Middleware
+→ Controller
+→ Request
+→ Service
+→ Model
+→ Migration
+→ View
+→ Traductions
+→ Tests
+
+Chaque fonctionnalité importante du projet doit apparaître.
+
+==================================================
+9. RISQUES ET POINTS D'ATTENTION
+==================================================
+
+Identifie les difficultés potentielles de reproduction :
+
+- dépendances de versions ;
+- packages obsolètes ;
+- compatibilité PHP/Laravel ;
+- dépendances système ;
+- extensions PHP ;
+- données spécifiques ;
+- intégrations externes ;
+- chemins absolus ;
+- fichiers locaux ;
+- permissions ;
+- storage ;
+- queues ;
+- cron ;
+- variables .env ;
+- configuration serveur ;
+- logique cachée dans les Views ;
+- logique cachée dans les Models ;
+- dépendances implicites ;
+- ordre des migrations ;
+- seeders dépendants de données particulières ;
+- différences de comportement entre environnements.
+
+==================================================
+10. VÉRIFICATION FINALE
+==================================================
+
+Avant de terminer ton analyse, vérifie que tu as bien inspecté :
+
+[ ] Controllers
+[ ] Models
+[ ] Migrations
+[ ] Seeders
+[ ] Factories
+[ ] Routes
+[ ] Form Requests
+[ ] Traits
+[ ] Enums
+[ ] Services
+[ ] Middlewares
+[ ] Policies
+[ ] Gates
+[ ] Events
+[ ] Listeners
+[ ] Jobs
+[ ] Notifications
+[ ] Mail
+[ ] Providers
+[ ] Exceptions
+[ ] Commands
+[ ] Config
+[ ] Views
+[ ] Blade Components
+[ ] Layouts
+[ ] Traductions FR
+[ ] Traductions EN
+[ ] Frontend JS
+[ ] Frontend CSS
+[ ] Composer
+[ ] NPM
+[ ] .env.example
+[ ] Storage
+[ ] Public
+[ ] Tests
+[ ] API externes
+[ ] Queues
+[ ] Scheduler
+[ ] Authentification
+[ ] Autorisation
+[ ] Déploiement / Docker / CI-CD si présents
+
+Si certains éléments n'existent pas dans le projet, indique-le explicitement.
+
+==================================================
+11. FORMAT DE TA RÉPONSE FINALE
+==================================================
+
+Ne réponds pas simplement par une description générale.
+
+Produis un rapport structuré avec exactement les grandes sections suivantes :
+
+# 1. Résumé exécutif
+
+# 2. Stack technique
+
+# 3. Architecture globale du projet
+
+# 4. Arborescence analysée
+
+# 5. Models et base de données
+
+# 6. Controllers et logique métier
+
+# 7. Form Requests et validation
+
+# 8. Services
+
+# 9. Traits
+
+# 10. Enums
+
+# 11. Middlewares
+
+# 12. Policies / Gates / Permissions
+
+# 13. Routes
+
+# 14. Authentication / Authorization
+
+# 15. Jobs / Events / Notifications / Mail
+
+# 16. Views et architecture Blade
+
+# 17. Traductions FR / EN
+
+# 18. Frontend et assets
+
+# 19. Configuration
+
+# 20. Variables d'environnement
+
+# 21. Dépendances externes
+
+# 22. Dépendances Composer / NPM
+
+# 23. Fonctionnalités métier
+
+# 24. Matrice de traçabilité
+
+# 25. Architecture cible
+
+# 26. Plan détaillé de reproduction
+
+# 27. Ordre exact d'implémentation
+
+# 28. Risques et points d'attention
+
+# 29. Checklist de reproduction
+
+# 30. Éléments nécessitant une vérification humaine
+
+==================================================
+RÈGLE ABSOLUE
+==================================================
+
+NE MODIFIE RIEN.
+
+Cette tâche est UNIQUEMENT une phase d'analyse et de planification.
+
+Ne commence pas l'implémentation.
+
+À la fin, attends ma validation avant toute modification du projet.
+
+Si le projet est volumineux, travaille méthodiquement et analyse d'abord l'ensemble de l'architecture avant de produire tes conclusions.
+
+Je veux un plan suffisamment précis pour qu'un autre agent IA puisse ensuite utiliser ce rapport comme cahier des charges et reconstruire le projet `base_clone` dans un nouvel environnement Laravel, 
+tout en remplaçant uniquement la couche de présentation des Views par un nouveau template backend.

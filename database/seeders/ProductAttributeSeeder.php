@@ -6,8 +6,6 @@ namespace Database\Seeders;
 use App\Models\Lang;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeTranslation;
-use App\Models\ProductAttributeValue;
-use App\Models\ProductAttributeValueTranslation;
 use Illuminate\Database\Seeder;
 
 class ProductAttributeSeeder extends Seeder
@@ -62,8 +60,7 @@ class ProductAttributeSeeder extends Seeder
         foreach ($attributes as $data) {
 
             $translations = $data['translations'];
-            $values = $data['values'] ?? [];
-            unset($data['translations'], $data['values']);
+            unset($data['translations']);
 
             // Créer l'attribut
             $attribute = ProductAttribute::create([
@@ -90,36 +87,6 @@ class ProductAttributeSeeder extends Seeder
                 ]);
             }
 
-            // Créer les valeurs de l'attribut
-            foreach ($values as $valueData) {
-
-                $valueTranslations = $valueData['translations'];
-                unset($valueData['translations']);
-
-                $value = ProductAttributeValue::create([
-                    'attribute_id' => $attribute->id,
-                    'value' => $valueData['value'],
-                    'sort_order' => $valueData['sort_order'],
-                    'status' => $valueData['status'],
-                ]);
-
-                foreach ($valueTranslations as $valueTranslation) {
-
-                    $lang = Lang::where('code', $valueTranslation['lang_code'])->where('is_active', 1)->first();
-
-                    if (! $lang) {
-                        $this->command->error('Langue non trouvée pour le code : '.$valueTranslation['lang_code']."\n");
-
-                        continue;
-                    }
-
-                    ProductAttributeValueTranslation::create([
-                        'attribute_value_id' => $value->id,
-                        'lang_id' => $lang->id,
-                        'label' => $valueTranslation['label'],
-                    ]);
-                }
-            }
         }
     }
 }

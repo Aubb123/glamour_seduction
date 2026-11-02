@@ -110,9 +110,18 @@ return [
                 'participle' => 'linked',
                 'object' => 'it',
             ],
+            'ProductCategory' => [
+                'label' => 'product category',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
         ],
 
-        // Plural labels of the children (key = Eloquent relation name)
+        // Plural labels of the children (key = Eloquent relation name).
+        // An entity may declare specific labels via a sub-key named after
+        // its short class name (fallback to the generic labels otherwise).
         'relations' => [
             'countries' => 'countries',
             'territories' => 'territories',
@@ -124,10 +133,18 @@ return [
             'files' => 'files',
             'children' => 'subfolders',
             'histories' => 'histories',
+
+            'ProductCategory' => [
+                'products' => 'products',
+                'children' => 'subcategories',
+            ],
         ],
 
         // Generic message (gender handled via the entity parameters)
         'message' => 'Cannot delete :demonstrative :entity ":name" because :pronoun is :participle to :children. Please delete the :children first before attempting to delete :object.',
+
+        // List connector for "X, Y and Z"
+        'joiner' => 'and',
 
     ],
 

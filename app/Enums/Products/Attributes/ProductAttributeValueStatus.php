@@ -20,7 +20,7 @@ enum ProductAttributeValueStatus: string
     }
 
     /**
-     * Libellé traduit du statut du tag de produits.
+     * Libellé traduit du statut de la valeur de produits.
      */
     public function label(): string
     {

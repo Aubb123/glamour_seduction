@@ -21,7 +21,6 @@ return [
         ],
         'destroy' => [
             'active_forbidden' => 'Impossible de supprimer une catégorie active. Veuillez la désactiver d\'abord.',
-            'has_children_forbidden' => 'Impossible de supprimer une catégorie associée à des sous-catégories. Veuillez d\'abord supprimer ou déplacer ses sous-catégories.',
             'already_deleted' => 'Cette catégorie est déjà supprimée et ne peut plus être supprimée à nouveau.',
         ],
         'restore' => [

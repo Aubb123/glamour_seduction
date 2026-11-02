@@ -47,9 +47,6 @@ class StoreBlogTagRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
-        // Unicité "par langue" sur 'name'. Le slug étant généré
-        // automatiquement depuis le name (trait HasSlug), une règle propre
-        // sur (name, lang_id) suffit à empêcher les collisions de slug.
         // Construite dynamiquement car Laravel ne sait pas interpréter une
         // référence `{translations.*.lang_id}` en syntaxe statique (elle est
         // traitée comme une chaîne littérale).

@@ -8,9 +8,17 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
+/**
+ * Requête de validation pour la création d'une valeur d'attribut de produit.
+ *
+ * Valide les données entrantes pour la création d'une valeur (product_attribute_values)
+ * avec ses traductions associées (product_attribute_value_translations).
+ */
 class StoreProductAttributeValueRequest extends FormRequest
 {
-    // Chemin de base pour les traductions (centralisé)
+    /**
+     * Chemin de base pour les traductions des messages de validation.
+     */
     protected string $langPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-validation.productAttributeValues';
 
     /**
@@ -25,7 +33,6 @@ class StoreProductAttributeValueRequest extends FormRequest
      * Règles de validation.
      *
      * NOTE IMPORTANTE :
-     * Les règles "unique" sur translations.*.name et translations.*.slug
      * ne peuvent PAS être écrites en syntaxe statique de type :
      *   'unique:product_attribute_value_translations,name,NULL,id,lang_id,{translations.*.lang_id}'
      * car Laravel n'interprète PAS "{translations.*.lang_id}" comme une référence
@@ -59,9 +66,9 @@ class StoreProductAttributeValueRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
-        // Génération dynamique des règles "unique par langue"
-        // pour "label" et "slug", basées sur les données réellement
-        // envoyées dans la requête (accessible via $this->input()).
+        // Génération dynamique des règles "unique par langue",
+        // basées sur les données réellement envoyées dans la requête
+        // (accessible via $this->input()).
         // ────────────────────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
@@ -85,17 +92,6 @@ class StoreProductAttributeValueRequest extends FormRequest
                     ->whereNull('deleted_at'),
             ];
 
-            // Même logique pour "slug", si ce champ est envoyé.
-            if (array_key_exists('slug', $translation)) {
-                $rules["translations.{$index}.slug"] = [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('product_attribute_value_translations', 'slug')
-                        ->where(fn ($query) => $query->where('lang_id', $langId))
-                        ->whereNull('deleted_at'),
-                ];
-            }
         }
 
         return $rules;
@@ -134,10 +130,6 @@ class StoreProductAttributeValueRequest extends FormRequest
             'translations.*.label.max' => __("{$this->langPath}.translations.label.max"),
             'translations.*.label.unique' => __("{$this->langPath}.translations.label.unique"),
 
-            'translations.*.slug.required' => __("{$this->langPath}.translations.slug.required"),
-            'translations.*.slug.string' => __("{$this->langPath}.translations.slug.string"),
-            'translations.*.slug.max' => __("{$this->langPath}.translations.slug.max"),
-            'translations.*.slug.unique' => __("{$this->langPath}.translations.slug.unique"),
         ];
     }
 }

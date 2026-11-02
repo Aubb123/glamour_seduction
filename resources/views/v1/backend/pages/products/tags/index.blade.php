@@ -1,6 +1,8 @@
 @extends('v1.backend.layouts.app') 
 
-@section('title') Tags de produits @endsection 
+@section('title')
+    {{ __('Tags de produits') }}
+@endsection
 
 @section('content') 
 

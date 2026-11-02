@@ -1,12 +1,12 @@
 @extends('v1.backend.layouts.app')
 
 @section('title')
-    Détail de la attribut — {{ $attribute->active_translation?->name ?? '' }} - Journal d'activité
+    {{ __('Détail de l\'attribut') }} — {{ $attribute->active_translation?->name ?? '' }} - {{ __('Journal d\'activité') }}
 @endsection
 
 @section('content')
 
-    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => "Journal d'activité"])
+    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('Journal d\'activité')])
 
     @include('v1.backend.pages.products.attributes.partials._show-start', ['attribute' => $attribute])
 

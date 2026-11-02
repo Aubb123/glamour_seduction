@@ -21,7 +21,6 @@ return [
         ],
         'destroy' => [
             'active_forbidden' => 'Cannot delete an active category. Please deactivate it first.',
-            'has_children_forbidden' => 'Cannot delete a category that has sub-categories. Please delete or move its sub-categories first.',
             'already_deleted' => 'This category is already deleted and cannot be deleted again.',
         ],
         'restore' => [

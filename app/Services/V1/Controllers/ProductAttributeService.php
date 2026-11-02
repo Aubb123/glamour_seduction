@@ -11,182 +11,184 @@ use function __;
 
 class ProductAttributeService
 {
-    // Chemin de base pour les traductions (centralisé)
+    // Chemin de base pour les messages de traduction (centralisé)
     protected string $langPath = 'v1/backend/views/pages/products/attributes/messages/attributes-messages-service.productAttributes';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
     protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
-    // STORE
+    // STORE — Création d'un attribut de produit
     // ─────────────────────────────────────────────
     public function store(array $data): ProductAttribute
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
+        // (création de l'attribut + sync des traductions en une seule opération atomique)
         return DB::transaction(function () use ($data) {
 
-            // Création du attribut (sauf les traductions)
-            $attribut = ProductAttribute::create([
+            // Création de l'attribut parent (hors traductions)
+            // Le slug est généré automatiquement par le trait HasSlug (source = name)
+            $attribute = ProductAttribute::create([
                 'sort_order' => $data['sort_order'],
-                'status' => ($data['status'] ?? null) === ProductAttributeStatus::Active->value ? ProductAttributeStatus::Active : ProductAttributeStatus::Inactive,
+                'status'     => ($data['status'] ?? null) === ProductAttributeStatus::Active->value
+                    ? ProductAttributeStatus::Active
+                    : ProductAttributeStatus::Inactive,
             ]);
 
             // Synchronisation des traductions (création ou mise à jour)
-            $this->syncTranslations($attribut, $data['translations']);
+            // Le slug de chaque traduction est aussi généré automatiquement par HasSlug
+            $this->syncTranslations($attribute, $data['translations']);
 
-            return $attribut; // ← retourne le attribut créé avec ses traductions
+            // Retourne l'attribut créé avec ses traductions
+            return $attribute;
         });
     }
 
     // ─────────────────────────────────────────────
-    // UPDATE
+    // UPDATE — Mise à jour d'un attribut existant
     // ─────────────────────────────────────────────
-    public function update(ProductAttribute $attribut, array $data): ProductAttribute
+    public function update(ProductAttribute $attribute, array $data): ProductAttribute
     {
-        return DB::transaction(function () use ($attribut, $data) {
+        return DB::transaction(function () use ($attribute, $data) {
 
             $updateData = [];
 
+            // Mise à jour de l'ordre de tri si fourni
             if (isset($data['sort_order'])) {
                 $updateData['sort_order'] = $data['sort_order'];
             }
 
+            // Mise à jour du statut (toujours présent car requis par la Request)
             $updateData['status'] = ($data['status'] ?? null) === ProductAttributeStatus::Active->value
                 ? ProductAttributeStatus::Active
                 : ProductAttributeStatus::Inactive;
 
-            $attribut->update($updateData);
+            $attribute->update($updateData);
 
+            // Synchronisation des traductions si fournies
             if (isset($data['translations'])) {
-                $this->syncTranslations($attribut, $data['translations']);
+                $this->syncTranslations($attribute, $data['translations']);
             }
 
-            return $attribut;
+            return $attribute;
         });
     }
 
-    // __APPEND_1__
     // ─────────────────────────────────────────────
-    // ACTIVATE
+    // ACTIVATE — Activation d'un attribut (statut = active)
     // ─────────────────────────────────────────────
-    public function activate(ProductAttribute $attribut): void
+    public function activate(ProductAttribute $attribute): void
     {
-        // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($attribut) {
+        DB::transaction(function () use ($attribute) {
 
-            // Vérification que le attribut n'est pas déjà actif
-            if ($attribut->status === ProductAttributeStatus::Active) {
+            // Vérification que l'attribut n'est pas déjà actif
+            if ($attribute->status === ProductAttributeStatus::Active) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
             }
 
-            // Activation du attribut sélectionné
-            $attribut->update([
+            // Activation de l'attribut sélectionné
+            $attribute->update([
                 'status' => ProductAttributeStatus::Active,
             ]);
         });
     }
 
     // ─────────────────────────────────────────────
-    // DEACTIVATE
+    // DEACTIVATE — Désactivation d'un attribut (statut = inactive)
     // ─────────────────────────────────────────────
-    public function deactivate(ProductAttribute $attribut): void
+    public function deactivate(ProductAttribute $attribute): void
     {
-        // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($attribut) {
+        DB::transaction(function () use ($attribute) {
 
-            // Vérification que le attribut n'est pas déjà inactif
-            if ($attribut->status === ProductAttributeStatus::Inactive) {
+            // Vérification que l'attribut n'est pas déjà inactif
+            if ($attribute->status === ProductAttributeStatus::Inactive) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
             }
 
-            // Désactivation du attribut sélectionné
-            $attribut->update([
+            // Désactivation de l'attribut sélectionné
+            $attribute->update([
                 'status' => ProductAttributeStatus::Inactive,
             ]);
         });
     }
 
     // ─────────────────────────────────────────────
-    // DESTROY
+    // DESTROY — Suppression temporaire (soft delete) d'un attribut
     // ─────────────────────────────────────────────
-    public function destroy(ProductAttribute $attribut): void
+    public function destroy(ProductAttribute $attribute): void
     {
-        // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($attribut) {
+        DB::transaction(function () use ($attribute) {
 
-            // Vérification : empêcher la suppression d'un attribut actif
-            if ($attribut->status === ProductAttributeStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
-            }
-
-            // Suppression simple (soft delete)
-            if ($attribut->trashed()) {
+            // Vérifie que l'attribut n'est pas déjà en corbeille
+            if ($attribute->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($attribut); // ← suppression du attribut et de ses traductions associées
 
+            // Vérifie les relations dépendantes (ex: valeurs d'attributs liées)
+            // Si l'attribut a des valeurs, la suppression est bloquée par BackendHelper::destroy_function
+            // via le contrôleur (vérification de $dependentRelations).
+            $attribute->delete();
         });
     }
 
     // ─────────────────────────────────────────────
-    // RESTORE
+    // RESTORE — Restauration d'un attribut depuis la corbeille
     // ─────────────────────────────────────────────
-    public function restore(ProductAttribute $attribut): void
+    public function restore(ProductAttribute $attribute): void
     {
-        // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($attribut) {
+        DB::transaction(function () use ($attribute) {
 
-            // Restauration simple (restore)
-            if ($attribut->trashed()) {
-                restore_function($attribut); // ← restauration du attribut et de ses traductions associées
-            } else {
+            // Vérifie que l'attribut est bien en corbeille
+            if (! $attribute->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
 
+            // Restauration de l'attribut (supprime le deleted_at)
+            $attribute->restore();
         });
     }
 
     // ─────────────────────────────────────────────
-    // FORCE DESTROY
+    // FORCE DESTROY — Suppression définitive d'un attribut
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductAttribute $attribut): void
+    public function forceDestroy(ProductAttribute $attribute): void
     {
-        // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($attribut) {
+        DB::transaction(function () use ($attribute) {
 
-            // Suppression définitive (forceDelete)
-            if ($attribut->trashed()) {
-                force_destroy_function($attribut); // ← suppression définitive du attribut et de ses traductions associées
+            // Suppression définitive uniquement si l'attribut est en corbeille
+            if ($attribute->trashed()) {
+                // force_destroy_function supprime l'entité, ses traductions et ses fichiers associés
+                force_destroy_function($attribute);
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
-
         });
     }
 
     // ─────────────────────────────────────────────
-    // SYNC TRANSLATIONS (privé)
+    // SYNC TRANSLATIONS — Synchronisation des traductions (privé)
     // ─────────────────────────────────────────────
-    private function syncTranslations(ProductAttribute $attribut, array $translations): void
+    private function syncTranslations(ProductAttribute $attribute, array $translations): void
     {
-        // Récupère les IDs des langues soumises
+        // Récupère les IDs des langues soumises dans la requête
         $submittedLangIds = collect($translations)->pluck('lang_id')->toArray();
 
-        // Supprime temporairement les traductions qui ne sont pas présentes dans les données soumises
-        ProductAttributeTranslation::where('attribute_id', $attribut->id)
+        // Supprime temporairement (soft delete) les traductions qui ne sont plus présentes
+        ProductAttributeTranslation::where('attribute_id', $attribute->id)
             ->whereNotIn('lang_id', $submittedLangIds)
             ->delete();
-        // Suppression définitive des traductions supprimées (soft delete) qui sont en corbeille, supprimer précédemment
-        ProductAttributeTranslation::onlyTrashed()->where('attribute_id', $attribut->id)
+
+        // Suppression définitive des traductions déjà en corbeille qui ne sont plus soumises
+        ProductAttributeTranslation::onlyTrashed()->where('attribute_id', $attribute->id)
             ->whereNotIn('lang_id', $submittedLangIds)
             ->forceDelete();
 
         // Validation générique factorisée (BackendHelper) :
         //  - conflit nom/slug avec une autre entité (active ou en corbeille) dans la même langue ;
-        //  - conflit avec la propre traduction du attribut, placée en corbeille.
+        //  - conflit avec la propre traduction de l'attribut, placée en corbeille.
         // Lève une InvalidArgumentException avec un message explicite si besoin.
         assertTranslationUniqueness(
-            $attribut,
+            $attribute,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productAttribute'),
             $this->helperLangPath,
@@ -194,36 +196,44 @@ class ProductAttributeService
             'slug'
         );
 
-        // Pour chaque traduction reçue, on utilise updateOrCreate pour créer ou mettre à jour la traduction correspondante
+        // Pour chaque traduction reçue, on crée ou met à jour la traduction correspondante.
+        // Le slug est généré automatiquement par le trait HasSlug (source = name).
         foreach ($translations as $translation) {
 
-            // Vérifie si une traduction existe déjà pour le attribut et la langue
+            // Vérifie si une traduction existe déjà pour cet attribut et cette langue
             $existingTranslation = ProductAttributeTranslation::withTrashed()
-                ->where('attribute_id', $attribut->id)
+                ->where('attribute_id', $attribute->id)
                 ->where('lang_id', $translation['lang_id'])
                 ->first();
 
-            // Si une traduction existante est trouvée,
+            // Si une traduction existante est trouvée (active ou en corbeille)
             if ($existingTranslation) {
 
-                // Met à jour la traduction existante avec les nouvelles données
+                // Si la traduction existante est en corbeille, on la restaure d'abord
+                // (un update() sur un modèle soft-deleted ne le restaure pas automatiquement).
+                if ($existingTranslation->trashed()) {
+                    $existingTranslation->restore();
+                }
+
+                // Met à jour la traduction existante
+                // Le slug est régénéré automatiquement par HasSlug si le name change.
                 $existingTranslation->update([
-                    'name' => $translation['name'],
+                    'name'        => $translation['name'],
                     'description' => $translation['description'] ?? null,
                 ]);
 
             } else {
 
                 // Sinon, on crée une nouvelle traduction
+                // Le slug est généré automatiquement par le trait HasSlug.
                 ProductAttributeTranslation::create([
-                    'attribute_id' => $attribut->id,
-                    'lang_id' => $translation['lang_id'],
-                    'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'attribute_id' => $attribute->id,
+                    'lang_id'      => $translation['lang_id'],
+                    'name'         => $translation['name'],
+                    'description'  => $translation['description'] ?? null,
                 ]);
-
             }
-
         }
     }
+
 }

@@ -35,8 +35,8 @@ class BlogPostService
             // Validation métier du statut programmé
             $this->validateScheduledStatus($status, $data['published_at'] ?? null);
 
-            // Calcul automatique du temps de lecture depuis le contenu (si non fourni)
-            $timeRead = $data['time_read'] ?? $this->calculateTimeRead($this->getFirstTranslationContent($data['translations'] ?? []));
+            // Calcul automatique du temps de lecture depuis le contenu (le système calcule toujours)
+            $timeRead = $this->calculateTimeRead($this->getFirstTranslationContent($data['translations'] ?? []));
 
             // Gestion de published_at selon le statut (logique centralisée)
             $publishedAt = $this->resolvePublishedAt($status, $data['published_at'] ?? null);
@@ -67,6 +67,7 @@ class BlogPostService
                     throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la publication créée
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],
@@ -93,12 +94,8 @@ class BlogPostService
                 $updateData['category_id'] = $data['category_id'];
             }
 
-            // Ne recale le temps de lecture que si l'utilisateur en fournit une valeur réelle.
-            // `!empty()` (plutôt qu'`isset()`) évite d'écraser une valeur manuelle par un
-            // recalcul automatique lorsque le champ est absent ou vide.
-            if (! empty($data['time_read'])) {
-                $updateData['time_read'] = $data['time_read'];
-            } elseif (isset($data['translations'])) {
+            // Le temps de lecture est toujours calculé automatiquement par le système
+            if (isset($data['translations'])) {
                 // Recalcule le temps de lecture depuis le contenu mis à jour
                 $updateData['time_read'] = $this->calculateTimeRead($this->getFirstTranslationContent($data['translations']));
             }
@@ -146,7 +143,7 @@ class BlogPostService
                     throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
                 }
 
-                // Upload de la nouvelle image
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la publication mise à jour
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],

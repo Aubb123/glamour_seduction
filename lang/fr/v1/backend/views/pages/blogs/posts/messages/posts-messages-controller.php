@@ -76,7 +76,7 @@ return [
             'warning' => 'Tentative de suppression définitive d\'un article inexistant : :uuid',
             'warning_meta' => 'Erreur métier lors de la suppression définitive de l\'article : :uuid',
             'error' => 'Erreur lors de la suppression définitive de l\'article : :uuid',
-            'flash_success' => 'Article supprimé définitivement avec succès.',
+            'flash_success' => 'Article ":name" supprimé définitivement avec succès.',
             'flash_warning' => 'Article introuvable.',
             'flash_error' => 'Une erreur est survenue.',
         ],

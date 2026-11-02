@@ -21,6 +21,8 @@ class PricingService
     {
         // 1. Devise personnelle de l'utilisateur (priorité la plus haute)
         if ($user && $user->currency_id) {
+
+            // $personal = Currency::where('id', $user->currency_id)->where('status', 'active')->first();
             $personal = Currency::where('id', $user->currency_id)->where('status', 'active')->first();
 
             if ($personal) {

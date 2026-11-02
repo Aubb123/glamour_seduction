@@ -8,9 +8,17 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
+/**
+ * Requête de validation pour la création d'une catégorie de blog.
+ *
+ * Valide les données entrantes pour la création d'une catégorie (blog_categories)
+ * avec ses traductions associées (blog_category_translations).
+ */
 class StoreBlogCategoryRequest extends FormRequest
 {
-    // Chemin de base pour les traductions (centralisé)
+    /**
+     * Chemin de base pour les traductions des messages de validation.
+     */
     protected string $langPath = 'v1/backend/views/pages/blogs/categories/messages/categories-messages-validation.categories';
 
     /**
@@ -25,7 +33,6 @@ class StoreBlogCategoryRequest extends FormRequest
      * Règles de validation.
      *
      * NOTE IMPORTANTE :
-     * Les règles "unique" sur translations.*.name et translations.*.slug
      * ne peuvent PAS être écrites en syntaxe statique de type :
      *   'unique:blog_category_translations,name,NULL,id,lang_id,{translations.*.lang_id}'
      * car Laravel n'interprète PAS "{translations.*.lang_id}" comme une référence
@@ -62,9 +69,9 @@ class StoreBlogCategoryRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
-        // Génération dynamique des règles "unique par langue"
-        // pour "name" et "slug", basées sur les données réellement
-        // envoyées dans la requête (accessible via $this->input()).
+        // Génération dynamique des règles "unique par langue",
+        // basées sur les données réellement envoyées dans la requête
+        // (accessible via $this->input()).
         // ────────────────────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
@@ -90,20 +97,6 @@ class StoreBlogCategoryRequest extends FormRequest
                     ->whereNull('deleted_at'),
             ];
 
-            // Même logique pour le "slug", si ce champ est bien envoyé par le
-            // formulaire. On le rend "sometimes" pour ne pas forcer sa présence
-            // si le slug est généré automatiquement côté serveur (à adapter
-            // selon ton implémentation réelle).
-            if (array_key_exists('slug', $translation)) {
-                $rules["translations.{$index}.slug"] = [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('blog_category_translations', 'slug')
-                        ->where(fn ($query) => $query->where('lang_id', $langId))
-                        ->whereNull('deleted_at'),
-                ];
-            }
         }
 
         return $rules;
@@ -123,38 +116,41 @@ class StoreBlogCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
+            // sort_order
             'sort_order.required' => __("{$this->langPath}.sort_order.required"),
             'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
             'sort_order.min' => __("{$this->langPath}.sort_order.min"),
             'sort_order.unique' => __("{$this->langPath}.sort_order.unique"),
 
+            // status
             'status.required' => __("{$this->langPath}.status.required"),
             'status.in' => __("{$this->langPath}.status.in"),
 
+            // cloud_platform_uuid
             'cloud_platform_uuid.required' => __("{$this->langPath}.cloud_platform_uuid.required"),
             'cloud_platform_uuid.exists' => __("{$this->langPath}.cloud_platform_uuid.exists"),
 
+            // image
             'image.required' => __("{$this->langPath}.image.required"),
             'image.image' => __("{$this->langPath}.image.image"),
             'image.mimes' => __("{$this->langPath}.image.mimes"),
             'image.max' => __("{$this->langPath}.image.max"),
 
+            // translations
             'translations.required' => __("{$this->langPath}.translations.required"),
             'translations.array' => __("{$this->langPath}.translations.array"),
 
+            // translations.*.lang_id
             'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
             'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
 
+            // translations.*.name
             'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
             'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
             'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
 
-            'translations.*.slug.required' => __("{$this->langPath}.translations.slug.required"),
-            'translations.*.slug.string' => __("{$this->langPath}.translations.slug.string"),
-            'translations.*.slug.max' => __("{$this->langPath}.translations.slug.max"),
-            'translations.*.slug.unique' => __("{$this->langPath}.translations.slug.unique"),
-
+            // translations.*.description
             'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
             'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
             'translations.*.description.max' => __("{$this->langPath}.translations.description.max"),

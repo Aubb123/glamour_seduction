@@ -17,6 +17,7 @@ class ProductBrandService
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
     protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
+    // Injection de dépendance du service CloudFileService pour gérer les fichiers dans le cloud
     public function __construct(protected CloudFileService $cloudFileService) {}
 
     // ─────────────────────────────────────────────
@@ -44,6 +45,7 @@ class ProductBrandService
                     throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la marque créée
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],
@@ -62,20 +64,24 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     public function update(ProductBrand $brand, array $data): ProductBrand
     {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($brand, $data) {
 
+            // $updateData contiendra uniquement les champs à mettre à jour pour éviter d'écraser des valeurs non modifiées
             $updateData = [];
 
+            // Si sort_order est fourni dans les données, on l'ajoute à $updateData pour la mise à jour
             if (isset($data['sort_order'])) {
                 $updateData['sort_order'] = $data['sort_order'];
             }
 
-            $updateData['status'] = ($data['status'] ?? null) === ProductBrandStatus::Active->value
-                ? ProductBrandStatus::Active
-                : ProductBrandStatus::Inactive;
+            // Si status est fourni dans les données, on le normalise et on l'ajoute à $updateData pour la mise à jour
+            $updateData['status'] = ($data['status'] ?? null) === ProductBrandStatus::Active->value ? ProductBrandStatus::Active : ProductBrandStatus::Inactive;
 
+            // Mise à jour de la marque avec les données filtrées
             $brand->update($updateData);
 
+            // Synchronisation des traductions (création ou mise à jour)
             if (isset($data['translations'])) {
                 $this->syncTranslations($brand, $data['translations']);
             }
@@ -88,6 +94,7 @@ class ProductBrandService
                     throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la marque mise à jour
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],
@@ -154,11 +161,13 @@ class ProductBrandService
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
             }
 
-            // Suppression simple (soft delete)
+            // Si la marque est déjà en corbeille, on ne peut pas la supprimer à nouveau
             if ($brand->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($brand); // ← suppression de la marque et de ses traductions associées
+
+            // ← suppression de la marque et de ses traductions associées
+            destroy_function($brand); 
 
         });
     }
@@ -173,7 +182,8 @@ class ProductBrandService
 
             // Restauration simple (restore)
             if ($brand->trashed()) {
-                restore_function($brand); // ← restauration de la marque et de ses traductions associées
+                // ← restauration de la marque et de ses traductions associées
+                restore_function($brand); 
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
@@ -191,7 +201,8 @@ class ProductBrandService
 
             // Suppression définitive (forceDelete)
             if ($brand->trashed()) {
-                force_destroy_function($brand); // ← suppression définitive de la marque et de ses traductions associées
+                // ← suppression définitive de la marque et de ses traductions associées
+                force_destroy_function($brand); 
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }

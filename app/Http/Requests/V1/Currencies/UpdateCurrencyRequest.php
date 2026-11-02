@@ -9,9 +9,17 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
+/**
+ * Requête de validation pour la mise à jour d'une devise.
+ *
+ * Valide les données entrantes pour la modification d'une devise (currencies)
+ * avec ses traductions associées (currency_translations).
+ */
 class UpdateCurrencyRequest extends FormRequest
 {
-    // Chemin de base pour les traductions (centralisé)
+    /**
+     * Chemin de base pour les traductions des messages de validation.
+     */
     protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-validation';
 
     /**
@@ -84,9 +92,6 @@ class UpdateCurrencyRequest extends FormRequest
             // Nom de la devise dans la langue concernée — obligatoire
             'translations.*.name' => ['required', 'string', 'max:100'],
 
-            // Slug (régénéré automatiquement par HasSlug si absent)
-            'translations.*.slug' => ['nullable', 'string', 'max:255'],
-
             // Description de la devise dans la langue concernée — optionnelle
             'translations.*.description' => ['nullable', 'string'],
         ];
@@ -153,10 +158,6 @@ class UpdateCurrencyRequest extends FormRequest
             'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
             'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
-
-            // Slug de la traduction
-            'translations.*.slug.string' => __("{$this->langPath}.translations.slug.string"),
-            'translations.*.slug.max' => __("{$this->langPath}.translations.slug.max"),
 
             // Description de la traduction
             'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),

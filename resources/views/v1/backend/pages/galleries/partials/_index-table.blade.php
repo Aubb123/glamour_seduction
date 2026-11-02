@@ -102,7 +102,7 @@
                                     <td class="fw-bold">
                                         @php $galleryImage = $gallery->getFirstImage(); @endphp
                                         <div class="d-flex align-items-center gap-2">
-                                            <a href="{{ $galleryImage['url_img'] }}" target="_blank" rel="noopener noreferrer">
+                                            <a href="{{ $galleryImage['url_img'] }}" ttarget="_blank" rrel="noopener noreferrer">
                                                 <img src="{{ $galleryImage['url_img'] }}" alt="{{ $gallery->active_translation?->title ?? __('Image gallery') }}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
                                             </a>
                                             <a href="{{ route('backend.galleries.show', ['gallery' => $gallery->uuid, 'slug' => $gallery->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-nowrap">

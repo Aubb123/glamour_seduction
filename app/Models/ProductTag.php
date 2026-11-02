@@ -25,7 +25,10 @@ class ProductTag extends Model
     // Relations enfants dont la présence bloque la suppression de ce tag
     // (delete / force_delete) lors d'une suppression temporaire (BackendHelper::destroy_function)
     // ou définitive (BackendHelper::force_destroy_function).
-    // NB : 'products' (pivot product_tag) sera ajouté lors de l'intégration du module Produits.
+    // NB : 'products' est une relation N-N via la table pivot `product_tag` dont les clés
+    // étrangères sont en cascadeOnDelete() : la suppression d'un tag nettoie automatiquement
+    // les entrées du pivot. Conformément à la convention du projet, une relation pivot ne
+    // bloque donc volontairement PAS la suppression (cf. BlogPost::$dependentRelations).
     protected array $dependentRelations = [];
 
     // Attributs autorisés pour l'assignation de masse

@@ -16,7 +16,8 @@ enum ProductCategoryStatus: string
      */
     public static function values(): array
     {
-        return array_column(self::cases(), 'value');
+        // Retourne les valeurs de l'énumération (source unique de vérité pour la validation)
+        return array_column(self::cases(), 'value'); // ['active', 'inactive']
     }
 
     /**
@@ -24,6 +25,7 @@ enum ProductCategoryStatus: string
      */
     public function label(): string
     {
+        // Retourne le libellé traduit du statut de la catégorie de produits
         return match ($this) {
             self::Active => __('Actif'),
             self::Inactive => __('Inactif'),
@@ -35,6 +37,7 @@ enum ProductCategoryStatus: string
      */
     public function badgeClass(): string
     {
+        // Retourne la classe CSS du badge associé au statut de la catégorie de produits
         return match ($this) {
             self::Active => 'badge badge-soft-success',
             self::Inactive => 'badge badge-soft-danger',

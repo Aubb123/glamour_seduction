@@ -9,28 +9,29 @@ use function __;
 
 class ProductAttributeTranslationService
 {
-    // Chemin de base pour les messages
+    // Chemin de base pour les messages de traduction (centralisé)
     protected string $langPath = 'v1/backend/views/pages/products/attributes/messages/attributes-messages-service.productAttributesTranslations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
     protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
-    // DESTROY
+    // DESTROY — Soft delete d'une traduction d'attribut
     // ─────────────────────────────────────────────
     public function destroy(ProductAttributeTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération du attribut associé à la traduction (même s'il est soft-deleted)
-            $attribut = $translation->attribute()->withTrashed()->first();
+            // Récupère l'attribut parent associé à cette traduction
+            $attribute = $translation->attribute()->withTrashed()->first();
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante du attribut (même si le attribut est soft-deleted)
-            if ($attribut) {
+            // Règle métier : on ne peut pas supprimer la dernière traduction restante
+            // d'un attribut, car chaque attribut doit conserver au moins une traduction.
+            if ($attribute) {
 
-                // Compte le nombre de traductions associées au attribut, en excluant les traductions soft-deleted
-                $translationsCount = $attribut->translations()->count();
+                // Compte le nombre de traductions actives (non soft-deleted) de l'attribut
+                $translationsCount = $attribute->translations()->count();
 
                 if ($translationsCount <= 1) {
                     throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
@@ -41,6 +42,7 @@ class ProductAttributeTranslationService
             if ($translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
+            
             destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
 
         });

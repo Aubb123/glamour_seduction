@@ -103,7 +103,7 @@
 
                                     <td class="fw-bold">
                                         <div class="d-flex align-items-center gap-2">
-                                            <a href="{{ $category->getFirstImage()['url_img'] }}" target="_blank" rel="noopener noreferrer">
+                                            <a href="{{ $category->getFirstImage()['url_img'] }}" ttarget="_blank" rrel="noopener noreferrer">
                                                 <img src="{{ $category->getFirstImage()['url_img'] }}" alt="{{ $category->active_translation?->name ?? 'Image catégorie' }}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
                                             </a>
                                             <a href="{{ route('backend.product-categories.show', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-nowrap">

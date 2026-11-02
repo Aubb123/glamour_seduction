@@ -8,9 +8,17 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
+/**
+ * Requête de validation pour la création d'un produit.
+ *
+ * Valide les données entrantes pour la création d'un produit (products)
+ * avec ses traductions associées (product_translations).
+ */
 class StoreProductRequest extends FormRequest
 {
-    // Chemin de base pour les traductions (centralisé)
+    /**
+     * Chemin de base pour les traductions des messages de validation.
+     */
     protected string $langPath = 'v1/backend/views/pages/products/products/messages/products-messages-validation.products';
 
     /**
@@ -43,7 +51,10 @@ class StoreProductRequest extends FormRequest
             'translations.*.description' => ['required', 'string'],
         ];
 
-        // Règles "unique par langue" dynamiques pour name/slug
+        // ────────────────────────────────────────────
+        // Génération dynamique des règles "unique par langue"
+        // pour "name", basées sur les données envoyées.
+        // ────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
         foreach ($translations as $index => $translation) {
@@ -57,17 +68,6 @@ class StoreProductRequest extends FormRequest
                     ->where(fn ($query) => $query->where('lang_id', $langId))
                     ->whereNull('deleted_at'),
             ];
-
-            if (array_key_exists('slug', $translation)) {
-                $rules["translations.{$index}.slug"] = [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('product_translations', 'slug')
-                        ->where(fn ($query) => $query->where('lang_id', $langId))
-                        ->whereNull('deleted_at'),
-                ];
-            }
         }
 
         return $rules;
@@ -118,11 +118,6 @@ class StoreProductRequest extends FormRequest
             'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
             'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
-
-            'translations.*.slug.required' => __("{$this->langPath}.translations.slug.required"),
-            'translations.*.slug.string' => __("{$this->langPath}.translations.slug.string"),
-            'translations.*.slug.max' => __("{$this->langPath}.translations.slug.max"),
-            'translations.*.slug.unique' => __("{$this->langPath}.translations.slug.unique"),
 
             'translations.*.short_description.required' => __("{$this->langPath}.translations.short_description.required"),
             'translations.*.short_description.string' => __("{$this->langPath}.translations.short_description.string"),

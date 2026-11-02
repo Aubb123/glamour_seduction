@@ -8,9 +8,17 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
+/**
+ * Requête de validation pour la création d'un tag de produit.
+ *
+ * Valide les données entrantes pour la création d'un tag (product_tags)
+ * avec ses traductions associées (product_tag_translations).
+ */
 class StoreProductTagRequest extends FormRequest
 {
-    // Chemin de base pour les traductions (centralisé)
+    /**
+     * Chemin de base pour les traductions des messages de validation.
+     */
     protected string $langPath = 'v1/backend/views/pages/products/tags/messages/tags-messages-validation.productTags';
 
     /**
@@ -25,7 +33,6 @@ class StoreProductTagRequest extends FormRequest
      * Règles de validation.
      *
      * NOTE IMPORTANTE :
-     * Les règles "unique" sur translations.*.name et translations.*.slug
      * ne peuvent PAS être écrites en syntaxe statique de type :
      *   'unique:product_tag_translations,name,NULL,id,lang_id,{translations.*.lang_id}'
      * car Laravel n'interprète PAS "{translations.*.lang_id}" comme une référence
@@ -56,9 +63,9 @@ class StoreProductTagRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
-        // Génération dynamique des règles "unique par langue"
-        // pour "name" et "slug", basées sur les données réellement
-        // envoyées dans la requête (accessible via $this->input()).
+        // Génération dynamique des règles "unique par langue",
+        // basées sur les données réellement envoyées dans la requête
+        // (accessible via $this->input()).
         // ────────────────────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
@@ -82,17 +89,6 @@ class StoreProductTagRequest extends FormRequest
                     ->whereNull('deleted_at'),
             ];
 
-            // Même logique pour "slug", si ce champ est envoyé.
-            if (array_key_exists('slug', $translation)) {
-                $rules["translations.{$index}.slug"] = [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('product_tag_translations', 'slug')
-                        ->where(fn ($query) => $query->where('lang_id', $langId))
-                        ->whereNull('deleted_at'),
-                ];
-            }
         }
 
         return $rules;
@@ -122,11 +118,6 @@ class StoreProductTagRequest extends FormRequest
             'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
             'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
-
-            'translations.*.slug.required' => __("{$this->langPath}.translations.slug.required"),
-            'translations.*.slug.string' => __("{$this->langPath}.translations.slug.string"),
-            'translations.*.slug.max' => __("{$this->langPath}.translations.slug.max"),
-            'translations.*.slug.unique' => __("{$this->langPath}.translations.slug.unique"),
 
             'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
             'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),

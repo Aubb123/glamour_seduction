@@ -54,7 +54,8 @@ class ProductBrandController extends Controller
             // Log de l'erreur serveur avec le message d'exception
             $this->logActivity(type: 'error', action: 'backend.product-brands.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
 
-            abort(500); // Erreur serveur générique en cas de problème lors de la récupération des marques
+            // Erreur serveur générique en cas de problème lors de la récupération des marques
+            abort(500); 
         }
     }
 
@@ -65,7 +66,8 @@ class ProductBrandController extends Controller
     {
         try {
 
-            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs']; 
 
             // Log de l'accès à la page de création d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.create', context: [], message: null, activity: __("{$this->langPath}.create.success"), is_success: true);
@@ -78,7 +80,8 @@ class ProductBrandController extends Controller
             // Log de l'erreur serveur lors de l'accès à la page de création d'une marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.create', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.create.error"), is_success: false);
 
-            abort(500); // Erreur serveur générique en cas de problème lors de l'accès à la page de création
+            // Erreur serveur générique en cas de problème lors de l'accès à la page de création
+            abort(500);
         }
     }
 
@@ -121,8 +124,10 @@ class ProductBrandController extends Controller
     // ─────────────────────────────────────────────
     private function resolveBrandWithSlugCheck(ProductBrand $productBrand, string $slug, string $action, string $langKey): ProductBrand
     {
+        // Vérifie que le slug correspond à la marque, sinon renvoie une 404
         $expectedSlug = $productBrand->slug ?? $productBrand->active_translation?->slug ?? 'null';
 
+        // Si le slug fourni ne correspond pas au slug attendu, on log l'erreur et on renvoie une 404
         if ($expectedSlug !== $slug) {
             // Log de l'erreur de correspondance du slug avec un message d'avertissement
             $this->logActivity(type: 'warning', action: $action, context: ['brand_uuid' => $productBrand->uuid, 'brand_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->langPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $productBrand);
@@ -140,17 +145,20 @@ class ProductBrandController extends Controller
     {
         try {
 
-            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs']; 
 
             // Vérifie que le slug correspond
             $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.show', 'show');
 
-            // Charge les compteurs (withCount)
-            $brand->loadCount(['audits', 'activityLogs']);
+            // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
+            // + les compteurs (withCount)
+            $brand->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['audits', 'activityLogs']);
 
             // Récupère toutes les traductions supprimées (soft deleted) de cette marque
             $productBrandTranslations = ProductBrandTranslation::onlyTrashed()->where('brand_id', $brand->id)->get();
 
+            // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? __("{$this->langPath}.show.no_name");
 
             // Log de la consultation du détail d'une marque
@@ -164,7 +172,8 @@ class ProductBrandController extends Controller
             // Log de l'erreur serveur lors de la consultation du détail d'une marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.show', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $productBrand->uuid]), is_success: false);
 
-            abort(500); // Erreur serveur générique en cas de problème lors de la récupération de la marque
+            // Erreur serveur générique en cas de problème lors de la récupération de la marque
+            abort(500); 
         }
     }
 
@@ -181,18 +190,24 @@ class ProductBrandController extends Controller
             // Charge les compteurs (withCount)
             $brand->loadCount(['audits', 'activityLogs']);
 
+            // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? '';
 
+            // $audits récupère tous les audits de la marque, avec les relations user et auditable, triés par date de création décroissante    
             $audits = $brand->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
+            // Log de la consultation des audits d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.audits', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->langPath}.audits.success", ['name' => $brandName]), is_success: true, loggable: $brand);
 
+            // Retourne la vue des audits de la marque avec les données nécessaires
             return view('v1.backend.pages.products.brands.others.audits', compact('brand', 'audits'));
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la consultation des audits d'une marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.audits', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $productBrand->uuid]), is_success: false);
 
+            // Erreur serveur générique en cas de problème lors de la récupération des audits
             abort(500);
         }
     }
@@ -210,18 +225,24 @@ class ProductBrandController extends Controller
             // Charge les compteurs (withCount)
             $brand->loadCount(['audits', 'activityLogs']);
 
+            // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? '';
 
+            // $logs récupère tous les logs d'activité de la marque, avec la relation user, triés par date de création décroissante
             $logs = $brand->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
-
+        
+            // Log de la consultation des logs d'activité d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.activity-logs', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->langPath}.activity-logs.success", ['name' => $brandName]), is_success: true, loggable: $brand);
 
+            // Retourne la vue des logs d'activité de la marque avec les données nécessaires
             return view('v1.backend.pages.products.brands.others.activity-logs', compact('brand', 'logs'));
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la consultation des logs d'activité d'une marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.activity-logs', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $productBrand->uuid]), is_success: false);
 
+            // Erreur serveur générique en cas de problème lors de la récupération des logs d'activité
             abort(500);
         }
     }
@@ -233,11 +254,13 @@ class ProductBrandController extends Controller
     {
         try {
 
-            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs']; 
 
             // Log de l'accès à la page de modification d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.edit', context: ['brand_uuid' => $productBrand->uuid, 'brand_name' => $productBrand->active_translation?->name], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $productBrand->active_translation?->name ?? '']), is_success: true, loggable: $productBrand);
 
+            // $brand est utilisé pour passer les données de la marque à la vue
             $brand = $productBrand;
 
             // Retourne la vue d'édition de la marque avec les données nécessaires
@@ -248,7 +271,8 @@ class ProductBrandController extends Controller
             // Log de l'erreur serveur lors de l'accès à la page de modification d'une marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.edit', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.edit.error", ['uuid' => $productBrand->uuid]), is_success: false);
 
-            abort(500); // Erreur serveur générique en cas de problème lors de la récupération de la marque
+            // Erreur serveur générique en cas de problème lors de la récupération de la marque
+            abort(500); 
         }
     }
 
@@ -265,6 +289,7 @@ class ProductBrandController extends Controller
             // Récupère une instance fraîche pour capturer les vrais changements
             $brand = $productBrand->refresh();
 
+            // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? '';
 
             // Log de la mise à jour de la marque avec le uuid et les changements effectués
@@ -301,6 +326,7 @@ class ProductBrandController extends Controller
             // Activation de la marque via le service
             $this->productBrandService->activate($productBrand);
 
+            // $brand est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brand = $productBrand;
             $brandName = $brand->active_translation?->name ?? '';
 
@@ -312,14 +338,18 @@ class ProductBrandController extends Controller
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de l'activation de la marque
             $this->logActivity(type: 'warning', action: 'backend.product-brands.activate', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.warning_meta", ['uuid' => $productBrand->uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de l'activation de la marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.activate', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.error"), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.activate.flash_error"));
         }
     }
@@ -334,6 +364,7 @@ class ProductBrandController extends Controller
             // Désactivation de la marque via le service
             $this->productBrandService->deactivate($productBrand);
 
+            // $brand est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brand = $productBrand;
             $brandName = $brand->active_translation?->name ?? '';
 
@@ -345,14 +376,18 @@ class ProductBrandController extends Controller
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de la désactivation de la marque
             $this->logActivity(type: 'warning', action: 'backend.product-brands.deactivate', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.warning_meta", ['uuid' => $productBrand->uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la désactivation de la marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.deactivate', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.error"), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.deactivate.flash_error"));
         }
     }
@@ -364,8 +399,10 @@ class ProductBrandController extends Controller
     {
         try {
 
+            // $brand est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brand = $productBrand;
 
+            // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la marque via le service
@@ -390,6 +427,7 @@ class ProductBrandController extends Controller
             // Log de l'erreur serveur lors de la suppression de la marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.destroy', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $productBrand->uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.destroy.flash_error"));
         }
     }
@@ -401,17 +439,21 @@ class ProductBrandController extends Controller
     {
         try {
 
+            // $brands récupère toutes les marques supprimées (soft deleted) avec leurs traductions actives et les fichiers cloud, triées par date de suppression décroissante
             $brands = ProductBrand::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des marques
             $this->logActivity(type: 'info', action: 'backend.product-brands.trashed', context: ['count' => $brands->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);
 
+            // retourne la vue de la corbeille des marques avec les données nécessaires
             return view('v1.backend.pages.products.brands.trashed', compact('brands'));
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la consultation de la corbeille des marques
             $this->logActivity(type: 'error', action: 'backend.product-brands.trashed', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
 
+            // Erreur serveur générique en cas de problème lors de la récupération des marques supprimées
             abort(500);
         }
     }
@@ -429,29 +471,37 @@ class ProductBrandController extends Controller
             // Restauration via le service
             $this->productBrandService->restore($brand);
 
+            // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? __("{$this->langPath}.restore.unknown");
 
             // Log de la restauration de la marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.restore', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $brandName]), is_success: true, loggable: $brand);
 
+            // Redirection vers la liste des marques avec un message de succès
             return back()->with('success', __("{$this->langPath}.restore.flash_success", ['name' => $brandName]));
 
         } catch (ModelNotFoundException $e) {
 
+            // Log de l'erreur de non-trouvabilité de la marque à restaurer
             $this->logActivity(type: 'warning', action: 'backend.product-brands.restore', context: ['brand_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
 
+            // Renvoie une erreur 404 si la marque n'est pas trouvée dans les marques supprimées
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de la restauration de la marque
             $this->logActivity(type: 'warning', action: 'backend.product-brands.restore', context: ['brand_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la restauration de la marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.restore', context: ['brand_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.restore.flash_error"));
         }
     }
@@ -466,6 +516,7 @@ class ProductBrandController extends Controller
             // Récupère la marque supprimée par son UUID ou échoue
             $brand = ProductBrand::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
+            // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
@@ -474,24 +525,31 @@ class ProductBrandController extends Controller
             // Log de la suppression définitive de la marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.force_destroy', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $brandName]), is_success: true, loggable: $brand);
 
+            // Redirection vers la liste des marques avec un message de succès
             return back()->with('success', __("{$this->langPath}.force_destroy.flash_success", ['name' => $brandName]));
 
         } catch (ModelNotFoundException $e) {
 
+            // Log de l'erreur de non-trouvabilité de la marque à supprimer définitivement
             $this->logActivity(type: 'warning', action: 'backend.product-brands.force_destroy', context: ['brand_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
+            // Renvoie une erreur 404 si la marque n'est pas trouvée dans les marques supprimées
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
+            // Log de l'erreur métier lors de la suppression définitive de la marque
             $this->logActivity(type: 'warning', action: 'backend.product-brands.force_destroy', context: ['brand_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la suppression définitive de la marque
             $this->logActivity(type: 'error', action: 'backend.product-brands.force_destroy', context: ['brand_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
         }
     }

@@ -1,6 +1,8 @@
 @extends('v1.backend.layouts.app')
 
-@section('title') Tags de produits - Corbeille @endsection
+@section('title')
+    {{ __('Tags de produits - Corbeille') }}
+@endsection
 
 @section('content')
 

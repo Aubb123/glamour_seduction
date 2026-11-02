@@ -11,11 +11,13 @@ use function __;
 
 class BlogCategoryService
 {
+    // Chemin de base pour les traductions (centralisé)
     protected string $langPath = 'v1/backend/views/pages/blogs/categories/messages/categories-messages-service.categories';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
     protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
+    // Service pour gérer le téléchargement d'images vers le cloud ou le stockage local
     public function __construct(protected CloudFileService $cloudFileService) {}
 
     // ─────────────────────────────────────────────
@@ -43,6 +45,7 @@ class BlogCategoryService
                     throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la catégorie créée
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],
@@ -61,22 +64,27 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     public function update(BlogCategory $category, array $data): BlogCategory
     {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($category, $data) {
 
+            // $updateData contiendra uniquement les champs à mettre à jour
             $updateData = [];
 
+            // Si sort_order est défini dans les données, on l'ajoute à $updateData pour la mise à jour
             if (isset($data['sort_order'])) {
                 $updateData['sort_order'] = $data['sort_order'];
             }
 
-            $updateData['status'] = ($data['status'] ?? null) === BlogCategoryStatus::Active->value
-                ? BlogCategoryStatus::Active
-                : BlogCategoryStatus::Inactive;
+            // Détermine le statut à mettre à jour : si le statut envoyé est "Active", on le met à jour en tant que tel, 
+            // sinon on le met à "Inactive"
+            $updateData['status'] = ($data['status'] ?? null) === BlogCategoryStatus::Active->value ? BlogCategoryStatus::Active : BlogCategoryStatus::Inactive;
 
+            // Si $updateData n'est pas vide, on met à jour la catégorie avec les champs fournis
             if (! empty($updateData)) {
                 $category->update($updateData);
             }
 
+            // Synchronisation des traductions (création ou mise à jour)
             if (isset($data['translations'])) {
                 $this->syncTranslations($category, $data['translations']);
             }
@@ -89,6 +97,7 @@ class BlogCategoryService
                     throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la catégorie mise à jour
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],
@@ -119,7 +128,9 @@ class BlogCategoryService
             if ($category->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($category); // ← suppression de la catégorie et de ses traductions associées
+
+            // ← suppression de la catégorie et de ses traductions associées
+            destroy_function($category); 
 
         });
     }
@@ -141,6 +152,7 @@ class BlogCategoryService
             $category->update([
                 'status' => BlogCategoryStatus::Active,
             ]);
+            
         });
     }
 

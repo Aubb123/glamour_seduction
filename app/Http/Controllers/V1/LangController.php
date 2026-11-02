@@ -127,13 +127,18 @@ class LangController extends Controller
             $this->logActivity(type: 'info', action: 'backend.langs.switch', context: ['lang_uuid' => $lang->uuid, 'lang_code' => $lang->code], message: null, activity: __("{$this->langPath}.switch.success", ['name' => $lang->name]), is_success: true, loggable: $lang);
 
             // Redirection vers la page précédente avec la nouvelle langue
-            return redirect()->back();
+            // return redirect()->back();
+            // return back()->with('success', __("{$this->langPath}.switch.flash_success", ['name' => $lang->name]));
+
+            // Faire une redirection vers la page d'acueil du backend après le changement de langue
+            return redirect()->route('backend.index')->with('success', __("{$this->langPath}.switch.flash_success", ['name' => $lang->name]));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors du changement de langue
             $this->logActivity(type: 'error', action: 'backend.langs.switch', context: ['lang_uuid' => $lang->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.switch.error", ['uuid' => $lang->uuid]), is_success: false);
 
+            // Redirection vers la page précédente avec un message d'erreur
             return back()->with('error', __("{$this->langPath}.switch.flash_error"));
         }
     }

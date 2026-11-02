@@ -64,6 +64,7 @@ class UserService
                     throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
                 }
 
+                // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à l'utilisateur mis à jour
                 $this->cloudFileService->uploadEntityImage(
                     $data['image'],
                     $data['cloud_platform_uuid'],

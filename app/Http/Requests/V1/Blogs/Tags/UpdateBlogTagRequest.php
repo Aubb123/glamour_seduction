@@ -84,9 +84,6 @@ class UpdateBlogTagRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
-        // Unicité "par langue" sur 'name'. Le slug étant généré
-        // automatiquement depuis le name (trait HasSlug), une règle propre
-        // sur (name, lang_id) suffit à empêcher les collisions de slug.
         // Construite dynamiquement (le lang_id réel de chaque ligne est injecté
         // dans un closure) et en excluant les traductions du tag courant via
         // `->ignore()`.

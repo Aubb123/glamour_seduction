@@ -282,11 +282,11 @@ class BlogPostController extends Controller
     {
         try {
 
-            // Capturer les changements AVANT le refresh
-            $changes = $blogPost->getChanges();
-
             // Utilise le service pour mettre à jour l'article de blog avec les données validées
             $this->blogPostService->update($blogPost, $request->validated());
+
+            // Capturer les changements après la mise à jour (avant le refresh)
+            $changes = $blogPost->getChanges();
 
             $blogPost->refresh()->load(['translations.lang']); // Rafraîchit l'instance du modèle pour obtenir les dernières données après la mise à jour
 
@@ -447,7 +447,7 @@ class BlogPostController extends Controller
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.restore', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.restore', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -455,7 +455,7 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             //  Log de l'erreur lors de la tentative de restauration avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.restore', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.restore', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
             return redirect()->back()->with('error', __("{$this->langPath}.restore.flash_error"));
         }
@@ -471,19 +471,22 @@ class BlogPostController extends Controller
             // Récupère l'article de blog supprimé par UUID ou échoue si non trouvé
             $blogPost = BlogPost::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
+            // Récupère le titre de l'article pour les logs et les messages flash (avant suppression définitive)
+            $postTitle = $blogPost->active_translation?->title ?? __("{$this->langPath}.force_destroy.unknown");
+
             // Utilise le service pour supprimer définitivement l'article de blog
             $this->blogPostService->forceDestroy($blogPost);
 
-            // Récupère le titre de l'article pour les logs et les messages flash
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $blogPost->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $blogPost);
+            // Log de l'activité de suppression définitive réussie
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression définitive
-            return redirect()->back()->with('success', __("{$this->langPath}.force_destroy.flash_success"));
+            return redirect()->back()->with('success', __("{$this->langPath}.force_destroy.flash_success", ['name' => $postTitle]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -491,7 +494,7 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression définitive
             return redirect()->back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));

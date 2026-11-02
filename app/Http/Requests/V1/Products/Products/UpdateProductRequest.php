@@ -8,9 +8,17 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
+/**
+ * Requête de validation pour la mise à jour d'un produit.
+ *
+ * Valide les données entrantes pour la modification d'un produit (products)
+ * avec ses traductions associées (product_translations).
+ */
 class UpdateProductRequest extends FormRequest
 {
-    // Chemin de base pour les traductions (centralisé)
+    /**
+     * Chemin de base pour les traductions des messages de validation.
+     */
     protected string $langPath = 'v1/backend/views/pages/products/products/messages/products-messages-validation.products';
 
     /**
@@ -45,9 +53,7 @@ class UpdateProductRequest extends FormRequest
 
         // ────────────────────────────────────────────
         // Génération dynamique des règles "unique par langue"
-        // pour "name" et "slug" — ignore la propre traduction.
-        // NB : le slug est auto-généré par le trait HasSlug — la règle
-        // n'est appliquée que s'il est explicitement fourni.
+        // pour "name", en ignorant la propre traduction.
         // ────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
@@ -64,18 +70,6 @@ class UpdateProductRequest extends FormRequest
                     ->whereNull('deleted_at')
                     ->ignore($translationId),
             ];
-
-            if (array_key_exists('slug', $translation)) {
-                $rules["translations.{$index}.slug"] = [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('product_translations', 'slug')
-                        ->where(fn ($query) => $query->where('lang_id', $langId))
-                        ->whereNull('deleted_at')
-                        ->ignore($translationId),
-                ];
-            }
         }
 
         return $rules;
@@ -103,8 +97,6 @@ class UpdateProductRequest extends FormRequest
             'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
             'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
             'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
-            'translations.*.slug.required' => __("{$this->langPath}.translations.slug.required"),
-            'translations.*.slug.unique' => __("{$this->langPath}.translations.slug.unique"),
             'translations.*.short_description.max' => __("{$this->langPath}.translations.short_description.max"),
         ];
     }

@@ -1,0 +1,5 @@
+--Parametrer le ('max:2048') des images dans settings, tout les images ne doive pas depasser 2Mo
+
+-- Les fonctions forceDestroy et destroy des controller de Translation sont a ajuster dans le sens ou si 
+l'entité auquel la traduction est liée est introuvable, la traduction ne doit pas etre supprimée. 
+(ex: si la traduction est liée a une categorie qui n'existe plus, la traduction ne doit pas etre supprimée ou ont arrive pas à la retrouver, la traduction ne doit pas etre supprimée,lever une exception et afficher un message d'erreur)

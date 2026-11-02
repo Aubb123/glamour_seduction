@@ -1,29 +1,29 @@
 @extends('v1.backend.layouts.app')
 
 @section('title')
-    Détail de la attribut — <code>{{ $attribute->active_translation?->name ?? '' }}</code>
+    {{ __('Détail de l\'attribut') }} — <code>{{ $attribute->active_translation?->name ?? '' }}</code>
 @endsection
 
 @section('content')
 
-    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => 'Détail de la attribut'])
+    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('Détail de l\'attribut')])
 
     @include('v1.backend.pages.products.attributes.partials._show-start', ['attribute' => $attribute])
 
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
-                    <i class="bx bx-info-circle me-1"></i> Informations générales
+                    <i class="bx bx-info-circle me-1"></i> {{ __('Informations générales') }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_translations">
-                    <i class="bx bx-globe me-1"></i> Traductions
+                    <i class="bx bx-globe me-1"></i> {{ __('Traductions') }}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_meta">
-                    <i class="bx bx-time-five me-1"></i> Métadonnées
+                    <i class="bx bx-time-five me-1"></i> {{ __('Métadonnées') }}
                 </a>
             </li>
         </ul>
@@ -38,22 +38,22 @@
                         <div class="card border h-100">
                             <div class="card-header bg-light py-2">
                                 <h6 class="mb-0 fw-bold">
-                                    <i class="bx bx-info-circle me-2 text-primary"></i>Détails
+                                    <i class="bx bx-file me-2 text-primary"></i>{{ __('Détails') }}
                                 </h6>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">Nom</div>
-                                    <div class="col-8">{{ $attribute->active_translation?->name ?? '-' }}</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Nom') }}</div>
+                                    <div class="col-8 fw-semibold">{{ $attribute->active_translation?->name ?? '—' }}</div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">UUID</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('UUID') }}</div>
                                     <div class="col-8"><code>{{ $attribute->uuid }}</code></div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">Ordre de tri</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Ordre de tri') }}</div>
                                     <div class="col-8 fw-semibold">{{ $attribute->sort_order }}</div>
                                 </div>
                             </div>
@@ -64,24 +64,28 @@
                         <div class="card border h-100">
                             <div class="card-header bg-light py-2">
                                 <h6 class="mb-0 fw-bold">
-                                    <i class="bx bx-pulse me-2 text-primary"></i>Statut
+                                    <i class="bx bx-pulse me-2 text-primary"></i>{{ __('Statut') }}
                                 </h6>
                             </div>
-                            <div class="card-body text-center">
-                                <span class="badge {{ $attribute->status->badgeClass() }} fs-14 px-3 py-2">
-                                    {{ $attribute->status->label() }}
-                                </span>
-                                <hr class="my-3">
-                                <div class="row mb-2">
-                                    <div class="col-6">
-                                        <div class="fw-bold fs-5">{{ $attribute->audits_count ?? 0 }}</div>
-                                        <div class="text-muted small">Audits</div>
+                            <div class="card-body d-flex flex-column gap-3">
+
+                                <div class="d-flex align-items-center justify-content-between p-3 rounded"
+                                        style="background: {{ $attribute->status === \App\Enums\Products\Attributes\ProductAttributeStatus::Active ? '#e8f9f0' : '#fef0f0' }}">
+                                    <div>
+                                        <div class="fw-semibold">{{ __('Statut') }}</div>
+                                        <small class="text-muted">
+                                            @if ($attribute->status === \App\Enums\Products\Attributes\ProductAttributeStatus::Active)
+                                                {{ __('Actif') }}
+                                            @else
+                                                {{ __('Inactif') }}
+                                            @endif
+                                        </small>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="fw-bold fs-5">{{ $attribute->activity_logs_count ?? 0 }}</div>
-                                        <div class="text-muted small">Logs d'activité</div>
-                                    </div>
+                                    <span class="{{ $attribute->status?->badgeClass() ?? 'badge badge-soft-secondary' }} px-3 py-2">
+                                        {{ $attribute->status?->label() ?? '—' }}
+                                    </span>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -91,64 +95,100 @@
 
             {{-- Traductions --}}
             <div class="tab-pane fade" id="tab_translations">
-                <div class="row g-4">
-                    <div class="col-md-12">
-                        <div class="card border">
-                            <div class="card-header bg-light py-2 d-flex align-items-center justify-content-between">
-                                <h6 class="mb-0 fw-bold">
-                                    <i class="bx bx-globe me-2 text-primary"></i>Traductions de la attribut
-                                </h6>
-                                <a href="{{ route('backend.product-attribute-translations.trashed', ['attribute_uuid' => $attribute->uuid]) }}" class="btn btn-sm btn-soft-secondary">
-                                    <i class="bx bx-trash me-1"></i> Traductions supprimées
-                                    @if ($productAttributeTranslations->count() > 0)
-                                        <span class="badge badge-soft-danger ms-1">{{ $productAttributeTranslations->count() }}</span>
-                                    @endif
-                                </a>
+
+                <ul class="nav nav-pills mb-3">
+                    @foreach ($langs as $index => $lang)
+                        <li class="nav-item">
+                            <a class="nav-link {{ $index === 0 ? 'active' : '' }}" data-bs-toggle="tab" href="#trans_{{ $lang->code }}">
+                                {{ $lang->name }}
+                            </a>
+                        </li>
+                    @endforeach
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#trans_trash">
+                            <i class="bx bx-trash me-1 text-warning"></i> {{ __('Corbeille') }}
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    @foreach ($langs as $index => $lang)
+                        @php($translation = getTranslation($attribute, $lang->id))
+                        <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="trans_{{ $lang->code }}">
+                            <div class="row g-4">
+                                <div class="col-md-12">
+                                    <div class="card border">
+                                        <div class="card-header bg-light py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="bx bx-font me-2 text-primary"></i>{{ $lang->name }}
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row mb-3 align-items-center">
+                                                <div class="col-2 text-muted fw-semibold">{{ __('Nom') }}</div>
+                                                <div class="col-9 fw-bold">{{ $translation?->name ?? '—' }}</div>
+                                            </div>
+                                            <hr class="my-2">
+                                            <div class="row mb-3 align-items-center">
+                                                <div class="col-2 text-muted fw-semibold">{{ __('Slug') }}</div>
+                                                <div class="col-9"><code>{{ $translation?->slug ?? '—' }}</code></div>
+                                            </div>
+                                            <hr class="my-2">
+                                            <div class="row mb-3 align-items-start">
+                                                <div class="col-2 text-muted fw-semibold">{{ __('Description') }}</div>
+                                                <div class="col-9" style="max-height: 200px; overflow-y: auto;">
+                                                    {!! $translation?->description ?? '—' !!}
+                                                </div>
+                                            </div>
+                                            <hr class="my-2">
+
+                                            <div class="row align-items-start">
+                                                <div class="col-2 text-muted fw-semibold">{{ __('Actions') }}</div>
+                                                <div class="col-9">
+                                                    @if($translation && !$translation->trashed())
+                                                        <form action="{{ route('backend.product-attribute-translations.destroy', ['uuid' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">
+                                                                <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
+                                                            </button>
+                                                        </form>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-centered mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Langue</th>
-                                                <th scope="col">Nom</th>
-                                                <th scope="col">Slug</th>
-                                                <th scope="col">Description</th>
-                                                <th scope="col">Créé le</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($attribute->translations as $translation)
-                                                <tr>
-                                                    <td>
-                                                        <span class="badge badge-soft-primary">
-                                                            {{ $translation->lang?->code ?? '—' }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="fw-bold">{{ $translation->name ?? '—' }}</td>
-                                                    <td><code>{{ $translation->slug ?? '—' }}</code></td>
-                                                    <td class="text-muted" style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                                        {{ Str::limit($translation->description ?? '—', 100) }}
-                                                    </td>
-                                                    <td class="text-muted">
-                                                        @formatDate($translation->created_at, 'D MMMM YYYY - HH:mm:ss')
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="5" class="text-center text-muted py-4">
-                                                        <i class="bx bx-globe fs-3 d-block mb-2"></i>
-                                                        Aucune traduction trouvée.
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
+                        </div>
+                    @endforeach
+
+                    <div class="tab-pane fade" id="trans_trash">
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <div class="card border">
+                                    <div class="card-header bg-light py-2">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bx bx-trash me-2 text-warning"></i>{{ __('Corbeille des traductions') }}
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        @if ($productAttributeTranslations->isEmpty())
+                                            <p class="text-muted mb-0">{{ __('Aucune traduction supprimée.') }}</p>
+                                        @else
+                                            @include('v1.backend.pages.products.attributes.partials._trashed-table-translations', [
+                                                'productAttributeTranslations' => $productAttributeTranslations,
+                                                'attribute' => $attribute
+                                            ])
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             {{-- Métadonnées --}}
@@ -158,27 +198,27 @@
                         <div class="card border">
                             <div class="card-header bg-light py-2">
                                 <h6 class="mb-0 fw-bold">
-                                    <i class="bx bx-data me-2 text-primary"></i>Métadonnées
+                                    <i class="bx bx-data me-2 text-primary"></i>{{ __('Métadonnées') }}
                                 </h6>
                             </div>
                             <div class="card-body">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">UUID</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('UUID') }}</div>
                                     <div class="col-8"><code>{{ $attribute->uuid }}</code></div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">Créé le</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Créé le') }}</div>
                                     <div class="col-8">@formatDate($attribute->created_at, 'D MMMM YYYY - HH:mm:ss')</div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">Modifié le</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Modifié le') }}</div>
                                     <div class="col-8">@formatDate($attribute->updated_at, 'D MMMM YYYY - HH:mm:ss')</div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">Supprimé le</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Supprimé le') }}</div>
                                     <div class="col-8">
                                         @if ($attribute->deleted_at)
                                             @formatDate($attribute->deleted_at, 'D MMMM YYYY - HH:mm:ss')

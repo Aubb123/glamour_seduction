@@ -14,31 +14,31 @@
 @include('v1.backend.layouts.partials._statistics', [
     'statistics' => [
         [
-            'label' => 'Attributs',
+            'label' => __('Attributs'),
             'value' => $attributes->count(),
-            'icon'  => 'bx bx-purchase-attribut',
+            'icon'  => 'bx bx-purchase-tag',
             'color' => 'primary',
         ],
         [
-            'label' => 'Actives',
+            'label' => __('Actifs'),
             'value' => $attributes->where('status', \App\Enums\Products\Attributes\ProductAttributeStatus::Active)->count(),
             'icon'  => 'bx bx-check-circle',
-            'color' => 'info',
+            'color' => 'success',
         ],
         [
-            'label' => 'Inactives',
+            'label' => __('Inactifs'),
             'value' => $attributes->where('status', \App\Enums\Products\Attributes\ProductAttributeStatus::Inactive)->count(),
             'icon'  => 'bx bx-x-circle',
             'color' => 'danger',
         ],
         [
-            'label' => 'Audits',
+            'label' => __('Audits'),
             'value' => $attributes->sum('audits_count'),
             'icon'  => 'bx bx-file',
             'color' => 'warning',
         ],
         [
-            'label' => 'Activités',
+            'label' => __('Activités'),
             'value' => $attributes->sum('activity_logs_count'),
             'icon'  => 'bx bx-pulse',
             'color' => 'secondary',
@@ -51,22 +51,21 @@
         <div class="card">
 
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="card-title mb-0">Attributs de produits</h5>
+                <h5 class="card-title mb-0">{{ __('Attributs de produits') }}</h5>
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Actions
+                        {{ __('Actions') }}
                     </button>
-                    
+
                     <ul class="dropdown-menu dropdown-menu-end text-nowrap">
                         @include('v1.backend.layouts.partials._card_actions_menu', [
                             'actions' => [
-                                ['label' => 'Créer une attribut', 'icon' => 'bx bx-plus', 'route' => 'backend.product-attributes.create'],
-                                ['label' => 'Liste des attributs', 'icon' => 'bx bx-list-ul', 'route' => 'backend.product-attributes.index'],
-                                ['label' => 'Corbeille', 'icon' => 'bx bx-trash', 'route' => 'backend.product-attributes.trashed'],
+                                ['label' => __('Créer un attribut'), 'icon' => 'bx bx-plus', 'route' => 'backend.product-attributes.create'],
+                                ['label' => __('Liste des attributs'), 'icon' => 'bx bx-list-ul', 'route' => 'backend.product-attributes.index'],
+                                ['label' => __('Corbeille'), 'icon' => 'bx bx-trash', 'route' => 'backend.product-attributes.trashed'],
                             ]
                         ])
                     </ul>
-                    
                 </div>
             </div>
 
@@ -76,19 +75,19 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Nom</th>
-                                <th scope="col">Audits</th>
-                                <th scope="col">Logs</th>
-                                <th scope="col">Ordre</th>
-                                <th scope="col">Actif</th>
-                                <th scope="col">Créé le</th>
+                                <th scope="col">{{ __('Nom') }}</th>
+                                <th scope="col">{{ __('Audits') }}</th>
+                                <th scope="col">{{ __('Logs') }}</th>
+                                <th scope="col">{{ __('Ordre') }}</th>
+                                <th scope="col">{{ __('Statut') }}</th>
+                                <th scope="col">{{ __('Créé le') }}</th>
                                 @if(request()->routeIs('backend.product-attributes.trashed'))
-                                    <th scope="col">Supprimé le</th>
+                                    <th scope="col">{{ __('Supprimé le') }}</th>
                                 @endif
-                                <th scope="col">Actions</th>
+                                <th scope="col">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
-                        <tbody> 
+                        <tbody>
                             @forelse ($attributes as $attribute)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
@@ -142,7 +141,7 @@
                                                 <form action="{{ route('backend.product-attributes.restore', ['uuid' => $attribute->uuid]) }}" method="POST" class="d-inline" id="restore-form-{{ $attribute->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('restore-form-{{ $attribute->uuid }}', 'Restaurer cette attribut ?', 'Restaurer', 'success')" title="Restaurer">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('restore-form-{{ $attribute->uuid }}', '{{ __('Restaurer cet attribut ?') }}', 'Restaurer', 'success')" title="{{ __('Restaurer') }}">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
@@ -150,7 +149,7 @@
                                                 <form action="{{ route('backend.product-attributes.force_destroy', ['uuid' => $attribute->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $attribute->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="Supprimer définitivement" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $attribute->uuid }}', 'Supprimer définitivement cette attribut ? Cette action est irréversible.')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $attribute->uuid }}', '{{ __('Supprimer définitivement cet attribut ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -159,11 +158,11 @@
 
                                         @if(!$attribute->trashed())
                                             <div class="hstack gap-2 fs-15">
-                                                <a href="{{ route('backend.product-attributes.show', ['productAttribute' => $attribute->uuid, 'slug' => $attribute->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-light" title="Voir">
+                                                <a href="{{ route('backend.product-attributes.show', ['productAttribute' => $attribute->uuid, 'slug' => $attribute->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.product-attributes.edit', ['productAttribute' => $attribute->uuid]) }}" class="btn btn-sm btn-soft-primary" title="Modifier">
+                                                <a href="{{ route('backend.product-attributes.edit', ['productAttribute' => $attribute->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
@@ -171,7 +170,7 @@
                                                     <form action="{{ route('backend.product-attributes.deactivate', ['productAttribute' => $attribute->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $attribute->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $attribute->uuid }}', 'Désactiver cette attribut ?', 'Désactiver', 'warning')" title="Désactiver">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" onclick="confirmAction('deactivate-form-{{ $attribute->uuid }}', '{{ __('Désactiver cet attribut ?') }}', 'Désactiver', 'warning')" title="{{ __('Désactiver') }}">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -179,7 +178,7 @@
                                                     <form action="{{ route('backend.product-attributes.activate', ['productAttribute' => $attribute->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $attribute->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $attribute->uuid }}', 'Activer cette attribut ?', 'Activer', 'success')" title="Activer">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('activate-form-{{ $attribute->uuid }}', '{{ __('Activer cet attribut ?') }}', 'Activer', 'success')" title="{{ __('Activer') }}">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -188,7 +187,7 @@
                                                 <form action="{{ route('backend.product-attributes.destroy', ['productAttribute' => $attribute->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $attribute->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $attribute->uuid }}', 'Supprimer cette attribut ?', 'Supprimer', 'warning')" title="Supprimer">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $attribute->uuid }}', '{{ __('Supprimer cet attribut ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -200,7 +199,7 @@
                                 <tr>
                                     <td colspan="{{ request()->routeIs('backend.product-attributes.trashed') ? 10 : 9 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
-                                        Aucune attribut trouvée.
+                                        {{ __('Aucun attribut trouvé.') }}
                                     </td>
                                 </tr>
                             @endforelse
@@ -232,7 +231,7 @@
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
                 ],
-                language: { 
+                language: {
                     url: "{{ app()->getLocale() === 'fr' ? asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/fr-FR.json') : asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/en-GB.json') }}"
                 },
             });

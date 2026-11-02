@@ -278,6 +278,31 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/users/blog-post-comment-replies/{user}/{slug}', 'backend_users_blog_post_comment_replies')->middleware(['permission:users.blog_post_comment_replies'])->name('backend.users.blog-post-comment-replies');
         });
 
+        
+        // Routes pour : Gestion des Catégories de Produits (module Boutique)
+        Route::controller(V1ProductCategoryController::class)->group(function () {
+            Route::get('/backend/product-categories/index', 'backend_product_categories_index')->middleware(['permission:product-categories.index'])->name('backend.product-categories.index');
+            Route::get('/backend/product-categories/create', 'backend_product_categories_create')->middleware(['permission:product-categories.create'])->name('backend.product-categories.create');
+            Route::post('/backend/product-categories/store', 'backend_product_categories_store')->middleware(['permission:product-categories.store'])->name('backend.product-categories.store');
+            Route::get('/backend/product-categories/show/{productCategory}/{slug}', 'backend_product_categories_show')->middleware(['permission:product-categories.show'])->name('backend.product-categories.show');
+            Route::get('/backend/product-categories/audits/{productCategory}/{slug}', 'backend_product_categories_audits')->middleware(['permission:product-categories.audits'])->name('backend.product-categories.audits');
+            Route::get('/backend/product-categories/activity-logs/{productCategory}/{slug}', 'backend_product_categories_activity_logs')->middleware(['permission:product-categories.activity_logs'])->name('backend.product-categories.activity-logs');
+            Route::get('/backend/product-categories/edit/{productCategory}', 'backend_product_categories_edit')->middleware(['permission:product-categories.edit'])->name('backend.product-categories.edit');
+            Route::put('/backend/product-categories/update/{productCategory}', 'backend_product_categories_update')->middleware(['permission:product-categories.update'])->name('backend.product-categories.update');
+            Route::patch('/backend/product-categories/activate/{productCategory}', 'backend_product_categories_activate')->middleware(['permission:product-categories.activate'])->name('backend.product-categories.activate');
+            Route::patch('/backend/product-categories/deactivate/{productCategory}', 'backend_product_categories_deactivate')->middleware(['permission:product-categories.deactivate'])->name('backend.product-categories.deactivate');
+            Route::delete('/backend/product-categories/destroy/{productCategory}', 'backend_product_categories_destroy')->middleware(['permission:product-categories.destroy'])->name('backend.product-categories.destroy');
+            Route::get('/backend/product-categories/trashed', 'backend_product_categories_trashed')->middleware(['permission:product-categories.trashed'])->name('backend.product-categories.trashed');
+            Route::patch('/backend/product-categories/restore/{uuid}', 'backend_product_categories_restore')->middleware(['permission:product-categories.restore'])->name('backend.product-categories.restore');
+            Route::delete('/backend/product-categories/force-destroy/{uuid}', 'backend_product_categories_force_destroy')->middleware(['permission:product-categories.force_destroy'])->name('backend.product-categories.force_destroy');
+        });
+        Route::controller(V1ProductCategoryTranslationController::class)->group(function () {
+            Route::delete('/backend/product-category-translations/destroy/{uuid}', 'backend_product_category_translations_destroy')->middleware(['permission:product-category-translations.destroy'])->name('backend.product-category-translations.destroy');
+            Route::get('/backend/product-category-translations/trashed/{category_uuid}', 'backend_product_category_translations_trashed')->middleware(['permission:product-category-translations.trashed'])->name('backend.product-category-translations.trashed');
+            Route::patch('/backend/product-category-translations/restore/{uuid}', 'backend_product_category_translations_restore')->middleware(['permission:product-category-translations.restore'])->name('backend.product-category-translations.restore');
+            Route::delete('/backend/product-category-translations/force-destroy/{uuid}', 'backend_product_category_translations_force_destroy')->middleware(['permission:product-category-translations.force_destroy'])->name('backend.product-category-translations.force_destroy');
+        });
+
         // Routes pour : Gestion des Marques de Produits (module Boutique)
         Route::controller(V1ProductBrandController::class)->group(function () {
             Route::get('/backend/product-brands/index', 'backend_product_brands_index')->middleware(['permission:product-brands.index'])->name('backend.product-brands.index');
@@ -463,30 +488,6 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-warehouses/force-destroy/{uuid}', 'backend_product_warehouses_force_destroy')->middleware(['permission:product-warehouses.force_destroy'])->name('backend.product-warehouses.force_destroy');
         });
 
-        // Routes pour : Gestion des Catégories de Produits (module Boutique)
-        Route::controller(V1ProductCategoryController::class)->group(function () {
-            Route::get('/backend/product-categories/index', 'backend_product_categories_index')->middleware(['permission:product-categories.index'])->name('backend.product-categories.index');
-            Route::get('/backend/product-categories/create', 'backend_product_categories_create')->middleware(['permission:product-categories.create'])->name('backend.product-categories.create');
-            Route::post('/backend/product-categories/store', 'backend_product_categories_store')->middleware(['permission:product-categories.store'])->name('backend.product-categories.store');
-            Route::get('/backend/product-categories/show/{productCategory}/{slug}', 'backend_product_categories_show')->middleware(['permission:product-categories.show'])->name('backend.product-categories.show');
-            Route::get('/backend/product-categories/audits/{productCategory}/{slug}', 'backend_product_categories_audits')->middleware(['permission:product-categories.audits'])->name('backend.product-categories.audits');
-            Route::get('/backend/product-categories/activity-logs/{productCategory}/{slug}', 'backend_product_categories_activity_logs')->middleware(['permission:product-categories.activity_logs'])->name('backend.product-categories.activity-logs');
-            Route::get('/backend/product-categories/edit/{productCategory}', 'backend_product_categories_edit')->middleware(['permission:product-categories.edit'])->name('backend.product-categories.edit');
-            Route::put('/backend/product-categories/update/{productCategory}', 'backend_product_categories_update')->middleware(['permission:product-categories.update'])->name('backend.product-categories.update');
-            Route::patch('/backend/product-categories/activate/{productCategory}', 'backend_product_categories_activate')->middleware(['permission:product-categories.activate'])->name('backend.product-categories.activate');
-            Route::patch('/backend/product-categories/deactivate/{productCategory}', 'backend_product_categories_deactivate')->middleware(['permission:product-categories.deactivate'])->name('backend.product-categories.deactivate');
-            Route::delete('/backend/product-categories/destroy/{productCategory}', 'backend_product_categories_destroy')->middleware(['permission:product-categories.destroy'])->name('backend.product-categories.destroy');
-            Route::get('/backend/product-categories/trashed', 'backend_product_categories_trashed')->middleware(['permission:product-categories.trashed'])->name('backend.product-categories.trashed');
-            Route::patch('/backend/product-categories/restore/{uuid}', 'backend_product_categories_restore')->middleware(['permission:product-categories.restore'])->name('backend.product-categories.restore');
-            Route::delete('/backend/product-categories/force-destroy/{uuid}', 'backend_product_categories_force_destroy')->middleware(['permission:product-categories.force_destroy'])->name('backend.product-categories.force_destroy');
-        });
-        Route::controller(V1ProductCategoryTranslationController::class)->group(function () {
-            Route::delete('/backend/product-category-translations/destroy/{uuid}', 'backend_product_category_translations_destroy')->middleware(['permission:product-category-translations.destroy'])->name('backend.product-category-translations.destroy');
-            Route::get('/backend/product-category-translations/trashed/{category_uuid}', 'backend_product_category_translations_trashed')->middleware(['permission:product-category-translations.trashed'])->name('backend.product-category-translations.trashed');
-            Route::patch('/backend/product-category-translations/restore/{uuid}', 'backend_product_category_translations_restore')->middleware(['permission:product-category-translations.restore'])->name('backend.product-category-translations.restore');
-            Route::delete('/backend/product-category-translations/force-destroy/{uuid}', 'backend_product_category_translations_force_destroy')->middleware(['permission:product-category-translations.force_destroy'])->name('backend.product-category-translations.force_destroy');
-        });
-
         // Routes pour : Gestion des Catégories de Blog
         Route::controller(V1BlogCategoryController::class)->group(function () {
             Route::get('/backend/blog-categories/index', 'backend_blog_categories_index')->middleware(['permission:blog-categories.index'])->name('backend.blog-categories.index');
@@ -554,8 +555,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/blog-posts/force-destroy/{uuid}', 'backend_blog_posts_force_destroy')->middleware(['permission:blog-posts.force_destroy'])->name('backend.blog-posts.force_destroy');
         });
         Route::controller(V1BlogPostTranslationController::class)->group(function () {
-            Route::delete('/backend/blog-post-translations/destroy/{blogPostTranslation}', 'backend_blog_post_translations_destroy')->middleware(['permission:blog-post-translations.destroy'])->name('backend.blog-post-translations.destroy');
-            Route::get('/backend/blog-post-translations/trashed/{blogPost}', 'backend_blog_post_translations_trashed')->middleware(['permission:blog-post-translations.trashed'])->name('backend.blog-post-translations.trashed')->withTrashed();
+            Route::delete('/backend/blog-post-translations/destroy/{uuid}', 'backend_blog_post_translations_destroy')->middleware(['permission:blog-post-translations.destroy'])->name('backend.blog-post-translations.destroy');
+            Route::get('/backend/blog-post-translations/trashed/{post_uuid}', 'backend_blog_post_translations_trashed')->middleware(['permission:blog-post-translations.trashed'])->name('backend.blog-post-translations.trashed');
             Route::patch('/backend/blog-post-translations/restore/{uuid}', 'backend_blog_post_translations_restore')->middleware(['permission:blog-post-translations.restore'])->name('backend.blog-post-translations.restore');
             Route::delete('/backend/blog-post-translations/force-destroy/{uuid}', 'backend_blog_post_translations_force_destroy')->middleware(['permission:blog-post-translations.force_destroy'])->name('backend.blog-post-translations.force_destroy');
         });

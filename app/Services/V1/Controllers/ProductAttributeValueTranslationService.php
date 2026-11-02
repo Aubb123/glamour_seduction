@@ -64,7 +64,7 @@ class ProductAttributeValueTranslationService
                     $translation,
                     __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productAttributeValue'),
                     $this->helperLangPath,
-                    'name',
+                    'label',
                     'slug'
                 );
 

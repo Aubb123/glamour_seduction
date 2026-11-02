@@ -204,7 +204,7 @@ Schema::create('geo_countries', function (Blueprint $table) {
 
 
 
-    Que penses-tu de ma table (geo_countries), et du systeme de gestion des geo_countries qui a été implémenter sur le projet ?
+Que penses-tu de ma table (geo_countries), et du systeme de gestion des geo_countries qui a été implémenter sur le projet ?
 
 Jette un oeil à tout ce qui a été fait (Model, Controller, Resquest, Vues/Views, Routes, Routes Web, Seeders, Middleware, les fichiers 
 de traduction (lang/en et lang/fr /v1/backend/views/pages/geos/countries/*.php) etc... liée au version de plateforme) et dis moi ce que tu 

@@ -119,9 +119,9 @@ class ProductTagController extends Controller
     // ─────────────────────────────────────────────
     // Résolution + vérification slug (helper privé)
     // ─────────────────────────────────────────────
-    private function resolveBrandWithSlugCheck(ProductTag $productTag, string $slug, string $action, string $langKey): ProductTag
+    private function resolveProductTagWithSlugCheck(ProductTag $productTag, string $slug, string $action, string $langKey): ProductTag
     {
-        $expectedSlug = $productTag->slug ?? $productTag->active_translation?->slug ?? 'null';
+        $expectedSlug = $productTag->active_translation?->slug ?? 'null';
 
         if ($expectedSlug !== $slug) {
             // Log de l'erreur de correspondance du slug avec un message d'avertissement
@@ -143,10 +143,11 @@ class ProductTagController extends Controller
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
 
             // Vérifie que le slug correspond
-            $tag = $this->resolveBrandWithSlugCheck($productTag, $slug, 'backend.product-tags.show', 'show');
+            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.show', 'show');
 
-            // Charge les compteurs (withCount)
-            $tag->loadCount(['audits', 'activityLogs']);
+            // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
+            // + les compteurs (withCount)
+            $tag->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['audits', 'activityLogs']);
 
             // Récupère toutes les traductions supprimées (soft deleted) de cette tag
             $productTagTranslations = ProductTagTranslation::onlyTrashed()->where('tag_id', $tag->id)->get();
@@ -176,7 +177,7 @@ class ProductTagController extends Controller
         try {
 
             // Vérifie que le slug correspond
-            $tag = $this->resolveBrandWithSlugCheck($productTag, $slug, 'backend.product-tags.audits', 'audits');
+            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.audits', 'audits');
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['audits', 'activityLogs']);
@@ -205,7 +206,7 @@ class ProductTagController extends Controller
         try {
 
             // Vérifie que le slug correspond
-            $tag = $this->resolveBrandWithSlugCheck($productTag, $slug, 'backend.product-tags.activity-logs', 'activity-logs');
+            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.activity-logs', 'activity-logs');
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['audits', 'activityLogs']);
@@ -262,13 +263,16 @@ class ProductTagController extends Controller
             // Mise à jour de la tag via le service, en passant les données validées du formulaire
             $this->productTagService->update($productTag, $request->validated());
 
-            // Récupère une instance fraîche pour capturer les vrais changements
+            // Capturer les changements avant le refresh
+            $changes = $productTag->getChanges();
+
+            // Récupère une instance fraîche pour l'affichage
             $tag = $productTag->refresh();
 
             $tagName = $tag->active_translation?->name ?? '';
 
             // Log de la mise à jour de la tag avec le uuid et les changements effectués
-            $this->logActivity(type: 'info', action: 'backend.product-tags.update', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName, 'changes' => $tag->getChanges()], message: null, activity: __("{$this->langPath}.update.success", ['name' => $tagName]), is_success: true, loggable: $tag);
+            $this->logActivity(type: 'info', action: 'backend.product-tags.update', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName, 'changes' => $changes], message: null, activity: __("{$this->langPath}.update.success", ['name' => $tagName]), is_success: true, loggable: $tag);
 
             // Redirection vers la page de détail de la tag avec un message de succès
             return redirect()->route('backend.product-tags.show', ['productTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null'])->with('success', __("{$this->langPath}.update.flash_success", ['name' => $tagName]));

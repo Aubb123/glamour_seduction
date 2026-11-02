@@ -287,9 +287,13 @@ class BackendHelper
             ];
         }
 
-        // Libellés pluriels des enfants (jointure « X, Y et Z »)
+        // Libellés pluriels des enfants (jointure « X, Y et Z »).
+        // Chaque entité peut déclarer des libellés spécifiques via
+        // deleteGuard.relations.{Entité}.{relation} (ex: 'children' =>
+        // 'sous-catégories' pour ProductCategory, mais 'sous-dossiers'
+        // pour CloudFolder). Repli sur le libellé générique sinon.
         $childrenLabels = collect($foundRelations)
-            ->map(fn (string $relation) => __("v1/backend/others/helpers/backend-helper-messages.deleteGuard.relations.{$relation}"))
+            ->map(fn (string $relation) => self::translateRelationLabel($entityClass, $relation))
             ->values()
             ->all();
 
@@ -298,7 +302,8 @@ class BackendHelper
             $childrenList = $childrenLabels[0]; // Un seul enfant Ex: "X"
         } else {
             $last = array_pop($childrenLabels); // Récupère le dernier élément Ex: "Z"
-            $childrenList = implode(', ', $childrenLabels).' et '.$last; // Concatène les autres éléments avec des virgules et ajoute "et" avant le dernier Ex: "X, Y et Z"
+            $joiner = __('v1/backend/others/helpers/backend-helper-messages.deleteGuard.joiner'); // "et" (fr) / "and" (en)
+            $childrenList = implode(', ', $childrenLabels).' '.(is_string($joiner) ? $joiner : 'et').' '.$last; // Concatène les autres éléments avec des virgules et ajoute le connecteur avant le dernier Ex: "X, Y et Z"
         }
 
         // Nom lisible de l'entité (traduction active → colonnes génériques → UUID en dernier recours)
@@ -322,6 +327,34 @@ class BackendHelper
                 'object' => $entityInfo['object'],
             ])
         );
+    }
+
+    /**
+     * Traduit le libellé d'une relation enfant pour l'entité donnée.
+     *
+     * Cherche d'abord un libellé spécifique à l'entité
+     * (deleteGuard.relations.{Entité}.{relation}), puis retombe sur le
+     * libellé générique (deleteGuard.relations.{relation}). En dernier
+     * recours, la relation est utilisée telle quelle afin d'éviter
+     * l'affichage d'une clé de traduction brute dans le message.
+     */
+    private static function translateRelationLabel(string $entityClass, string $relation): string
+    {
+        $base = 'v1/backend/others/helpers/backend-helper-messages.deleteGuard.relations';
+
+        // $specific prend la priorité sur $generic, car certaines entités peuvent vouloir 
+        // des libellés spécifiques pour leurs relations enfants (ex: ProductCategory vs CloudFolder)
+        $specific = __("{$base}.{$entityClass}.{$relation}");
+
+        // si la traduction spécifique existe et est différente de la clé brute, on la retourne
+        if (is_string($specific) && $specific !== "{$base}.{$entityClass}.{$relation}") {
+            return $specific;
+        }
+
+        // $generic est utilisé comme fallback si aucune traduction spécifique n'est trouvée
+        $generic = __("{$base}.{$relation}");
+
+        return is_string($generic) && $generic !== "{$base}.{$relation}" ? $generic : $relation;
     }
 
     /**
@@ -419,6 +452,7 @@ class BackendHelper
         // Verrou de sécurité : bloque si l'entité parente a des enfants liés (même en corbeille,
         // car la cascade ON DELETE CASCADE de la base les écraserait définitivement)
         self::assertNoDependentChildren($entity, true);
+        
         // Vérification si l'entité a des traductions
         if (method_exists($entity, 'translations')) {
             // Suppression définitive des traductions associées

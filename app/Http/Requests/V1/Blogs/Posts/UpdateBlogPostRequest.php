@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\V1\Blogs\Posts;
 
+use App\Enums\Blogs\Posts\BlogPostStatus;
 use App\Models\BlogPostTranslation;
 use App\Traits\LogActivity;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 use function __;
 
@@ -44,9 +46,9 @@ class UpdateBlogPostRequest extends FormRequest
 
         return [
             'category_id' => ['required', 'exists:blog_categories,id'],
-            'status' => ['required', 'in:draft,published,archived,scheduled'],
+            'status' => ['required', Rule::in(BlogPostStatus::values())],
             'sort_order' => ['required', 'integer', 'min:0'],
-            'published_at' => ['nullable', 'date', 'required_if:status,scheduled', 'after:now'],
+            'published_at' => ['nullable', 'date', 'required_if:status,scheduled', 'after_or_equal:now'],
             'tags' => ['required', 'array'],
             'tags.*' => ['exists:blog_tags,id'],
 
@@ -117,6 +119,7 @@ class UpdateBlogPostRequest extends FormRequest
             'published_at.date' => __("{$this->langPath}.published_at.date"),
             'published_at.required_if' => __("{$this->langPath}.published_at.required_if"),
             'published_at.after' => __("{$this->langPath}.published_at.after"),
+            'published_at.after_or_equal' => __("{$this->langPath}.published_at.after"),
 
             'tags.array' => __("{$this->langPath}.tags.array"),
             'tags.*.exists' => __("{$this->langPath}.tags.exists"),

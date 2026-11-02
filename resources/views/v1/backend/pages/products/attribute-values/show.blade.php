@@ -93,6 +93,26 @@
 
         </div>
 
+                <div class="col-md-12">
+                    <div class="card border">
+                        <div class="card-header bg-light py-2">
+                            <h6 class="mb-0 fw-bold">
+                                <i class="bx bx-trash me-2 text-danger"></i>Traductions supprimées
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @if ($productAttributeValueTranslations->isEmpty())
+                                <p class="text-muted mb-0">Aucune traduction supprimée.</p>
+                            @else
+                                @include('v1.backend.pages.products.attribute-values.partials._trashed-table-translations', [
+                                    'productAttributeValueTranslations' => $productAttributeValueTranslations,
+                                    'value' => $value
+                                ])
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
     @include('v1.backend.pages.products.attribute-values.partials._show-end', ['value' => $value])
 
 @endsection

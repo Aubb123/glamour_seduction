@@ -110,9 +110,18 @@ return [
                 'participle' => 'lié',
                 'object' => 'le',
             ],
+            'ProductCategory' => [
+                'label' => 'catégorie de produits',
+                'demonstrative' => 'cette',
+                'pronoun' => 'elle',
+                'participle' => 'liée',
+                'object' => 'la',
+            ],
         ],
 
-        // Libellés pluriels des enfants (clé = nom de la relation Eloquent)
+        // Libellés pluriels des enfants (clé = nom de la relation Eloquent).
+        // Une entité peut déclarer des libellés spécifiques via une sous-clé
+        // portant son nom court de classe (repli sur les libellés génériques).
         'relations' => [
             'countries' => 'pays',
             'territories' => 'territoires',
@@ -124,7 +133,15 @@ return [
             'files' => 'fichiers',
             'children' => 'sous-dossiers',
             'histories' => 'historiques',
+
+            'ProductCategory' => [
+                'products' => 'produits',
+                'children' => 'sous-catégories',
+            ],
         ],
+
+        // Connecteur de la liste « X, Y et Z »
+        'joiner' => 'et',
 
         // Message générique (genre grammatical géré via les paramètres de l'entité)
         'message' => 'Impossible de supprimer :demonstrative :entity « :name » car :pronoun est :participle à des :children. Veuillez d\'abord supprimer les :children avant de pouvoir :object supprimer.',

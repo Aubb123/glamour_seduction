@@ -104,7 +104,7 @@
 
                                     <td class="fw-bold">
                                         <div class="d-flex align-items-center gap-2">
-                                            <a href="{{ $image['url_img'] }}" target="_blank" rel="noopener noreferrer">
+                                            <a href="{{ $image['url_img'] }}" ttarget="_blank" rrel="noopener noreferrer">
                                                 <img src="{{ $image['url_img'] }}" alt="{{ $post->active_translation?->title ?? __('Image post') }}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
                                             </a>
                                             <a href="{{ route('backend.blog-posts.show', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-nowrap">

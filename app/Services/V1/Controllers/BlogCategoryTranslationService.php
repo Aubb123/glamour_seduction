@@ -32,6 +32,7 @@ class BlogCategoryTranslationService
                 // Compte le nombre de traductions associées à la catégorie, en excluant les traductions soft-deleted
                 $translationsCount = $category->translations()->count();
 
+                // Si c'est la dernière traduction restante, on empêche la suppression pour éviter de laisser la catégorie sans aucune traduction
                 if ($translationsCount <= 1) {
                     throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
                 }
@@ -41,7 +42,9 @@ class BlogCategoryTranslationService
             if ($translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
+            
+            // ← suppression de la traduction et de ses dépendances associées
+            destroy_function($translation); 
 
         });
     }
@@ -68,7 +71,9 @@ class BlogCategoryTranslationService
                     'slug'
                 );
 
-                restore_function($translation); // ← restauration de la traduction de la catégorie sélectionnée
+                // ← restauration de la traduction de la catégorie sélectionnée
+                restore_function($translation); 
+                
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
@@ -101,7 +106,10 @@ class BlogCategoryTranslationService
 
             // Suppression définitive (forceDelete)
             if ($translation->trashed()) {
-                force_destroy_function($translation); // ← suppression définitive de la traduction de la catégorie sélectionnée
+                
+                // ← suppression définitive de la traduction de la catégorie sélectionnée
+                force_destroy_function($translation); 
+
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
