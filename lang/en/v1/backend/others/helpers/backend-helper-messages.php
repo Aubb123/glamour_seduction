@@ -37,9 +37,6 @@ return [
 
     ],
 
-    // Refusal to update a translation sitting in the trash (syncTranslations guard)
-    'trashedTranslationConflict' => 'Cannot update this translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
-
     // Failure to physically delete an old cloud file during replacement
     'delete_old_cloud_files' => 'Unable to delete the old cloud file ":name" from storage. The upload has been canceled to avoid leaving an orphaned file.',
 
