@@ -21,6 +21,9 @@ return [
         'force_destroy' => [
             'not_trashed_forbidden' => 'Seuls les produits déjà supprimés ou en corbeille peuvent être supprimés définitivement.',
         ],
+
+        // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
+        'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du produit (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
     ],
 
     'productsTranslations' => [
