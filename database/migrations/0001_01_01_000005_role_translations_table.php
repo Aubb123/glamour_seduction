@@ -27,8 +27,10 @@ return new class extends Migration
             // ⚠️ Contrainte unique (role_id, lang_id) et soft deletes :
             // une traduction soft-deletée CONSERVE la contrainte. Tant qu'elle existe en
             // corbeille, il est impossible d'en recréer une pour le même couple
-            // (rôle, langue). RoleService::syncTranslations() gère ce cas en restaurant
-            // automatiquement la traduction trashed existante avant de la mettre à jour.
+            // (rôle, langue). RoleService::syncTranslations() gère ce cas en refusant
+            // la mise à jour (exception trashedTranslationConflict) : la traduction
+            // trashed doit être restaurée manuellement depuis la corbeille avant de
+            // pouvoir être modifiée.
             $table->unique(['role_id', 'lang_id']); // Assure qu'il n'y a qu'une traduction par rôle et par langue
             $table->unique(['label', 'lang_id']);
             $table->unique(['slug', 'lang_id']);
