@@ -18,6 +18,10 @@ return [
         'force_destroy' => [
             'not_trashed_forbidden' => 'Seuls les tags déjà supprimés ou en corbeille peuvent être supprimés définitivement.',
         ],
+
+        // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
+        'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du tag (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
+
         // --─────────────────────────────────────────────
         // TRANSLATIONS
         // --─────────────────────────────────────────────
