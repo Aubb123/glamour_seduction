@@ -139,6 +139,17 @@ class RoleService
             // Si une traduction existante est trouvée
             if ($existingTranslation) {
 
+                // Une traduction en corbeille ne doit pas être modifiée silencieusement :
+                // elle doit être restaurée manuellement depuis la corbeille avant de pouvoir
+                // être mise à jour (comportement cohérent avec les autres services).
+                if ($existingTranslation->trashed()) {
+                    throw new \InvalidArgumentException(
+                        __('v1/backend/others/helpers/backend-helper-messages.trashedTranslationConflict', [
+                            'lang_id' => $translation['lang_id'],
+                        ])
+                    );
+                }
+
                 // Met à jour la traduction existante
                 $existingTranslation->update([
                     'label' => $translation['label'],
