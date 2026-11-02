@@ -24,6 +24,9 @@ return [
             'cloud_platform_uuid_required' => 'A cloud platform UUID is required to upload the gallery image.',
         ],
 
+        // Refusal to update a translation sitting in the trash (syncTranslations guard)
+        'trashedTranslationConflict' => 'Cannot update this gallery translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
+
         // ────────────────────────────────────────────
         // TRANSLATIONS
         // ────────────────────────────────────────────
