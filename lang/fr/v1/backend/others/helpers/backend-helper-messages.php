@@ -37,6 +37,9 @@ return [
 
     ],
 
+    // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
+    'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
+
     // Échec de la suppression physique d'un ancien fichier cloud lors du remplacement
     'delete_old_cloud_files' => 'Impossible de supprimer l\'ancien fichier cloud « :name » sur le stockage. L\'upload a été annulée pour éviter de laisser un fichier orphelin.',
 
