@@ -300,6 +300,15 @@ class ProductCategoryService
             // Si une traduction existante est trouvée,
             if ($existingTranslation) {
 
+                // Une traduction en corbeille ne doit pas être modifiée silencieusement
+                if ($existingTranslation->trashed()) {
+                    throw new \InvalidArgumentException(
+                        __('v1/backend/others/helpers/backend-helper-messages.trashedTranslationConflict', [
+                            'lang_id' => $translation['lang_id'],
+                        ])
+                    );
+                }
+
                 // Met à jour la traduction existante avec les nouvelles données
                 $existingTranslation->update([
                     'name' => $translation['name'],
@@ -321,4 +330,3 @@ class ProductCategoryService
         }
     }
 }
- 
