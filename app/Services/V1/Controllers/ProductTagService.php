@@ -151,7 +151,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     public function forceDestroy(ProductTag $tag): void
     {
-        // Utilisation d'une transaction pour garantir l'intégrité des données
+        // Utilisation d'une transaction pour garantie l'intégrité des données
         DB::transaction(function () use ($tag) {
 
             // Suppression définitive (forceDelete)
@@ -205,6 +205,15 @@ class ProductTagService
 
             // Si une traduction existante est trouvée,
             if ($existingTranslation) {
+
+                // Une traduction en corbeille ne doit pas être modifiée silencieusement
+                if ($existingTranslation->trashed()) {
+                    throw new \InvalidArgumentException(
+                        __('v1/backend/others/helpers/backend-helper-messages.trashedTranslationConflict', [
+                            'lang_id' => $translation['lang_id'],
+                        ])
+                    );
+                }
 
                 // Met à jour la traduction existante avec les nouvelles données
                 $existingTranslation->update([
