@@ -116,6 +116,16 @@ class GeoContinentService
 
             // Si la traduction existe déjà, on met à jour les champs
             if ($existingTranslation) {
+
+                // Une traduction en corbeille ne doit pas être modifiée silencieusement
+                if ($existingTranslation->trashed()) {
+                    throw new \InvalidArgumentException(
+                        __('v1/backend/others/helpers/backend-helper-messages.trashedTranslationConflict', [
+                            'lang_id' => $langId,
+                        ])
+                    );
+                }
+
                 $existingTranslation->update([
                     'name' => $translation['name'],
                     'description' => $translation['description'] ?? null,
