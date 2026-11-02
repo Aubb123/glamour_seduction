@@ -18,6 +18,9 @@ return [
             'already_inactive' => 'This country is already inactive.',
         ],
 
+        // Refusal to update a translation sitting in the trash (syncTranslations guard)
+        'trashedTranslationConflict' => 'Cannot update this country translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
+
         // ─────────────────────────────────────────────
         // TRANSLATIONS
         // ─────────────────────────────────────────────
