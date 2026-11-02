@@ -13,6 +13,10 @@ return [
             'active_faq_forbidden' => 'Cannot permanently delete an active FAQ.',
             'not_trashed_forbidden' => 'Only trashed FAQs can be permanently deleted.',
         ],
+
+        // Refusal to update a translation sitting in the trash (syncTranslations guard)
+        'trashedTranslationConflict' => 'Cannot update this FAQ translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
+
         'translations' => [
             'destroy' => [
                 'last_translation_forbidden' => 'Cannot delete the last translation of this FAQ.',
