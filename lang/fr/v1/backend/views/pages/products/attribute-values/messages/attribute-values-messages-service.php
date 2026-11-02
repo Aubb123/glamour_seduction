@@ -18,6 +18,9 @@ return [
         'force_destroy' => [
             'not_trashed_forbidden' => 'Seules les valeurs d\'attributs déjà supprimées ou en corbeille peuvent être supprimées définitivement.',
         ],
+
+        // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
+        'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction de la valeur d\'attribut (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
     ],
 
     'productAttributeValuesTranslations' => [
