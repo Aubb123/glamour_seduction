@@ -229,7 +229,7 @@ class CurrencyController extends Controller
         try {
 
             // Mise à jour de la devise via le service, en passant les données validées du formulaire
-            $this->currencyService->update($currency, $request->validated());
+            $this->currencyService->backend_currencies_update($currency, $request->validated());
 
             // Log dédié (Module 10) lorsque le taux de change a été modifié (traçabilité multi-devise)
             if ($currency->wasChanged('exchange_rate')) {
@@ -263,7 +263,7 @@ class CurrencyController extends Controller
         try {
 
             // Activation de la devise via le service
-            $this->currencyService->activate($currency);
+            $this->currencyService->backend_currencies_activate($currency);
 
             // Log de l'activation de la devise
             $this->logActivity(type: 'info', action: 'backend.currencies.activate', context: ['currency_uuid' => $currency->uuid, 'currency_code' => $currency->code], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $currency->active_translation?->name ?? $currency->code]), is_success: true, loggable: $currency);
@@ -292,7 +292,7 @@ class CurrencyController extends Controller
         try {
 
             // Désactivation de la devise via le service
-            $this->currencyService->deactivate($currency);
+            $this->currencyService->backend_currencies_deactivate($currency);
 
             // Log de la désactivation de la devise
             $this->logActivity(type: 'info', action: 'backend.currencies.deactivate', context: ['currency_uuid' => $currency->uuid, 'currency_code' => $currency->code], message: null, activity: __("{$this->langPath}.deactivate.success", ['name' => $currency->active_translation?->name ?? $currency->code]), is_success: true, loggable: $currency);
@@ -321,7 +321,7 @@ class CurrencyController extends Controller
         try {
 
             // Suppression (soft delete) via le service
-            $this->currencyService->destroy($currency);
+            $this->currencyService->backend_currencies_destroy($currency);
 
             // Log de la suppression
             $this->logActivity(type: 'warning', action: 'backend.currencies.destroy', context: ['currency_uuid' => $currency->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $currency->active_translation?->name ?? $currency->code]), is_success: true, loggable: $currency);
@@ -376,7 +376,7 @@ class CurrencyController extends Controller
             $currency = Currency::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->currencyService->restore($currency);
+            $this->currencyService->backend_currencies_restore($currency);
 
             // Log de la restauration
             $this->logActivity(type: 'info', action: 'backend.currencies.restore', context: ['currency_uuid' => $currency->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $currency->active_translation?->name ?? $currency->code]), is_success: true, loggable: $currency);
@@ -414,7 +414,7 @@ class CurrencyController extends Controller
             $currency = Currency::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->currencyService->forceDestroy($currency);
+            $this->currencyService->backend_currencies_force_destroy($currency);
 
             // Log de la suppression définitive
             $this->logActivity(type: 'info', action: 'backend.currencies.force_destroy', context: ['currency_uuid' => $currency->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $currency->active_translation?->name ?? $currency->code]), is_success: true, loggable: $currency);
