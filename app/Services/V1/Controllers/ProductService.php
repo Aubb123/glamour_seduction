@@ -22,7 +22,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): Product
+    public function backend_products_store(array $data): Product
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -52,7 +52,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(Product $product, array $data): Product
+    public function backend_products_update(Product $product, array $data): Product
     {
         return DB::transaction(function () use ($product, $data) {
 
@@ -103,7 +103,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // PUBLISH
     // ─────────────────────────────────────────────
-    public function publish(Product $product): void
+    public function backend_products_publish(Product $product): void
     {
         DB::transaction(function () use ($product) {
 
@@ -118,7 +118,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // UNPUBLISH
     // ─────────────────────────────────────────────
-    public function unpublish(Product $product): void
+    public function backend_products_unpublish(Product $product): void
     {
         DB::transaction(function () use ($product) {
 
@@ -134,7 +134,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // ARCHIVE
     // ─────────────────────────────────────────────
-    public function archive(Product $product): void
+    public function backend_products_archive(Product $product): void
     {
         DB::transaction(function () use ($product) {
 
@@ -149,7 +149,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(Product $product): void
+    public function backend_products_destroy(Product $product): void
     {
         DB::transaction(function () use ($product) {
 
@@ -170,7 +170,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(Product $product): void
+    public function backend_products_restore(Product $product): void
     {
         DB::transaction(function () use ($product) {
 
@@ -185,7 +185,7 @@ class ProductService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(Product $product): void
+    public function backend_products_force_destroy(Product $product): void
     {
         DB::transaction(function () use ($product) {
 
