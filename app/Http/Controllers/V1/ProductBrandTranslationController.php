@@ -36,7 +36,7 @@ class ProductBrandTranslationController extends Controller
             $translation = ProductBrandTranslation::where('uuid', $uuid)->firstOrFail();
 
             // Suppression via le service (soft delete)
-            $this->productBrandTranslationService->destroy($translation);
+            $this->productBrandTranslationService->backend_product_brand_translations_destroy($translation);
 
             // Log de l'activité de suppression
             $this->logActivity(type: 'warning', action: 'backend.product-brand-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
@@ -118,7 +118,7 @@ class ProductBrandTranslationController extends Controller
             $translation = ProductBrandTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->productBrandTranslationService->restore($translation);
+            $this->productBrandTranslationService->backend_product_brand_translations_restore($translation);
 
             // Log de l'activité de restauration
             $this->logActivity(type: 'info', action: 'backend.product-brand-translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
@@ -163,7 +163,7 @@ class ProductBrandTranslationController extends Controller
             $translation = ProductBrandTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->productBrandTranslationService->forceDestroy($translation);
+            $this->productBrandTranslationService->backend_product_brand_translations_force_destroy($translation);
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.product-brand-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
