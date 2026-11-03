@@ -20,7 +20,7 @@ class BlogTagService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): BlogTag
+    public function backend_blog_tags_store(array $data): BlogTag
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -43,7 +43,7 @@ class BlogTagService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(BlogTag $tag, array $data): BlogTag
+    public function backend_blog_tags_update(BlogTag $tag, array $data): BlogTag
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($tag, $data) {
@@ -75,7 +75,7 @@ class BlogTagService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(BlogTag $tag): void
+    public function backend_blog_tags_activate(BlogTag $tag): void
     {
         DB::transaction(function () use ($tag) {
 
@@ -92,7 +92,7 @@ class BlogTagService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(BlogTag $tag): void
+    public function backend_blog_tags_deactivate(BlogTag $tag): void
     {
         DB::transaction(function () use ($tag) {
 
@@ -109,7 +109,7 @@ class BlogTagService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(BlogTag $tag): void
+    public function backend_blog_tags_destroy(BlogTag $tag): void
     {
         DB::transaction(function () use ($tag) {
 
@@ -129,7 +129,7 @@ class BlogTagService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogTag $tag): void
+    public function backend_blog_tags_restore(BlogTag $tag): void
     {
         DB::transaction(function () use ($tag) {
 
@@ -146,7 +146,7 @@ class BlogTagService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogTag $tag): void
+    public function backend_blog_tags_force_destroy(BlogTag $tag): void
     {
         DB::transaction(function () use ($tag) {
 
