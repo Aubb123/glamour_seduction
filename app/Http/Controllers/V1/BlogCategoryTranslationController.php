@@ -34,7 +34,7 @@ class BlogCategoryTranslationController extends Controller
             $translation = BlogCategoryTranslation::where('uuid', $uuid)->firstOrFail();
 
             // Suppression via le service (soft delete)
-            $this->blogCategoryTranslationService->destroy($translation);
+            $this->blogCategoryTranslationService->backend_blog_category_translations_destroy($translation);
 
             $this->logActivity(type: 'warning', action: 'backend.blog-category-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -99,7 +99,7 @@ class BlogCategoryTranslationController extends Controller
             $translation = BlogCategoryTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->blogCategoryTranslationService->restore($translation);
+            $this->blogCategoryTranslationService->backend_blog_category_translations_restore($translation);
 
             $this->logActivity(type: 'info', action: 'backend.blog-category-translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -136,7 +136,7 @@ class BlogCategoryTranslationController extends Controller
             $translation = BlogCategoryTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->blogCategoryTranslationService->forceDestroy($translation);
+            $this->blogCategoryTranslationService->backend_blog_category_translations_force_destroy($translation);
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.blog-category-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
