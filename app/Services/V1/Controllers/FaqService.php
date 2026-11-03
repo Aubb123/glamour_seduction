@@ -117,7 +117,7 @@ class FaqService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-       public function backend_faqs_force_destroy(Faq $faq): void
+    public function backend_faqs_force_destroy(Faq $faq): void
     {
         DB::transaction(function () use ($faq) {
 
