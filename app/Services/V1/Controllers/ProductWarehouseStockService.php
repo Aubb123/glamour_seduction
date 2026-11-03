@@ -15,7 +15,7 @@ class ProductWarehouseStockService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductWarehouseStock
+    public function backend_product_warehouse_stocks_store(array $data): ProductWarehouseStock
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -44,7 +44,7 @@ class ProductWarehouseStockService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(ProductWarehouseStock $stock, array $data): ProductWarehouseStock
+    public function backend_product_warehouse_stocks_update(ProductWarehouseStock $stock, array $data): ProductWarehouseStock
     {
         return DB::transaction(function () use ($stock, $data) {
 
@@ -92,7 +92,7 @@ class ProductWarehouseStockService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(ProductWarehouseStock $stock): void
+    public function backend_product_warehouse_stocks_destroy(ProductWarehouseStock $stock): void
     {
         DB::transaction(function () use ($stock) {
 
@@ -108,7 +108,7 @@ class ProductWarehouseStockService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductWarehouseStock $stock): void
+    public function backend_product_warehouse_stocks_restore(ProductWarehouseStock $stock): void
     {
         DB::transaction(function () use ($stock) {
 
@@ -123,7 +123,7 @@ class ProductWarehouseStockService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductWarehouseStock $stock): void
+    public function backend_product_warehouse_stocks_force_destroy(ProductWarehouseStock $stock): void
     {
         DB::transaction(function () use ($stock) {
 
