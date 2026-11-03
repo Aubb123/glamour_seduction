@@ -20,7 +20,7 @@ class ProductAttributeService
     // ─────────────────────────────────────────────
     // STORE — Création d'un attribut de produit
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductAttribute
+    public function backend_product_attributes_store(array $data): ProductAttribute
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         // (création de l'attribut + sync des traductions en une seule opération atomique)
@@ -47,7 +47,7 @@ class ProductAttributeService
     // ─────────────────────────────────────────────
     // UPDATE — Mise à jour d'un attribut existant
     // ─────────────────────────────────────────────
-    public function update(ProductAttribute $attribute, array $data): ProductAttribute
+    public function backend_product_attributes_update(ProductAttribute $attribute, array $data): ProductAttribute
     {
         return DB::transaction(function () use ($attribute, $data) {
 
@@ -77,7 +77,7 @@ class ProductAttributeService
     // ─────────────────────────────────────────────
     // ACTIVATE — Activation d'un attribut (statut = active)
     // ─────────────────────────────────────────────
-    public function activate(ProductAttribute $attribute): void
+    public function backend_product_attributes_activate(ProductAttribute $attribute): void
     {
         DB::transaction(function () use ($attribute) {
 
@@ -96,7 +96,7 @@ class ProductAttributeService
     // ─────────────────────────────────────────────
     // DEACTIVATE — Désactivation d'un attribut (statut = inactive)
     // ─────────────────────────────────────────────
-    public function deactivate(ProductAttribute $attribute): void
+    public function backend_product_attributes_deactivate(ProductAttribute $attribute): void
     {
         DB::transaction(function () use ($attribute) {
 
@@ -115,7 +115,7 @@ class ProductAttributeService
     // ─────────────────────────────────────────────
     // DESTROY — Suppression temporaire (soft delete) d'un attribut
     // ─────────────────────────────────────────────
-    public function destroy(ProductAttribute $attribute): void
+    public function backend_product_attributes_destroy(ProductAttribute $attribute): void
     {
         DB::transaction(function () use ($attribute) {
 
@@ -134,7 +134,7 @@ class ProductAttributeService
     // ─────────────────────────────────────────────
     // RESTORE — Restauration d'un attribut depuis la corbeille
     // ─────────────────────────────────────────────
-    public function restore(ProductAttribute $attribute): void
+    public function backend_product_attributes_restore(ProductAttribute $attribute): void
     {
         DB::transaction(function () use ($attribute) {
 
@@ -151,7 +151,7 @@ class ProductAttributeService
     // ─────────────────────────────────────────────
     // FORCE DESTROY — Suppression définitive d'un attribut
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductAttribute $attribute): void
+    public function backend_product_attributes_force_destroy(ProductAttribute $attribute): void
     {
         DB::transaction(function () use ($attribute) {
 
