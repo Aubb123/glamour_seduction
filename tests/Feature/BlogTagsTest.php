@@ -145,7 +145,7 @@ it('refuse la suppression d’un tag actif puis autorise après désactivation',
     $this->actingAs($admin)->post(route('backend.blog-tags.store'), tagPayload());
     $tag = BlogTag::firstOrFail();
 
-    // Actif → suppression refusée (règle du BlogTagService::destroy)
+    // Actif → suppression refusée (règle du BlogTagService::backend_blog_tags_destroy)
     $this->actingAs($admin)
         ->from(route('backend.blog-tags.index'))
         ->delete(route('backend.blog-tags.destroy', ['blogTag' => $tag->uuid]))
