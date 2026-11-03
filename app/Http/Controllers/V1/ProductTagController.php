@@ -90,7 +90,7 @@ class ProductTagController extends Controller
         try {
 
             // Création de la tag via le service, en passant les données validées du formulaire
-            $tag = $this->productTagService->store($request->validated());
+            $tag = $this->productTagService->backend_product_tags_store($request->validated());
 
             // Log de la création de la tag avec le nom de la tag créée
             $this->logActivity(type: 'info', action: 'backend.product-tags.store', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tag->active_translation?->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $tag->active_translation?->name ?? '']), is_success: true, loggable: $tag);
@@ -261,7 +261,7 @@ class ProductTagController extends Controller
         try {
 
             // Mise à jour de la tag via le service, en passant les données validées du formulaire
-            $this->productTagService->update($productTag, $request->validated());
+            $this->productTagService->backend_product_tags_update($productTag, $request->validated());
 
             // Capturer les changements avant le refresh
             $changes = $productTag->getChanges();
@@ -303,7 +303,7 @@ class ProductTagController extends Controller
         try {
 
             // Activation de la tag via le service
-            $this->productTagService->activate($productTag);
+            $this->productTagService->backend_product_tags_activate($productTag);
 
             $tag = $productTag;
             $tagName = $tag->active_translation?->name ?? '';
@@ -336,7 +336,7 @@ class ProductTagController extends Controller
         try {
 
             // Désactivation de la tag via le service
-            $this->productTagService->deactivate($productTag);
+            $this->productTagService->backend_product_tags_deactivate($productTag);
 
             $tag = $productTag;
             $tagName = $tag->active_translation?->name ?? '';
@@ -373,7 +373,7 @@ class ProductTagController extends Controller
             $tagName = $tag->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la tag via le service
-            $this->productTagService->destroy($productTag);
+            $this->productTagService->backend_product_tags_destroy($productTag);
 
             // Log de la suppression de la tag
             $this->logActivity(type: 'info', action: 'backend.product-tags.destroy', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $tagName]), is_success: true, loggable: $tag);
@@ -431,7 +431,7 @@ class ProductTagController extends Controller
             $tag = ProductTag::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->productTagService->restore($tag);
+            $this->productTagService->backend_product_tags_restore($tag);
 
             $tagName = $tag->active_translation?->name ?? __("{$this->langPath}.restore.unknown");
 
@@ -473,7 +473,7 @@ class ProductTagController extends Controller
             $tagName = $tag->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->productTagService->forceDestroy($tag);
+            $this->productTagService->backend_product_tags_force_destroy($tag);
 
             // Log de la suppression définitive de la tag
             $this->logActivity(type: 'info', action: 'backend.product-tags.force_destroy', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $tagName]), is_success: true, loggable: $tag);
