@@ -7,14 +7,6 @@ use App\Models\Audit;
 class AuditService
 {
     // ─────────────────────────────────────────────
-    // DESTROY
-    // ─────────────────────────────────────────────
-    public function destroy(Audit $audit): void
-    {
-        $audit->delete();
-    }
-
-    // ─────────────────────────────────────────────
     // CLEAR OLD AUDITS (plus de X jours)
     // ─────────────────────────────────────────────
     public function clearOldAudits(int $days = 3): int
