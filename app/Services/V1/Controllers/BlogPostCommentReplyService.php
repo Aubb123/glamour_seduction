@@ -15,7 +15,7 @@ class BlogPostCommentReplyService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(BlogPostCommentReply $reply): void
+    public function backend_blog_post_comment_replies_activate(BlogPostCommentReply $reply): void
     {
         DB::transaction(function () use ($reply) {
 
@@ -34,7 +34,7 @@ class BlogPostCommentReplyService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(BlogPostCommentReply $reply): void
+    public function backend_blog_post_comment_replies_deactivate(BlogPostCommentReply $reply): void
     {
         DB::transaction(function () use ($reply) {
 
@@ -53,7 +53,7 @@ class BlogPostCommentReplyService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(BlogPostCommentReply $reply): void
+    public function backend_blog_post_comment_replies_destroy(BlogPostCommentReply $reply): void
     {
         DB::transaction(function () use ($reply) {
 
@@ -73,7 +73,7 @@ class BlogPostCommentReplyService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogPostCommentReply $reply): void
+    public function backend_blog_post_comment_replies_restore(BlogPostCommentReply $reply): void
     {
         DB::transaction(function () use ($reply) {
 
@@ -89,7 +89,7 @@ class BlogPostCommentReplyService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogPostCommentReply $reply): void
+    public function backend_blog_post_comment_replies_force_destroy(BlogPostCommentReply $reply): void
     {
         DB::transaction(function () use ($reply) {
 
