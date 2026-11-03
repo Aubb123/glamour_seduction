@@ -107,7 +107,7 @@ class ProductStockMovementController extends Controller
         try {
 
             // Enregistrement du mouvement via le service (met à jour le stock + crée l'audit)
-            $movement = $this->productStockMovementService->record($request->validated());
+            $movement = $this->productStockMovementService->backend_product_stock_movements_store($request->validated());
 
             // Log de la création du mouvement
             $this->logActivity(type: 'info', action: 'backend.product-stock-movements.store', context: ['movement_uuid' => $movement->uuid, 'type' => $movement->type->value, 'quantity' => $movement->quantity], message: null, activity: __("{$this->langPath}.store.success"), is_success: true, loggable: $movement);
@@ -168,7 +168,7 @@ class ProductStockMovementController extends Controller
     {
         try {
 
-            $this->productStockMovementService->destroy($productStockMovement);
+            $this->productStockMovementService->backend_product_stock_movements_destroy($productStockMovement);
 
             $this->logActivity(type: 'warning', action: 'backend.product-stock-movements.destroy', context: ['movement_uuid' => $productStockMovement->uuid], message: null, activity: __("{$this->langPath}.destroy.success"), is_success: true, loggable: $productStockMovement);
 
@@ -225,7 +225,7 @@ class ProductStockMovementController extends Controller
             // Récupère le mouvement supprimé par son UUID ou échoue
             $movement = ProductStockMovement::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->productStockMovementService->restore($movement);
+            $this->productStockMovementService->backend_product_stock_movements_restore($movement);
 
             $this->logActivity(type: 'info', action: 'backend.product-stock-movements.restore', context: ['movement_uuid' => $movement->uuid], message: null, activity: __("{$this->langPath}.restore.success"), is_success: true, loggable: $movement);
 
@@ -261,7 +261,7 @@ class ProductStockMovementController extends Controller
             // Récupère le mouvement supprimé par son UUID ou échoue
             $movement = ProductStockMovement::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->productStockMovementService->forceDestroy($movement);
+            $this->productStockMovementService->backend_product_stock_movements_force_destroy($movement);
 
             $this->logActivity(type: 'info', action: 'backend.product-stock-movements.force_destroy', context: ['movement_uuid' => $movement->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $movement);
 
