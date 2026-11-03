@@ -90,7 +90,7 @@ class BlogCategoryController extends Controller
         try {
 
             // Création de la catégorie via le service, en passant les données validées du formulaire
-            $category = $this->blogCategoryService->store($request->validated());
+            $category = $this->blogCategoryService->backend_blog_categories_store($request->validated());
 
             // Log de la création de la catégorie avec le nom de la catégorie créée
             $this->logActivity(type: 'info', action: 'backend.blog-categories.store', context: ['category_uuid' => $category->uuid, 'category_name' => $category->active_translation?->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $category->active_translation?->name ?? '']), is_success: true, loggable: $category);
@@ -296,7 +296,7 @@ class BlogCategoryController extends Controller
         try {
 
             // Mise à jour de la catégorie via le service, en passant les données validées du formulaire
-            $this->blogCategoryService->update($blogCategory, $request->validated());
+            $this->blogCategoryService->backend_blog_categories_update($blogCategory, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $category = $blogCategory->refresh();
@@ -335,7 +335,7 @@ class BlogCategoryController extends Controller
         try {
 
             // Activation de la catégorie via le service
-            $this->blogCategoryService->activate($blogCategory);
+            $this->blogCategoryService->backend_blog_categories_activate($blogCategory);
 
             $category = $blogCategory;
             $categoryName = $category->active_translation?->name ?? '';
@@ -368,7 +368,7 @@ class BlogCategoryController extends Controller
         try {
 
             // Désactivation de la catégorie via le service
-            $this->blogCategoryService->deactivate($blogCategory);
+            $this->blogCategoryService->backend_blog_categories_deactivate($blogCategory);
 
             $category = $blogCategory;
             $categoryName = $category->active_translation?->name ?? '';
@@ -405,7 +405,7 @@ class BlogCategoryController extends Controller
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la catégorie via le service
-            $this->blogCategoryService->destroy($blogCategory);
+            $this->blogCategoryService->backend_blog_categories_destroy($blogCategory);
 
             // Log de la suppression de la catégorie
             $this->logActivity(type: 'info', action: 'backend.blog-categories.destroy', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $categoryName]), is_success: true, loggable: $category);
@@ -423,6 +423,7 @@ class BlogCategoryController extends Controller
 
         } catch (\Exception $e) {
 
+            // Log de l'erreur serveur lors de la suppression de la catégorie
             $this->logActivity(type: 'error', action: 'backend.blog-categories.destroy', context: ['category_uuid' => $blogCategory->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $blogCategory->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->langPath}.destroy.flash_error"));
@@ -462,7 +463,7 @@ class BlogCategoryController extends Controller
             $category = BlogCategory::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->blogCategoryService->restore($category);
+            $this->blogCategoryService->backend_blog_categories_restore($category);
 
             $categoryName = $category->active_translation?->name ?? '';
 
@@ -504,7 +505,7 @@ class BlogCategoryController extends Controller
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->blogCategoryService->forceDestroy($category);
+            $this->blogCategoryService->backend_blog_categories_force_destroy($category);
 
             // Log de la suppression définitive de la catégorie
             $this->logActivity(type: 'info', action: 'backend.blog-categories.force_destroy', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $categoryName]), is_success: true, loggable: $category);
