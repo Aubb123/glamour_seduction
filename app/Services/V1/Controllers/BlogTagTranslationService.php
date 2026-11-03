@@ -19,7 +19,7 @@ class BlogTagTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(BlogTagTranslation $translation): void
+    public function backend_blog_tag_translations_destroy(BlogTagTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -60,7 +60,7 @@ class BlogTagTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogTagTranslation $translation): void
+    public function backend_blog_tag_translations_restore(BlogTagTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -90,7 +90,7 @@ class BlogTagTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogTagTranslation $translation): void
+    public function backend_blog_tag_translations_force_destroy(BlogTagTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
