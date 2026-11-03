@@ -19,7 +19,7 @@ class ProductAttributeTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductAttributeTranslation $translation): void
+    public function backend_product_attribute_translations_destroy(ProductAttributeTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -60,7 +60,7 @@ class ProductAttributeTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductAttributeTranslation $translation): void
+    public function backend_product_attribute_translations_restore(ProductAttributeTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -90,7 +90,7 @@ class ProductAttributeTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductAttributeTranslation $translation): void
+    public function backend_product_attribute_translations_force_destroy(ProductAttributeTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
