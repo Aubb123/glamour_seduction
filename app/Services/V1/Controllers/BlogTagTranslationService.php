@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\BlogTag;
 use App\Models\BlogTagTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -20,25 +21,39 @@ class BlogTagTranslationService
     // ─────────────────────────────────────────────
     public function destroy(BlogTagTranslation $translation): void
     {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération du tag associé à la traduction (même si soft-deleted)
-            $tag = $translation->tag()->withTrashed()->first();
+            // 1. Verrou sur le tag (même soft-deleted)
+            $tag = BlogTag::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->tag_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante du tag
-            if ($tag) {
-                $translationsCount = $tag->translations()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $tag) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.tag_not_found"));
             }
 
-            // Suppression simple (soft delete)
+            // 2. Relecture verrouillée de la traduction
+            $translation = BlogTagTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
+
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($translation);
+
+            // 4. Dernière traduction active
+            if ($tag->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
         });
     }
 
@@ -47,6 +62,7 @@ class BlogTagTranslationService
     // ─────────────────────────────────────────────
     public function restore(BlogTagTranslation $translation): void
     {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
             // Restauration simple (restore)
@@ -67,6 +83,7 @@ class BlogTagTranslationService
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
+
         });
     }
 
@@ -75,25 +92,40 @@ class BlogTagTranslationService
     // ─────────────────────────────────────────────
     public function forceDestroy(BlogTagTranslation $translation): void
     {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Empêche la suppression définitive si c'est la dernière traduction restante du tag
-            $tag = $translation->tag()->withTrashed()->first();
+            // 1. Verrou sur le tag (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $tag = BlogTag::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->tag_id);
 
-            if ($tag) {
-                $translationsCount = $tag->translations()->withTrashed()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $tag) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.tag_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($translation->trashed()) {
-                force_destroy_function($translation);
-            } else {
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $translation = BlogTagTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
+
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
+
+            // 4. Interdit de supprimer la dernière traduction du tag (corbeille incluse)
+            if ($tag->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            force_destroy_function($translation);
         });
     }
 }

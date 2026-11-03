@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\Currency;
 use App\Models\CurrencyTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +14,7 @@ class CurrencyTranslationService
     protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies.translations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages'; 
+    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // DESTROY
@@ -23,25 +24,36 @@ class CurrencyTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($currencyTranslation) {
 
-            // Récupération de la devise associée à la traduction (même si elle est soft-deleted)
-            $currency = $currencyTranslation->currency()->withTrashed()->first();
+            // 1. Verrou sur la devise (même soft-deleted)
+            $currency = Currency::withTrashed()
+                ->lockForUpdate()
+                ->find($currencyTranslation->currency_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante de la devise
-            if ($currency) {
-
-                // Compte le nombre de traductions associées à la devise, en excluant les traductions soft-deleted
-                $translationsCount = $currency->translations()->count();
- 
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $currency) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.currency_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $currencyTranslation = CurrencyTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($currencyTranslation->id);
+
+            if (! $currencyTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($currencyTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($currencyTranslation); // ← suppression de la traduction
+
+            // 4. Dernière traduction active
+            if ($currency->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($currencyTranslation); // ← suppression de la traduction et de ses dépendances associées
         });
     }
 
@@ -70,6 +82,7 @@ class CurrencyTranslationService
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
+
         });
     }
 
@@ -81,25 +94,37 @@ class CurrencyTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($currencyTranslation) {
 
-            // Empêche la suppression définitive de la traduction si c'est la dernière traduction restante
-            $currency = $currencyTranslation->currency()->withTrashed()->first();
+            // 1. Verrou sur la devise (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $currency = Currency::withTrashed()
+                ->lockForUpdate()
+                ->find($currencyTranslation->currency_id);
 
-            if ($currency) {
-
-                // Compte le nombre de traductions associées à la devise, y compris les traductions soft-deleted
-                $translationsCount = $currency->translations()->withTrashed()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $currency) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.currency_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($currencyTranslation->trashed()) {
-                force_destroy_function($currencyTranslation);
-            } else {
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $currencyTranslation = CurrencyTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($currencyTranslation->id);
+
+            if (! $currencyTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $currencyTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
+
+            // 4. Interdit de supprimer la dernière traduction de la devise (corbeille incluse)
+            if ($currency->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            force_destroy_function($currencyTranslation);
         });
     }
 }

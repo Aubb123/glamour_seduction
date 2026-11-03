@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\BlogPost;
 use App\Models\BlogPostTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -23,29 +24,36 @@ class BlogPostTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($blogPostTranslation) {
 
-            // Récupération du post associé à la traduction (même si le post est soft-deleted)
-            $post = $blogPostTranslation->post()->withTrashed()->first();
+            // 1. Verrou sur le post (même soft-deleted)
+            $post = BlogPost::withTrashed()
+                ->lockForUpdate()
+                ->find($blogPostTranslation->post_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante du post (même si le post est soft-deleted)
-            if ($post) {
-
-                // Compte le nombre de traductions associées au post, y compris les traductions soft-deleted
-                // $translationsCount = $post->translations()->withTrashed()->count();
-
-                // Compte le nombre de traductions associées au post, en excluant les traductions soft-deleted
-                $translationsCount = $post->translations()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $post) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.post_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $blogPostTranslation = BlogPostTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($blogPostTranslation->id);
+
+            if (! $blogPostTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($blogPostTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($blogPostTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
 
+            // 4. Dernière traduction active
+            if ($post->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($blogPostTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
         });
     }
 
@@ -71,7 +79,7 @@ class BlogPostTranslationService
                     'slug'
                 );
 
-                restore_function($blogPostTranslation); // <- restauration de la traduction du post sélectionné
+                restore_function($blogPostTranslation); // ← restauration de la traduction du post sélectionné
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
@@ -87,26 +95,37 @@ class BlogPostTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($blogPostTranslation) {
 
-            // Empêche la suppression définitive de la traduction si la traduction est la dernière traduction restante du post (même si le post est soft-deleted)
-            $post = $blogPostTranslation->post()->withTrashed()->first();
+            // 1. Verrou sur le post (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $post = BlogPost::withTrashed()
+                ->lockForUpdate()
+                ->find($blogPostTranslation->post_id);
 
-            if ($post) {
-
-                // Compte le nombre de traductions associées au post, y compris les traductions soft-deleted
-                $translationsCount = $post->translations()->withTrashed()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $post) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.post_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($blogPostTranslation->trashed()) {
-                force_destroy_function($blogPostTranslation); // <- suppression définitive de la traduction du post sélectionné
-            } else {
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $blogPostTranslation = BlogPostTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($blogPostTranslation->id);
+
+            if (! $blogPostTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $blogPostTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
 
+            // 4. Interdit de supprimer la dernière traduction du post (corbeille incluse)
+            if ($post->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            force_destroy_function($blogPostTranslation); // ← suppression définitive de la traduction du post sélectionné
         });
     }
 }

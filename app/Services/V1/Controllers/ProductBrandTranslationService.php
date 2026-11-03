@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\ProductBrand;
 use App\Models\ProductBrandTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -23,28 +24,36 @@ class ProductBrandTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération de la marque associée à la traduction (même si elle est soft-deleted)
-            $brand = $translation->brand()->withTrashed()->first();
+            // 1. Verrou sur la marque (même soft-deleted)
+            $brand = ProductBrand::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->brand_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante de la marque (même si la marque est soft-deleted)
-            if ($brand) {
-
-                // Compte le nombre de traductions associées à la marque, en excluant les traductions soft-deleted
-                $translationsCount = $brand->translations()->count();
-
-                // Empêche la suppression de la traduction si c'est la dernière traduction restante de la marque
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $brand) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.brand_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $translation = ProductBrandTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
+
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
 
-            destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
+            // 4. Dernière traduction active
+            if ($brand->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
 
+            // 5. Suppression
+            destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
         });
     }
 
@@ -71,7 +80,7 @@ class ProductBrandTranslationService
                 );
 
                 // ← restauration de la traduction de la marque sélectionnée
-                restore_function($translation); 
+                restore_function($translation);
 
             } else {
                 // Lever une exception si la traduction n'est pas en corbeille (soft-deleted) et qu'on tente de la restaurer.
@@ -89,31 +98,38 @@ class ProductBrandTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération de la marque associée à la traduction (même si elle est soft-deleted)
-            $brand = $translation->brand()->withTrashed()->first();
+            // 1. Verrou sur la marque (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $brand = ProductBrand::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->brand_id);
 
-            // Si la marque existe, on vérifie si c'est la dernière traduction restante avant de permettre la suppression définitive
-            if ($brand) {
-
-                // Compte le nombre de traductions associées à la marque, y compris les traductions soft-deleted
-                $translationsCount = $brand->translations()->withTrashed()->count();
-
-                // Empêche la suppression définitive de la traduction si c'est la dernière traduction restante de la marque (même si la marque est soft-deleted)
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $brand) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.brand_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($translation->trashed()) {
-                
-                // ← suppression définitive de la traduction de la marque sélectionnée
-                force_destroy_function($translation); 
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $translation = ProductBrandTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
 
-            } else {
-                // Lever une exception si la traduction n'est pas en corbeille (soft-deleted) et qu'on tente de la supprimer définitivement.
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
+
+            // 4. Interdit de supprimer la dernière traduction de la marque (corbeille incluse)
+            if ($brand->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            // ← suppression définitive de la traduction de la marque sélectionnée
+            force_destroy_function($translation);
 
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\GeoContinent;
 use App\Models\GeoContinentTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -23,29 +24,36 @@ class GeoContinentTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($geoContinentTranslation) {
 
-            // Récupération du continent associé à la traduction (même si elle est soft-deleted)
-            $continent = $geoContinentTranslation->continent()->withTrashed()->first();
+            // 1. Verrou sur le continent (même soft-deleted)
+            $continent = GeoContinent::withTrashed()
+                ->lockForUpdate()
+                ->find($geoContinentTranslation->continent_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante du continent (même si le continent est soft-deleted)
-            if ($continent) {
-
-                // Compte le nombre de traductions associées au continent, y compris les traductions soft-deleted
-                // $translationsCount = $continent->translations()->withTrashed()->count();
-
-                // Compte le nombre de traductions associées au continent, en excluant les traductions soft-deleted
-                $translationsCount = $continent->translations()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $continent) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.continent_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $geoContinentTranslation = GeoContinentTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($geoContinentTranslation->id);
+
+            if (! $geoContinentTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($geoContinentTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($geoContinentTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
 
+            // 4. Dernière traduction active
+            if ($continent->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($geoContinentTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
         });
     }
 
@@ -54,6 +62,7 @@ class GeoContinentTranslationService
     // ─────────────────────────────────────────────
     public function restore(GeoContinentTranslation $translation): void
     {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
             // Restauration simple (restore)
@@ -82,29 +91,40 @@ class GeoContinentTranslationService
     // ─────────────────────────────────────────────
     public function forceDestroy(GeoContinentTranslation $translation): void
     {
+        // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération du continent associé à la traduction (même si soft-deleted)
-            $continent = $translation->continent()->withTrashed()->first();
+            // 1. Verrou sur le continent (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $continent = GeoContinent::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->continent_id);
 
-            // Empêche la suppression définitive de la traduction si c'est la dernière traduction restante du continent (même si le continent est soft-deleted)
-            if ($continent) {
-
-                // Compte le nombre de traductions associées au continent, y compris les traductions soft-deleted
-                $translationsCount = $continent->translations()->withTrashed()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $continent) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.continent_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($translation->trashed()) {
-                force_destroy_function($translation);
-            } else {
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $translation = GeoContinentTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
+
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
 
+            // 4. Interdit de supprimer la dernière traduction du continent (corbeille incluse)
+            if ($continent->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            force_destroy_function($translation);
         });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\BlogCategory;
 use App\Models\BlogCategoryTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -23,29 +24,36 @@ class BlogCategoryTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération de la catégorie associée à la traduction (même si elle est soft-deleted)
-            $category = $translation->category()->withTrashed()->first();
+            // 1. Verrou sur la catégorie (même soft-deleted)
+            $category = BlogCategory::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->category_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante de la catégorie (même si la catégorie est soft-deleted)
-            if ($category) {
-
-                // Compte le nombre de traductions associées à la catégorie, en excluant les traductions soft-deleted
-                $translationsCount = $category->translations()->count();
-
-                // Si c'est la dernière traduction restante, on empêche la suppression pour éviter de laisser la catégorie sans aucune traduction
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $category) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.category_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $translation = BlogCategoryTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
+
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            
-            // ← suppression de la traduction et de ses dépendances associées
-            destroy_function($translation); 
 
+            // 4. Dernière traduction active
+            if ($category->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
         });
     }
 
@@ -72,8 +80,8 @@ class BlogCategoryTranslationService
                 );
 
                 // ← restauration de la traduction de la catégorie sélectionnée
-                restore_function($translation); 
-                
+                restore_function($translation);
+
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
@@ -89,30 +97,38 @@ class BlogCategoryTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération de la catégorie associée à la traduction (même si elle est soft-deleted)
-            $category = $translation->category()->withTrashed()->first();
+            // 1. Verrou sur la catégorie (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $category = BlogCategory::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->category_id);
 
-            // Si la catégorie existe, on vérifie si c'est la dernière traduction restante avant de permettre la suppression définitive
-            if ($category) {
-
-                // Compte le nombre de traductions associées à la catégorie, y compris les traductions soft-deleted
-                $translationsCount = $category->translations()->withTrashed()->count();
-
-                // Empêche la suppression définitive de la traduction si c'est la dernière traduction restante de la catégorie (même si la catégorie est soft-deleted)
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $category) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.category_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($translation->trashed()) {
-                
-                // ← suppression définitive de la traduction de la catégorie sélectionnée
-                force_destroy_function($translation); 
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $translation = BlogCategoryTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
 
-            } else {
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
+
+            // 4. Interdit de supprimer la dernière traduction de la catégorie (corbeille incluse)
+            if ($category->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            // ← suppression définitive de la traduction de la catégorie sélectionnée
+            force_destroy_function($translation);
 
         });
     }
