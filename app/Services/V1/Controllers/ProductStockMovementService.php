@@ -19,7 +19,7 @@ class ProductStockMovementService
     // (lit/verrouille la ligne de stock, applique le sens du type,
     //  puis crée le mouvement d'audit avec created_by = auth()->id())
     // ─────────────────────────────────────────────
-    public function record(array $data): ProductStockMovement
+    public function backend_product_stock_movements_store(array $data): ProductStockMovement
     {
         return DB::transaction(function () use ($data) {
 
@@ -83,7 +83,7 @@ class ProductStockMovementService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete) — seul mode de retrait autorisé (audit fiable)
     // ─────────────────────────────────────────────
-    public function destroy(ProductStockMovement $movement): void
+    public function backend_product_stock_movements_destroy(ProductStockMovement $movement): void
     {
         DB::transaction(function () use ($movement) {
 
@@ -99,7 +99,7 @@ class ProductStockMovementService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductStockMovement $movement): void
+    public function backend_product_stock_movements_restore(ProductStockMovement $movement): void
     {
         DB::transaction(function () use ($movement) {
 
@@ -114,7 +114,7 @@ class ProductStockMovementService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductStockMovement $movement): void
+    public function backend_product_stock_movements_force_destroy(ProductStockMovement $movement): void
     {
         DB::transaction(function () use ($movement) {
 
