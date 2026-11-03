@@ -88,7 +88,7 @@ class ProductVariantController extends Controller
         try {
 
             // Création de la variante via le service, en passant les données validées du formulaire
-            $variant = $this->productVariantService->store($request->validated());
+            $variant = $this->productVariantService->backend_product_variants_store($request->validated());
 
             // Log de la création de la variante avec le SKU de la variante créée
             $this->logActivity(type: 'info', action: 'backend.product-variants.store', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->langPath}.store.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
@@ -226,7 +226,7 @@ class ProductVariantController extends Controller
 
             $variantSku = $productVariant->sku;
 
-            $this->productVariantService->update($productVariant, $request->validated());
+            $this->productVariantService->backend_product_variants_update($productVariant, $request->validated());
 
             $this->logActivity(type: 'info', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.update.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
 
@@ -261,7 +261,7 @@ class ProductVariantController extends Controller
 
             $variantSku = $productVariant->sku;
 
-            $this->productVariantService->activate($productVariant);
+            $this->productVariantService->backend_product_variants_activate($productVariant);
 
             $this->logActivity(type: 'info', action: 'backend.product-variants.activate', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.activate.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
 
@@ -290,7 +290,7 @@ class ProductVariantController extends Controller
 
             $variantSku = $productVariant->sku;
 
-            $this->productVariantService->deactivate($productVariant);
+            $this->productVariantService->backend_product_variants_deactivate($productVariant);
 
             $this->logActivity(type: 'info', action: 'backend.product-variants.deactivate', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.deactivate.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
 
@@ -319,7 +319,7 @@ class ProductVariantController extends Controller
 
             $variantSku = $productVariant->sku;
 
-            $this->productVariantService->destroy($productVariant);
+            $this->productVariantService->backend_product_variants_destroy($productVariant);
 
             $this->logActivity(type: 'warning', action: 'backend.product-variants.destroy', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.destroy.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
 
@@ -378,7 +378,7 @@ class ProductVariantController extends Controller
 
             $variantSku = $variant->sku;
 
-            $this->productVariantService->restore($variant);
+            $this->productVariantService->backend_product_variants_restore($variant);
 
             $this->logActivity(type: 'info', action: 'backend.product-variants.restore', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.restore.success", ['sku' => $variantSku]), is_success: true, loggable: $variant);
 
@@ -416,7 +416,7 @@ class ProductVariantController extends Controller
 
             $variantSku = $variant->sku;
 
-            $this->productVariantService->forceDestroy($variant);
+            $this->productVariantService->backend_product_variants_force_destroy($variant);
 
             $this->logActivity(type: 'info', action: 'backend.product-variants.force_destroy', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->langPath}.force_destroy.success", ['sku' => $variantSku]), is_success: true, loggable: $variant);
 
