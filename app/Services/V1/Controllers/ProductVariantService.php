@@ -17,7 +17,7 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductVariant
+    public function backend_product_variants_store(array $data): ProductVariant
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -53,7 +53,7 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(ProductVariant $variant, array $data): ProductVariant
+    public function backend_product_variants_update(ProductVariant $variant, array $data): ProductVariant
     {
         return DB::transaction(function () use ($variant, $data) {
 
@@ -123,7 +123,7 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(ProductVariant $variant): void
+    public function backend_product_variants_activate(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
 
@@ -138,7 +138,7 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(ProductVariant $variant): void
+    public function backend_product_variants_deactivate(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
 
@@ -153,7 +153,7 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductVariant $variant): void
+    public function backend_product_variants_destroy(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
 
@@ -176,7 +176,7 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductVariant $variant): void
+    public function backend_product_variants_restore(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
 
@@ -191,7 +191,7 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductVariant $variant): void
+    public function backend_product_variants_force_destroy(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
 
