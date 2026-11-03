@@ -34,7 +34,7 @@ class ProductTranslationController extends Controller
             $translation = ProductTranslation::where('uuid', $uuid)->firstOrFail();
 
             // Suppression via le service (soft delete)
-            $this->productTranslationService->destroy($translation);
+            $this->productTranslationService->backend_product_translations_destroy($translation);
 
             $this->logActivity(type: 'warning', action: 'backend.product-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -98,7 +98,7 @@ class ProductTranslationController extends Controller
 
             $translation = ProductTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->productTranslationService->restore($translation);
+            $this->productTranslationService->backend_product_translations_restore($translation);
 
             $this->logActivity(type: 'info', action: 'backend.product-translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -135,7 +135,7 @@ class ProductTranslationController extends Controller
             $translation = ProductTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->productTranslationService->forceDestroy($translation);
+            $this->productTranslationService->backend_product_translations_force_destroy($translation);
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.product-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
