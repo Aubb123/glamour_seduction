@@ -35,7 +35,7 @@ class BlogPostTranslationController extends Controller
             $translation = BlogPostTranslation::where('uuid', $uuid)->firstOrFail();
 
             // Suppression via le service (soft delete) — le service vérifie si c'est la dernière traduction
-            $this->blogPostTranslationService->destroy($translation);
+            $this->blogPostTranslationService->backend_blog_post_translations_destroy($translation);
 
             // Log de la suppression réussie
             $this->logActivity(type: 'info', action: 'backend.blog-post-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.translations.destroy.success", ['uuid' => $translation->uuid]), is_success: true);
@@ -102,7 +102,7 @@ class BlogPostTranslationController extends Controller
             $translation = BlogPostTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restaure la traduction via le service
-            $this->blogPostTranslationService->restore($translation);
+            $this->blogPostTranslationService->backend_blog_post_translations_restore($translation);
 
             // Log de la restauration réussie
             $this->logActivity(type: 'info', action: 'backend.blog-post-translations.restore', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.restore.success", ['uuid' => $uuid]), is_success: true);
@@ -148,7 +148,7 @@ class BlogPostTranslationController extends Controller
             $translation = BlogPostTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service — le service vérifie si c'est la dernière traduction
-            $this->blogPostTranslationService->forceDestroy($translation);
+            $this->blogPostTranslationService->backend_blog_post_translations_force_destroy($translation);
 
             // Log de la suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.blog-post-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.force_destroy.success", ['uuid' => $uuid]), is_success: true);
