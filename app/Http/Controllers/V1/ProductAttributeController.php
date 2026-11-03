@@ -90,7 +90,7 @@ class ProductAttributeController extends Controller
         try {
 
             // Création de la tag via le service, en passant les données validées du formulaire
-            $attribute = $this->productAttributeService->store($request->validated());
+            $attribute = $this->productAttributeService->backend_product_attributes_store($request->validated());
 
             // Log de la création de la tag avec le nom de la tag créée
             $this->logActivity(type: 'info', action: 'backend.product-attributes.store', context: ['tag_uuid' => $attribute->uuid, 'tag_name' => $attribute->active_translation?->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $attribute->active_translation?->name ?? '']), is_success: true, loggable: $attribute);
@@ -260,7 +260,7 @@ class ProductAttributeController extends Controller
         try {
 
             // Mise à jour de la tag via le service, en passant les données validées du formulaire
-            $this->productAttributeService->update($productAttribute, $request->validated());
+            $this->productAttributeService->backend_product_attributes_update($productAttribute, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $attribute = $productAttribute->refresh();
@@ -299,7 +299,7 @@ class ProductAttributeController extends Controller
         try {
 
             // Activation de la tag via le service
-            $this->productAttributeService->activate($productAttribute);
+            $this->productAttributeService->backend_product_attributes_activate($productAttribute);
 
             $attribute = $productAttribute;
             $tagName = $attribute->active_translation?->name ?? '';
@@ -332,7 +332,7 @@ class ProductAttributeController extends Controller
         try {
 
             // Désactivation de la tag via le service
-            $this->productAttributeService->deactivate($productAttribute);
+            $this->productAttributeService->backend_product_attributes_deactivate($productAttribute);
 
             $attribute = $productAttribute;
             $tagName = $attribute->active_translation?->name ?? '';
@@ -369,7 +369,7 @@ class ProductAttributeController extends Controller
             $tagName = $attribute->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la tag via le service
-            $this->productAttributeService->destroy($productAttribute);
+            $this->productAttributeService->backend_product_attributes_destroy($productAttribute);
 
             // Log de la suppression de la tag
             $this->logActivity(type: 'info', action: 'backend.product-attributes.destroy', context: ['tag_uuid' => $attribute->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $tagName]), is_success: true, loggable: $attribute);
@@ -427,7 +427,7 @@ class ProductAttributeController extends Controller
             $attribute = ProductAttribute::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->productAttributeService->restore($attribute);
+            $this->productAttributeService->backend_product_attributes_restore($attribute);
 
             $tagName = $attribute->active_translation?->name ?? __("{$this->langPath}.restore.unknown");
 
@@ -469,7 +469,7 @@ class ProductAttributeController extends Controller
             $tagName = $attribute->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->productAttributeService->forceDestroy($attribute);
+            $this->productAttributeService->backend_product_attributes_force_destroy($attribute);
 
             // Log de la suppression définitive de la tag
             $this->logActivity(type: 'info', action: 'backend.product-attributes.force_destroy', context: ['tag_uuid' => $attribute->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $tagName]), is_success: true, loggable: $attribute);
