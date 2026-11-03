@@ -19,7 +19,7 @@ class BlogPostTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(BlogPostTranslation $blogPostTranslation): void
+    public function backend_blog_post_translations_destroy(BlogPostTranslation $blogPostTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($blogPostTranslation) {
@@ -60,7 +60,7 @@ class BlogPostTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogPostTranslation $blogPostTranslation): void
+    public function backend_blog_post_translations_restore(BlogPostTranslation $blogPostTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($blogPostTranslation) {
@@ -90,7 +90,7 @@ class BlogPostTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogPostTranslation $blogPostTranslation): void
+    public function backend_blog_post_translations_force_destroy(BlogPostTranslation $blogPostTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($blogPostTranslation) {
