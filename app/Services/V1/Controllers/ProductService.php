@@ -196,7 +196,8 @@ class ProductService
             }
         });
     }
-// ─────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────
     // SYNC TAGS (privé) — pivot `product_tag`
     // ─────────────────────────────────────────────
     private function syncTags(Product $product, array $tagIds): void
