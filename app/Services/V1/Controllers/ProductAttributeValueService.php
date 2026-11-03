@@ -20,7 +20,7 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductAttributeValue
+    public function backend_product_attribute_values_store(array $data): ProductAttributeValue
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -43,7 +43,7 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(ProductAttributeValue $valeur, array $data): ProductAttributeValue
+    public function backend_product_attribute_values_update(ProductAttributeValue $valeur, array $data): ProductAttributeValue
     {
         return DB::transaction(function () use ($valeur, $data) {
 
@@ -79,7 +79,7 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_activate(ProductAttributeValue $valeur): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($valeur) {
@@ -99,7 +99,7 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_deactivate(ProductAttributeValue $valeur): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($valeur) {
@@ -119,7 +119,7 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_destroy(ProductAttributeValue $valeur): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($valeur) {
@@ -141,7 +141,7 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_restore(ProductAttributeValue $valeur): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($valeur) {
@@ -159,7 +159,7 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_force_destroy(ProductAttributeValue $valeur): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($valeur) {
