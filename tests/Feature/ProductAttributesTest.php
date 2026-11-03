@@ -168,7 +168,7 @@ it('refuse la suppression d\'un attribut actif puis autorise après désactivati
     $this->actingAs($admin)->post(route('backend.product-attributes.store'), productAttributePayload());
     $attribute = ProductAttribute::firstOrFail();
 
-    // Actif → suppression refusée (règle du ProductAttributeService::destroy)
+    // Actif → suppression refusée (règle du ProductAttributeService::backend_product_attributes_destroy)
     $this->actingAs($admin)
         ->from(route('backend.product-attributes.index'))
         ->delete(route('backend.product-attributes.destroy', ['productAttribute' => $attribute->uuid]))
