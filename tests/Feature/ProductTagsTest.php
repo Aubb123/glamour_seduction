@@ -156,7 +156,7 @@ it('refuse la suppression d’un tag actif puis autorise après désactivation',
     $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
     $tag = ProductTag::firstOrFail();
 
-    // Actif → suppression refusée (règle du ProductTagService::destroy)
+    // Actif → suppression refusée (règle du ProductTagService::backend_product_tags_destroy)
     $this->actingAs($admin)
         ->from(route('backend.product-tags.index'))
         ->delete(route('backend.product-tags.destroy', ['productTag' => $tag->uuid]))
