@@ -16,7 +16,7 @@ class ProductWarehouseService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductWarehouse
+    public function backend_product_warehouses_store(array $data): ProductWarehouse
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -48,7 +48,7 @@ class ProductWarehouseService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(ProductWarehouse $warehouse, array $data): ProductWarehouse
+    public function backend_product_warehouses_update(ProductWarehouse $warehouse, array $data): ProductWarehouse
     {
         return DB::transaction(function () use ($warehouse, $data) {
 
@@ -108,7 +108,7 @@ class ProductWarehouseService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(ProductWarehouse $warehouse): void
+    public function backend_product_warehouses_activate(ProductWarehouse $warehouse): void
     {
         DB::transaction(function () use ($warehouse) {
 
@@ -123,7 +123,7 @@ class ProductWarehouseService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(ProductWarehouse $warehouse): void
+    public function backend_product_warehouses_deactivate(ProductWarehouse $warehouse): void
     {
         DB::transaction(function () use ($warehouse) {
 
@@ -138,7 +138,7 @@ class ProductWarehouseService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductWarehouse $warehouse): void
+    public function backend_product_warehouses_destroy(ProductWarehouse $warehouse): void
     {
         DB::transaction(function () use ($warehouse) {
 
@@ -161,7 +161,7 @@ class ProductWarehouseService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductWarehouse $warehouse): void
+    public function backend_product_warehouses_restore(ProductWarehouse $warehouse): void
     {
         DB::transaction(function () use ($warehouse) {
 
@@ -176,7 +176,7 @@ class ProductWarehouseService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductWarehouse $warehouse): void
+    public function backend_product_warehouses_force_destroy(ProductWarehouse $warehouse): void
     {
         DB::transaction(function () use ($warehouse) {
 
