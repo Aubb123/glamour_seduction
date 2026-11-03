@@ -34,7 +34,7 @@ class ProductAttributeTranslationController extends Controller
             $translation = ProductAttributeTranslation::where('uuid', $uuid)->firstOrFail();
 
             // Suppression via le service (soft delete)
-            $this->productAttributeTranslationService->destroy($translation);
+            $this->productAttributeTranslationService->backend_product_attribute_translations_destroy($translation);
 
             $this->logActivity(type: 'warning', action: 'backend.product-attribute-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -100,7 +100,7 @@ class ProductAttributeTranslationController extends Controller
             $translation = ProductAttributeTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->productAttributeTranslationService->restore($translation);
+            $this->productAttributeTranslationService->backend_product_attribute_translations_restore($translation);
 
             $this->logActivity(type: 'info', action: 'backend.product-attribute-translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -137,7 +137,7 @@ class ProductAttributeTranslationController extends Controller
             $translation = ProductAttributeTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->productAttributeTranslationService->forceDestroy($translation);
+            $this->productAttributeTranslationService->backend_product_attribute_translations_force_destroy($translation);
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.product-attribute-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
