@@ -84,7 +84,7 @@ class ProductWarehouseStockController extends Controller
         try {
 
             // Création du stock via le service, en passant les données validées du formulaire
-            $stock = $this->productWarehouseStockService->store($request->validated());
+            $stock = $this->productWarehouseStockService->backend_product_warehouse_stocks_store($request->validated());
 
             // Log de la création du stock avec l'UUID du stock créé
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.store', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->langPath}.store.success"), is_success: true, loggable: $stock);
@@ -221,7 +221,7 @@ class ProductWarehouseStockController extends Controller
     {
         try {
 
-            $this->productWarehouseStockService->update($productWarehouseStock, $request->validated());
+            $this->productWarehouseStockService->backend_product_warehouse_stocks_update($productWarehouseStock, $request->validated());
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.update', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->langPath}.update.success"), is_success: true, loggable: $productWarehouseStock);
 
@@ -254,7 +254,7 @@ class ProductWarehouseStockController extends Controller
     {
         try {
 
-            $this->productWarehouseStockService->destroy($productWarehouseStock);
+            $this->productWarehouseStockService->backend_product_warehouse_stocks_destroy($productWarehouseStock);
 
             $this->logActivity(type: 'warning', action: 'backend.product-warehouse-stocks.destroy', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->langPath}.destroy.success"), is_success: true, loggable: $productWarehouseStock);
 
@@ -311,7 +311,7 @@ class ProductWarehouseStockController extends Controller
             // Récupère le stock supprimé par son UUID ou échoue
             $stock = ProductWarehouseStock::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->productWarehouseStockService->restore($stock);
+            $this->productWarehouseStockService->backend_product_warehouse_stocks_restore($stock);
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.restore', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->langPath}.restore.success"), is_success: true, loggable: $stock);
 
@@ -347,7 +347,7 @@ class ProductWarehouseStockController extends Controller
             // Récupère le stock supprimé par son UUID ou échoue
             $stock = ProductWarehouseStock::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->productWarehouseStockService->forceDestroy($stock);
+            $this->productWarehouseStockService->backend_product_warehouse_stocks_force_destroy($stock);
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.force_destroy', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $stock);
 
