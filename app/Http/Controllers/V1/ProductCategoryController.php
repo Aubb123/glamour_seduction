@@ -95,7 +95,7 @@ class ProductCategoryController extends Controller
         try {
 
             // Création de la catégorie via le service, en passant les données validées du formulaire
-            $category = $this->productCategoryService->store($request->validated());
+            $category = $this->productCategoryService->backend_product_categories_store($request->validated());
 
             // Log de la création de la catégorie avec le nom de la catégorie créée
             $this->logActivity(type: 'info', action: 'backend.product-categories.store', context: ['category_uuid' => $category->uuid, 'category_name' => $category->active_translation?->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $category->active_translation?->name ?? '']), is_success: true, loggable: $category);
@@ -293,7 +293,7 @@ class ProductCategoryController extends Controller
         try {
 
             // Mise à jour de la catégorie via le service, en passant les données validées du formulaire
-            $this->productCategoryService->update($productCategory, $request->validated());
+            $this->productCategoryService->backend_product_categories_update($productCategory, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $category = $productCategory->refresh();
@@ -333,7 +333,7 @@ class ProductCategoryController extends Controller
         try {
 
             // Activation de la catégorie via le service
-            $this->productCategoryService->activate($productCategory);
+            $this->productCategoryService->backend_product_categories_activate($productCategory);
 
             // $category est l'instance de la catégorie activée
             $category = $productCategory;
@@ -373,7 +373,7 @@ class ProductCategoryController extends Controller
         try {
 
             // Désactivation de la catégorie via le service
-            $this->productCategoryService->deactivate($productCategory);
+            $this->productCategoryService->backend_product_categories_deactivate($productCategory);
 
             // $category est l'instance de la catégorie désactivée
             $category = $productCategory;
@@ -419,7 +419,7 @@ class ProductCategoryController extends Controller
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la catégorie via le service
-            $this->productCategoryService->destroy($productCategory);
+            $this->productCategoryService->backend_product_categories_destroy($productCategory);
 
             // Log de la suppression de la catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.destroy', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $categoryName]), is_success: true, loggable: $category);
@@ -482,7 +482,7 @@ class ProductCategoryController extends Controller
             $category = ProductCategory::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->productCategoryService->restore($category);
+            $this->productCategoryService->backend_product_categories_restore($category);
 
             // $categoryName prend le nom de la traduction active si elle existe, sinon un message par défaut "unknown"
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.restore.unknown");
@@ -533,7 +533,7 @@ class ProductCategoryController extends Controller
             $categoryName = $category->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->productCategoryService->forceDestroy($category);
+            $this->productCategoryService->backend_product_categories_force_destroy($category);
 
             // Log de la suppression définitive de la catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.force_destroy', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $categoryName]), is_success: true, loggable: $category);
