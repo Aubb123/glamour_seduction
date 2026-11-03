@@ -15,7 +15,7 @@ class LangService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(Lang $lang): void
+    public function backend_langs_activate(Lang $lang): void
     {
         DB::transaction(function () use ($lang) {
 
@@ -30,7 +30,7 @@ class LangService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(Lang $lang): void
+    public function backend_langs_deactivate(Lang $lang): void
     {
         DB::transaction(function () use ($lang) {
 
