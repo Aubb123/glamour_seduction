@@ -15,7 +15,7 @@ class BlogPostCommentService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(BlogPostComment $comment): void
+    public function backend_blog_post_comments_activate(BlogPostComment $comment): void
     {
         DB::transaction(function () use ($comment) {
 
@@ -32,7 +32,7 @@ class BlogPostCommentService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(BlogPostComment $comment): void
+    public function backend_blog_post_comments_deactivate(BlogPostComment $comment): void
     {
         DB::transaction(function () use ($comment) {
 
@@ -49,7 +49,7 @@ class BlogPostCommentService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(BlogPostComment $comment): void
+    public function backend_blog_post_comments_destroy(BlogPostComment $comment): void
     {
         DB::transaction(function () use ($comment) {
 
@@ -67,7 +67,7 @@ class BlogPostCommentService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogPostComment $comment): void
+    public function backend_blog_post_comments_restore(BlogPostComment $comment): void
     {
         DB::transaction(function () use ($comment) {
             if ($comment->trashed()) {
@@ -81,7 +81,7 @@ class BlogPostCommentService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogPostComment $comment): void
+    public function backend_blog_post_comments_force_destroy(BlogPostComment $comment): void
     {
         DB::transaction(function () use ($comment) {
             if ($comment->trashed()) {
