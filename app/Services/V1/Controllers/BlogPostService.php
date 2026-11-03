@@ -25,7 +25,7 @@ class BlogPostService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): BlogPost
+    public function backend_blog_posts_store(array $data): BlogPost
     {
         return DB::transaction(function () use ($data) {
 
@@ -84,7 +84,7 @@ class BlogPostService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(BlogPost $post, array $data): BlogPost
+    public function backend_blog_posts_update(BlogPost $post, array $data): BlogPost
     {
         return DB::transaction(function () use ($post, $data) {
 
@@ -160,7 +160,7 @@ class BlogPostService
     // ─────────────────────────────────────────────
     // CHANGE STATUS
     // ─────────────────────────────────────────────
-    public function updateStatus(BlogPost $post, BlogPostStatus $newStatus, ?string $publishedAt = null): void
+    public function backend_blog_posts_change_status(BlogPost $post, BlogPostStatus $newStatus, ?string $publishedAt = null): void
     {
         DB::transaction(function () use ($post, $newStatus, $publishedAt) {
 
@@ -179,7 +179,7 @@ class BlogPostService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(BlogPost $post): void
+    public function backend_blog_posts_destroy(BlogPost $post): void
     {
         DB::transaction(function () use ($post) {
 
@@ -199,7 +199,7 @@ class BlogPostService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogPost $post): void
+    public function backend_blog_posts_restore(BlogPost $post): void
     {
         DB::transaction(function () use ($post) {
             if ($post->trashed()) {
@@ -213,7 +213,7 @@ class BlogPostService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogPost $post): void
+    public function backend_blog_posts_force_destroy(BlogPost $post): void
     {
         DB::transaction(function () use ($post) {
             if ($post->trashed()) {
