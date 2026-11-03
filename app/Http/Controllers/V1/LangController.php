@@ -56,7 +56,7 @@ class LangController extends Controller
         try {
 
             // Activation de la langue via le service
-            $this->langService->activate($lang);
+            $this->langService->backend_langs_activate($lang);
 
             // Log de l'activation de la langue
             $this->logActivity(type: 'info', action: 'backend.langs.activate', context: ['lang_uuid' => $lang->uuid, 'lang_code' => $lang->code], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $lang->name]), is_success: true, loggable: $lang);
@@ -81,7 +81,7 @@ class LangController extends Controller
         try {
 
             // Désactivation de la langue via le service
-            $this->langService->deactivate($lang);
+            $this->langService->backend_langs_deactivate($lang);
 
             // Log de la désactivation de la langue
             $this->logActivity(type: 'info', action: 'backend.langs.deactivate', context: ['lang_uuid' => $lang->uuid, 'lang_code' => $lang->code], message: null, activity: __("{$this->langPath}.deactivate.success", ['name' => $lang->name]), is_success: true, loggable: $lang);
