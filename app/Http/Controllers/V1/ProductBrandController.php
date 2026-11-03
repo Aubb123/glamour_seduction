@@ -93,7 +93,7 @@ class ProductBrandController extends Controller
         try {
 
             // Création de la marque via le service, en passant les données validées du formulaire
-            $brand = $this->productBrandService->store($request->validated());
+            $brand = $this->productBrandService->backend_product_brands_store($request->validated());
 
             // Log de la création de la marque avec le nom de la marque créée
             $this->logActivity(type: 'info', action: 'backend.product-brands.store', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brand->active_translation?->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $brand->active_translation?->name ?? '']), is_success: true, loggable: $brand);
@@ -284,7 +284,7 @@ class ProductBrandController extends Controller
         try {
 
             // Mise à jour de la marque via le service, en passant les données validées du formulaire
-            $this->productBrandService->update($productBrand, $request->validated());
+            $this->productBrandService->backend_product_brands_update($productBrand, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $brand = $productBrand->refresh();
@@ -324,7 +324,7 @@ class ProductBrandController extends Controller
         try {
 
             // Activation de la marque via le service
-            $this->productBrandService->activate($productBrand);
+            $this->productBrandService->backend_product_brands_activate($productBrand);
 
             // $brand est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brand = $productBrand;
@@ -362,7 +362,7 @@ class ProductBrandController extends Controller
         try {
 
             // Désactivation de la marque via le service
-            $this->productBrandService->deactivate($productBrand);
+            $this->productBrandService->backend_product_brands_deactivate($productBrand);
 
             // $brand est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brand = $productBrand;
@@ -406,7 +406,7 @@ class ProductBrandController extends Controller
             $brandName = $brand->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la marque via le service
-            $this->productBrandService->destroy($productBrand);
+            $this->productBrandService->backend_product_brands_destroy($productBrand);
 
             // Log de la suppression de la marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.destroy', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $brandName]), is_success: true, loggable: $brand);
@@ -469,7 +469,7 @@ class ProductBrandController extends Controller
             $brand = ProductBrand::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->productBrandService->restore($brand);
+            $this->productBrandService->backend_product_brands_restore($brand);
 
             // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? __("{$this->langPath}.restore.unknown");
@@ -520,7 +520,7 @@ class ProductBrandController extends Controller
             $brandName = $brand->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->productBrandService->forceDestroy($brand);
+            $this->productBrandService->backend_product_brands_force_destroy($brand);
 
             // Log de la suppression définitive de la marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.force_destroy', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $brandName]), is_success: true, loggable: $brand);
