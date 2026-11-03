@@ -92,7 +92,7 @@ class ProductController extends Controller
         try {
 
             // Création du produit via le service, en passant les données validées du formulaire
-            $product = $this->productService->store($request->validated());
+            $product = $this->productService->backend_products_store($request->validated());
 
             // Log de la création du produit avec le nom du produit créé
             $this->logActivity(type: 'info', action: 'backend.products.store', context: ['product_uuid' => $product->uuid, 'product_name' => $product->active_translation?->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $product->active_translation?->name ?? '']), is_success: true, loggable: $product);
@@ -236,7 +236,7 @@ class ProductController extends Controller
 
             $productName = $product->active_translation?->name ?? '';
 
-            $this->productService->update($product, $request->validated());
+            $this->productService->backend_products_update($product, $request->validated());
 
             $this->logActivity(type: 'info', action: 'backend.products.update', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.update.success", ['name' => $productName]), is_success: true, loggable: $product);
 
@@ -271,7 +271,7 @@ class ProductController extends Controller
 
             $productName = $product->active_translation?->name ?? '';
 
-            $this->productService->publish($product);
+            $this->productService->backend_products_publish($product);
 
             $this->logActivity(type: 'info', action: 'backend.products.publish', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.publish.success", ['name' => $productName]), is_success: true, loggable: $product);
 
@@ -327,7 +327,7 @@ class ProductController extends Controller
 
             $productName = $product->active_translation?->name ?? '';
 
-            $this->productService->unpublish($product);
+            $this->productService->backend_products_unpublish($product);
 
             $this->logActivity(type: 'info', action: 'backend.products.unpublish', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.unpublish.success", ['name' => $productName]), is_success: true, loggable: $product);
 
@@ -356,7 +356,7 @@ class ProductController extends Controller
 
             $productName = $product->active_translation?->name ?? '';
 
-            $this->productService->archive($product);
+            $this->productService->backend_products_archive($product);
 
             $this->logActivity(type: 'info', action: 'backend.products.archive', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.archive.success", ['name' => $productName]), is_success: true, loggable: $product);
 
@@ -386,7 +386,7 @@ class ProductController extends Controller
             $productName = $product->active_translation?->name ?? '';
 
             // Règle métier : impossible de supprimer un produit publié (gérée par le service)
-            $this->productService->destroy($product);
+            $this->productService->backend_products_destroy($product);
 
             $this->logActivity(type: 'warning', action: 'backend.products.destroy', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $productName]), is_success: true, loggable: $product);
 
@@ -445,7 +445,7 @@ class ProductController extends Controller
             $productName = $product->active_translation?->name ?? __("{$this->langPath}.restore.unknown");
 
             // Restauration via le service
-            $this->productService->restore($product);
+            $this->productService->backend_products_restore($product);
 
             $this->logActivity(type: 'info', action: 'backend.products.restore', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $productName]), is_success: true, loggable: $product);
 
@@ -484,7 +484,7 @@ class ProductController extends Controller
             $productName = $product->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->productService->forceDestroy($product);
+            $this->productService->backend_products_force_destroy($product);
 
             $this->logActivity(type: 'info', action: 'backend.products.force_destroy', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $productName]), is_success: true, loggable: $product);
 
