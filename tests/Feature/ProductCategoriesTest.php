@@ -206,7 +206,7 @@ it('refuse la suppression d’une catégorie active puis autorise après désact
     $this->actingAs($admin)->post(route('backend.product-categories.store'), productCategoryPayload());
     $category = ProductCategory::firstOrFail();
 
-    // Active → suppression refusée (règle du ProductCategoryService::destroy)
+    // Active → suppression refusée (règle du ProductCategoryService::backend_product_categories_destroy)
     $this->actingAs($admin)
         ->from(route('backend.product-categories.index'))
         ->delete(route('backend.product-categories.destroy', ['productCategory' => $category->uuid]))
