@@ -36,7 +36,7 @@ class GalleryTranslationController extends Controller
             $translation = GalleryTranslation::where('uuid', $uuid)->firstOrFail();
 
             // Suppression via le service (soft delete) — le service vérifie si c'est la dernière traduction
-            $this->galleryTranslationService->destroy($translation);
+            $this->galleryTranslationService->backend_galleries_translations_destroy($translation);
 
             // Log de la suppression réussie
             $this->logActivity(type: 'info', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
@@ -118,7 +118,7 @@ class GalleryTranslationController extends Controller
             $translation = GalleryTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restaure la traduction via le service
-            $this->galleryTranslationService->restore($translation);
+            $this->galleryTranslationService->backend_galleries_translations_restore($translation);
 
             // Log de la restauration réussie
             $this->logActivity(type: 'info', action: 'backend.gallery-translations.restore', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.restore.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
@@ -163,7 +163,7 @@ class GalleryTranslationController extends Controller
             $translation = GalleryTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service — le service vérifie si c'est la dernière traduction
-            $this->galleryTranslationService->forceDestroy($translation);
+            $this->galleryTranslationService->backend_galleries_translations_force_destroy($translation);
 
             // Log de la suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.gallery-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
