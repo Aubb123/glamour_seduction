@@ -12,7 +12,7 @@ class BlogTagSeeder extends Seeder
      * Run the database seeds.
      *
      * Récupère les données des tags (avec leurs traductions) et les crée via
-     * le service BlogTagService::store(), afin de centraliser la logique de
+     * le service BlogTagService::backend_blog_tags_store(), afin de centraliser la logique de
      * création (tag + traductions) au même endroit que le code métier réel.
      */
     public function run(): void
@@ -63,7 +63,7 @@ class BlogTagSeeder extends Seeder
         ];
 
         foreach ($tags as $data) {
-            $service->store($this->prepareData($data));
+            $service->backend_blog_tags_store($this->prepareData($data));
         }
     }
 
