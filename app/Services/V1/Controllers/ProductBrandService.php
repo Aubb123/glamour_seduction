@@ -23,7 +23,7 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductBrand
+    public function backend_product_brands_store(array $data): ProductBrand
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -62,7 +62,7 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(ProductBrand $brand, array $data): ProductBrand
+    public function backend_product_brands_update(ProductBrand $brand, array $data): ProductBrand
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($brand, $data) {
@@ -111,7 +111,7 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(ProductBrand $brand): void
+    public function backend_product_brands_activate(ProductBrand $brand): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($brand) {
@@ -131,7 +131,7 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(ProductBrand $brand): void
+    public function backend_product_brands_deactivate(ProductBrand $brand): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($brand) {
@@ -151,7 +151,7 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductBrand $brand): void
+    public function backend_product_brands_destroy(ProductBrand $brand): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($brand) {
@@ -175,7 +175,7 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductBrand $brand): void
+    public function backend_product_brands_restore(ProductBrand $brand): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($brand) {
@@ -194,7 +194,7 @@ class ProductBrandService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductBrand $brand): void
+    public function backend_product_brands_force_destroy(ProductBrand $brand): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($brand) {
