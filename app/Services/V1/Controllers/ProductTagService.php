@@ -20,7 +20,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductTag
+    public function backend_product_tags_store(array $data): ProductTag
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -41,7 +41,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(ProductTag $tag, array $data): ProductTag
+    public function backend_product_tags_update(ProductTag $tag, array $data): ProductTag
     {
         return DB::transaction(function () use ($tag, $data) {
 
@@ -69,7 +69,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(ProductTag $tag): void
+    public function backend_product_tags_activate(ProductTag $tag): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($tag) {
@@ -89,7 +89,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(ProductTag $tag): void
+    public function backend_product_tags_deactivate(ProductTag $tag): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($tag) {
@@ -109,7 +109,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductTag $tag): void
+    public function backend_product_tags_destroy(ProductTag $tag): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($tag) {
@@ -131,7 +131,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductTag $tag): void
+    public function backend_product_tags_restore(ProductTag $tag): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($tag) {
@@ -149,7 +149,7 @@ class ProductTagService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductTag $tag): void
+    public function backend_product_tags_force_destroy(ProductTag $tag): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($tag) {
