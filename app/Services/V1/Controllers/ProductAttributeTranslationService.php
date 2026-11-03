@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\ProductAttribute;
 use App\Models\ProductAttributeTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -16,35 +17,43 @@ class ProductAttributeTranslationService
     protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
-    // DESTROY — Soft delete d'une traduction d'attribut
+    // DESTROY
     // ─────────────────────────────────────────────
     public function destroy(ProductAttributeTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupère l'attribut parent associé à cette traduction
-            $attribute = $translation->attribute()->withTrashed()->first();
+            // 1. Verrou sur l'attribut (même soft-deleted)
+            $attribut = ProductAttribute::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->attribute_id);
 
-            // Règle métier : on ne peut pas supprimer la dernière traduction restante
-            // d'un attribut, car chaque attribut doit conserver au moins une traduction.
-            if ($attribute) {
-
-                // Compte le nombre de traductions actives (non soft-deleted) de l'attribut
-                $translationsCount = $attribute->translations()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $attribut) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.attribute_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $translation = ProductAttributeTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
+
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            
-            destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
 
+            // 4. Dernière traduction active
+            if ($attribut->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($translation); // ← suppression de la traduction et de ses dépendances associées
         });
     }
 
@@ -86,28 +95,37 @@ class ProductAttributeTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
 
-            // Récupération du attribut associé à la traduction (même s'il est soft-deleted)
-            $attribut = $translation->attribute()->withTrashed()->first();
+            // 1. Verrou sur l'attribut (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $attribut = ProductAttribute::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->attribute_id);
 
-            // Si le attribut existe, on vérifie si c'est la dernière traduction restante avant de permettre la suppression définitive
-            if ($attribut) {
-
-                // Compte le nombre de traductions associées au attribut, y compris les traductions soft-deleted
-                $translationsCount = $attribut->translations()->withTrashed()->count();
-
-                // Empêche la suppression définitive de la traduction si c'est la dernière traduction restante du attribut (même si le attribut est soft-deleted)
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $attribut) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.attribute_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($translation->trashed()) {
-                force_destroy_function($translation); // ← suppression définitive de la traduction du attribut sélectionné
-            } else {
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $translation = ProductAttributeTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($translation->id);
+
+            if (! $translation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $translation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
 
+            // 4. Interdit de supprimer la dernière traduction de l'attribut (corbeille incluse)
+            if ($attribut->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            force_destroy_function($translation); // ← suppression définitive de la traduction du attribut sélectionné
         });
     }
 }
