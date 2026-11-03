@@ -32,7 +32,7 @@ class BlogTagTranslationController extends Controller
 
             $translation = BlogTagTranslation::where('uuid', $uuid)->firstOrFail();
 
-            $this->blogTagTranslationService->destroy($translation);
+            $this->blogTagTranslationService->backend_blog_tag_translations_destroy($translation);
 
             $this->logActivity(type: 'warning', action: 'backend.blog-tag-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -96,7 +96,7 @@ class BlogTagTranslationController extends Controller
 
             $translation = BlogTagTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->blogTagTranslationService->restore($translation);
+            $this->blogTagTranslationService->backend_blog_tag_translations_restore($translation);
 
             $this->logActivity(type: 'info', action: 'backend.blog-tag-translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -131,7 +131,7 @@ class BlogTagTranslationController extends Controller
 
             $translation = BlogTagTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->blogTagTranslationService->forceDestroy($translation);
+            $this->blogTagTranslationService->backend_blog_tag_translations_force_destroy($translation);
 
             $this->logActivity(type: 'info', action: 'backend.blog-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
 
