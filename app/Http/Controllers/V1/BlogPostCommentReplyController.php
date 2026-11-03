@@ -90,7 +90,7 @@ class BlogPostCommentReplyController extends Controller
         try {
 
             // Active la réponse via le service
-            $this->blogPostCommentReplyService->activate($blogPostCommentReply);
+            $this->blogPostCommentReplyService->backend_blog_post_comment_replies_activate($blogPostCommentReply);
 
             $reply = $blogPostCommentReply;
             $replyContent = Str::limit($reply->content, 50);
@@ -122,7 +122,7 @@ class BlogPostCommentReplyController extends Controller
         try {
 
             // Désactive la réponse via le service
-            $this->blogPostCommentReplyService->deactivate($blogPostCommentReply);
+            $this->blogPostCommentReplyService->backend_blog_post_comment_replies_deactivate($blogPostCommentReply);
 
             $reply = $blogPostCommentReply;
             $replyContent = Str::limit($reply->content, 50);
@@ -158,8 +158,7 @@ class BlogPostCommentReplyController extends Controller
             $replyContent = Str::limit($reply->content, 50);
 
             // Suppression via le service
-            $this->blogPostCommentReplyService->destroy($reply);
-
+            $this->blogPostCommentReplyService->backend_blog_post_comment_replies_destroy($reply);
             // Log de la suppression
             $this->logActivity(type: 'info', action: 'backend.blog-post-comment-replies.destroy', context: ['reply_uuid' => $reply->uuid, 'reply_content' => $replyContent], message: null, activity: __("{$this->langPath}.destroy.success", ['content' => $replyContent]), is_success: true, loggable: $reply);
 
@@ -214,7 +213,7 @@ class BlogPostCommentReplyController extends Controller
             $reply = BlogPostCommentReply::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->blogPostCommentReplyService->restore($reply);
+            $this->blogPostCommentReplyService->backend_blog_post_comment_replies_restore($reply);
 
             $replyContent = Str::limit($reply->content, 50);
 
@@ -254,7 +253,7 @@ class BlogPostCommentReplyController extends Controller
             $reply = BlogPostCommentReply::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->blogPostCommentReplyService->forceDestroy($reply);
+            $this->blogPostCommentReplyService->backend_blog_post_comment_replies_force_destroy($reply);
 
             // Log de la suppression définitive
             $this->logActivity(type: 'info', action: 'backend.blog-post-comment-replies.force_destroy', context: ['reply_uuid' => $reply->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $reply);
