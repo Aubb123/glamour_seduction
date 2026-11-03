@@ -23,7 +23,7 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): BlogCategory
+    public function backend_blog_categories_store(array $data): BlogCategory
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -62,7 +62,7 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(BlogCategory $category, array $data): BlogCategory
+    public function backend_blog_categories_update(BlogCategory $category, array $data): BlogCategory
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($category, $data) {
@@ -114,7 +114,7 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(BlogCategory $category): void
+    public function backend_blog_categories_destroy(BlogCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -138,7 +138,7 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(BlogCategory $category): void
+    public function backend_blog_categories_activate(BlogCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -159,7 +159,7 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(BlogCategory $category): void
+    public function backend_blog_categories_deactivate(BlogCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -179,7 +179,7 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogCategory $category): void
+    public function backend_blog_categories_restore(BlogCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -197,7 +197,7 @@ class BlogCategoryService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogCategory $category): void
+    public function backend_blog_categories_force_destroy(BlogCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
