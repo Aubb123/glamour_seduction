@@ -178,7 +178,7 @@ class BlogPostCommentController extends Controller
         try {
 
             // Active le commentaire via le service
-            $this->blogPostCommentService->activate($blogPostComment);
+            $this->blogPostCommentService->backend_blog_post_comments_activate($blogPostComment);
 
             $comment = $blogPostComment;
             $commentContent = Str::limit($comment->content, 50);
@@ -210,7 +210,7 @@ class BlogPostCommentController extends Controller
         try {
 
             // Désactive le commentaire via le service
-            $this->blogPostCommentService->deactivate($blogPostComment);
+            $this->blogPostCommentService->backend_blog_post_comments_deactivate($blogPostComment);
 
             $comment = $blogPostComment;
             $commentContent = Str::limit($comment->content, 50);
@@ -246,7 +246,7 @@ class BlogPostCommentController extends Controller
             $commentContent = Str::limit($comment->content, 50);
 
             // Suppression via le service
-            $this->blogPostCommentService->destroy($comment);
+            $this->blogPostCommentService->backend_blog_post_comments_destroy($comment);
 
             // Log de la suppression
             $this->logActivity(type: 'info', action: 'backend.blog-post-comments.destroy', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.destroy.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
@@ -302,7 +302,7 @@ class BlogPostCommentController extends Controller
             $comment = BlogPostComment::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->blogPostCommentService->restore($comment);
+            $this->blogPostCommentService->backend_blog_post_comments_restore($comment);
 
             $commentContent = Str::limit($comment->content, 50);
 
@@ -342,7 +342,7 @@ class BlogPostCommentController extends Controller
             $comment = BlogPostComment::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->blogPostCommentService->forceDestroy($comment);
+            $this->blogPostCommentService->backend_blog_post_comments_force_destroy($comment);
 
             // Log de la suppression définitive
             $this->logActivity(type: 'info', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $comment->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $comment);
