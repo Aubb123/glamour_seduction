@@ -86,7 +86,7 @@ class BlogTagController extends Controller
         try {
 
             // Création du tag via le service, en passant les données validées du formulaire
-            $tag = $this->blogTagService->store($request->validated());
+            $tag = $this->blogTagService->backend_blog_tags_store($request->validated());
 
             // Log de la création du tag avec le nom du tag créé
             $this->logActivity(type: 'info', action: 'backend.blog-tags.store', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tag->active_translation?->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $tag->active_translation?->name ?? '']), is_success: true, loggable: $tag);
@@ -292,7 +292,7 @@ class BlogTagController extends Controller
         try {
 
             // Mise à jour du tag via le service, en passant les données validées du formulaire
-            $this->blogTagService->update($blogTag, $request->validated());
+            $this->blogTagService->backend_blog_tags_update($blogTag, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $tag = $blogTag->refresh();
@@ -331,7 +331,7 @@ class BlogTagController extends Controller
         try {
 
             // Activation du tag via le service
-            $this->blogTagService->activate($blogTag);
+            $this->blogTagService->backend_blog_tags_activate($blogTag);
 
             $tag = $blogTag;
             $tagName = $tag->active_translation?->name ?? '';
@@ -364,7 +364,7 @@ class BlogTagController extends Controller
         try {
 
             // Désactivation du tag via le service
-            $this->blogTagService->deactivate($blogTag);
+            $this->blogTagService->backend_blog_tags_deactivate($blogTag);
 
             $tag = $blogTag;
             $tagName = $tag->active_translation?->name ?? '';
@@ -401,7 +401,7 @@ class BlogTagController extends Controller
             $tagName = $tag->active_translation?->name ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression du tag via le service
-            $this->blogTagService->destroy($blogTag);
+            $this->blogTagService->backend_blog_tags_destroy($blogTag);
 
             // Log de la suppression du tag
             $this->logActivity(type: 'info', action: 'backend.blog-tags.destroy', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $tagName]), is_success: true, loggable: $tag);
@@ -459,7 +459,7 @@ class BlogTagController extends Controller
             $tag = BlogTag::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->blogTagService->restore($tag);
+            $this->blogTagService->backend_blog_tags_restore($tag);
 
             $tagName = $tag->active_translation?->name ?? '';
 
@@ -501,8 +501,7 @@ class BlogTagController extends Controller
             $tagName = $tag->active_translation?->name ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->blogTagService->forceDestroy($tag);
-
+            $this->blogTagService->backend_blog_tags_force_destroy($tag);
             // Log de la suppression définitive du tag
             $this->logActivity(type: 'info', action: 'backend.blog-tags.force_destroy', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $tagName]), is_success: true, loggable: $tag);
 
