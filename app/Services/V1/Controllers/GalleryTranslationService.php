@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\Gallery;
 use App\Models\GalleryTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -23,25 +24,36 @@ class GalleryTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($galleryTranslation) {
 
-            // Récupération de la galerie associée à la traduction (même si la galerie est soft-deleted)
-            $gallery = $galleryTranslation->gallery()->withTrashed()->first();
+            // 1. Verrou sur la galerie (même soft-deleted)
+            $gallery = Gallery::withTrashed()
+                ->lockForUpdate()
+                ->find($galleryTranslation->gallery_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante de la galerie
-            if ($gallery) {
-
-                // Compte le nombre de traductions associées à la galerie, en excluant les traductions soft-deleted
-                $translationsCount = $gallery->translations()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden", ['name' => $galleryTranslation->title]));
-                }
+            if (! $gallery) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.gallery_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $galleryTranslation = GalleryTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($galleryTranslation->id);
+
+            if (! $galleryTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($galleryTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($galleryTranslation);
+
+            // 4. Dernière traduction active
+            if ($gallery->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($galleryTranslation); // ← suppression de la traduction et de ses dépendances associées
         });
     }
 
@@ -71,6 +83,7 @@ class GalleryTranslationService
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
+
         });
     }
 
@@ -82,25 +95,37 @@ class GalleryTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($galleryTranslation) {
 
-            // Empêche la suppression définitive de la traduction si c'est la dernière traduction restante de la galerie
-            $gallery = $galleryTranslation->gallery()->withTrashed()->first();
+            // 1. Verrou sur la galerie (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $gallery = Gallery::withTrashed()
+                ->lockForUpdate()
+                ->find($galleryTranslation->gallery_id);
 
-            if ($gallery) {
-
-                // Compte le nombre de traductions associées à la galerie, y compris les traductions soft-deleted
-                $translationsCount = $gallery->translations()->withTrashed()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden", ['name' => $galleryTranslation->title]));
-                }
+            if (! $gallery) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.gallery_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($galleryTranslation->trashed()) {
-                force_destroy_function($galleryTranslation);
-            } else {
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $galleryTranslation = GalleryTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($galleryTranslation->id);
+
+            if (! $galleryTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $galleryTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
+
+            // 4. Interdit de supprimer la dernière traduction de la galerie (corbeille incluse)
+            if ($gallery->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            force_destroy_function($galleryTranslation);
         });
     }
 }
