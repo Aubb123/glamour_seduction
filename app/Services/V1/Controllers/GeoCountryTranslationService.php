@@ -2,6 +2,7 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Models\GeoCountry;
 use App\Models\GeoCountryTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -23,26 +24,36 @@ class GeoCountryTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($geoCountryTranslation) {
 
-            // Récupération du pays associé à la traduction (même s'il est soft-deleted)
-            $geoCountry = $geoCountryTranslation->country()->withTrashed()->first();
+            // 1. Verrou sur le pays (même soft-deleted)
+            $geoCountry = GeoCountry::withTrashed()
+                ->lockForUpdate()
+                ->find($geoCountryTranslation->country_id);
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante du pays (même si le pays est soft-deleted)
-            if ($geoCountry) {
-
-                // Compte le nombre de traductions associées au pays, en excluant les traductions soft-deleted
-                $translationsCount = $geoCountry->translations()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
-                }
+            if (! $geoCountry) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.country_not_found"));
             }
 
-            // Suppression simple (deleted_at)
+            // 2. Relecture verrouillée de la traduction
+            $geoCountryTranslation = GeoCountryTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($geoCountryTranslation->id);
+
+            if (! $geoCountryTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+            }
+
+            // 3. Déjà en corbeille
             if ($geoCountryTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
             }
-            destroy_function($geoCountryTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
 
+            // 4. Dernière traduction active
+            if ($geoCountry->translations()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression
+            destroy_function($geoCountryTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
         });
     }
 
@@ -84,26 +95,37 @@ class GeoCountryTranslationService
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($geoCountryTranslation) {
 
-            // Empêche la suppression définitive de la traduction si c'est la dernière traduction restante (même si le pays est soft-deleted)
-            $geoCountry = $geoCountryTranslation->country()->withTrashed()->first();
+            // 1. Verrou sur le pays (même soft-deleted), toujours en premier
+            //    pour garder le même ordre de verrouillage que destroy() et syncTranslations()
+            $geoCountry = GeoCountry::withTrashed()
+                ->lockForUpdate()
+                ->find($geoCountryTranslation->country_id);
 
-            if ($geoCountry) {
-
-                // Compte le nombre de traductions associées au pays, y compris les traductions soft-deleted
-                $translationsCount = $geoCountry->translations()->withTrashed()->count();
-
-                if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
-                }
+            if (! $geoCountry) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.country_not_found"));
             }
 
-            // Suppression définitive (forceDelete)
-            if ($geoCountryTranslation->trashed()) {
-                force_destroy_function($geoCountryTranslation); // <- suppression définitive de la traduction du pays sélectionné + gestion de suppression des fichiers associés si besoin
-            } else {
+            // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
+            $geoCountryTranslation = GeoCountryTranslation::withTrashed()
+                ->lockForUpdate()
+                ->find($geoCountryTranslation->id);
+
+            if (! $geoCountryTranslation) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+            }
+
+            // 3. Seule une traduction en corbeille peut être supprimée définitivement
+            if (! $geoCountryTranslation->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }
 
+            // 4. Interdit de supprimer la dernière traduction du pays (corbeille incluse)
+            if ($geoCountry->translations()->withTrashed()->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+            }
+
+            // 5. Suppression définitive de la traduction et de ses dépendances
+            force_destroy_function($geoCountryTranslation); // <- suppression définitive de la traduction du pays sélectionné + gestion de suppression des fichiers associés si besoin
         });
     }
 }
