@@ -94,7 +94,7 @@ class ProductAttributeValueController extends Controller
         try {
 
             // Création de la tag via le service, en passant les données validées du formulaire
-            $value = $this->productAttributeValueService->store($request->validated());
+            $value = $this->productAttributeValueService->backend_product_attribute_values_store($request->validated());
 
             // Log de la création de la tag avec le nom de la tag créée
             $this->logActivity(type: 'info', action: 'backend.product-attribute-values.store', context: ['tag_uuid' => $value->uuid, 'tag_name' => $value->active_translation?->label], message: null, activity: __("{$this->langPath}.store.success", ['name' => $value->active_translation?->label ?? '']), is_success: true, loggable: $value);
@@ -267,7 +267,7 @@ class ProductAttributeValueController extends Controller
         try {
 
             // Mise à jour de la tag via le service, en passant les données validées du formulaire
-            $this->productAttributeValueService->update($productAttributeValue, $request->validated());
+            $this->productAttributeValueService->backend_product_attribute_values_update($productAttributeValue, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $value = $productAttributeValue->refresh();
@@ -306,7 +306,7 @@ class ProductAttributeValueController extends Controller
         try {
 
             // Activation de la tag via le service
-            $this->productAttributeValueService->activate($productAttributeValue);
+            $this->productAttributeValueService->backend_product_attribute_values_activate($productAttributeValue);
 
             $value = $productAttributeValue;
             $tagName = $value->active_translation?->label ?? '';
@@ -339,7 +339,7 @@ class ProductAttributeValueController extends Controller
         try {
 
             // Désactivation de la tag via le service
-            $this->productAttributeValueService->deactivate($productAttributeValue);
+            $this->productAttributeValueService->backend_product_attribute_values_deactivate($productAttributeValue);
 
             $value = $productAttributeValue;
             $tagName = $value->active_translation?->label ?? '';
@@ -376,7 +376,7 @@ class ProductAttributeValueController extends Controller
             $tagName = $value->active_translation?->label ?? __("{$this->langPath}.destroy.unknown");
 
             // Suppression de la tag via le service
-            $this->productAttributeValueService->destroy($productAttributeValue);
+            $this->productAttributeValueService->backend_product_attribute_values_destroy($productAttributeValue);
 
             // Log de la suppression de la tag
             $this->logActivity(type: 'info', action: 'backend.product-attribute-values.destroy', context: ['tag_uuid' => $value->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $tagName]), is_success: true, loggable: $value);
@@ -434,7 +434,7 @@ class ProductAttributeValueController extends Controller
             $value = ProductAttributeValue::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->productAttributeValueService->restore($value);
+            $this->productAttributeValueService->backend_product_attribute_values_restore($value);
 
             $tagName = $value->active_translation?->label ?? __("{$this->langPath}.restore.unknown");
 
@@ -476,7 +476,7 @@ class ProductAttributeValueController extends Controller
             $tagName = $value->active_translation?->label ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Suppression définitive via le service
-            $this->productAttributeValueService->forceDestroy($value);
+            $this->productAttributeValueService->backend_product_attribute_values_force_destroy($value);
 
             // Log de la suppression définitive de la tag
             $this->logActivity(type: 'info', action: 'backend.product-attribute-values.force_destroy', context: ['tag_uuid' => $value->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $tagName]), is_success: true, loggable: $value);
