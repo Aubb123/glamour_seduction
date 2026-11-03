@@ -22,7 +22,7 @@ class ProductCategoryService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): ProductCategory
+    public function backend_product_categories_store(array $data): ProductCategory
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -62,7 +62,7 @@ class ProductCategoryService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(ProductCategory $category, array $data): ProductCategory
+    public function backend_product_categories_update(ProductCategory $category, array $data): ProductCategory
     {
         return DB::transaction(function () use ($category, $data) {
 
@@ -118,7 +118,7 @@ class ProductCategoryService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(ProductCategory $category): void
+    public function backend_product_categories_activate(ProductCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -138,7 +138,7 @@ class ProductCategoryService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(ProductCategory $category): void
+    public function backend_product_categories_deactivate(ProductCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -158,7 +158,7 @@ class ProductCategoryService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductCategory $category): void
+    public function backend_product_categories_destroy(ProductCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -182,7 +182,7 @@ class ProductCategoryService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductCategory $category): void
+    public function backend_product_categories_restore(ProductCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
@@ -200,7 +200,7 @@ class ProductCategoryService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductCategory $category): void
+    public function backend_product_categories_force_destroy(ProductCategory $category): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($category) {
