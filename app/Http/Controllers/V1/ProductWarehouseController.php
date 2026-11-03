@@ -81,7 +81,7 @@ class ProductWarehouseController extends Controller
         try {
 
             // Création de l'entrepôt via le service, en passant les données validées du formulaire
-            $warehouse = $this->productWarehouseService->store($request->validated());
+            $warehouse = $this->productWarehouseService->backend_product_warehouses_store($request->validated());
 
             // Log de la création de l'entrepôt avec le code de l'entrepôt créé
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.store', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->langPath}.store.success", ['code' => $warehouse->code]), is_success: true, loggable: $warehouse);
@@ -215,7 +215,7 @@ class ProductWarehouseController extends Controller
 
             $warehouseCode = $productWarehouse->code;
 
-            $this->productWarehouseService->update($productWarehouse, $request->validated());
+            $this->productWarehouseService->backend_product_warehouses_update($productWarehouse, $request->validated());
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.update', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->langPath}.update.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
 
@@ -250,7 +250,7 @@ class ProductWarehouseController extends Controller
 
             $warehouseCode = $productWarehouse->code;
 
-            $this->productWarehouseService->activate($productWarehouse);
+            $this->productWarehouseService->backend_product_warehouses_activate($productWarehouse);
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.activate', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->langPath}.activate.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
 
@@ -279,7 +279,7 @@ class ProductWarehouseController extends Controller
 
             $warehouseCode = $productWarehouse->code;
 
-            $this->productWarehouseService->deactivate($productWarehouse);
+            $this->productWarehouseService->backend_product_warehouses_deactivate($productWarehouse);
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.deactivate', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->langPath}.deactivate.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
 
@@ -308,7 +308,7 @@ class ProductWarehouseController extends Controller
 
             $warehouseCode = $productWarehouse->code;
 
-            $this->productWarehouseService->destroy($productWarehouse);
+            $this->productWarehouseService->backend_product_warehouses_destroy($productWarehouse);
 
             $this->logActivity(type: 'warning', action: 'backend.product-warehouses.destroy', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->langPath}.destroy.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
 
@@ -367,7 +367,7 @@ class ProductWarehouseController extends Controller
 
             $warehouseCode = $warehouse->code;
 
-            $this->productWarehouseService->restore($warehouse);
+            $this->productWarehouseService->backend_product_warehouses_restore($warehouse);
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.restore', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->langPath}.restore.success", ['code' => $warehouseCode]), is_success: true, loggable: $warehouse);
 
@@ -405,7 +405,7 @@ class ProductWarehouseController extends Controller
 
             $warehouseCode = $warehouse->code;
 
-            $this->productWarehouseService->forceDestroy($warehouse);
+            $this->productWarehouseService->backend_product_warehouses_force_destroy($warehouse);
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.force_destroy', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->langPath}.force_destroy.success", ['code' => $warehouseCode]), is_success: true, loggable: $warehouse);
 
