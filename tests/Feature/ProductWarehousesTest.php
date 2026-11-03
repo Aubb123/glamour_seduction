@@ -179,7 +179,7 @@ it('refuse la suppression d\'un entrepôt actif puis autorise après désactivat
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['status' => 'active']));
     $warehouse = ProductWarehouse::firstOrFail();
 
-    // Active → suppression refusée (règle du ProductWarehouseService::destroy)
+    // Active → suppression refusée (règle du ProductWarehouseService::backend_product_warehouses_destroy)
     $this->actingAs($admin)
         ->from(route('backend.product-warehouses.index'))
         ->delete(route('backend.product-warehouses.destroy', ['productWarehouse' => $warehouse->uuid]))
