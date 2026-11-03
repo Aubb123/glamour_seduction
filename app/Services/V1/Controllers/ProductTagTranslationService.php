@@ -19,7 +19,7 @@ class ProductTagTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(ProductTagTranslation $translation): void
+    public function backend_product_tag_translations_destroy(ProductTagTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -60,7 +60,7 @@ class ProductTagTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(ProductTagTranslation $translation): void
+    public function backend_product_tag_translations_restore(ProductTagTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -90,7 +90,7 @@ class ProductTagTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(ProductTagTranslation $translation): void
+    public function backend_product_tag_translations_force_destroy(ProductTagTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
