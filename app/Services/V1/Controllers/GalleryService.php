@@ -24,7 +24,7 @@ class GalleryService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): Gallery
+    public function backend_galleries_store(array $data): Gallery
     {
         return DB::transaction(function () use ($data) {
 
@@ -66,7 +66,7 @@ class GalleryService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(Gallery $gallery, array $data): Gallery
+    public function backend_galleries_update(Gallery $gallery, array $data): Gallery
     {
         return DB::transaction(function () use ($gallery, $data) {
 
@@ -115,7 +115,7 @@ class GalleryService
     // ─────────────────────────────────────────────
     // TOGGLE ACTIVE (Activer/Désactiver)
     // ─────────────────────────────────────────────
-    public function toggleActive(Gallery $gallery): void
+    public function backend_galleries_toggle_active(Gallery $gallery): void
     {
         DB::transaction(function () use ($gallery) {
             // Inverse le statut actuel (active ↔ inactive)
@@ -130,7 +130,7 @@ class GalleryService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(Gallery $gallery): void
+    public function backend_galleries_destroy(Gallery $gallery): void
     {
         DB::transaction(function () use ($gallery) {
 
@@ -149,7 +149,7 @@ class GalleryService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(Gallery $gallery): void
+    public function backend_galleries_restore(Gallery $gallery): void
     {
         DB::transaction(function () use ($gallery) {
             if ($gallery->trashed()) {
@@ -163,7 +163,7 @@ class GalleryService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(Gallery $gallery): void
+    public function backend_galleries_force_destroy(Gallery $gallery): void
     {
         DB::transaction(function () use ($gallery) {
 
