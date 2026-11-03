@@ -166,7 +166,7 @@ it('refuse la suppression d’une marque active puis autorise après désactivat
     $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
     $brand = ProductBrand::firstOrFail();
 
-    // Active → suppression refusée (règle du ProductBrandService::destroy)
+    // Active → suppression refusée (règle du ProductBrandService::backend_product_brands_destroy)
     $this->actingAs($admin)
         ->from(route('backend.product-brands.index'))
         ->delete(route('backend.product-brands.destroy', ['productBrand' => $brand->uuid]))
