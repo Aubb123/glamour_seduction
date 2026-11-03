@@ -19,7 +19,7 @@ class BlogCategoryTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(BlogCategoryTranslation $translation): void
+    public function backend_blog_category_translations_destroy(BlogCategoryTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -60,7 +60,7 @@ class BlogCategoryTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(BlogCategoryTranslation $translation): void
+    public function backend_blog_category_translations_restore(BlogCategoryTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -92,7 +92,7 @@ class BlogCategoryTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(BlogCategoryTranslation $translation): void
+    public function backend_blog_category_translations_force_destroy(BlogCategoryTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
