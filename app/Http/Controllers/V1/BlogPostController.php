@@ -94,7 +94,7 @@ class BlogPostController extends Controller
         try {
 
             // Utilise le service pour créer un nouvel article de blog avec les données validées
-            $post = $this->blogPostService->store($request->validated());
+            $post = $this->blogPostService->backend_blog_posts_store($request->validated());
 
             // Récupère le titre de l'article pour les logs et les messages flash
             $postName = $post->active_translation?->title ?? '';
@@ -254,7 +254,6 @@ class BlogPostController extends Controller
 
             // Récupère l'article de blog avec ses traductions et tags
             $post = $blogPost->load(['translations.lang', 'tags']);
-
             // Log de l'accès à la page d'édition réussie
             $this->logActivity(type: 'info', action: 'backend.blog-posts.edit', context: ['post_uuid' => $post->uuid, 'post_title' => $post->active_translation?->title], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $post->active_translation?->title ?? '']), is_success: true, loggable: $post);
 
@@ -283,7 +282,7 @@ class BlogPostController extends Controller
         try {
 
             // Utilise le service pour mettre à jour l'article de blog avec les données validées
-            $this->blogPostService->update($blogPost, $request->validated());
+            $this->blogPostService->backend_blog_posts_update($blogPost, $request->validated());
 
             // Capturer les changements après la mise à jour (avant le refresh)
             $changes = $blogPost->getChanges();
@@ -333,7 +332,7 @@ class BlogPostController extends Controller
             $oldStatus = $blogPost->status;
 
             // Utilise le service pour changer le statut de l'article
-            $this->blogPostService->updateStatus($blogPost, $newStatus, $request->input('published_at'));
+            $this->blogPostService->backend_blog_posts_change_status($blogPost, $newStatus, $request->input('published_at'));
 
             $blogPost->refresh()->load(['translations.lang']); // Rafraîchit pour obtenir le titre mis à jour
 
@@ -372,7 +371,7 @@ class BlogPostController extends Controller
             $postTitle = $blogPost->active_translation?->title ?? __("{$this->langPath}.destroy.unknown");
 
             // Utilise le service pour supprimer l'article de blog
-            $this->blogPostService->destroy($blogPost);
+            $this->blogPostService->backend_blog_posts_destroy($blogPost);
 
             // Log de l'activité de suppression réussie
             $this->logActivity(type: 'info', action: 'backend.blog-posts.destroy', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
@@ -434,7 +433,7 @@ class BlogPostController extends Controller
             $blogPost = BlogPost::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer l'article de blog
-            $this->blogPostService->restore($blogPost);
+            $this->blogPostService->backend_blog_posts_restore($blogPost);
 
             $postTitle = $blogPost->active_translation?->title ?? '';  // Récupère le titre de l'article pour les logs et les messages flash
 
@@ -475,7 +474,7 @@ class BlogPostController extends Controller
             $postTitle = $blogPost->active_translation?->title ?? __("{$this->langPath}.force_destroy.unknown");
 
             // Utilise le service pour supprimer définitivement l'article de blog
-            $this->blogPostService->forceDestroy($blogPost);
+            $this->blogPostService->backend_blog_posts_force_destroy($blogPost);
 
             // Log de l'activité de suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
