@@ -119,7 +119,7 @@ class SubscribeHistoryController extends Controller
             $history = $subscribeHistory;
 
             // Utilise le service pour supprimer l'historique
-            $this->subscribeHistoryService->destroy($history);
+            $this->subscribeHistoryService->backend_subscribes_histories_destroy($history);
 
             // Log de l'activité de suppression réussie
             $this->logActivity(type: 'info', action: 'backend.subscribe-histories.destroy', context: ['history_uuid' => $history->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $history->uuid]), is_success: true, loggable: $history);
@@ -154,7 +154,7 @@ class SubscribeHistoryController extends Controller
             $history = SubscribeHistory::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer l'historique
-            $this->subscribeHistoryService->restore($history);
+            $this->subscribeHistoryService->backend_subscribes_histories_restore($history);
 
             // Log de l'activité de restauration réussie
             $this->logActivity(type: 'info', action: 'backend.subscribe-histories.restore', context: ['history_uuid' => $uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $uuid]), is_success: true, loggable: $history);
@@ -196,7 +196,7 @@ class SubscribeHistoryController extends Controller
             $history = SubscribeHistory::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour supprimer définitivement l'historique
-            $this->subscribeHistoryService->forceDestroy($history);
+            $this->subscribeHistoryService->backend_subscribes_histories_force_destroy($history);
 
             // Log de l'activité de suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.subscribe-histories.force_destroy', context: ['history_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $history);
