@@ -119,7 +119,7 @@ class AuditController extends Controller
             return redirect()->back()->with('info', __("{$this->langPath}.destroy.flash_info"));
 
             // // Utilise le service pour supprimer l'audit
-            // $this->auditService->destroy($audit);
+            // $this->auditService->backend_audits_destroy($audit);
 
             // // Log de l'activité de suppression réussie
             // $this->logActivity(type: 'info', action: 'backend.audits.destroy', context: ['audit_uuid' => $audit->uuid], message: null, activity: __("{$this->langPath}.destroy.success"), is_success: true, loggable: $audit);
@@ -151,7 +151,7 @@ class AuditController extends Controller
             return redirect()->route('backend.audits.index')->with('info', __("{$this->langPath}.clear.flash_info", ['count' => 0]));
 
             // // Utilise le service pour supprimer les audits de plus de 3 jours
-            // $deletedCount = $this->auditService->clearOldAudits(3);
+            // $deletedCount = $this->auditService->backend_audits_clear_old_audits(3);
 
             // // Log de l'activité de nettoyage réussie
             // $this->logActivity(type: 'info', action: 'backend.audits.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->langPath}.clear.success", ['count' => $deletedCount]), is_success: true);
