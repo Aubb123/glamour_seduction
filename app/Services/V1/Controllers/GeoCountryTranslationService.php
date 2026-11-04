@@ -19,7 +19,7 @@ class GeoCountryTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(GeoCountryTranslation $geoCountryTranslation): void
+    public function backend_geocountries_translations_destroy(GeoCountryTranslation $geoCountryTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($geoCountryTranslation) {
@@ -60,7 +60,7 @@ class GeoCountryTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(GeoCountryTranslation $geoCountryTranslation): void
+    public function backend_geocountries_translations_restore(GeoCountryTranslation $geoCountryTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($geoCountryTranslation) {
@@ -90,7 +90,7 @@ class GeoCountryTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(GeoCountryTranslation $geoCountryTranslation): void
+    public function backend_geocountries_translations_force_destroy(GeoCountryTranslation $geoCountryTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($geoCountryTranslation) {
