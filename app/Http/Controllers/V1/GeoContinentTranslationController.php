@@ -40,7 +40,7 @@ class GeoContinentTranslationController extends Controller
         try {
 
             // Suppression via le service (soft delete)
-            $this->geoContinentTranslationService->destroy($geoContinentTranslation);
+            $this->geoContinentTranslationService->backend_geocontinents_translations_destroy($geoContinentTranslation);
 
             // Log de la suppression
             $this->logActivity(type: 'warning', action: 'backend.geo.continent.translation.destroy', context: ['continent_translation_uuid' => $geoContinentTranslation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $geoContinentTranslation->uuid]), is_success: true, loggable: $geoContinentTranslation);
@@ -103,7 +103,7 @@ class GeoContinentTranslationController extends Controller
             $translation = GeoContinentTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->geoContinentTranslationService->restore($translation);
+            $this->geoContinentTranslationService->backend_geocontinents_translations_restore($translation);
 
             // Log de la restauration
             $this->logActivity(type: 'info', action: 'backend.geocontinents.translation.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
@@ -145,7 +145,7 @@ class GeoContinentTranslationController extends Controller
             $translation = GeoContinentTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->geoContinentTranslationService->forceDestroy($translation);
+            $this->geoContinentTranslationService->backend_geocontinents_translations_force_destroy($translation);
 
             // Log de la suppression définitive
             $this->logActivity(type: 'info', action: 'backend.geocontinents.translation.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
