@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\Products\Attributes\StoreProductAttributeValueRequest;
-use App\Http\Requests\V1\Products\Attributes\UpdateProductAttributeValueRequest;
+use App\Http\Requests\V1\Products\AttributeValues\StoreProductAttributeValueRequest;
+use App\Http\Requests\V1\Products\AttributeValues\UpdateProductAttributeValueRequest;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductAttributeValueTranslation;
