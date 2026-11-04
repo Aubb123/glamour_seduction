@@ -21,7 +21,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): PlatformVersion
+    public function backend_versions_store(array $data): PlatformVersion
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -47,7 +47,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(PlatformVersion $version, array $data): PlatformVersion
+    public function backend_versions_update(PlatformVersion $version, array $data): PlatformVersion
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($version, $data) {
@@ -89,7 +89,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(PlatformVersion $version): void
+    public function backend_versions_destroy(PlatformVersion $version): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($version) {
@@ -116,7 +116,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(PlatformVersion $version): void
+    public function backend_versions_activate(PlatformVersion $version): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($version) {
@@ -147,7 +147,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(PlatformVersion $version): void
+    public function backend_versions_deactivate(PlatformVersion $version): void
     {
 
         // Utilisation d'une transaction pour garantir l'intégrité des données
@@ -168,7 +168,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // PUBLISH
     // ─────────────────────────────────────────────
-    public function publish(PlatformVersion $version): void
+    public function backend_versions_publish(PlatformVersion $version): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($version) {
@@ -190,7 +190,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // UNPUBLISH
     // ─────────────────────────────────────────────
-    public function unpublish(PlatformVersion $version): void
+    public function backend_versions_unpublish(PlatformVersion $version): void
     {
 
         // Utilisation d'une transaction pour garantir l'intégrité des données
@@ -198,7 +198,7 @@ class PlatformVersionService
 
             // ⛔ Verrouillage métier : une version publiée ne peut jamais être dépubliée.
             // Une fois publiée, is_published reste vrai (historique de publication conservé).
-            // Pour la retirer du front, il faut la DÉSACTIVER via deactivate() → status = inactive.
+            // Pour la retirer du front, il faut la DÉSACTIVER via backend_versions_deactivate() → status = inactive.
             if ($version->is_published) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.unpublish.published_forbidden"));
             }
@@ -214,7 +214,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(PlatformVersion $version): void
+    public function backend_versions_restore(PlatformVersion $version): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($version) {
@@ -244,7 +244,7 @@ class PlatformVersionService
     // ─────────────────────────────────────────────
     // FORCE DELETE
     // ─────────────────────────────────────────────
-    public function forceDestroy(PlatformVersion $version): void
+    public function backend_versions_force_destroy(PlatformVersion $version): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($version) {
