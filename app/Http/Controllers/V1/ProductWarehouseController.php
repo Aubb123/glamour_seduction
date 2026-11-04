@@ -106,7 +106,7 @@ class ProductWarehouseController extends Controller
             return redirect()->back()->with('error', __("{$this->langPath}.store.flash_error"))->withInput();
         }
     }
- 
+
     // ─────────────────────────────────────────────
     // SHOW
     // ─────────────────────────────────────────────
@@ -204,7 +204,7 @@ class ProductWarehouseController extends Controller
 
             abort(500);
         }
-    } 
+    }
 
     // ─────────────────────────────────────────────
     // UPDATE

@@ -7,8 +7,8 @@ use App\Models\GeoCountry;
 use App\Models\User;
 use Database\Seeders\LangSeeder;
 use Database\Seeders\PlatformVersionSeeder;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 uses(RefreshDatabase::class);
@@ -130,7 +130,7 @@ it('déconnecte proprement un utilisateur authentifié', function () {
 
 it('enregistre les alias middleware V1 dans bootstrap/app.php', function () {
     // La synchronisation alias → routeur se fait à la construction du kernel HTTP.
-    $this->app->make(\Illuminate\Contracts\Http\Kernel::class);
+    $this->app->make(Kernel::class);
 
     $aliases = Route::getMiddleware();
 

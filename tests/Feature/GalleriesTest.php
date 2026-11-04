@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Models\CloudPlatform;
 use App\Models\Gallery;
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\User;
 use Database\Seeders\CloudFolderSeeder;
 use Database\Seeders\CloudPlatformSeeder;
@@ -21,7 +23,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 10 — Module Galeries (`galleries`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -58,9 +59,9 @@ function galleriesTestAdmin(): User
 
 function galleryTestPayload(array $overrides = []): array
 {
-    $langFr = \App\Models\Lang::where('code', 'fr')->firstOrFail();
-    $langEn = \App\Models\Lang::where('code', 'en')->firstOrFail();
-    $platform = \App\Models\CloudPlatform::firstOrFail();
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
+    $platform = CloudPlatform::firstOrFail();
 
     return array_merge([
         'sort_order' => random_int(1000, 99999),

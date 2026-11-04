@@ -75,7 +75,7 @@ class BlogCategoryService
                 $updateData['sort_order'] = $data['sort_order'];
             }
 
-            // Détermine le statut à mettre à jour : si le statut envoyé est "Active", on le met à jour en tant que tel, 
+            // Détermine le statut à mettre à jour : si le statut envoyé est "Active", on le met à jour en tant que tel,
             // sinon on le met à "Inactive"
             $updateData['status'] = ($data['status'] ?? null) === BlogCategoryStatus::Active->value ? BlogCategoryStatus::Active : BlogCategoryStatus::Inactive;
 
@@ -130,7 +130,7 @@ class BlogCategoryService
             }
 
             // ← suppression de la catégorie et de ses traductions associées
-            destroy_function($category); 
+            destroy_function($category);
 
         });
     }
@@ -152,7 +152,7 @@ class BlogCategoryService
             $category->update([
                 'status' => BlogCategoryStatus::Active,
             ]);
-            
+
         });
     }
 

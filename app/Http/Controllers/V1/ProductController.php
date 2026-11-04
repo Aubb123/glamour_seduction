@@ -59,7 +59,7 @@ class ProductController extends Controller
     // CREATE
     // ─────────────────────────────────────────────
     public function backend_products_create(): View
-    { 
+    {
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
@@ -432,7 +432,8 @@ class ProductController extends Controller
             abort(500);
         }
     }
-// ─────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
     public function backend_products_restore(string $uuid): RedirectResponse

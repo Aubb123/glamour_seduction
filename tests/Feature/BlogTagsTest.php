@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\BlogTag;
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\User;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
@@ -18,7 +19,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 12 — Blog : Tags (`blog-tags`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -53,8 +53,8 @@ function tagAdmin(): User
 
 function tagPayload(array $overrides = []): array
 {
-    $langFr = \App\Models\Lang::where('code', 'fr')->firstOrFail();
-    $langEn = \App\Models\Lang::where('code', 'en')->firstOrFail();
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
     $uid = uniqid();
 
     return array_merge([

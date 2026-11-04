@@ -38,6 +38,9 @@ use App\Models\SettingTranslation;
 use App\Models\Subscribe;
 use App\Models\SubscribeHistory;
 use App\Models\User;
+use App\Traits\HasAuditModelBehaviors;
+use App\Traits\HasModelBehaviors;
+use Illuminate\Support\Facades\Schema;
 
 it('les 33 modèles du projet existent', function () {
     $models = [
@@ -95,7 +98,7 @@ it('les modèles utilisent les traits de comportements attendus et une clé de r
 
     foreach ($logModels as $model) {
         expect(in_array(
-            \App\Traits\HasAuditModelBehaviors::class,
+            HasAuditModelBehaviors::class,
             class_uses_recursive($model),
             true
         ))->toBeTrue("{$model} n'utilise pas HasAuditModelBehaviors");
@@ -103,7 +106,7 @@ it('les modèles utilisent les traits de comportements attendus et une clé de r
 
     foreach ($entityModels as $model) {
         expect(in_array(
-            \App\Traits\HasModelBehaviors::class,
+            HasModelBehaviors::class,
             class_uses_recursive($model),
             true
         ))->toBeTrue("{$model} n'utilise pas HasModelBehaviors");
@@ -122,7 +125,7 @@ it('les modèles utilisent les traits de comportements attendus et une clé de r
         ], true) ? 'id' : 'uuid';
 
         expect((new $model)->getRouteKeyName())->toBe($expectedKey);
-        expect(\Illuminate\Support\Facades\Schema::hasColumn((new $model)->getTable(), 'uuid'))
+        expect(Schema::hasColumn((new $model)->getTable(), 'uuid'))
             ->toBeTrue("{$model} : colonne uuid absente");
     }
 });

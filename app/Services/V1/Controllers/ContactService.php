@@ -37,7 +37,7 @@ class ContactService
         DB::transaction(function () use ($contact) {
 
             // Seule les messages déjà lus peuvent être supprimés
-            if (!$contact->is_read) {
+            if (! $contact->is_read) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.destroy.flash_warning"));
             }
 
@@ -70,7 +70,7 @@ class ContactService
         DB::transaction(function () use ($contact) {
 
             // Seule les messages déjà lus peuvent être supprimés définitivement
-            if (!$contact->is_read) {
+            if (! $contact->is_read) {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.flash_warning"));
             }
 

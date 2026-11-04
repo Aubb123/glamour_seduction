@@ -30,7 +30,6 @@ uses(RefreshDatabase::class);
  * NB : ClearAllTablesSeeder (SHOW TABLES MySQL) et CloudFolderSeeder / CloudFileSeeder
  * (services Cloud) ne sont pas exécutés ici : ils seront couverts avec les étapes Cloud.
  */
-
 it('seede les langues (fr par défaut + en)', function () {
     $this->seed(LangSeeder::class);
 

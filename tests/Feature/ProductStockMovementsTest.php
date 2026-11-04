@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Models\GeoCountry;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductStockMovement;
 use App\Models\ProductVariant;
 use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseStock;
-use App\Models\GeoCountry;
 use App\Models\User;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;

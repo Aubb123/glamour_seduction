@@ -6,6 +6,7 @@ use App\Models\ActivityLog;
 use App\Models\Audit;
 use App\Models\GeoCountry;
 use App\Models\User;
+use App\Services\V1\ActivityLogger;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
@@ -19,7 +20,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 14 — Audits (`audits`) & ActivityLogs (`activity-logs`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -63,7 +63,7 @@ function auditTestFixtures(User $admin): array
         'ip_address' => '127.0.0.1',
     ]);
 
-    app(\App\Services\V1\ActivityLogger::class)->log(
+    app(ActivityLogger::class)->log(
         type: 'info',
         action: 'test.action',
         context: ['test' => true],

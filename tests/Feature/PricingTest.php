@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Currency;
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\User;
 use App\Services\V1\Controllers\CurrencyService;
 use App\Services\V1\PricingService;
@@ -157,8 +158,8 @@ it('refuse la conversion si un taux de change est nul ou négatif', function () 
     Currency::where('code', 'USD')->update(['exchange_rate' => 0]);
     $usd->refresh();
 
-    expect(fn () => convertPrice(100, $eur, $usd))->toThrow(\InvalidArgumentException::class);
-    expect(fn () => convertPrice(100, $usd, $eur))->toThrow(\InvalidArgumentException::class);
+    expect(fn () => convertPrice(100, $eur, $usd))->toThrow(InvalidArgumentException::class);
+    expect(fn () => convertPrice(100, $usd, $eur))->toThrow(InvalidArgumentException::class);
 });
 
 it('permet de changer de devise depuis le frontend (session visiteur, users.currency_id connecté)', function () {
@@ -210,9 +211,9 @@ it('empêche de définir un taux différent de 1 sur la devise par défaut (gard
         'is_default' => '1',
         'status' => 'active',
         'translations' => [
-            ['lang_id' => \App\Models\Lang::where('code', 'fr')->firstOrFail()->id, 'name' => 'Euro'],
+            ['lang_id' => Lang::where('code', 'fr')->firstOrFail()->id, 'name' => 'Euro'],
         ],
     ];
 
-    expect(fn () => $service->backend_currencies_update($eur, $payload))->toThrow(\InvalidArgumentException::class);
+    expect(fn () => $service->backend_currencies_update($eur, $payload))->toThrow(InvalidArgumentException::class);
 });

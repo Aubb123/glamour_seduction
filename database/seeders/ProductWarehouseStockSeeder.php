@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProductWarehouseStock;
 use App\Models\ProductVariant;
 use App\Models\ProductWarehouse;
+use App\Models\ProductWarehouseStock;
 use Illuminate\Database\Seeder;
 
 class ProductWarehouseStockSeeder extends Seeder

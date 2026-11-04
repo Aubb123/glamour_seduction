@@ -30,7 +30,7 @@ class ProductAttributeService
             // Le slug est généré automatiquement par le trait HasSlug (source = name)
             $attribute = ProductAttribute::create([
                 'sort_order' => $data['sort_order'],
-                'status'     => ($data['status'] ?? null) === ProductAttributeStatus::Active->value
+                'status' => ($data['status'] ?? null) === ProductAttributeStatus::Active->value
                     ? ProductAttributeStatus::Active
                     : ProductAttributeStatus::Inactive,
             ]);
@@ -223,7 +223,7 @@ class ProductAttributeService
                 // Met à jour la traduction existante
                 // Le slug est régénéré automatiquement par HasSlug si le name change.
                 $existingTranslation->update([
-                    'name'        => $translation['name'],
+                    'name' => $translation['name'],
                     'description' => $translation['description'] ?? null,
                 ]);
 
@@ -233,12 +233,11 @@ class ProductAttributeService
                 // Le slug est généré automatiquement par le trait HasSlug.
                 ProductAttributeTranslation::create([
                     'attribute_id' => $attribute->id,
-                    'lang_id'      => $translation['lang_id'],
-                    'name'         => $translation['name'],
-                    'description'  => $translation['description'] ?? null,
+                    'lang_id' => $translation['lang_id'],
+                    'name' => $translation['name'],
+                    'description' => $translation['description'] ?? null,
                 ]);
             }
         }
     }
-
 }

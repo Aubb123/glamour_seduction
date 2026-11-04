@@ -7,7 +7,6 @@ use App\Http\Requests\V1\Currencies\UpdateCurrencyRequest;
 use App\Models\Currency;
 use App\Models\CurrencyTranslation;
 use App\Models\GeoCountry;
-use App\Models\User;
 use App\Services\V1\Controllers\CurrencyService;
 use App\Traits\LogActivity;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

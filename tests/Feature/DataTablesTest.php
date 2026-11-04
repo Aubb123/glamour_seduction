@@ -18,7 +18,6 @@ uses(RefreshDatabase::class);
  * Contrat thème : les tables du back-office sont rendues AVEC DataTables
  * (comme dans base) — seul le template change, pas les fonctionnalités.
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\GeoContinent;
 use App\Models\GeoCountry;
 use App\Models\Setting;
 use App\Models\User;
@@ -17,7 +18,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 11 — Paramètres (`settings`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -29,7 +29,7 @@ beforeEach(function () {
 
 function settingsTestAdmin(): User
 {
-    $continent = \App\Models\GeoContinent::create([
+    $continent = GeoContinent::create([
         'code' => 'AFU', 'population' => 1000000, 'area_km2' => 100000,
         'file_path' => 'cu.svg', 'sort_order' => 900, 'status' => 'active',
     ]);
@@ -67,7 +67,7 @@ it('affiche les paramètres groupés (index settings)', function () {
 
     // La vue affiche les noms traduits (pas les clés brutes) et les form_key uuid
     expect($html)->toContain('settings[');
-    expect(\App\Models\Setting::where('key', 'site_name')->exists())->toBeTrue();
+    expect(Setting::where('key', 'site_name')->exists())->toBeTrue();
 });
 
 it('met à jour une valeur de paramètre non traduisible (update)', function () {

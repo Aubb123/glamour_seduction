@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 use App\Models\BlogCategory;
 use App\Models\BlogCategoryTranslation;
+use App\Models\CloudPlatform;
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\User;
 use Database\Seeders\CloudFolderSeeder;
 use Database\Seeders\CloudPlatformSeeder;
@@ -22,7 +24,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 12 — Blog : Catégories (`blog-categories`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -59,9 +60,9 @@ function blogAdmin(): User
 
 function categoryPayload(array $overrides = []): array
 {
-    $langFr = \App\Models\Lang::where('code', 'fr')->firstOrFail();
-    $langEn = \App\Models\Lang::where('code', 'en')->firstOrFail();
-    $platform = \App\Models\CloudPlatform::firstOrFail();
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
+    $platform = CloudPlatform::firstOrFail();
     $uid = uniqid();
 
     return array_merge([
@@ -204,7 +205,7 @@ it('refuse la mise à jour d\'une traduction se trouvant en corbeille (garde syn
     $this->actingAs($admin)->post(route('backend.blog-categories.store'), categoryPayload());
     $category = BlogCategory::firstOrFail();
 
-    $langFr = \App\Models\Lang::where('code', 'fr')->firstOrFail();
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
 
     // Passage de la traduction FR en corbeille (soft delete direct, simulant une
     // traduction supprimée via le gestionnaire de traductions)

@@ -16,7 +16,7 @@ class CurrencyService
     protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages'; 
+    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // UPDATE
@@ -76,7 +76,8 @@ class CurrencyService
             return $currency; // ← retourne la devise mise à jour avec ses traductions
         });
     }
-// ─────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
     public function backend_currencies_activate(Currency $currency): void
@@ -86,7 +87,7 @@ class CurrencyService
 
             // Si la devise est déjà active, on lève une exception métier pour éviter une opération inutile
             if ($currency->status === CurrencyStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active")); 
+                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
             }
 
             // Activation de la devise sélectionnée
@@ -177,7 +178,8 @@ class CurrencyService
             }
         });
     }
-// ─────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────
     // SYNC TRANSLATIONS (privé)
     // ─────────────────────────────────────────────
     private function syncTranslations(Currency $currency, array $translations): void

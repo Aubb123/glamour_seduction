@@ -20,7 +20,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 13 — Module Cloud : Plateformes (`cloud-platforms`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Products\Stocks\StoreProductWarehouseStockRequest;
 use App\Http\Requests\V1\Products\Stocks\UpdateProductWarehouseStockRequest;
+use App\Models\ProductVariant;
+use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseStock;
 use App\Services\V1\Controllers\ProductWarehouseStockService;
 use App\Traits\LogActivity;
@@ -61,8 +63,8 @@ class ProductWarehouseStockController extends Controller
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.create', context: [], message: null, activity: __("{$this->langPath}.create.success"), is_success: true);
 
             // Listes pour les selects (entrepôts et variantes)
-            $warehouses = \App\Models\ProductWarehouse::orderBy('name')->get();
-            $variants = \App\Models\ProductVariant::with('product')->orderBy('sku')->get();
+            $warehouses = ProductWarehouse::orderBy('name')->get();
+            $variants = ProductVariant::with('product')->orderBy('sku')->get();
 
             // Affiche la vue de création d'un stock
             return view('v1.backend.pages.products.stocks.create', compact('warehouses', 'variants'));
@@ -201,8 +203,8 @@ class ProductWarehouseStockController extends Controller
             $stock = $productWarehouseStock;
 
             // Listes pour les selects (entrepôts et variantes)
-            $warehouses = \App\Models\ProductWarehouse::orderBy('name')->get();
-            $variants = \App\Models\ProductVariant::with('product')->orderBy('sku')->get();
+            $warehouses = ProductWarehouse::orderBy('name')->get();
+            $variants = ProductVariant::with('product')->orderBy('sku')->get();
 
             return view('v1.backend.pages.products.stocks.edit', compact('stock', 'warehouses', 'variants'));
 

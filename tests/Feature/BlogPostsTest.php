@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
-use App\Models\BlogPostComment;
-use App\Models\BlogPostCommentReply;
 use App\Models\BlogTag;
+use App\Models\CloudPlatform;
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\User;
 use Database\Seeders\CloudFolderSeeder;
 use Database\Seeders\CloudPlatformSeeder;
@@ -25,7 +25,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 12 — Blog : Posts (`blog-posts`), Commentaires & Réponses.
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -76,9 +75,9 @@ function postPayload(array $overrides = []): array
 {
     [$admin, $category, $tagIds] = createPostFixture();
 
-    $langFr = \App\Models\Lang::where('code', 'fr')->firstOrFail();
-    $langEn = \App\Models\Lang::where('code', 'en')->firstOrFail();
-    $platform = \App\Models\CloudPlatform::firstOrFail();
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
+    $platform = CloudPlatform::firstOrFail();
     $uid = uniqid();
 
     return array_merge([

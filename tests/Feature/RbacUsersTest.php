@@ -20,7 +20,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 9 — RBAC (`roles`, `permissions`) + Utilisateurs (`users`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

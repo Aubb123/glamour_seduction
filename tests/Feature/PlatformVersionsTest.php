@@ -18,7 +18,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 7 — Module Versions de plateforme (`platform-versions`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

@@ -21,7 +21,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 12 — Blog : Commentaires (`blog-post-comments`) & Réponses.
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -63,7 +62,7 @@ function commentFixture(): array
 {
     $admin = commentsAdmin();
 
-    $category = \App\Models\BlogCategory::create(['sort_order' => 4001, 'status' => 'active']);
+    $category = BlogCategory::create(['sort_order' => 4001, 'status' => 'active']);
     $post = BlogPost::create([
         'category_id' => $category->id, 'user_id' => $admin->id,
         'status' => 'published', 'sort_order' => 1, 'published_at' => now()->subDay(),

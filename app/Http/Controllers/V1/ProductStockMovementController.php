@@ -160,7 +160,6 @@ class ProductStockMovementController extends Controller
         }
     }
 
-
     // ─────────────────────────────────────────────
     // DESTROY (soft delete) — les mouvements ne se modifient jamais
     // ─────────────────────────────────────────────

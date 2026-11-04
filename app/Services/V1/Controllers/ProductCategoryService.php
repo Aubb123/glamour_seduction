@@ -222,7 +222,7 @@ class ProductCategoryService
      * Vérifie que le parent proposé ne crée pas de cycle dans l'arborescence :
      * une catégorie ne peut pas devenir son propre parent ni être rattachée
      * à l'un de ses propres descendants.
-     * 
+     *
      * le rôle de assertValidParent() est essentiellement :
      * « Vérifie que le parent que je veux donner à cette catégorie ne va pas créer une boucle dans mon arbre de catégories. »
      */

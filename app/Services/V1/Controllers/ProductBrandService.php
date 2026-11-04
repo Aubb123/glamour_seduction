@@ -167,7 +167,7 @@ class ProductBrandService
             }
 
             // ← suppression de la marque et de ses traductions associées
-            destroy_function($brand); 
+            destroy_function($brand);
 
         });
     }
@@ -183,7 +183,7 @@ class ProductBrandService
             // Restauration simple (restore)
             if ($brand->trashed()) {
                 // ← restauration de la marque et de ses traductions associées
-                restore_function($brand); 
+                restore_function($brand);
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
             }
@@ -202,7 +202,7 @@ class ProductBrandService
             // Suppression définitive (forceDelete)
             if ($brand->trashed()) {
                 // ← suppression définitive de la marque et de ses traductions associées
-                force_destroy_function($brand); 
+                force_destroy_function($brand);
             } else {
                 throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
             }

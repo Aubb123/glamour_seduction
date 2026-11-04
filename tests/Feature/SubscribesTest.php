@@ -17,7 +17,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 11 — Subscribes (`subscribes` + `subscribe_histories`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

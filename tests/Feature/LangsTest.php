@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\GeoContinent;
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\User;
 use Database\Seeders\LangSeeder;
 use Database\Seeders\PermissionSeeder;
@@ -16,7 +17,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 6 — Module Langues (`langs`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -77,7 +77,7 @@ it('active une langue inactive via la route back-end', function () {
     $admin = langTestAdmin();
 
     // 'en' est active par défaut → on la désactive d'abord, puis on la réactive.
-    $lang = \App\Models\Lang::where('code', 'en')->first();
+    $lang = Lang::where('code', 'en')->first();
 
     $this->actingAs($admin)
         ->patch(route('backend.langs.activate', ['lang' => $lang->uuid]))
@@ -89,7 +89,7 @@ it('active une langue inactive via la route back-end', function () {
 it('désactive une langue non par défaut via la route back-end', function () {
     $admin = langTestAdmin();
 
-    $lang = \App\Models\Lang::where('code', 'en')->first(); // fr = défaut, en = non défaut
+    $lang = Lang::where('code', 'en')->first(); // fr = défaut, en = non défaut
 
     $this->actingAs($admin)
         ->from(route('backend.langs.index'))
@@ -103,7 +103,7 @@ it('désactive une langue non par défaut via la route back-end', function () {
 it('interdit la désactivation de la langue par défaut', function () {
     $admin = langTestAdmin();
 
-    $lang = \App\Models\Lang::where('code', 'fr')->first(); // langue par défaut
+    $lang = Lang::where('code', 'fr')->first(); // langue par défaut
 
     $this->actingAs($admin)
         ->from(route('backend.langs.index'))
@@ -117,7 +117,7 @@ it('interdit la désactivation de la langue par défaut', function () {
 
 it('change la langue de session via le sélecteur (backend.language.switch)', function () {
     $admin = langTestAdmin();
-    $lang = \App\Models\Lang::where('code', 'en')->first();
+    $lang = Lang::where('code', 'en')->first();
 
     $this->actingAs($admin)
         ->from(route('backend.langs.index'))
@@ -131,7 +131,7 @@ it('change la langue de session via le sélecteur (backend.language.switch)', fu
 it('refuse le switch vers une langue inactive', function () {
     $admin = langTestAdmin();
 
-    $lang = \App\Models\Lang::where('code', 'en')->first();
+    $lang = Lang::where('code', 'en')->first();
     $lang->update(['is_active' => false]);
 
     $this->actingAs($admin)

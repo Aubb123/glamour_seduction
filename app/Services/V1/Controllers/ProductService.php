@@ -98,7 +98,7 @@ class ProductService
 
             return $product;
         });
-    } 
+    }
 
     // ─────────────────────────────────────────────
     // PUBLISH

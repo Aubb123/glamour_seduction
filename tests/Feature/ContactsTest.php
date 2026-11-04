@@ -17,7 +17,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 11 — Contacts (partie 1) & Subscribes (voir ContactsSubscribesTest.php pour la suite).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

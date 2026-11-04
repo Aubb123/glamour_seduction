@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Faq;
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\User;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
@@ -18,7 +19,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 10 — Module FAQ (`faqs`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -53,8 +53,8 @@ function faqsTestAdmin(): User
 
 function faqTestPayload(array $overrides = []): array
 {
-    $langFr = \App\Models\Lang::where('code', 'fr')->firstOrFail();
-    $langEn = \App\Models\Lang::where('code', 'en')->firstOrFail();
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
 
     return array_merge([
         'sort_order' => random_int(1000, 99999),

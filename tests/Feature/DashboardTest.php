@@ -18,7 +18,6 @@ uses(RefreshDatabase::class);
  * NB : `backend.analytics` utilise DATE_FORMAT (MySQL pur) → il est testé
  * séparément sur la connexion MySQL de recette (AnalyticsTest.php).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

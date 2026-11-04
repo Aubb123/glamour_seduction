@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Models\BlogCategory;
+use App\Models\BlogPost;
 use App\Models\CloudFile;
 use App\Models\CloudFolder;
-use App\Models\CloudPlatform;
 use App\Models\GeoCountry;
 use App\Models\User;
 use Database\Seeders\CloudFolderSeeder;
@@ -23,7 +24,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 13 — Module Cloud : Fichiers (`cloud-files`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -118,8 +118,8 @@ it('affiche la page de synchronisation des fichiers', function () {
 
 it('passe un fichier en corbeille puis le restaure (via fileable existant)', function () {
     $admin = cloudFileTestAdmin();
-    $category = \App\Models\BlogCategory::create(['sort_order' => 501, 'status' => 'active']);
-    $post = \App\Models\BlogPost::create([
+    $category = BlogCategory::create(['sort_order' => 501, 'status' => 'active']);
+    $post = BlogPost::create([
         'category_id' => $category->id, 'user_id' => $admin->id,
         'status' => 'published', 'sort_order' => 2, 'published_at' => now()->subDay(),
     ]);
@@ -127,7 +127,7 @@ it('passe un fichier en corbeille puis le restaure (via fileable existant)', fun
     $folder = cloudTestFolder();
     $file = CloudFile::create([
         'cloud_folder_id' => $folder->id,
-        'fileable_type' => \App\Models\BlogPost::class,
+        'fileable_type' => BlogPost::class,
         'fileable_id' => $post->id,
         'file_name' => 'attached.jpg',
         'file_type' => 'image',

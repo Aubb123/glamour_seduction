@@ -17,7 +17,7 @@ class BlogPostCommentSeeder extends Seeder
     {
         $user = User::first();
 
-        if (!$user) {
+        if (! $user) {
             $this->command->error("Aucun utilisateur trouvé. Veuillez d'abord créer un utilisateur.\n");
 
             return;

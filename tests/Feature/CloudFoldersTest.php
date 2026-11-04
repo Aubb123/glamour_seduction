@@ -22,7 +22,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 13 — Modules Cloud : Dossiers (`cloud-folders`) & Fichiers (`cloud-files`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

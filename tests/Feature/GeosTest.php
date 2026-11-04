@@ -18,7 +18,6 @@ uses(RefreshDatabase::class);
 /**
  * Étape 8 — Modules Géographie (`geo-continents`, `geo-countries`).
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);

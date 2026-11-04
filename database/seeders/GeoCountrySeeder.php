@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\GeoContinent;
 use App\Models\Currency;
+use App\Models\GeoContinent;
 use App\Models\GeoCountry;
 use App\Models\GeoCountryTranslation;
 use App\Models\Lang;

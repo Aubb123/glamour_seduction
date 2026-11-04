@@ -106,7 +106,6 @@ function makeFolder(int $platformId, string $name, ?int $parentId = null): Cloud
 /**
  * Étape 3 — Comportements métier des modèles du clone.
  */
-
 it('génère un uuid ordonné à la création (Lang)', function () {
     $lang = Lang::factory()->create();
 
@@ -182,93 +181,93 @@ it('crée un rôle et une permission Spatie avec uuid', function () {
 
     $role->givePermissionTo($permission->name);
     expect($role->hasPermissionTo($permission->name))->toBeTrue();
-it('gère la visibilité des articles de blog (scopes + isPublished)', function () {
-    $lang = Lang::factory()->create(['code' => 'en', 'is_default' => true, 'is_active' => true]);
-    $country = makeCountry(makeContinent()->id);
-    $user = makeUser($country->id, 'jane@example.com');
-    $category = BlogCategory::create(['sort_order' => 1, 'status' => 'active']);
+    it('gère la visibilité des articles de blog (scopes + isPublished)', function () {
+        $lang = Lang::factory()->create(['code' => 'en', 'is_default' => true, 'is_active' => true]);
+        $country = makeCountry(makeContinent()->id);
+        $user = makeUser($country->id, 'jane@example.com');
+        $category = BlogCategory::create(['sort_order' => 1, 'status' => 'active']);
 
-    BlogPost::create([
-        'category_id' => $category->id,
-        'user_id' => $user->id,
-        'status' => BlogPostStatus::Draft,
-        'published_at' => null,
-        'sort_order' => 1,
-    ]);
+        BlogPost::create([
+            'category_id' => $category->id,
+            'user_id' => $user->id,
+            'status' => BlogPostStatus::Draft,
+            'published_at' => null,
+            'sort_order' => 1,
+        ]);
 
-    BlogPost::create([
-        'category_id' => $category->id,
-        'user_id' => $user->id,
-        'status' => BlogPostStatus::Published,
-        'published_at' => now()->subDay(),
-        'sort_order' => 2,
-    ]);
+        BlogPost::create([
+            'category_id' => $category->id,
+            'user_id' => $user->id,
+            'status' => BlogPostStatus::Published,
+            'published_at' => now()->subDay(),
+            'sort_order' => 2,
+        ]);
 
-    expect(BlogPost::count())->toBe(2);
-    expect(BlogPost::draft()->count())->toBe(1);
-    expect(BlogPost::published()->count())->toBe(1);
-    expect(BlogPost::archived()->count())->toBe(0);
-    expect(BlogPost::scheduled()->count())->toBe(0);
-});
+        expect(BlogPost::count())->toBe(2);
+        expect(BlogPost::draft()->count())->toBe(1);
+        expect(BlogPost::published()->count())->toBe(1);
+        expect(BlogPost::archived()->count())->toBe(0);
+        expect(BlogPost::scheduled()->count())->toBe(0);
+    });
 
-it('mappe la valeur avec cast des paramètres (Setting::getValue)', function () {
-    $int = Setting::create([
-        'key' => 'max_retry_'.uniqid(),
-        'value' => '5',
-        'type' => 'integer',
-        'is_public' => true,
-        'is_translatable' => false,
-        'is_editable' => true,
-    ]);
+    it('mappe la valeur avec cast des paramètres (Setting::getValue)', function () {
+        $int = Setting::create([
+            'key' => 'max_retry_'.uniqid(),
+            'value' => '5',
+            'type' => 'integer',
+            'is_public' => true,
+            'is_translatable' => false,
+            'is_editable' => true,
+        ]);
 
-    $bool = Setting::create([
-        'key' => 'maintenance_'.uniqid(),
-        'value' => 'true',
-        'type' => 'boolean',
-        'is_public' => true,
-        'is_translatable' => false,
-        'is_editable' => true,
-    ]);
+        $bool = Setting::create([
+            'key' => 'maintenance_'.uniqid(),
+            'value' => 'true',
+            'type' => 'boolean',
+            'is_public' => true,
+            'is_translatable' => false,
+            'is_editable' => true,
+        ]);
 
-    expect($int->getValue())->toBe(5);
-    expect($bool->getValue())->toBeTrue();
-});
+        expect($int->getValue())->toBe(5);
+        expect($bool->getValue())->toBeTrue();
+    });
 
-it('gère les versions de plateforme et leurs statuts', function () {
-    $v1 = PlatformVersion::create([
-        'code' => 'v1_'.uniqid(),
-        'status' => 'active',
-        'is_published' => true,
-        'is_default' => true,
-        'released_at' => now(),
-    ]);
+    it('gère les versions de plateforme et leurs statuts', function () {
+        $v1 = PlatformVersion::create([
+            'code' => 'v1_'.uniqid(),
+            'status' => 'active',
+            'is_published' => true,
+            'is_default' => true,
+            'released_at' => now(),
+        ]);
 
-    expect($v1->uuid)->not->toBeNull();
-    expect((string) $v1->status)->toBe('active');
-});
+        expect($v1->uuid)->not->toBeNull();
+        expect((string) $v1->status)->toBe('active');
+    });
 
-it('crée des entités de contenu simple (Faq, Gallery)', function () {
-    $country = makeCountry(makeContinent()->id);
-    $user = makeUser($country->id, 'content@example.com');
+    it('crée des entités de contenu simple (Faq, Gallery)', function () {
+        $country = makeCountry(makeContinent()->id);
+        $user = makeUser($country->id, 'content@example.com');
 
-    $faq = Faq::create(['user_id' => $user->id, 'sort_order' => 1, 'status' => 'active']);
-    $gallery = Gallery::create(['user_id' => $user->id, 'sort_order' => 2, 'status' => 'active']);
+        $faq = Faq::create(['user_id' => $user->id, 'sort_order' => 1, 'status' => 'active']);
+        $gallery = Gallery::create(['user_id' => $user->id, 'sort_order' => 2, 'status' => 'active']);
 
-    expect($faq->uuid)->not->toBeNull();
-    expect($gallery->uuid)->not->toBeNull();
-});
+        expect($faq->uuid)->not->toBeNull();
+        expect($gallery->uuid)->not->toBeNull();
+    });
 
-it('valide le soft delete et la restauration sur une entité', function () {
-    $country = makeCountry(makeContinent()->id);
-    $user = makeUser($country->id, 'soft@example.com');
+    it('valide le soft delete et la restauration sur une entité', function () {
+        $country = makeCountry(makeContinent()->id);
+        $user = makeUser($country->id, 'soft@example.com');
 
-    expect($user->trashed())->toBeFalse();
+        expect($user->trashed())->toBeFalse();
 
-    $user->delete();
-    expect($user->trashed())->toBeTrue();
-    expect(User::find($user->id))->toBeNull();
+        $user->delete();
+        expect($user->trashed())->toBeTrue();
+        expect(User::find($user->id))->toBeNull();
 
-    $user->restore();
-    expect(User::find($user->id)->id)->toBe($user->id);
-});
+        $user->restore();
+        expect(User::find($user->id)->id)->toBe($user->id);
+    });
 });

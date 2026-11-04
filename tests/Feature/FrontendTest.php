@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Models\GeoCountry;
 use App\Models\User;
+use Database\Seeders\GeoContinentSeeder;
+use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,7 +19,6 @@ uses(RefreshDatabase::class);
  * affiche « v1 », un lien vers le backend et, si connecté, le bouton
  * de déconnexion. Ce test fige ce contrat.
  */
-
 beforeEach(function () {
     $this->seed(LangSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
@@ -37,8 +38,8 @@ it('affiche le lien vers le backend', function () {
 });
 
 it('affiche le bouton de déconnexion pour un utilisateur connecté', function () {
-    $this->seed(\Database\Seeders\GeoContinentSeeder::class);
-    $this->seed(\Database\Seeders\GeoCountrySeeder::class);
+    $this->seed(GeoContinentSeeder::class);
+    $this->seed(GeoCountrySeeder::class);
 
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
 

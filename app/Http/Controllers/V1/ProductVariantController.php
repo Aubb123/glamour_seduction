@@ -7,7 +7,6 @@ use App\Http\Requests\V1\Products\Variants\StoreProductVariantRequest;
 use App\Http\Requests\V1\Products\Variants\UpdateProductVariantRequest;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductAttributeValue;
 use App\Models\ProductVariant;
 use App\Services\V1\Controllers\ProductVariantService;
 use App\Traits\LogActivity;
@@ -113,7 +112,7 @@ class ProductVariantController extends Controller
             return redirect()->back()->with('error', __("{$this->langPath}.store.flash_error"))->withInput();
         }
     }
- 
+
     // ─────────────────────────────────────────────
     // SHOW
     // ─────────────────────────────────────────────

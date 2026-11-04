@@ -55,7 +55,7 @@ class ProductBrandController extends Controller
             $this->logActivity(type: 'error', action: 'backend.product-brands.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
 
             // Erreur serveur générique en cas de problème lors de la récupération des marques
-            abort(500); 
+            abort(500);
         }
     }
 
@@ -67,7 +67,7 @@ class ProductBrandController extends Controller
         try {
 
             // Récupère les langues actives pour les passer à la vue
-            $langs = getActiveLangs()['langs']; 
+            $langs = getActiveLangs()['langs'];
 
             // Log de l'accès à la page de création d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.create', context: [], message: null, activity: __("{$this->langPath}.create.success"), is_success: true);
@@ -146,7 +146,7 @@ class ProductBrandController extends Controller
         try {
 
             // Récupère les langues actives pour les passer à la vue
-            $langs = getActiveLangs()['langs']; 
+            $langs = getActiveLangs()['langs'];
 
             // Vérifie que le slug correspond
             $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.show', 'show');
@@ -173,7 +173,7 @@ class ProductBrandController extends Controller
             $this->logActivity(type: 'error', action: 'backend.product-brands.show', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $productBrand->uuid]), is_success: false);
 
             // Erreur serveur générique en cas de problème lors de la récupération de la marque
-            abort(500); 
+            abort(500);
         }
     }
 
@@ -193,7 +193,7 @@ class ProductBrandController extends Controller
             // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? '';
 
-            // $audits récupère tous les audits de la marque, avec les relations user et auditable, triés par date de création décroissante    
+            // $audits récupère tous les audits de la marque, avec les relations user et auditable, triés par date de création décroissante
             $audits = $brand->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des audits d'une marque
@@ -230,7 +230,7 @@ class ProductBrandController extends Controller
 
             // $logs récupère tous les logs d'activité de la marque, avec la relation user, triés par date de création décroissante
             $logs = $brand->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
-        
+
             // Log de la consultation des logs d'activité d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.activity-logs', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->langPath}.activity-logs.success", ['name' => $brandName]), is_success: true, loggable: $brand);
 
@@ -255,7 +255,7 @@ class ProductBrandController extends Controller
         try {
 
             // Récupère les langues actives pour les passer à la vue
-            $langs = getActiveLangs()['langs']; 
+            $langs = getActiveLangs()['langs'];
 
             // Log de l'accès à la page de modification d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.edit', context: ['brand_uuid' => $productBrand->uuid, 'brand_name' => $productBrand->active_translation?->name], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $productBrand->active_translation?->name ?? '']), is_success: true, loggable: $productBrand);
@@ -272,7 +272,7 @@ class ProductBrandController extends Controller
             $this->logActivity(type: 'error', action: 'backend.product-brands.edit', context: ['brand_uuid' => $productBrand->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.edit.error", ['uuid' => $productBrand->uuid]), is_success: false);
 
             // Erreur serveur générique en cas de problème lors de la récupération de la marque
-            abort(500); 
+            abort(500);
         }
     }
 
