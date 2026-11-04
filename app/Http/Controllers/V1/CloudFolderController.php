@@ -229,7 +229,7 @@ class CloudFolderController extends Controller
             $folder = $cloudFolder;
 
             // Utilise le service pour mettre à jour le dossier cloud avec les données validées
-            $this->cloudFolderService->update($folder, $request->validated());
+            $this->cloudFolderService->backend_cloud_folders_update($folder, $request->validated());
 
             $folder->refresh(); // Rafraîchit l'instance du modèle pour obtenir les dernières données après la mise à jour
 
@@ -273,7 +273,7 @@ class CloudFolderController extends Controller
             $wasActive = $folder->status === CloudFolderStatus::Active;
 
             // Utilise le service pour basculer le statut actif du dossier
-            $this->cloudFolderService->toggleActive($folder);
+            $this->cloudFolderService->backend_cloud_folders_toggle_active($folder);
 
             $folderName = $folder->folder_name; // Récupère le nom du dossier pour les logs et les messages flash
 
