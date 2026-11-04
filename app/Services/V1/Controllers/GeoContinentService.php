@@ -20,7 +20,7 @@ class GeoContinentService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(GeoContinent $continent, array $data): GeoContinent
+    public function backend_geocontinents_update(GeoContinent $continent, array $data): GeoContinent
     {
         // Transaction justifiée ici : plusieurs écritures (continent + traductions)
         DB::transaction(function () use ($continent, $data) {
@@ -47,7 +47,7 @@ class GeoContinentService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(GeoContinent $continent): void
+    public function backend_geocontinents_activate(GeoContinent $continent): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($continent) {
@@ -63,7 +63,7 @@ class GeoContinentService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(GeoContinent $continent): void
+    public function backend_geocontinents_deactivate(GeoContinent $continent): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($continent) {
