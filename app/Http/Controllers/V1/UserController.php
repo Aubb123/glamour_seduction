@@ -394,7 +394,7 @@ class UserController extends Controller
         try {
 
             // Mise à jour de l'utilisateur via le service, en passant les données validées du formulaire
-            $this->userService->update($user, $request->validated());
+            $this->userService->backend_users_update($user, $request->validated());
 
             // Rafraîchit l'instance pour capturer les vrais changements
             $user->refresh();
@@ -432,7 +432,7 @@ class UserController extends Controller
         try {
 
             // Activation de l'utilisateur via le service
-            $this->userService->activate($user);
+            $this->userService->backend_users_activate($user);
 
             // Récupération du nom complet de l'utilisateur pour le message de succès
             $userName = $user->first_name.' '.$user->last_name;
@@ -467,7 +467,7 @@ class UserController extends Controller
         try {
 
             // Suspension de l'utilisateur via le service
-            $this->userService->suspend($user);
+            $this->userService->backend_users_suspend($user);
             $userName = $user->first_name.' '.$user->last_name;
 
             // Log de la suspension de l'utilisateur
@@ -500,7 +500,7 @@ class UserController extends Controller
         try {
 
             // Bannissement de l'utilisateur via le service
-            $this->userService->ban($user);
+            $this->userService->backend_users_ban($user);
             $userName = $user->first_name.' '.$user->last_name;
 
             // Log du bannissement de l'utilisateur
