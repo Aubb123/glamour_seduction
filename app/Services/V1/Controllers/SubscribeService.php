@@ -14,7 +14,7 @@ class SubscribeService
     // ─────────────────────────────────────────────
     // SUBSCRIBE (création / réabonnement)
     // ─────────────────────────────────────────────
-    public function subscribe(string $email, ?int $userId = null, bool $verified = false): Subscribe
+    public function backend_subscribes_subscribe(string $email, ?int $userId = null, bool $verified = false): Subscribe
     {
         return DB::transaction(function () use ($email, $userId, $verified) {
 
@@ -77,7 +77,7 @@ class SubscribeService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(Subscribe $subscribe): void
+    public function backend_subscribes_activate(Subscribe $subscribe): void
     {
         DB::transaction(function () use ($subscribe) {
 
@@ -91,7 +91,7 @@ class SubscribeService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(Subscribe $subscribe): void
+    public function backend_subscribes_deactivate(Subscribe $subscribe): void
     {
         DB::transaction(function () use ($subscribe) {
 
@@ -104,7 +104,7 @@ class SubscribeService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(Subscribe $subscribe): void
+    public function backend_subscribes_destroy(Subscribe $subscribe): void
     {
         DB::transaction(function () use ($subscribe) {
 
@@ -123,7 +123,7 @@ class SubscribeService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(Subscribe $subscribe): void
+    public function backend_subscribes_restore(Subscribe $subscribe): void
     {
         DB::transaction(function () use ($subscribe) {
             if ($subscribe->trashed()) {
@@ -137,7 +137,7 @@ class SubscribeService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(Subscribe $subscribe): void
+    public function backend_subscribes_force_destroy(Subscribe $subscribe): void
     {
         DB::transaction(function () use ($subscribe) {
 
