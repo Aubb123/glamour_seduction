@@ -212,7 +212,7 @@ class CloudPlatformController extends Controller
 
         } catch (\Exception $e) {
 
-            // Log de l'erreur de visualisation
+            // Log de l'erreur de visualisation avec un message d'erreur
             $this->logActivity(type: 'error', action: 'backend.cloud-platforms.folders', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.folders.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
