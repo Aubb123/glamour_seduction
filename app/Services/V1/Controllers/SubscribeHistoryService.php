@@ -12,7 +12,7 @@ class SubscribeHistoryService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(SubscribeHistory $subscribeHistory): void
+    public function backend_subscribes_histories_destroy(SubscribeHistory $subscribeHistory): void
     {
         // Retourne une exception à titre informatif, l'historique des abonnements ne peut pas être supprimé, il est conservé à des fins de traçabilité et d'audit.
         throw new \InvalidArgumentException(__("{$this->langPath}.destroy.flash_warning"));
@@ -27,7 +27,7 @@ class SubscribeHistoryService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(SubscribeHistory $subscribeHistory): void
+    public function backend_subscribes_histories_restore(SubscribeHistory $subscribeHistory): void
     {
         DB::transaction(function () use ($subscribeHistory) {
             if ($subscribeHistory->trashed()) {
@@ -41,7 +41,7 @@ class SubscribeHistoryService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(SubscribeHistory $subscribeHistory): void
+    public function backend_subscribes_histories_force_destroy(SubscribeHistory $subscribeHistory): void
     {
         // Retourne une exception à titre informatif, l'historique des abonnements ne peut pas être supprimé, il est conservé à des fins de traçabilité et d'audit.
         throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.flash_warning"));
