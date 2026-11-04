@@ -22,12 +22,6 @@ class PlatformVersionTranslationController extends Controller
         protected PlatformVersionTranslationService $platformVersionTranslationService
     ) {}
 
-    // Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ///////////////////  Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////
-
     // ═══════════════════════════════════════════════════════════════
     // BACKEND
     // ═══════════════════════════════════════════════════════════════
@@ -40,7 +34,7 @@ class PlatformVersionTranslationController extends Controller
         try {
 
             // Suppression via le service (soft delete)
-            $this->platformVersionTranslationService->destroy($platformVersionTranslation);
+            $this->platformVersionTranslationService->backend_platform_version_translations_destroy($platformVersionTranslation);
 
             // Log de la suppression
             $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.destroy', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $platformVersionTranslation->uuid]), is_success: true, loggable: $platformVersionTranslation);
@@ -103,7 +97,7 @@ class PlatformVersionTranslationController extends Controller
             $platformVersionTranslation = PlatformVersionTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration via le service
-            $this->platformVersionTranslationService->restore($platformVersionTranslation);
+            $this->platformVersionTranslationService->backend_platform_version_translations_restore($platformVersionTranslation);
 
             // Log de la restauration
             $this->logActivity(type: 'info', action: 'backend.platform-version-translations.restore', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $platformVersionTranslation->uuid]), is_success: true, loggable: $platformVersionTranslation);
@@ -138,7 +132,7 @@ class PlatformVersionTranslationController extends Controller
             $platformVersionTranslation = PlatformVersionTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Suppression définitive via le service
-            $this->platformVersionTranslationService->forceDestroy($platformVersionTranslation);
+            $this->platformVersionTranslationService->backend_platform_version_translations_force_destroy($platformVersionTranslation);
 
             // Log de la suppression définitive
             $this->logActivity(type: 'info', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $platformVersionTranslation);
