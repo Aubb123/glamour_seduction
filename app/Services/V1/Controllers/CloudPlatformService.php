@@ -25,7 +25,7 @@ class CloudPlatformService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): CloudPlatform
+    public function backend_cloud_platforms_store(array $data): CloudPlatform
     {
         return DB::transaction(function () use ($data) {
 
@@ -57,7 +57,7 @@ class CloudPlatformService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(CloudPlatform $platform, array $data): CloudPlatform
+    public function backend_cloud_platforms_update(CloudPlatform $platform, array $data): CloudPlatform
     {
         return DB::transaction(function () use ($platform, $data) {
 
@@ -113,7 +113,7 @@ class CloudPlatformService
     // ─────────────────────────────────────────────
     // TOGGLE ACTIVE
     // ─────────────────────────────────────────────
-    public function toggleActive(CloudPlatform $platform): void
+    public function backend_cloud_platforms_toggle_active(CloudPlatform $platform): void
     {
         DB::transaction(function () use ($platform) {
             $platform->update([
@@ -128,7 +128,7 @@ class CloudPlatformService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(CloudPlatform $platform): void
+    public function backend_cloud_platforms_destroy(CloudPlatform $platform): void
     {
         DB::transaction(function () use ($platform) {
 
@@ -148,7 +148,7 @@ class CloudPlatformService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(CloudPlatform $platform): void
+    public function backend_cloud_platforms_restore(CloudPlatform $platform): void
     {
         DB::transaction(function () use ($platform) {
             if ($platform->trashed()) {
@@ -162,7 +162,7 @@ class CloudPlatformService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(CloudPlatform $platform): void
+    public function backend_cloud_platforms_force_destroy(CloudPlatform $platform): void
     {
         DB::transaction(function () use ($platform) {
 
@@ -183,12 +183,12 @@ class CloudPlatformService
     // ─────────────────────────────────────────────
     // ARCHITECTURE STORE
     // ─────────────────────────────────────────────
-    public function createArchitecture(CloudPlatform $cloudPlatform): void
+    public function backend_cloud_platforms_architecture_store(CloudPlatform $cloudPlatform): void
     {
         DB::transaction(function () use ($cloudPlatform) {
 
             if ($cloudPlatform->status !== CloudPlatformStatus::Active) {
-                $this->logActivity(type: 'error', action: 'createArchitecture', context: ['platform' => $cloudPlatform->name], message: __("{$this->langPath}.architecture_store.inactive_platform", ['name' => $cloudPlatform->name]), activity: __("{$this->langPath}.architecture_store.error"), is_success: false, loggable: $cloudPlatform);
+                $this->logActivity(type: 'error', action: 'backend_cloud_platforms_architecture_store', context: ['platform' => $cloudPlatform->name], message: __("{$this->langPath}.architecture_store.inactive_platform", ['name' => $cloudPlatform->name]), activity: __("{$this->langPath}.architecture_store.error"), is_success: false, loggable: $cloudPlatform);
                 throw new \InvalidArgumentException(__("{$this->langPath}.architecture_store.inactive_platform", ['name' => $cloudPlatform->name]));
             }
 
@@ -202,7 +202,7 @@ class CloudPlatformService
             // 2. Marquage des dossiers spécifiques (content_type, entity_table)
             $updatedCount = $this->cloudFolderService->markFoldersWithContentType($cloudPlatform, $foldersToUpdate);
 
-            $this->logActivity(type: 'info', action: 'createArchitecture', context: ['platform' => $cloudPlatform->name, 'created' => $createdCount, 'updated' => $updatedCount], message: __("{$this->langPath}.architecture_store.success", ['name' => $cloudPlatform->name]), activity: __("{$this->langPath}.architecture_store.success", ['name' => $cloudPlatform->name]), is_success: true, loggable: $cloudPlatform);
+            $this->logActivity(type: 'info', action: 'backend_cloud_platforms_architecture_store', context: ['platform' => $cloudPlatform->name, 'created' => $createdCount, 'updated' => $updatedCount], message: __("{$this->langPath}.architecture_store.success", ['name' => $cloudPlatform->name]), activity: __("{$this->langPath}.architecture_store.success", ['name' => $cloudPlatform->name]), is_success: true, loggable: $cloudPlatform);
         });
     }
 }
