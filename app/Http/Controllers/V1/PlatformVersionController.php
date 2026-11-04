@@ -23,12 +23,6 @@ class PlatformVersionController extends Controller
     // Injection de dépendance du service de gestion des versions du site
     public function __construct(protected PlatformVersionService $platformVersionService) {}
 
-    // Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ///////////////////  Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////
-
     // ═══════════════════════════════════════════════════════════════
     // BACKEND
     // ═══════════════════════════════════════════════════════════════
@@ -91,7 +85,7 @@ class PlatformVersionController extends Controller
         try {
 
             // Création de la version via le service, en passant les données validées du formulaire
-            $version = $this->platformVersionService->store($request->validated());
+            $version = $this->platformVersionService->backend_versions_store($request->validated());
 
             // Log de la création de la version avec le code de la version créée
             $this->logActivity(type: 'info', action: 'backend.versions.store', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.store.success", ['uuid' => $version->uuid]), is_success: true, loggable: $version);
@@ -263,7 +257,7 @@ class PlatformVersionController extends Controller
             $version = $platformVersion;
 
             // Mise à jour de la version via le service, en passant les données validées du formulaire
-            $this->platformVersionService->update($version, $request->validated());
+            $this->platformVersionService->backend_versions_update($version, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $version->refresh();
@@ -303,7 +297,7 @@ class PlatformVersionController extends Controller
             $version = $platformVersion;
 
             // Activation de la version via le service
-            $this->platformVersionService->activate($version);
+            $this->platformVersionService->backend_versions_activate($version);
 
             // Log de l'activation de la version avec le code de la version activée
             $this->logActivity(type: 'info', action: 'backend.versions.activate', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $version->active_translation?->name ?? 'Version inconnue']), is_success: true, loggable: $version);
@@ -340,7 +334,7 @@ class PlatformVersionController extends Controller
             $version = $platformVersion;
 
             // Désactivation de la version via le service
-            $this->platformVersionService->deactivate($version);
+            $this->platformVersionService->backend_versions_deactivate($version);
 
             // Log de la désactivation de la version avec le code de la version désactivée
             $this->logActivity(type: 'info', action: 'backend.versions.deactivate', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.deactivate.success", ['name' => $version->active_translation?->name ?? 'Version inconnue']), is_success: true, loggable: $version);
@@ -377,7 +371,7 @@ class PlatformVersionController extends Controller
             $version = $platformVersion;
 
             // Publication de la version via le service
-            $this->platformVersionService->publish($version);
+            $this->platformVersionService->backend_versions_publish($version);
 
             // Log de la publication de la version avec le code de la version publiée
             $this->logActivity(type: 'info', action: 'backend.versions.publish', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.publish.success", ['name' => $version->active_translation->name]), is_success: true, loggable: $version);
@@ -414,7 +408,7 @@ class PlatformVersionController extends Controller
             $version = $platformVersion;
 
             // Dépublication de la version via le service
-            $this->platformVersionService->unpublish($version);
+            $this->platformVersionService->backend_versions_unpublish($version);
 
             // Log de la dépublication de la version avec le code de la version dépubliée
             $this->logActivity(type: 'info', action: 'backend.versions.unpublish', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.unpublish.success", ['code' => $version->code]), is_success: true, loggable: $version);
@@ -454,7 +448,7 @@ class PlatformVersionController extends Controller
             $name = $version->active_translation?->name ?? $version->code;
 
             // Suppression de la version via le service (soft delete)
-            $this->platformVersionService->destroy($version);
+            $this->platformVersionService->backend_versions_destroy($version);
 
             // Log de la suppression de la version avec le uuid de la version supprimée
             $this->logActivity(type: 'info', action: 'backend.versions.destroy', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $name]), is_success: true, loggable: $version);
@@ -515,7 +509,7 @@ class PlatformVersionController extends Controller
             $version = PlatformVersion::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Restauration de la version via le service
-            $this->platformVersionService->restore($version);
+            $this->platformVersionService->backend_versions_restore($version);
 
             // Log de la restauration de la version avec le uuid de la version restaurée
             $this->logActivity(type: 'info', action: 'backend.versions.restore', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $version->active_translation->name]), is_success: true, loggable: $version);
@@ -558,7 +552,7 @@ class PlatformVersionController extends Controller
             // Suppression définitive de la version via le service
             $name = $version->active_translation->name ?? __("{$this->langPath}.force_destroy.unknown");
 
-            $this->platformVersionService->forceDestroy($version);
+            $this->platformVersionService->backend_versions_force_destroy($version);
 
             // Log de la suppression définitive de la version avec le uuid de la version supprimée
             $this->logActivity(type: 'info', action: 'backend.versions.force_destroy', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $name]), is_success: true, loggable: $version);
