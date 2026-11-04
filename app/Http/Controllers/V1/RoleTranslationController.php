@@ -31,7 +31,7 @@ class RoleTranslationController extends Controller
 
             // Traduction résolue par le binding implicite sur uuid (404 automatique si introuvable)
 
-            $this->roleTranslationService->destroy($translation);
+            $this->roleTranslationService->backend_roles_translations_destroy($translation);
 
             $this->logActivity(type: 'warning', action: 'backend.roles.translations.destroy', context: ['role_translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -83,7 +83,7 @@ class RoleTranslationController extends Controller
 
             $translation = RoleTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->roleTranslationService->restore($translation);
+            $this->roleTranslationService->backend_roles_translations_restore($translation);
 
             $this->logActivity(type: 'info', action: 'backend.roles.translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
@@ -118,7 +118,7 @@ class RoleTranslationController extends Controller
 
             $translation = RoleTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->roleTranslationService->forceDestroy($translation);
+            $this->roleTranslationService->backend_roles_translations_force_destroy($translation);
 
             $this->logActivity(type: 'info', action: 'backend.roles.translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
 
