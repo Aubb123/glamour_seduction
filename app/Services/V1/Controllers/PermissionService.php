@@ -15,7 +15,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): Permission
+    public function backend_permissions_store(array $data): Permission
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
@@ -44,7 +44,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(Permission $permission, array $data): Permission
+    public function backend_permissions_update(Permission $permission, array $data): Permission
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($permission, $data) {
@@ -89,7 +89,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(Permission $permission): void
+    public function backend_permissions_activate(Permission $permission): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($permission) {
@@ -110,7 +110,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(Permission $permission): void
+    public function backend_permissions_deactivate(Permission $permission): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($permission) {
@@ -131,7 +131,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(Permission $permission): void
+    public function backend_permissions_destroy(Permission $permission): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($permission) {
@@ -157,7 +157,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(string $uuid): Permission
+    public function backend_permissions_restore(string $uuid): Permission
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($uuid) {
@@ -184,7 +184,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // SYNC ROLES
     // ─────────────────────────────────────────────
-    public function syncRoles(Permission $permission, array $roleIds): Permission
+    public function backend_permissions_sync_roles(Permission $permission, array $roleIds): Permission
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($permission, $roleIds) {
@@ -202,7 +202,7 @@ class PermissionService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(string $uuid): void
+    public function backend_permissions_force_destroy(string $uuid): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($uuid) {
