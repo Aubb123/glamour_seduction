@@ -19,7 +19,7 @@ class GeoContinentTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(GeoContinentTranslation $geoContinentTranslation): void
+    public function backend_geocontinents_translations_destroy(GeoContinentTranslation $geoContinentTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($geoContinentTranslation) {
@@ -60,7 +60,7 @@ class GeoContinentTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(GeoContinentTranslation $translation): void
+    public function backend_geocontinents_translations_restore(GeoContinentTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
@@ -89,7 +89,7 @@ class GeoContinentTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(GeoContinentTranslation $translation): void
+    public function backend_geocontinents_translations_force_destroy(GeoContinentTranslation $translation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($translation) {
