@@ -18,7 +18,7 @@ class CheckCloudFilesSync
     /**
      * Chemin vers les messages de langue pour ce middleware.
      */
-    protected string $langPath = 'v1/backend/others/middlewares/messages-middleware.checkCloudFilesSync';
+    protected string $backendLangPath = 'v1/backend/others/middlewares/messages-middleware.checkCloudFilesSync';
 
     /**
      * Rôles autorisés à être redirigés vers la page de synchronisation.
@@ -96,7 +96,7 @@ class CheckCloudFilesSync
         // Si le nombre de fichiers non synchronisés atteint le seuil, redirige vers la page de synchronisation
         if ($nonSyncedCount >= $threshold) {
             // Redirige vers la page de synchronisation avec un message d'avertissement
-            return redirect()->route('backend.cloud-files.sync')->with('warning', __("{$this->langPath}.non_synced_files", ['count' => $nonSyncedCount]));
+            return redirect()->route('backend.cloud-files.sync')->with('warning', __("{$this->backendLangPath}.non_synced_files", ['count' => $nonSyncedCount]));
         }
 
         return $next($request);

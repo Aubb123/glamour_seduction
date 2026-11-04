@@ -15,7 +15,7 @@ class CheckActiveRole
 {
     use LogActivity; // Trait pour le logging d'activité
 
-    protected string $langPath = 'v1/backend/others/middlewares/messages-middleware.checkActiveRole';
+    protected string $backendLangPath = 'v1/backend/others/middlewares/messages-middleware.checkActiveRole';
 
     /**
      * Handle an incoming request.
@@ -80,13 +80,13 @@ class CheckActiveRole
     private function denyAccess($user, string $reason): Response
     {
         // Log de l'accès refusé en raison d'un rôle/permission inactif
-        $this->logActivity(type: 'warning', action: 'middleware.checkActiveRole', context: ['user_id' => $user->id, 'user_email' => $user->email, 'reason' => $reason], message: null, activity: "{$this->langPath}.{$reason}", is_success: false, loggable: $user);
+        $this->logActivity(type: 'warning', action: 'middleware.checkActiveRole', context: ['user_id' => $user->id, 'user_email' => $user->email, 'reason' => $reason], message: null, activity: "{$this->backendLangPath}.{$reason}", is_success: false, loggable: $user);
 
         // Si aucun rôle actif, on déconnecte ou on refuse l'accès
         auth()->logout();
         session()->invalidate();
         session()->regenerateToken();
 
-        return redirect()->route('login')->with('error', __("{$this->langPath}.{$reason}"));
+        return redirect()->route('login')->with('error', __("{$this->backendLangPath}.{$reason}"));
     }
 }
