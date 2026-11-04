@@ -88,7 +88,6 @@ class SubscribeController extends Controller
 
             // Instance bindée + compteurs
             $subscribe->loadCount(['audits', 'activityLogs']);
-
             $audits = $subscribe->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.subscribes.audits', context: ['subscribe_uuid' => $subscribe->uuid, 'subscribe_email' => $subscribe->email], message: null, activity: __("{$this->langPath}.audits.success", ['name' => $subscribe->email]), is_success: true, loggable: $subscribe);
@@ -133,7 +132,7 @@ class SubscribeController extends Controller
         try {
 
             // Utilise le service pour activer l'abonné
-            $this->subscribeService->activate($subscribe);
+            $this->subscribeService->backend_subscribes_activate($subscribe);
 
             $subscribeEmail = $subscribe->email; // Récupère l'email pour les logs
 
@@ -167,7 +166,7 @@ class SubscribeController extends Controller
         try {
 
             // Utilise le service pour désactiver l'abonné
-            $this->subscribeService->deactivate($subscribe);
+            $this->subscribeService->backend_subscribes_deactivate($subscribe);
 
             $subscribeEmail = $subscribe->email; // Récupère l'email pour les logs
 
@@ -204,7 +203,7 @@ class SubscribeController extends Controller
             $subscribeEmail = $subscribe->email;
 
             // Utilise le service pour supprimer l'abonné
-            $this->subscribeService->destroy($subscribe);
+            $this->subscribeService->backend_subscribes_destroy($subscribe);
 
             // Log de l'activité de suppression réussie
             $this->logActivity(type: 'info', action: 'backend.subscribes.destroy', context: ['subscribe_uuid' => $subscribe->uuid, 'subscribe_email' => $subscribeEmail], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $subscribeEmail]), is_success: true, loggable: $subscribe);
@@ -264,7 +263,7 @@ class SubscribeController extends Controller
             $subscribe = Subscribe::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer l'abonné
-            $this->subscribeService->restore($subscribe);
+            $this->subscribeService->backend_subscribes_restore($subscribe);
 
             $subscribeEmail = $subscribe->email; // Récupère l'email pour les logs
 
@@ -308,7 +307,7 @@ class SubscribeController extends Controller
             $subscribe = Subscribe::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour supprimer définitivement l'abonné
-            $this->subscribeService->forceDestroy($subscribe);
+            $this->subscribeService->backend_subscribes_force_destroy($subscribe);
 
             // Log de l'activité de suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.subscribes.force_destroy', context: ['subscribe_uuid' => $subscribe->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $subscribe);
