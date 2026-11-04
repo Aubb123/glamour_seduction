@@ -17,7 +17,7 @@ class UserService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(User $user, array $data): User
+    public function backend_users_update(User $user, array $data): User
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($user, $data) {
@@ -82,7 +82,7 @@ class UserService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(User $user): void
+    public function backend_users_activate(User $user): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($user) {
@@ -105,7 +105,7 @@ class UserService
     // ─────────────────────────────────────────────
     // SUSPEND
     // ─────────────────────────────────────────────
-    public function suspend(User $user): void
+    public function backend_users_suspend(User $user): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($user) {
@@ -128,7 +128,7 @@ class UserService
     // ─────────────────────────────────────────────
     // BAN
     // ─────────────────────────────────────────────
-    public function ban(User $user): void
+    public function backend_users_ban(User $user): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($user) {
