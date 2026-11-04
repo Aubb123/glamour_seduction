@@ -154,7 +154,7 @@ class SettingController extends Controller
                     $updateData['value'] = $item['value'];
                 }
 
-                $this->settingService->updateValue($setting, $updateData);
+                $this->settingService->backend_settings_update($setting, $updateData);
 
                 $updatedCount++;
             }
