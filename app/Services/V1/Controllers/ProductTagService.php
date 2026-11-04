@@ -12,10 +12,10 @@ use function __;
 class ProductTagService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/tags/messages/tags-messages-service.productTags';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/tags/messages/tags-messages-service.productTags';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -76,7 +76,7 @@ class ProductTagService
 
             // Vérification que le tag n'est pas déjà actif
             if ($tag->status === ProductTagStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation du tag sélectionné
@@ -96,7 +96,7 @@ class ProductTagService
 
             // Vérification que le tag n'est pas déjà inactif
             if ($tag->status === ProductTagStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation du tag sélectionné
@@ -116,12 +116,12 @@ class ProductTagService
 
             // Vérification : empêcher la suppression d'un tag actif
             if ($tag->status === ProductTagStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // Suppression simple (soft delete)
             if ($tag->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($tag); // ← suppression du tag et de ses traductions associées
 
@@ -140,7 +140,7 @@ class ProductTagService
             if ($tag->trashed()) {
                 restore_function($tag); // ← restauration du tag et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -152,13 +152,13 @@ class ProductTagService
     public function backend_product_tags_force_destroy(ProductTag $tag): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($tag) {
+        DB::transaction(function(function () use ($tag) {
 
             // Suppression définitive (forceDelete)
             if ($tag->trashed()) {
                 force_destroy_function($tag); // ← suppression définitive du tag et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
         });
@@ -189,7 +189,7 @@ class ProductTagService
             $tag,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productTag'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'name',
             'slug'
         );
@@ -209,7 +209,7 @@ class ProductTagService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

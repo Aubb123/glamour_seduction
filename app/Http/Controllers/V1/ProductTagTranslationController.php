@@ -18,7 +18,7 @@ class ProductTagTranslationController extends Controller
     use LogActivity;
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/tags/messages/tags-messages-controller.productTags.translations';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/tags/messages/tags-messages-controller.productTags.translations';
 
     public function __construct(
         protected ProductTagTranslationService $productTagTranslationService
@@ -36,27 +36,27 @@ class ProductTagTranslationController extends Controller
             // Suppression via le service (soft delete)
             $this->productTagTranslationService->backend_product_tag_translations_destroy($translation);
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
-            return back()->with('success', __("{$this->langPath}.destroy.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.destroy.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_warning"));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
     }
 
@@ -71,21 +71,20 @@ class ProductTagTranslationController extends Controller
 
             $trashedTranslations = ProductTagTranslation::onlyTrashed()->where('tag_id', $tag->id)->get();
 
-            $this->logActivity(type: 'info', action: 'backend.product-tag-translations.trashed', context: ['count' => $trashedTranslations->count(), 'tag_uuid' => $tag_uuid], message: null, activity: __("{$this->langPath}.trashed.accessed", ['name' => $tag->active_translation?->name ?? $tag_uuid]), is_success: true, loggable: $tag);
+            $this->logActivity(type: 'info', action: 'backend.product-tag-translations.trashed', context: ['count' => $trashedTranslations->count(), 'tag_uuid' => $tag_uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $tag->active_translation?->name ?? $tag_uuid]), is_success: true, loggable: $tag);
 
             return view('v1.backend.pages.products.tags.translations.trashed', compact('trashedTranslations', 'tag'));
 
         } catch (ModelNotFoundException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.trashed', context: ['tag_uuid' => $tag_uuid], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.not_found", ['uuid' => $tag_uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.trashed', context: ['tag_uuid' => $tag_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $tag_uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.trashed.not_found", ['uuid' => $tag_uuid]));
+            return back()->with('error', __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $tag_uuid]));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-tag-translations.trashed', context: ['tag_uuid' => $tag_uuid], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error", ['uuid' => $tag_uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->langPath}.trashed.error", ['uuid' => $tag_uuid]));
+            $this->logActivity(type: 'error', action: 'backend.product-tag-translations.trashed', context: ['tag_uuid' => $tag_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $tag_uuid]), is_success: false);
+            return back()->with('error', __("{$this->backendLangPath}.trashed.error", ['uuid' => $tag_uuid]));
         }
     }
 
@@ -102,27 +101,27 @@ class ProductTagTranslationController extends Controller
             // Restauration via le service
             $this->productTagTranslationService->backend_product_tag_translations_restore($translation);
 
-            $this->logActivity(type: 'info', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'info', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->backendLangPath}.restore.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
-            return back()->with('success', __("{$this->langPath}.restore.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.restore.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.restore.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.restore.flash_warning"));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-tag-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.restore.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.restore.flash_error"));
         }
     }
 
@@ -140,27 +139,27 @@ class ProductTagTranslationController extends Controller
             $this->productTagTranslationService->backend_product_tag_translations_force_destroy($translation);
 
             // Log de l'activité
-            $this->logActivity(type: 'info', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'info', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
 
-            return back()->with('success', __("{$this->langPath}.force_destroy.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.force_destroy.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_warning"));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-tag-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_error"));
         }
     }
 }
