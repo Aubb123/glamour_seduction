@@ -231,7 +231,7 @@ class GeoContinentController extends Controller
             $continent = $geoContinent;
 
             // Mise à jour du continent via le service, en passant les données validées du formulaire
-            $this->geoContinentService->update($continent, $request->validated());
+            $this->geoContinentService->backend_geocontinents_update($continent, $request->validated());
 
             // Log de la mise à jour du continent
             $this->logActivity(type: 'info', action: 'backend.geocontinents.update', context: ['continent_uuid' => $continent->uuid, 'continent_code' => $continent->code, 'changes' => $continent->getChanges()], message: null, activity: __("{$this->langPath}.update.success", ['name' => $continent->active_translation?->name ?? $continent->code]), is_success: true, loggable: $continent);
@@ -268,7 +268,7 @@ class GeoContinentController extends Controller
             $continent = $geoContinent;
 
             // Activation du continent via le service
-            $this->geoContinentService->activate($continent);
+            $this->geoContinentService->backend_geocontinents_activate($continent);
 
             // Log de l'activation du continent avec le slug du continent activé
             $this->logActivity(type: 'info', action: 'backend.geocontinents.activate', context: ['continent_uuid' => $continent->uuid, 'continent_slug' => $continent->active_translation?->slug], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $continent->active_translation?->name]), is_success: true, loggable: $continent);
@@ -305,7 +305,7 @@ class GeoContinentController extends Controller
             $continent = $geoContinent;
 
             // Désactivation du continent via le service
-            $this->geoContinentService->deactivate($continent);
+            $this->geoContinentService->backend_geocontinents_deactivate($continent);
 
             // Log de la désactivation du continent avec le slug du continent désactivé
             $this->logActivity(type: 'info', action: 'backend.geocontinents.deactivate', context: ['continent_uuid' => $continent->uuid, 'continent_slug' => $continent->active_translation?->slug], message: null, activity: __("{$this->langPath}.deactivate.success", ['name' => $continent->active_translation?->name]), is_success: true, loggable: $continent);
