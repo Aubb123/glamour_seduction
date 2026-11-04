@@ -180,7 +180,7 @@ class CloudFileController extends Controller
             }
 
             // Appelle le service pour synchroniser les fichiers sélectionnés
-            $result = $this->cloudFileService->files_sync_selected($fileUuids);
+            $result = $this->cloudFileService->backend_cloud_files_sync_selected($fileUuids);
 
             // Log de la synchronisation
             $this->logActivity(type: 'info', action: 'backend.cloud-files.sync-selected', context: ['selected' => count($fileUuids), 'success' => $result['success_count'], 'failed' => $result['failed_count']], message: null, activity: __("{$this->langPath}.sync.flash_success", ['success' => $result['success_count'], 'failed' => $result['failed_count']]), is_success: $result['failed_count'] === 0);
@@ -213,7 +213,7 @@ class CloudFileController extends Controller
 
             $fileName = $file->file_name;
 
-            $this->cloudFileService->destroy($file);
+            $this->cloudFileService->backend_cloud_files_destroy($file);
 
             // Log de la suppression du fichier cloud
             $this->logActivity(type: 'info', action: 'backend.cloud-files.destroy', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $fileName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $fileName]), is_success: true, loggable: $file);
@@ -275,7 +275,7 @@ class CloudFileController extends Controller
             $file = CloudFile::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer le fichier cloud
-            $this->cloudFileService->restore($file);
+            $this->cloudFileService->backend_cloud_files_restore($file);
 
             $fileName = $file->file_name;  // Récupère le titre du fichier pour les logs et les messages flash
 
@@ -320,7 +320,7 @@ class CloudFileController extends Controller
             $file = CloudFile::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour supprimer définitivement le fichier
-            $this->cloudFileService->forceDestroy($file);
+            $this->cloudFileService->backend_cloud_files_force_destroy($file);
 
             // Récupère le nom du fichier pour les logs et les messages flash
             $this->logActivity(type: 'info', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $file->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $file);
