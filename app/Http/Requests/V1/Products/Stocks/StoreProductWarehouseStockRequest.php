@@ -11,7 +11,7 @@ use function __;
 class StoreProductWarehouseStockRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/stocks/messages/stocks-messages-validation.productWarehouseStocks';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/stocks/messages/stocks-messages-validation.productWarehouseStocks';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -54,7 +54,7 @@ class StoreProductWarehouseStockRequest extends FormRequest
                 if ($reserved > $quantity) {
                     $validator->errors()->add(
                         'reserved_quantity',
-                        __("{$this->langPath}.reserved_quantity.exceeds_quantity", ['quantity' => $quantity])
+                        __("{$this->backendLangPath}.reserved_quantity.exceeds_quantity", ['quantity' => $quantity])
                     );
                 }
             },
@@ -67,20 +67,20 @@ class StoreProductWarehouseStockRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'warehouse_id.required' => __("{$this->langPath}.warehouse_id.required"),
-            'warehouse_id.integer' => __("{$this->langPath}.warehouse_id.integer"),
-            'warehouse_id.exists' => __("{$this->langPath}.warehouse_id.exists"),
-            'product_variant_id.required' => __("{$this->langPath}.product_variant_id.required"),
-            'product_variant_id.integer' => __("{$this->langPath}.product_variant_id.integer"),
-            'product_variant_id.exists' => __("{$this->langPath}.product_variant_id.exists"),
-            'quantity.required' => __("{$this->langPath}.quantity.required"),
-            'quantity.integer' => __("{$this->langPath}.quantity.integer"),
-            'quantity.min' => __("{$this->langPath}.quantity.min"),
-            'reserved_quantity.integer' => __("{$this->langPath}.reserved_quantity.integer"),
-            'reserved_quantity.min' => __("{$this->langPath}.reserved_quantity.min"),
-            'low_stock_threshold.required' => __("{$this->langPath}.low_stock_threshold.required"),
-            'low_stock_threshold.integer' => __("{$this->langPath}.low_stock_threshold.integer"),
-            'low_stock_threshold.min' => __("{$this->langPath}.low_stock_threshold.min"),
+            'warehouse_id.required' => __("{$this->backendLangPath}.warehouse_id.required"),
+            'warehouse_id.integer' => __("{$this->backendLangPath}.warehouse_id.integer"),
+            'warehouse_id.exists' => __("{$this->backendLangPath}.warehouse_id.exists"),
+            'product_variant_id.required' => __("{$this->backendLangPath}.product_variant_id.required"),
+            'product_variant_id.integer' => __("{$this->backendLangPath}.product_variant_id.integer"),
+            'product_variant_id.exists' => __("{$this->backendLangPath}.product_variant_id.exists"),
+            'quantity.required' => __("{$this->backendLangPath}.quantity.required"),
+            'quantity.integer' => __("{$this->backendLangPath}.quantity.integer"),
+            'quantity.min' => __("{$this->backendLangPath}.quantity.min"),
+            'reserved_quantity.integer' => __("{$this->backendLangPath}.reserved_quantity.integer"),
+            'reserved_quantity.min' => __("{$this->backendLangPath}.reserved_quantity.min"),
+            'low_stock_threshold.required' => __("{$this->backendLangPath}.low_stock_threshold.required"),
+            'low_stock_threshold.integer' => __("{$this->backendLangPath}.low_stock_threshold.integer"),
+            'low_stock_threshold.min' => __("{$this->backendLangPath}.low_stock_threshold.min"),
         ];
     }
 }

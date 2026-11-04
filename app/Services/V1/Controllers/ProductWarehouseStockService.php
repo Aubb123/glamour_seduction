@@ -10,7 +10,7 @@ use function __;
 class ProductWarehouseStockService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/stocks/messages/stocks-messages-service.productWarehouseStocks';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/stocks/messages/stocks-messages-service.productWarehouseStocks';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -27,7 +27,7 @@ class ProductWarehouseStockService
                 ->exists();
 
             if ($exists) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.store.pair_already_exists"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.pair_already_exists"));
             }
 
             // Création du stock
@@ -79,7 +79,7 @@ class ProductWarehouseStockService
                     ->exists();
 
                 if ($exists) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.pair_already_exists"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.pair_already_exists"));
                 }
             }
 
@@ -98,7 +98,7 @@ class ProductWarehouseStockService
 
             // Empêche la suppression double (soft delete)
             if ($stock->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($stock);
@@ -115,7 +115,7 @@ class ProductWarehouseStockService
             if ($stock->trashed()) {
                 restore_function($stock);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -130,7 +130,7 @@ class ProductWarehouseStockService
             if ($stock->trashed()) {
                 force_destroy_function($stock);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

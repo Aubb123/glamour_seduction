@@ -12,7 +12,7 @@ use function __;
 class ProductVariantService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/variants/messages/variants-messages-service.productVariants';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/variants/messages/variants-messages-service.productVariants';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -128,7 +128,7 @@ class ProductVariantService
         DB::transaction(function () use ($variant) {
 
             if ($variant->status === ProductVariantStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             $variant->update(['status' => ProductVariantStatus::Active]);
@@ -143,7 +143,7 @@ class ProductVariantService
         DB::transaction(function () use ($variant) {
 
             if ($variant->status === ProductVariantStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             $variant->update(['status' => ProductVariantStatus::Inactive]);
@@ -159,14 +159,14 @@ class ProductVariantService
 
             // Empêche la suppression d'une variante active (règle métier : la désactiver d'abord)
             if ($variant->status === ProductVariantStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // NB : destroy refusé si stocks/mouvements (relations ajoutées aux modules 8/9)
 
             // Empêche la suppression double (soft delete)
             if ($variant->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($variant);
@@ -183,7 +183,7 @@ class ProductVariantService
             if ($variant->trashed()) {
                 restore_function($variant);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -198,7 +198,7 @@ class ProductVariantService
             if ($variant->trashed()) {
                 force_destroy_function($variant);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

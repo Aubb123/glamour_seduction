@@ -11,7 +11,7 @@ use function __;
 class ProductWarehouseService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/warehouses/messages/warehouses-messages-service.productWarehouses';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/warehouses/messages/warehouses-messages-service.productWarehouses';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -113,7 +113,7 @@ class ProductWarehouseService
         DB::transaction(function () use ($warehouse) {
 
             if ($warehouse->status === ProductWarehouseStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             $warehouse->update(['status' => ProductWarehouseStatus::Active]);
@@ -128,7 +128,7 @@ class ProductWarehouseService
         DB::transaction(function () use ($warehouse) {
 
             if ($warehouse->status === ProductWarehouseStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             $warehouse->update(['status' => ProductWarehouseStatus::Inactive]);
@@ -144,14 +144,14 @@ class ProductWarehouseService
 
             // Empêche la suppression d'un entrepôt actif (règle métier : le désactiver d'abord)
             if ($warehouse->status === ProductWarehouseStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // NB : destroy refusé si stocks existent (relation ajoutée au module 8)
 
             // Empêche la suppression double (soft delete)
             if ($warehouse->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($warehouse);
@@ -168,7 +168,7 @@ class ProductWarehouseService
             if ($warehouse->trashed()) {
                 restore_function($warehouse);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -183,7 +183,7 @@ class ProductWarehouseService
             if ($warehouse->trashed()) {
                 force_destroy_function($warehouse);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

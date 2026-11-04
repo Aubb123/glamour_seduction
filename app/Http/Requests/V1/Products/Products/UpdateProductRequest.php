@@ -19,7 +19,7 @@ class UpdateProductRequest extends FormRequest
     /**
      * Chemin de base pour les traductions des messages de validation.
      */
-    protected string $langPath = 'v1/backend/views/pages/products/products/messages/products-messages-validation.products';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/products/messages/products-messages-validation.products';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -81,23 +81,23 @@ class UpdateProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'category_id.required' => __("{$this->langPath}.category_id.required"),
-            'category_id.exists' => __("{$this->langPath}.category_id.exists"),
-            'brand_id.exists' => __("{$this->langPath}.brand_id.exists"),
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
-            'is_featured.boolean' => __("{$this->langPath}.is_featured.boolean"),
-            'requires_discreet_packaging.boolean' => __("{$this->langPath}.requires_discreet_packaging.boolean"),
-            'weight.numeric' => __("{$this->langPath}.weight.numeric"),
-            'base_price.required' => __("{$this->langPath}.base_price.required"),
-            'base_price.numeric' => __("{$this->langPath}.base_price.numeric"),
-            'base_price.min' => __("{$this->langPath}.base_price.min"),
-            'compare_at_price.numeric' => __("{$this->langPath}.compare_at_price.numeric"),
-            'tags.*.exists' => __("{$this->langPath}.tags.exists"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
-            'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
-            'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
-            'translations.*.short_description.max' => __("{$this->langPath}.translations.short_description.max"),
+            'category_id.required' => __("{$this->backendLangPath}.category_id.required"),
+            'category_id.exists' => __("{$this->backendLangPath}.category_id.exists"),
+            'brand_id.exists' => __("{$this->backendLangPath}.brand_id.exists"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
+            'is_featured.boolean' => __("{$this->backendLangPath}.is_featured.boolean"),
+            'requires_discreet_packaging.boolean' => __("{$this->backendLangPath}.requires_discreet_packaging.boolean"),
+            'weight.numeric' => __("{$this->backendLangPath}.weight.numeric"),
+            'base_price.required' => __("{$this->backendLangPath}.base_price.required"),
+            'base_price.numeric' => __("{$this->backendLangPath}.base_price.numeric"),
+            'base_price.min' => __("{$this->backendLangPath}.base_price.min"),
+            'compare_at_price.numeric' => __("{$this->backendLangPath}.compare_at_price.numeric"),
+            'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
+            'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
+            'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
+            'translations.*.short_description.max' => __("{$this->backendLangPath}.translations.short_description.max"),
         ];
     }
 }

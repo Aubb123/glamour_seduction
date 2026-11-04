@@ -12,10 +12,10 @@ use function __;
 class ProductAttributeValueService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-service.productAttributeValues';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-service.productAttributeValues';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -86,7 +86,7 @@ class ProductAttributeValueService
 
             // Vérification que le valeur n'est pas déjà actif
             if ($valeur->status === ProductAttributeValueStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation du valeur sélectionné
@@ -106,7 +106,7 @@ class ProductAttributeValueService
 
             // Vérification que le valeur n'est pas déjà inactif
             if ($valeur->status === ProductAttributeValueStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation du valeur sélectionné
@@ -126,12 +126,12 @@ class ProductAttributeValueService
 
             // Vérification : empêcher la suppression d'un valeur actif
             if ($valeur->status === ProductAttributeValueStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // Suppression simple (soft delete)
             if ($valeur->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($valeur); // ← suppression du valeur et de ses traductions associées
 
@@ -150,7 +150,7 @@ class ProductAttributeValueService
             if ($valeur->trashed()) {
                 restore_function($valeur); // ← restauration du valeur et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -168,7 +168,7 @@ class ProductAttributeValueService
             if ($valeur->trashed()) {
                 force_destroy_function($valeur); // ← suppression définitive du valeur et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
         });
@@ -199,7 +199,7 @@ class ProductAttributeValueService
             $valeur,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productAttributeValue'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'label',
             'slug'
         );
@@ -219,7 +219,7 @@ class ProductAttributeValueService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

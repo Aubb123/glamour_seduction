@@ -11,10 +11,10 @@ use function __;
 class RoleTranslationService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/roles/messages/role-messages-service.roles.translations';
+    protected string $backendLangPath = 'v1/backend/views/pages/roles/messages/role-messages-service.roles.translations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // DESTROY
@@ -30,7 +30,7 @@ class RoleTranslationService
                 ->find($roleTranslation->role_id);
 
             if (! $role) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.role_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.role_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction
@@ -39,17 +39,17 @@ class RoleTranslationService
                 ->find($roleTranslation->id);
 
             if (! $roleTranslation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.translation_not_found"));
             }
 
             // 3. Déjà en corbeille
             if ($roleTranslation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // 4. Dernière traduction active
             if ($role->translations()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression
@@ -74,14 +74,14 @@ class RoleTranslationService
                 assertTranslationRestore(
                     $roleTranslation,
                     __('v1/backend/others/helpers/backend-helper-messages.entityLabels.role'),
-                    $this->helperLangPath,
+                    $this->backendHelperLangPath,
                     'label',
                     'slug'
                 );
 
                 restore_function($roleTranslation);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -102,7 +102,7 @@ class RoleTranslationService
                 ->find($roleTranslation->role_id);
 
             if (! $role) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.role_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.role_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
@@ -111,17 +111,17 @@ class RoleTranslationService
                 ->find($roleTranslation->id);
 
             if (! $roleTranslation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.translation_not_found"));
             }
 
             // 3. Seule une traduction en corbeille peut être supprimée définitivement
             if (! $roleTranslation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
             // 4. Interdit de supprimer la dernière traduction du rôle (corbeille incluse)
             if ($role->translations()->withTrashed()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression définitive de la traduction et de ses dépendances

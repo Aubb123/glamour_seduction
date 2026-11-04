@@ -19,7 +19,7 @@ class StoreProductRequest extends FormRequest
     /**
      * Chemin de base pour les traductions des messages de validation.
      */
-    protected string $langPath = 'v1/backend/views/pages/products/products/messages/products-messages-validation.products';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/products/messages/products-messages-validation.products';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -71,7 +71,7 @@ class StoreProductRequest extends FormRequest
         }
 
         return $rules;
-    } 
+    }
 
     /**
      * Messages de validation personnalisés.
@@ -79,52 +79,52 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'category_id.required' => __("{$this->langPath}.category_id.required"),
-            'category_id.integer' => __("{$this->langPath}.category_id.integer"),
-            'category_id.exists' => __("{$this->langPath}.category_id.exists"),
+            'category_id.required' => __("{$this->backendLangPath}.category_id.required"),
+            'category_id.integer' => __("{$this->backendLangPath}.category_id.integer"),
+            'category_id.exists' => __("{$this->backendLangPath}.category_id.exists"),
 
-            'brand_id.integer' => __("{$this->langPath}.brand_id.integer"),
-            'brand_id.exists' => __("{$this->langPath}.brand_id.exists"),
+            'brand_id.integer' => __("{$this->backendLangPath}.brand_id.integer"),
+            'brand_id.exists' => __("{$this->backendLangPath}.brand_id.exists"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'is_featured.boolean' => __("{$this->langPath}.is_featured.boolean"),
-            'requires_discreet_packaging.boolean' => __("{$this->langPath}.requires_discreet_packaging.boolean"),
+            'is_featured.boolean' => __("{$this->backendLangPath}.is_featured.boolean"),
+            'requires_discreet_packaging.boolean' => __("{$this->backendLangPath}.requires_discreet_packaging.boolean"),
 
-            'weight.numeric' => __("{$this->langPath}.weight.numeric"),
-            'weight.min' => __("{$this->langPath}.weight.min"),
-            'weight.max' => __("{$this->langPath}.weight.max"),
+            'weight.numeric' => __("{$this->backendLangPath}.weight.numeric"),
+            'weight.min' => __("{$this->backendLangPath}.weight.min"),
+            'weight.max' => __("{$this->backendLangPath}.weight.max"),
 
-            'base_price.required' => __("{$this->langPath}.base_price.required"),
-            'base_price.numeric' => __("{$this->langPath}.base_price.numeric"),
-            'base_price.min' => __("{$this->langPath}.base_price.min"),
-            'base_price.max' => __("{$this->langPath}.base_price.max"),
+            'base_price.required' => __("{$this->backendLangPath}.base_price.required"),
+            'base_price.numeric' => __("{$this->backendLangPath}.base_price.numeric"),
+            'base_price.min' => __("{$this->backendLangPath}.base_price.min"),
+            'base_price.max' => __("{$this->backendLangPath}.base_price.max"),
 
-            'compare_at_price.numeric' => __("{$this->langPath}.compare_at_price.numeric"),
-            'compare_at_price.min' => __("{$this->langPath}.compare_at_price.min"),
-            'compare_at_price.max' => __("{$this->langPath}.compare_at_price.max"),
+            'compare_at_price.numeric' => __("{$this->backendLangPath}.compare_at_price.numeric"),
+            'compare_at_price.min' => __("{$this->backendLangPath}.compare_at_price.min"),
+            'compare_at_price.max' => __("{$this->backendLangPath}.compare_at_price.max"),
 
-            'tags.array' => __("{$this->langPath}.tags.array"),
-            'tags.*.exists' => __("{$this->langPath}.tags.exists"),
+            'tags.array' => __("{$this->backendLangPath}.tags.array"),
+            'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
 
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
 
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
-            'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
-            'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
-            'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
-            'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
+            'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
+            'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
+            'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
+            'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
 
-            'translations.*.short_description.required' => __("{$this->langPath}.translations.short_description.required"),
-            'translations.*.short_description.string' => __("{$this->langPath}.translations.short_description.string"),
-            'translations.*.short_description.max' => __("{$this->langPath}.translations.short_description.max"),
+            'translations.*.short_description.required' => __("{$this->backendLangPath}.translations.short_description.required"),
+            'translations.*.short_description.string' => __("{$this->backendLangPath}.translations.short_description.string"),
+            'translations.*.short_description.max' => __("{$this->backendLangPath}.translations.short_description.max"),
 
-            'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
-            'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
+            'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
+            'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
         ];
     }
 }

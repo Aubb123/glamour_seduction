@@ -11,10 +11,10 @@ use function __;
 class ProductAttributeValueTranslationService
 {
     // Chemin de base pour les messages
-    protected string $langPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-service.productAttributeValuesTranslations';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-service.productAttributeValuesTranslations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // DESTROY
@@ -30,7 +30,7 @@ class ProductAttributeValueTranslationService
                 ->find($translation->attribute_value_id);
 
             if (! $valeur) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.attribute_value_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.attribute_value_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction
@@ -39,17 +39,17 @@ class ProductAttributeValueTranslationService
                 ->find($translation->id);
 
             if (! $translation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.translation_not_found"));
             }
 
             // 3. Déjà en corbeille
             if ($translation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // 4. Dernière traduction active
             if ($valeur->translations()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression
@@ -74,14 +74,14 @@ class ProductAttributeValueTranslationService
                 assertTranslationRestore(
                     $translation,
                     __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productAttributeValue'),
-                    $this->helperLangPath,
+                    $this->backendHelperLangPath,
                     'label',
                     'slug'
                 );
 
                 restore_function($translation); // ← restauration de la traduction du valeur sélectionné
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -102,7 +102,7 @@ class ProductAttributeValueTranslationService
                 ->find($translation->attribute_value_id);
 
             if (! $valeur) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.attribute_value_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.attribute_value_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
@@ -111,17 +111,17 @@ class ProductAttributeValueTranslationService
                 ->find($translation->id);
 
             if (! $translation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.translation_not_found"));
             }
 
             // 3. Seule une traduction en corbeille peut être supprimée définitivement
             if (! $translation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
             // 4. Interdit de supprimer la dernière traduction de la valeur d'attribut (corbeille incluse)
             if ($valeur->translations()->withTrashed()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression définitive de la traduction et de ses dépendances

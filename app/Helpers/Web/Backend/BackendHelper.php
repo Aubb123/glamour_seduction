@@ -20,7 +20,7 @@ class BackendHelper
         // $format = $format ?? 'D MMMM YYYY - HH:mm:ss'; // Format par défaut si aucun format n'est fourni
 
         // Si la date est nulle, retourne un tiret ou une valeur par défaut
-        if (!$date) {
+        if (! $date) {
             return '—';
         }
 
@@ -109,7 +109,7 @@ class BackendHelper
      * @param  Model  $entity  Modèle parent (GeoCountry, BlogPost, Gallery, ...)
      * @param  array<int, array<string, mixed>>  $translations  Tableau des traductions soumises
      * @param  string  $entityLabel  Libellé traduit de l'entité ("pays", "article", ...)
-     * @param  string  $langPath  Chemin de base des messages (ex: '...backend-helper-messages')
+     * @param  string  $backendLangPath  Chemin de base des messages (ex: '...backend-helper-messages')
      * @param  string  $nameField  Colonne du "nom" ('name', 'title', 'question', 'label', ...)
      * @param  string|null  $slugField  Colonne du slug ('slug') ou null si la table n'en a pas
      * @param  string  $article  Article indéfini devant ":entity" ("un" / "une")
@@ -117,7 +117,7 @@ class BackendHelper
      *
      * @throws \InvalidArgumentException
      */
-    public static function assertTranslationUniqueness($entity, array $translations, string $entityLabel, string $langPath, string $nameField = 'name', ?string $slugField = 'slug'): void
+    public static function assertTranslationUniqueness($entity, array $translations, string $entityLabel, string $backendLangPath, string $nameField = 'name', ?string $slugField = 'slug'): void
     {
         $translationModel = $entity->getTranslationModelName(); // Récupère le nom du modèle de traduction associé à l'entité Ex: App\Models\GeoCountryTranslation, App\Models\BlogPostTranslation, App\Models\GalleryTranslation, ...
         $foreignKey = $entity->getTranslationForeignKey(); // Récupère le nom de la clé étrangère dans le modèle de traduction Ex: 'country_id', 'post_id', 'gallery_id', ...
@@ -152,7 +152,7 @@ class BackendHelper
                 $key = $conflictingTranslation->trashed() ? 'exists_other_trashed' : 'exists_other_active';
 
                 // Lève une exception avec un message explicite, en utilisant les libellés et articles fournis
-                throw new \InvalidArgumentException(__("{$langPath}.translation.{$key}", [
+                throw new \InvalidArgumentException(__("{$backendLangPath}.translation.{$key}", [
                     'name' => $translation[$nameField],
                     'slug' => $newSlug ?? '',
                     'entity' => $entityLabel,
@@ -170,7 +170,7 @@ class BackendHelper
             // Si une traduction de l'entité est trouvée dans la corbeille, on lève une exception avec un message explicite
             if ($ownTrashed) {
                 // Lève une exception avec un message explicite, en utilisant les libellés et articles fournis
-                throw new \InvalidArgumentException(__("{$langPath}.translation.trashed_conflict", [
+                throw new \InvalidArgumentException(__("{$backendLangPath}.translation.trashed_conflict", [
                     'name' => $translation[$nameField],
                     'slug' => $slugField !== null ? ($ownTrashed->{$slugField} ?? '') : '',
                     'entity' => $entityLabel,
@@ -189,14 +189,14 @@ class BackendHelper
      *
      * @param  Model  $translation  Traduction à restaurer
      * @param  string  $entityLabel  Libellé traduit de l'entité parent
-     * @param  string  $langPath  Chemin de base des messages
+     * @param  string  $backendLangPath  Chemin de base des messages
      * @param  string  $nameField  Colonne du "nom" ('name', 'title', 'question', 'label', ...)
      * @param  string|null  $slugField  Colonne du slug ('slug') ou null si la table n'en a pas
      * @param  string  $article  Article indéfini devant ":entity" ("un" / "une")
      *
      * @throws \InvalidArgumentException
      */
-    public static function assertTranslationRestore($translation, string $entityLabel, string $langPath, string $nameField = 'name', ?string $slugField = 'slug'): void
+    public static function assertTranslationRestore($translation, string $entityLabel, string $backendLangPath, string $nameField = 'name', ?string $slugField = 'slug'): void
     {
         // Vérifie qu'aucune autre traduction (active ou en corbeille) dans la même langue n'entre en conflit avec le nom/slug de la traduction à restaurer
         $conflictingTranslation = $translation::withTrashed()
@@ -216,7 +216,7 @@ class BackendHelper
         if ($conflictingTranslation) {
             $key = $conflictingTranslation->trashed() ? 'restore_conflict_trashed' : 'restore_conflict_active';
 
-            throw new \InvalidArgumentException(__("{$langPath}.translation.{$key}", [
+            throw new \InvalidArgumentException(__("{$backendLangPath}.translation.{$key}", [
                 'name' => $translation->{$nameField},
                 'slug' => $slugField !== null ? ($translation->{$slugField} ?? '') : '',
                 'entity' => $entityLabel,
@@ -342,7 +342,7 @@ class BackendHelper
     {
         $base = 'v1/backend/others/helpers/backend-helper-messages.deleteGuard.relations';
 
-        // $specific prend la priorité sur $generic, car certaines entités peuvent vouloir 
+        // $specific prend la priorité sur $generic, car certaines entités peuvent vouloir
         // des libellés spécifiques pour leurs relations enfants (ex: ProductCategory vs CloudFolder)
         $specific = __("{$base}.{$entityClass}.{$relation}");
 
@@ -452,7 +452,7 @@ class BackendHelper
         // Verrou de sécurité : bloque si l'entité parente a des enfants liés (même en corbeille,
         // car la cascade ON DELETE CASCADE de la base les écraserait définitivement)
         self::assertNoDependentChildren($entity, true);
-        
+
         // Vérification si l'entité a des traductions
         if (method_exists($entity, 'translations')) {
             // Suppression définitive des traductions associées

@@ -12,7 +12,7 @@ use function __;
 class ProductStockMovementService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/stock-movements/messages/stock-movements-messages-service.productStockMovements';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/stock-movements/messages/stock-movements-messages-service.productStockMovements';
 
     // ─────────────────────────────────────────────
     // RECORD — cœur métier transactionnel
@@ -26,14 +26,14 @@ class ProductStockMovementService
             $type = ProductStockMovementType::tryFrom($data['type']);
 
             if (! $type) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.record.invalid_type"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.record.invalid_type"));
             }
 
             $quantity = (int) $data['quantity'];
 
             // Garde : la quantité est toujours strictement positive (le sens est donné par le type)
             if ($quantity <= 0) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.record.quantity_must_be_positive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.record.quantity_must_be_positive"));
             }
 
             // 1. Lit et verrouille la ligne de stock (couple entrepôt × variante),
@@ -61,7 +61,7 @@ class ProductStockMovementService
             $newQuantity = $stock->quantity + ($type->decreasesStock() ? -$quantity : $quantity);
 
             if ($newQuantity < 0) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.record.negative_stock_forbidden", ['stock' => $stock->quantity]));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.record.negative_stock_forbidden", ['stock' => $stock->quantity]));
             }
 
             $stock->update(['quantity' => $newQuantity]);
@@ -89,7 +89,7 @@ class ProductStockMovementService
 
             // Empêche la suppression double (soft delete)
             if ($movement->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($movement);
@@ -106,7 +106,7 @@ class ProductStockMovementService
             if ($movement->trashed()) {
                 restore_function($movement);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -121,7 +121,7 @@ class ProductStockMovementService
             if ($movement->trashed()) {
                 force_destroy_function($movement);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

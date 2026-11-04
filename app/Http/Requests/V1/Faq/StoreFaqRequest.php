@@ -11,7 +11,7 @@ use function __;
 
 class StoreFaqRequest extends FormRequest
 {
-    protected string $langPath = 'v1/backend/views/pages/faqs/messages/faqs-messages-validation.faqs';
+    protected string $backendLangPath = 'v1/backend/views/pages/faqs/messages/faqs-messages-validation.faqs';
 
     public function authorize(): bool
     {
@@ -56,7 +56,7 @@ class StoreFaqRequest extends FormRequest
                 if ($exists) {
                     $validator->errors()->add(
                         "translations.{$key}.question",
-                        __("{$this->langPath}.translations.unique_question")
+                        __("{$this->backendLangPath}.translations.unique_question")
                     );
                 }
             }
@@ -66,27 +66,27 @@ class StoreFaqRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sort_order.required' => __("{$this->langPath}.sort_order.required"),
-            'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
-            'sort_order.min' => __("{$this->langPath}.sort_order.min"),
-            'sort_order.unique' => __("{$this->langPath}.sort_order.unique"),
+            'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
+            'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
+            'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
+            'sort_order.unique' => __("{$this->backendLangPath}.sort_order.unique"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
-            'translations.min' => __("{$this->langPath}.translations.min"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
+            'translations.min' => __("{$this->backendLangPath}.translations.min"),
 
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
-            'translations.*.question.required' => __("{$this->langPath}.translations.question.required"),
-            'translations.*.question.string' => __("{$this->langPath}.translations.question.string"),
-            'translations.*.question.max' => __("{$this->langPath}.translations.question.max"),
+            'translations.*.question.required' => __("{$this->backendLangPath}.translations.question.required"),
+            'translations.*.question.string' => __("{$this->backendLangPath}.translations.question.string"),
+            'translations.*.question.max' => __("{$this->backendLangPath}.translations.question.max"),
 
-            'translations.*.answer.required' => __("{$this->langPath}.translations.answer.required"),
-            'translations.*.answer.string' => __("{$this->langPath}.translations.answer.string"),
+            'translations.*.answer.required' => __("{$this->backendLangPath}.translations.answer.required"),
+            'translations.*.answer.string' => __("{$this->backendLangPath}.translations.answer.string"),
         ];
     }
 }

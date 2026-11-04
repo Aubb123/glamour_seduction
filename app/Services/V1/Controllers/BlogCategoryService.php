@@ -12,10 +12,10 @@ use function __;
 class BlogCategoryService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/categories/messages/categories-messages-service.categories';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/categories/messages/categories-messages-service.categories';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // Service pour gérer le téléchargement d'images vers le cloud ou le stockage local
     public function __construct(protected CloudFileService $cloudFileService) {}
@@ -42,7 +42,7 @@ class BlogCategoryService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la catégorie créée
@@ -51,7 +51,7 @@ class BlogCategoryService
                     $data['cloud_platform_uuid'],
                     $category,
                     $category->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -94,7 +94,7 @@ class BlogCategoryService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la catégorie mise à jour
@@ -103,7 +103,7 @@ class BlogCategoryService
                     $data['cloud_platform_uuid'],
                     $category,
                     $category->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -121,12 +121,12 @@ class BlogCategoryService
 
             // Vérification : empêcher la suppression d'une catégorie active
             if ($category->status === BlogCategoryStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // Suppression simple (soft delete)
             if ($category->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // ← suppression de la catégorie et de ses traductions associées
@@ -145,7 +145,7 @@ class BlogCategoryService
 
             // Vérification que la catégorie n'est pas déjà active
             if ($category->status === BlogCategoryStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation de la catégorie sélectionnée
@@ -166,7 +166,7 @@ class BlogCategoryService
 
             // Vérification que la catégorie n'est pas déjà inactive
             if ($category->status === BlogCategoryStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation de la catégorie sélectionnée
@@ -188,7 +188,7 @@ class BlogCategoryService
             if ($category->trashed()) {
                 restore_function($category); // ← restauration de la catégorie et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -206,7 +206,7 @@ class BlogCategoryService
             if ($category->trashed()) {
                 force_destroy_function($category); // ← suppression définitive de la catégorie et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
         });
@@ -237,7 +237,7 @@ class BlogCategoryService
             $category,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.category'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'name',
             'slug'
         );
@@ -257,7 +257,7 @@ class BlogCategoryService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

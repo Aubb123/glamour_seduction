@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class SubscribeService
 {
-    protected string $langPath = 'v1/backend/views/pages/subscribes/messages/subscribes-messages-service.subscribes';
+    protected string $backendLangPath = 'v1/backend/views/pages/subscribes/messages/subscribes-messages-service.subscribes';
 
     // ─────────────────────────────────────────────
     // SUBSCRIBE (création / réabonnement)
@@ -110,11 +110,11 @@ class SubscribeService
 
             // Seul les abonnements inactifs peuvent être supprimés
             if ($subscribe->status === SubscribeStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.flash_warning"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.flash_warning"));
             }
 
             if ($subscribe->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($subscribe);
         });
@@ -129,7 +129,7 @@ class SubscribeService
             if ($subscribe->trashed()) {
                 restore_function($subscribe);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -143,13 +143,13 @@ class SubscribeService
 
             // Seul les abonnements inactifs peuvent être supprimés définitivement
             if ($subscribe->status === SubscribeStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.flash_warning"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.flash_warning"));
             }
 
             if ($subscribe->trashed()) {
                 force_destroy_function($subscribe);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

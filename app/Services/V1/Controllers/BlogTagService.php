@@ -12,10 +12,10 @@ use function __;
 class BlogTagService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/tags/messages/tags-messages-service.tags';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/tags/messages/tags-messages-service.tags';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -81,7 +81,7 @@ class BlogTagService
 
             // Vérification : empêcher l'activation d'un tag déjà actif
             if ($tag->status === BlogTagStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation du tag
@@ -98,7 +98,7 @@ class BlogTagService
 
             // Vérification : empêcher la désactivation d'un tag déjà inactif
             if ($tag->status === BlogTagStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation du tag
@@ -115,12 +115,12 @@ class BlogTagService
 
             // Vérification : empêcher la suppression d'un tag actif
             if ($tag->status === BlogTagStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // Suppression simple (soft delete)
             if ($tag->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($tag); // ← suppression du tag et de ses traductions associées
         });
@@ -137,7 +137,7 @@ class BlogTagService
             if ($tag->trashed()) {
                 restore_function($tag); // ← restauration du tag et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -154,7 +154,7 @@ class BlogTagService
             if ($tag->trashed()) {
                 force_destroy_function($tag); // ← suppression définitive du tag et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
         });
@@ -186,7 +186,7 @@ class BlogTagService
             $tag,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.tag'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'name',
             'slug'
         );
@@ -206,7 +206,7 @@ class BlogTagService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

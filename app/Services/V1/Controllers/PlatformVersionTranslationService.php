@@ -11,10 +11,10 @@ use function __;
 class PlatformVersionTranslationService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-service.versions.translations';
+    protected string $backendLangPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-service.versions.translations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // DESTROY
@@ -39,16 +39,16 @@ class PlatformVersionTranslationService
                 if ($translationsCount <= 1) {
                     // Empêche la suppression de la traduction si c'est la dernière traduction restante de la version
                     // (même si la version est soft-deleted)
-                    throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
                 }
             } else {
                 // Empêche la suppression de la traduction si la version associée n'existe pas (même si elle est soft-deleted)
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.version_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.version_not_found"));
             }
 
             // Suppression simple (deleted_at)
             if ($platformVersionTranslation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($platformVersionTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
@@ -73,7 +73,7 @@ class PlatformVersionTranslationService
                 BackendHelper::assertTranslationRestore(
                     $platformVersionTranslation,
                     __('v1/backend/others/helpers/backend-helper-messages.entityLabels.version'),
-                    $this->helperLangPath,
+                    $this->backendHelperLangPath,
                     'name',
                     'slug'
                 );
@@ -87,12 +87,12 @@ class PlatformVersionTranslationService
                     ->exists();
 
                 if ($langConflict) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.restore.lang_conflict"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.lang_conflict"));
                 }
 
                 restore_function($platformVersionTranslation);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -115,18 +115,18 @@ class PlatformVersionTranslationService
                 $translationsCount = $version->translations()->withTrashed()->count();
 
                 if ($translationsCount <= 1) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.last_translation_forbidden"));
                 }
             } else {
                 // Empêche la suppression définitive de la traduction si la version associée n'existe pas (même si elle est soft-deleted)
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.version_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.version_not_found"));
             }
 
             // Suppression définitive (forceDelete)
             if ($platformVersionTranslation->trashed()) {
                 force_destroy_function($platformVersionTranslation); // <- suppression définitive de la traduction de la version sélectionnée
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
         });

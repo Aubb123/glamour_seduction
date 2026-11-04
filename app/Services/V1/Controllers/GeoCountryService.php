@@ -13,10 +13,10 @@ use function __;
 class GeoCountryService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/geos/countries/messages/countries-messages-service.countries';
+    protected string $backendLangPath = 'v1/backend/views/pages/geos/countries/messages/countries-messages-service.countries';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // UPDATE
@@ -69,7 +69,7 @@ class GeoCountryService
 
             // Si le pays est déjà actif, on lève une exception métier pour éviter une opération inutile
             if ($country->status === GeoCountryStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation du pays sélectionné
@@ -89,7 +89,7 @@ class GeoCountryService
 
             // Si le pays est déjà inactif, on lève une exception métier pour éviter une opération inutile
             if ($country->status === GeoCountryStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation du pays sélectionné
@@ -124,7 +124,7 @@ class GeoCountryService
             $country,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.country'),
-            $this->helperLangPath
+            $this->backendHelperLangPath
         );
 
         // Pour chaque traduction reçue, on utilise updateOrCreate pour créer ou mettre à jour la traduction correspondante
@@ -142,7 +142,7 @@ class GeoCountryService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

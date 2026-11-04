@@ -11,10 +11,10 @@ use function __;
 class ProductBrandTranslationService
 {
     // Chemin de base pour les messages
-    protected string $langPath = 'v1/backend/views/pages/products/brands/messages/brands-messages-service.productBrandsTranslations';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/brands/messages/brands-messages-service.productBrandsTranslations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // DESTROY
@@ -30,7 +30,7 @@ class ProductBrandTranslationService
                 ->find($translation->brand_id);
 
             if (! $brand) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.brand_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.brand_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction
@@ -39,17 +39,17 @@ class ProductBrandTranslationService
                 ->find($translation->id);
 
             if (! $translation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.translation_not_found"));
             }
 
             // 3. Déjà en corbeille
             if ($translation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // 4. Dernière traduction active
             if ($brand->translations()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression
@@ -74,7 +74,7 @@ class ProductBrandTranslationService
                 assertTranslationRestore(
                     $translation,
                     __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productBrand'),
-                    $this->helperLangPath,
+                    $this->backendHelperLangPath,
                     'name',
                     'slug'
                 );
@@ -84,7 +84,7 @@ class ProductBrandTranslationService
 
             } else {
                 // Lever une exception si la traduction n'est pas en corbeille (soft-deleted) et qu'on tente de la restaurer.
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -105,7 +105,7 @@ class ProductBrandTranslationService
                 ->find($translation->brand_id);
 
             if (! $brand) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.brand_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.brand_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
@@ -114,17 +114,17 @@ class ProductBrandTranslationService
                 ->find($translation->id);
 
             if (! $translation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.translation_not_found"));
             }
 
             // 3. Seule une traduction en corbeille peut être supprimée définitivement
             if (! $translation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
             // 4. Interdit de supprimer la dernière traduction de la marque (corbeille incluse)
             if ($brand->translations()->withTrashed()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression définitive de la traduction et de ses dépendances

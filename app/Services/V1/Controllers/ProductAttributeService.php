@@ -12,10 +12,10 @@ use function __;
 class ProductAttributeService
 {
     // Chemin de base pour les messages de traduction (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/attributes/messages/attributes-messages-service.productAttributes';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/attributes/messages/attributes-messages-service.productAttributes';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // STORE — Création d'un attribut de produit
@@ -83,7 +83,7 @@ class ProductAttributeService
 
             // Vérification que l'attribut n'est pas déjà actif
             if ($attribute->status === ProductAttributeStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation de l'attribut sélectionné
@@ -102,7 +102,7 @@ class ProductAttributeService
 
             // Vérification que l'attribut n'est pas déjà inactif
             if ($attribute->status === ProductAttributeStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation de l'attribut sélectionné
@@ -121,7 +121,7 @@ class ProductAttributeService
 
             // Vérifie que l'attribut n'est pas déjà en corbeille
             if ($attribute->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // Vérifie les relations dépendantes (ex: valeurs d'attributs liées)
@@ -140,7 +140,7 @@ class ProductAttributeService
 
             // Vérifie que l'attribut est bien en corbeille
             if (! $attribute->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
             // Restauration de l'attribut (supprime le deleted_at)
@@ -160,7 +160,7 @@ class ProductAttributeService
                 // force_destroy_function supprime l'entité, ses traductions et ses fichiers associés
                 force_destroy_function($attribute);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -191,7 +191,7 @@ class ProductAttributeService
             $attribute,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productAttribute'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'name',
             'slug'
         );
@@ -214,7 +214,7 @@ class ProductAttributeService
                 // être mise à jour (remplace l'ancienne restauration automatique).
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

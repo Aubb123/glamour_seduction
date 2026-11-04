@@ -15,7 +15,7 @@ class CloudPlatformService
 {
     use LogActivity;
 
-    protected string $langPath = 'v1/backend/views/pages/clouds/platforms/messages/cloud-platforms-messages-service.cloud-platforms';
+    protected string $backendLangPath = 'v1/backend/views/pages/clouds/platforms/messages/cloud-platforms-messages-service.cloud-platforms';
 
     public function __construct(
         protected CloudStorageService $cloudStorage,
@@ -32,7 +32,7 @@ class CloudPlatformService
             if (isset($data['name'])) {
                 $validNames = CloudPlatformName::values();
                 if (! in_array($data['name'], $validNames)) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.store.invalid_name"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.invalid_name"));
                 }
             }
 
@@ -64,7 +64,7 @@ class CloudPlatformService
             if (isset($data['name'])) {
                 $validNames = CloudPlatformName::values();
                 if (! in_array($data['name'], $validNames)) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.invalid_name"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.invalid_name"));
                 }
             }
 
@@ -135,11 +135,11 @@ class CloudPlatformService
             // Redondance suppression : le verrou générique BackendHelper::assertNoDependentChildren
             // (via $dependentRelations = ['folders']) gère le blocage si des dossiers existent.
             if ($platform->status === CloudPlatformStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.status_active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.status_active_forbidden"));
             }
 
             if ($platform->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($platform);
         });
@@ -154,7 +154,7 @@ class CloudPlatformService
             if ($platform->trashed()) {
                 restore_function($platform);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -169,13 +169,13 @@ class CloudPlatformService
             // Redondance suppression : le verrou générique BackendHelper::assertNoDependentChildren
             // (via $dependentRelations = ['folders']) gère le blocage si des dossiers existent.
             if ($platform->status === CloudPlatformStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.status_active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.status_active_forbidden"));
             }
 
             if ($platform->trashed()) {
                 force_destroy_function($platform);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -188,8 +188,8 @@ class CloudPlatformService
         DB::transaction(function () use ($cloudPlatform) {
 
             if ($cloudPlatform->status !== CloudPlatformStatus::Active) {
-                $this->logActivity(type: 'error', action: 'backend_cloud_platforms_architecture_store', context: ['platform' => $cloudPlatform->name], message: __("{$this->langPath}.architecture_store.inactive_platform", ['name' => $cloudPlatform->name]), activity: __("{$this->langPath}.architecture_store.error"), is_success: false, loggable: $cloudPlatform);
-                throw new \InvalidArgumentException(__("{$this->langPath}.architecture_store.inactive_platform", ['name' => $cloudPlatform->name]));
+                $this->logActivity(type: 'error', action: 'backend_cloud_platforms_architecture_store', context: ['platform' => $cloudPlatform->name], message: __("{$this->backendLangPath}.architecture_store.inactive_platform", ['name' => $cloudPlatform->name]), activity: __("{$this->backendLangPath}.architecture_store.error"), is_success: false, loggable: $cloudPlatform);
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.architecture_store.inactive_platform", ['name' => $cloudPlatform->name]));
             }
 
             $getArchitectureCloud = getArchitectureCloud();
@@ -202,7 +202,7 @@ class CloudPlatformService
             // 2. Marquage des dossiers spécifiques (content_type, entity_table)
             $updatedCount = $this->cloudFolderService->markFoldersWithContentType($cloudPlatform, $foldersToUpdate);
 
-            $this->logActivity(type: 'info', action: 'backend_cloud_platforms_architecture_store', context: ['platform' => $cloudPlatform->name, 'created' => $createdCount, 'updated' => $updatedCount], message: __("{$this->langPath}.architecture_store.success", ['name' => $cloudPlatform->name]), activity: __("{$this->langPath}.architecture_store.success", ['name' => $cloudPlatform->name]), is_success: true, loggable: $cloudPlatform);
+            $this->logActivity(type: 'info', action: 'backend_cloud_platforms_architecture_store', context: ['platform' => $cloudPlatform->name, 'created' => $createdCount, 'updated' => $updatedCount], message: __("{$this->backendLangPath}.architecture_store.success", ['name' => $cloudPlatform->name]), activity: __("{$this->backendLangPath}.architecture_store.success", ['name' => $cloudPlatform->name]), is_success: true, loggable: $cloudPlatform);
         });
     }
 }

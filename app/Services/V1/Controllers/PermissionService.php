@@ -10,7 +10,7 @@ use Spatie\Permission\PermissionRegistrar;
 class PermissionService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/permissions/messages/permission-messages-service.permissions';
+    protected string $backendLangPath = 'v1/backend/views/pages/permissions/messages/permission-messages-service.permissions';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -52,7 +52,7 @@ class PermissionService
             // Empêche le renommage si la permission est déjà attribuée à des rôles ou utilisateurs
             if (isset($data['name']) && $data['name'] !== $permission->name) {
                 if ($permission->roles()->count() > 0 || $permission->users()->count() > 0) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.cannot_rename_used"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cannot_rename_used"));
                 }
             }
 
@@ -96,7 +96,7 @@ class PermissionService
 
             // Vérification que la permission n'est pas déjà active
             if ($permission->status === PermissionStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation de la permission
@@ -117,7 +117,7 @@ class PermissionService
 
             // Vérification que la permission n'est pas déjà inactive
             if ($permission->status !== PermissionStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation de la permission
@@ -138,7 +138,7 @@ class PermissionService
 
             // Une permission active ne peut pas être supprimée
             if ($permission->status === PermissionStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // NB : les rattachements aux rôles/utilisateurs passent par des tables pivots
@@ -148,7 +148,7 @@ class PermissionService
 
             // Suppression simple (soft delete)
             if ($permission->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($permission); // ← suppression de la permission et nettoyage des fichiers associés si besoin
         });
@@ -167,14 +167,14 @@ class PermissionService
 
             // Vérification que la permission est bien supprimée
             if (! $permission->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_deleted"));
             }
 
             // Restauration simple (restore)
             if ($permission->trashed()) {
                 restore_function($permission); // ← restauration de la permission
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
             return $permission; // ← retourne la permission restaurée
@@ -219,7 +219,7 @@ class PermissionService
             if ($permission->trashed()) {
                 force_destroy_function($permission); // ← suppression définitive de la permission et nettoyage des fichiers associés si besoin
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

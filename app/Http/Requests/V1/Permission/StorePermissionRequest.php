@@ -11,7 +11,7 @@ use function __;
 class StorePermissionRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/permissions/messages/permission-messages-validation.permissions';
+    protected string $backendLangPath = 'v1/backend/views/pages/permissions/messages/permission-messages-validation.permissions';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -47,23 +47,23 @@ class StorePermissionRequest extends FormRequest
     {
         return [
             // Name
-            'name.required' => __("{$this->langPath}.name.required"),
-            'name.string' => __("{$this->langPath}.name.string"),
-            'name.max' => __("{$this->langPath}.name.max"),
-            'name.unique' => __("{$this->langPath}.name.unique"),
-            'name.regex' => __("{$this->langPath}.name.regex"),
+            'name.required' => __("{$this->backendLangPath}.name.required"),
+            'name.string' => __("{$this->backendLangPath}.name.string"),
+            'name.max' => __("{$this->backendLangPath}.name.max"),
+            'name.unique' => __("{$this->backendLangPath}.name.unique"),
+            'name.regex' => __("{$this->backendLangPath}.name.regex"),
 
             // Guard name
-            'guard_name.required' => __("{$this->langPath}.guard_name.required"),
-            'guard_name.string' => __("{$this->langPath}.guard_name.string"),
+            'guard_name.required' => __("{$this->backendLangPath}.guard_name.required"),
+            'guard_name.string' => __("{$this->backendLangPath}.guard_name.string"),
 
             // Is active
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
             // Roles
-            'roles.array' => __("{$this->langPath}.roles.array"),
-            'roles.*.exists' => __("{$this->langPath}.roles.exists"),
+            'roles.array' => __("{$this->backendLangPath}.roles.array"),
+            'roles.*.exists' => __("{$this->backendLangPath}.roles.exists"),
         ];
     }
 }

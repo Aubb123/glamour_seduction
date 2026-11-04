@@ -12,10 +12,10 @@ use function __;
 class GeoContinentService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/geos/continents/messages/continent-messages-service.translations';
+    protected string $backendLangPath = 'v1/backend/views/pages/geos/continents/messages/continent-messages-service.translations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // UPDATE
@@ -100,7 +100,7 @@ class GeoContinentService
             $continent,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.continent'),
-            $this->helperLangPath
+            $this->backendHelperLangPath
         );
 
         // Pour chaque traduction reçue, on utilise updateOrCreate pour créer ou mettre à jour la traduction correspondante
@@ -120,7 +120,7 @@ class GeoContinentService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $langId,
                         ])
                     );

@@ -12,7 +12,7 @@ use function __;
 class StoreGalleryRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/galleries/messages/galleries-messages-validation.galleries';
+    protected string $backendLangPath = 'v1/backend/views/pages/galleries/messages/galleries-messages-validation.galleries';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -65,7 +65,7 @@ class StoreGalleryRequest extends FormRequest
                 if ($exists) {
                     $validator->errors()->add(
                         "translations.{$key}.title",
-                        __("{$this->langPath}.translations.unique_title")
+                        __("{$this->backendLangPath}.translations.unique_title")
                     );
                 }
             }
@@ -75,34 +75,34 @@ class StoreGalleryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sort_order.required' => __("{$this->langPath}.sort_order.required"),
-            'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
-            'sort_order.min' => __("{$this->langPath}.sort_order.min"),
-            'sort_order.unique' => __("{$this->langPath}.sort_order.unique"),
+            'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
+            'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
+            'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
+            'sort_order.unique' => __("{$this->backendLangPath}.sort_order.unique"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'cloud_platform_uuid.required' => __("{$this->langPath}.cloud_platform_uuid.required"),
-            'cloud_platform_uuid.exists' => __("{$this->langPath}.cloud_platform_uuid.exists"),
+            'cloud_platform_uuid.required' => __("{$this->backendLangPath}.cloud_platform_uuid.required"),
+            'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
 
-            'image.required' => __("{$this->langPath}.image.required"),
-            'image.image' => __("{$this->langPath}.image.image"),
-            'image.mimes' => __("{$this->langPath}.image.mimes"),
-            'image.max' => __("{$this->langPath}.image.max"),
+            'image.required' => __("{$this->backendLangPath}.image.required"),
+            'image.image' => __("{$this->backendLangPath}.image.image"),
+            'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
+            'image.max' => __("{$this->backendLangPath}.image.max"),
 
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
 
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
-            'translations.*.title.required' => __("{$this->langPath}.translations.title.required"),
-            'translations.*.title.string' => __("{$this->langPath}.translations.title.string"),
-            'translations.*.title.max' => __("{$this->langPath}.translations.title.max"),
+            'translations.*.title.required' => __("{$this->backendLangPath}.translations.title.required"),
+            'translations.*.title.string' => __("{$this->backendLangPath}.translations.title.string"),
+            'translations.*.title.max' => __("{$this->backendLangPath}.translations.title.max"),
 
-            'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
-            'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
+            'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
+            'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
         ];
     }
 }

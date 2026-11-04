@@ -18,7 +18,7 @@ class AuditController extends Controller
     use LogActivity;
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/audits/messages/audits-messages-controller.audits';
+    protected string $backendLangPath = 'v1/backend/views/pages/audits/messages/audits-messages-controller.audits';
 
     // Injection de dépendance du service de gestion des audits
     public function __construct(protected AuditService $auditService) {}
@@ -65,7 +65,7 @@ class AuditController extends Controller
             $actions = Audit::select('action')->distinct()->pluck('action');
 
             // Log de l'activité
-            $this->logActivity(type: 'info', action: 'backend.audits.index', context: ['count' => $audits->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.audits.index', context: ['count' => $audits->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
             // Retourne la vue avec les audits
             return view('v1.backend.pages.audits.index', compact('audits', 'auditableTypes', 'actions', 'filters'));
@@ -73,7 +73,7 @@ class AuditController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur
-            $this->logActivity(type: 'error', action: 'backend.audits.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.audits.index', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.index.error"), is_success: false);
 
             abort(500);
         }
@@ -90,7 +90,7 @@ class AuditController extends Controller
             $audit->load(['user', 'auditable']);
 
             // Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.audits.show', context: ['audit_uuid' => $audit->uuid], message: null, activity: __("{$this->langPath}.show.success"), is_success: true, loggable: $audit);
+            $this->logActivity(type: 'info', action: 'backend.audits.show', context: ['audit_uuid' => $audit->uuid], message: null, activity: __("{$this->backendLangPath}.show.success"), is_success: true, loggable: $audit);
 
             // Retourne la vue de détails avec l'audit
             return view('v1.backend.pages.audits.show', compact('audit'));
@@ -98,7 +98,7 @@ class AuditController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de visualisation avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.audits.show', context: ['audit_uuid' => $audit->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $audit->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.audits.show', context: ['audit_uuid' => $audit->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $audit->uuid]), is_success: false);
 
             abort(500);
         }
@@ -113,27 +113,27 @@ class AuditController extends Controller
 
             // Audit résolu par binding implicite ({audit})
 
-            $this->logActivity(type: 'info', action: 'backend.audits.destroy', context: ['audit_uuid' => $audit->uuid], message: null, activity: __("{$this->langPath}.destroy.flash_info"), is_success: false, loggable: $audit);
+            $this->logActivity(type: 'info', action: 'backend.audits.destroy', context: ['audit_uuid' => $audit->uuid], message: null, activity: __("{$this->backendLangPath}.destroy.flash_info"), is_success: false, loggable: $audit);
 
             // Faire un redirecte back avec un message flash impossible de supprimer l'audit
-            return redirect()->back()->with('info', __("{$this->langPath}.destroy.flash_info"));
+            return redirect()->back()->with('info', __("{$this->backendLangPath}.destroy.flash_info"));
 
             // // Utilise le service pour supprimer l'audit
             // $this->auditService->backend_audits_destroy($audit);
 
             // // Log de l'activité de suppression réussie
-            // $this->logActivity(type: 'info', action: 'backend.audits.destroy', context: ['audit_uuid' => $audit->uuid], message: null, activity: __("{$this->langPath}.destroy.success"), is_success: true, loggable: $audit);
+            // $this->logActivity(type: 'info', action: 'backend.audits.destroy', context: ['audit_uuid' => $audit->uuid], message: null, activity: __("{$this->backendLangPath}.destroy.success"), is_success: true, loggable: $audit);
 
             // // Redirige vers la liste des audits avec un message flash de succès
-            // return redirect()->route('backend.audits.index')->with('success', __("{$this->langPath}.destroy.flash_success"));
+            // return redirect()->route('backend.audits.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur de suppression avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.audits.destroy', context: ['audit_uuid' => $audit->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $audit->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.audits.destroy', context: ['audit_uuid' => $audit->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $audit->uuid]), is_success: false);
 
             // Redirige vers la liste des audits avec un message flash d'erreur
-            return redirect()->back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
     }
 
@@ -145,27 +145,27 @@ class AuditController extends Controller
         try {
 
             // Log de l'activité de nettoyage en cours
-            $this->logActivity(type: 'info', action: 'backend.audits.clear', context: [], message: null, activity: __("{$this->langPath}.clear.flash_info"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.audits.clear', context: [], message: null, activity: __("{$this->backendLangPath}.clear.flash_info"), is_success: true);
 
             // Faire un redirecte back avec un message flash impossible de nettoyer les audits
-            return redirect()->route('backend.audits.index')->with('info', __("{$this->langPath}.clear.flash_info", ['count' => 0]));
+            return redirect()->route('backend.audits.index')->with('info', __("{$this->backendLangPath}.clear.flash_info", ['count' => 0]));
 
             // // Utilise le service pour supprimer les audits de plus de 3 jours
             // $deletedCount = $this->auditService->backend_audits_clear_old_audits(3);
 
             // // Log de l'activité de nettoyage réussie
-            // $this->logActivity(type: 'info', action: 'backend.audits.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->langPath}.clear.success", ['count' => $deletedCount]), is_success: true);
+            // $this->logActivity(type: 'info', action: 'backend.audits.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->backendLangPath}.clear.success", ['count' => $deletedCount]), is_success: true);
 
             // // Redirige vers la liste des audits avec un message flash de succès
-            // return redirect()->route('backend.audits.index')->with('success', __("{$this->langPath}.clear.flash_success", ['count' => $deletedCount]));
+            // return redirect()->route('backend.audits.index')->with('success', __("{$this->backendLangPath}.clear.flash_success", ['count' => $deletedCount]));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur de nettoyage avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.audits.clear', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.clear.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.audits.clear', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.clear.error"), is_success: false);
 
             // Redirige vers la liste des audits avec un message flash d'erreur
-            return redirect()->back()->with('error', __("{$this->langPath}.clear.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.clear.flash_error"));
         }
     }
 }

@@ -18,7 +18,7 @@ class FaqTranslationController extends Controller
     use LogActivity;
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/faqs/messages/faqs-messages-controller.faqs';
+    protected string $backendLangPath = 'v1/backend/views/pages/faqs/messages/faqs-messages-controller.faqs';
 
     // Injection de dépendance du service de gestion des traductions de FAQs
     public function __construct(
@@ -39,23 +39,23 @@ class FaqTranslationController extends Controller
             $this->faqTranslationService->backend_faqs_translations_destroy($translation);
 
             // Log de la suppression réussie
-            $this->logActivity(type: 'info', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'info', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.translations.destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression
-            return back()->with('success', __("{$this->langPath}.translations.destroy.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.translations.destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative de suppression d'une traduction non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour la traduction introuvable
-            return back()->with('error', __("{$this->langPath}.translations.destroy.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_warning"));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return back()->with('error', $e->getMessage());
@@ -63,10 +63,10 @@ class FaqTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.error", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression
-            return back()->with('error', __("{$this->langPath}.translations.destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_error"));
         }
     }
 
@@ -86,7 +86,7 @@ class FaqTranslationController extends Controller
             $faqTranslations = FaqTranslation::onlyTrashed()->where('faq_id', $faq->id)->get();
 
             // Log de l'accès à la corbeille des traductions pour cette FAQ
-            $this->logActivity(type: 'info', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq->uuid, 'faq_question' => $faqName], message: null, activity: __("{$this->langPath}.translations.trashed.accessed", ['name' => $faqName]), is_success: true, loggable: $faq);
+            $this->logActivity(type: 'info', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq->uuid, 'faq_question' => $faqName], message: null, activity: __("{$this->backendLangPath}.translations.trashed.accessed", ['name' => $faqName]), is_success: true, loggable: $faq);
 
             // Retourne la vue avec les traductions supprimées et la FAQ correspondante
             return view('v1.backend.pages.faqs.translations.trashed', compact('faq', 'faqTranslations'));
@@ -94,14 +94,14 @@ class FaqTranslationController extends Controller
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative d'accès à la corbeille des traductions pour une FAQ non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq_uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.trashed.not_found", ['uuid' => $faq_uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.not_found", ['uuid' => $faq_uuid]), is_success: false);
 
             abort(404);
 
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative d'accès à la corbeille des traductions pour une FAQ avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq_uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.trashed.error", ['uuid' => $faq_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.error", ['uuid' => $faq_uuid]), is_success: false);
 
             abort(500);
         }
@@ -121,23 +121,23 @@ class FaqTranslationController extends Controller
             $this->faqTranslationService->backend_faqs_translations_restore($translation);
 
             // Log de la restauration réussie
-            $this->logActivity(type: 'info', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.restore.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'info', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.translations.restore.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
 
             // Redirige vers la page précédente avec un message flash de succès pour la restauration
-            return back()->with('success', __("{$this->langPath}.translations.restore.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.translations.restore.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative de restauration d'une traduction non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.restore.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.restore.warning", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour la traduction introuvable
-            return back()->with('error', __("{$this->langPath}.translations.restore.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.translations.restore.flash_warning"));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return back()->with('error', $e->getMessage());
@@ -145,10 +145,10 @@ class FaqTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.restore.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.faq-translations.restore', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.restore.error", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la restauration
-            return back()->with('error', __("{$this->langPath}.translations.restore.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.translations.restore.flash_error"));
         }
     }
 
@@ -166,23 +166,23 @@ class FaqTranslationController extends Controller
             $this->faqTranslationService->backend_faqs_translations_force_destroy($translation);
 
             // Log de la suppression définitive réussie
-            $this->logActivity(type: 'info', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.translations.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'info', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.translations.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression définitive
-            return back()->with('success', __("{$this->langPath}.translations.force_destroy.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.translations.force_destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive d'une traduction non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour la traduction introuvable
-            return back()->with('error', __("{$this->langPath}.translations.force_destroy.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.translations.force_destroy.flash_warning"));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return back()->with('error', $e->getMessage());
@@ -190,10 +190,10 @@ class FaqTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.translations.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.faq-translations.force_destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression définitive
-            return back()->with('error', __("{$this->langPath}.translations.force_destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.translations.force_destroy.flash_error"));
         }
     }
 }

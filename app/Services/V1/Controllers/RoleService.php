@@ -13,10 +13,10 @@ use function __;
 class RoleService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/roles/messages/role-messages-service.roles';
+    protected string $backendLangPath = 'v1/backend/views/pages/roles/messages/role-messages-service.roles';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // ACTIVATE
@@ -26,7 +26,7 @@ class RoleService
         DB::transaction(function () use ($role) {
 
             if ($role->status === RoleStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             $role->update([
@@ -45,7 +45,7 @@ class RoleService
         DB::transaction(function () use ($role) {
 
             if ($role->status !== RoleStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             $role->update([
@@ -123,7 +123,7 @@ class RoleService
             $role,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.role'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'label',
             'slug'
         );
@@ -144,7 +144,7 @@ class RoleService
                 // être mise à jour (comportement cohérent avec les autres services).
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

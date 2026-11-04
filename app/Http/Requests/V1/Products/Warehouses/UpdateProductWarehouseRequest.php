@@ -11,7 +11,7 @@ use function __;
 class UpdateProductWarehouseRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/warehouses/messages/warehouses-messages-validation.productWarehouses';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/warehouses/messages/warehouses-messages-validation.productWarehouses';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -48,26 +48,26 @@ class UpdateProductWarehouseRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'code.required' => __("{$this->langPath}.code.required"),
-            'code.string' => __("{$this->langPath}.code.string"),
-            'code.max' => __("{$this->langPath}.code.max"),
-            'code.unique' => __("{$this->langPath}.code.unique"),
+            'code.required' => __("{$this->backendLangPath}.code.required"),
+            'code.string' => __("{$this->backendLangPath}.code.string"),
+            'code.max' => __("{$this->backendLangPath}.code.max"),
+            'code.unique' => __("{$this->backendLangPath}.code.unique"),
 
-            'name.required' => __("{$this->langPath}.name.required"),
-            'name.string' => __("{$this->langPath}.name.string"),
-            'name.max' => __("{$this->langPath}.name.max"),
+            'name.required' => __("{$this->backendLangPath}.name.required"),
+            'name.string' => __("{$this->backendLangPath}.name.string"),
+            'name.max' => __("{$this->backendLangPath}.name.max"),
 
-            'address.string' => __("{$this->langPath}.address.string"),
-            'address.max' => __("{$this->langPath}.address.max"),
-            'city.string' => __("{$this->langPath}.city.string"),
-            'city.max' => __("{$this->langPath}.city.max"),
-            'phone.string' => __("{$this->langPath}.phone.string"),
-            'phone.max' => __("{$this->langPath}.phone.max"),
+            'address.string' => __("{$this->backendLangPath}.address.string"),
+            'address.max' => __("{$this->backendLangPath}.address.max"),
+            'city.string' => __("{$this->backendLangPath}.city.string"),
+            'city.max' => __("{$this->backendLangPath}.city.max"),
+            'phone.string' => __("{$this->backendLangPath}.phone.string"),
+            'phone.max' => __("{$this->backendLangPath}.phone.max"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'is_default.boolean' => __("{$this->langPath}.is_default.boolean"),
+            'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
         ];
     }
 }

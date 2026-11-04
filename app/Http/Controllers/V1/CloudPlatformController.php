@@ -21,7 +21,7 @@ class CloudPlatformController extends Controller
     use LogActivity;
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/clouds/platforms/messages/cloud-platforms-messages-controller.cloud-platforms';
+    protected string $backendLangPath = 'v1/backend/views/pages/clouds/platforms/messages/cloud-platforms-messages-controller.cloud-platforms';
 
     // Injection de dépendance du service de gestion des plateformes cloud
     public function __construct(protected CloudPlatformService $cloudPlatformService) {}
@@ -41,7 +41,7 @@ class CloudPlatformController extends Controller
             $platforms = CloudPlatform::withCount(['audits', 'activityLogs', 'folders', 'files'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.index', context: ['count' => $platforms->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.index', context: ['count' => $platforms->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
             // Retourne la vue avec les plateformes cloud
             return view('v1.backend.pages.clouds.platforms.index', compact('platforms'));
@@ -49,7 +49,7 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.index', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.index.error"), is_success: false);
 
             abort(500);
         }
@@ -63,7 +63,7 @@ class CloudPlatformController extends Controller
         try {
 
             // Log de l'accès à la page de création
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.create', context: [], message: null, activity: __("{$this->langPath}.create.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Retourne la vue de création
             return view('v1.backend.pages.clouds.platforms.create');
@@ -71,7 +71,7 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de l'accès à la page de création
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.create', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.create.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.create', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.create.error"), is_success: false);
 
             abort(500);
         }
@@ -91,15 +91,15 @@ class CloudPlatformController extends Controller
             $platformName = $platform->label;
 
             // Log de l'activité de création réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.store', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->langPath}.store.success", ['name' => $platformName]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.store', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->backendLangPath}.store.success", ['name' => $platformName]), is_success: true, loggable: $platform);
 
             // Redirige vers la page de détails de la plateforme avec un message flash de succès
-            return redirect()->route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug])->with('success', __("{$this->langPath}.store.flash_success", ['name' => $platformName]));
+            return redirect()->route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug])->with('success', __("{$this->backendLangPath}.store.flash_success", ['name' => $platformName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de création avec un message d'avertissement
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.store', context: ['data' => $this->sanitizeForLog($request->validated())], message: $e->getMessage(), activity: __("{$this->langPath}.store.error"), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.store', context: ['data' => $this->sanitizeForLog($request->validated())], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -107,10 +107,10 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de création avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.store', context: ['data' => $this->sanitizeForLog($request->validated())], message: $e->getMessage(), activity: __("{$this->langPath}.store.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.store', context: ['data' => $this->sanitizeForLog($request->validated())], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
-            return redirect()->back()->with('error', __("{$this->langPath}.store.flash_error"))->withInput();
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.store.flash_error"))->withInput();
         }
     }
 
@@ -126,7 +126,7 @@ class CloudPlatformController extends Controller
         }
 
         // Log de l'incohérence de slug avec un message d'avertissement
-        $this->logActivity(type: 'warning', action: $action, context: ['cloud_platform_uuid' => $cloudPlatform->uuid, 'cloud_platform_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->langPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $cloudPlatform);
+        $this->logActivity(type: 'warning', action: $action, context: ['cloud_platform_uuid' => $cloudPlatform->uuid, 'cloud_platform_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $cloudPlatform);
 
         return false;
     }
@@ -163,14 +163,14 @@ class CloudPlatformController extends Controller
 
             // Vérifie que le slug correspond
             if (! $this->platformSlugMatches($cloudPlatform, $slug, 'backend.cloud-platforms.show', 'show')) {
-                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->langPath}.show.slug_mismatch"));
+                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->backendLangPath}.show.slug_mismatch"));
             }
 
             // Récupère le label de la plateforme pour les logs et les messages flash
             $platformName = $platform->label;
 
             // Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.show', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'cloud_platform_slug' => $platform->slug], message: null, activity: __("{$this->langPath}.show.success", ['name' => $platformName]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.show', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'cloud_platform_slug' => $platform->slug], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $platformName]), is_success: true, loggable: $platform);
 
             // Retourne la vue de détails avec la plateforme et ses dossiers
             return view('v1.backend.pages.clouds.platforms.show', compact('platform'));
@@ -178,7 +178,7 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de visualisation avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.show', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.show', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
         }
@@ -196,7 +196,7 @@ class CloudPlatformController extends Controller
 
             // Vérifie que le slug correspond
             if (! $this->platformSlugMatches($cloudPlatform, $slug, 'backend.cloud-platforms.folders', 'folders')) {
-                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->langPath}.folders.slug_mismatch"));
+                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->backendLangPath}.folders.slug_mismatch"));
             }
 
             $platformName = $platform->label;
@@ -205,7 +205,7 @@ class CloudPlatformController extends Controller
             $folders = $platform->folders()->withCount(['files', 'children'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.folders', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'count' => $folders->count()], message: null, activity: __("{$this->langPath}.folders.success", ['name' => $platformName]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.folders', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'count' => $folders->count()], message: null, activity: __("{$this->backendLangPath}.folders.success", ['name' => $platformName]), is_success: true, loggable: $platform);
 
             // Retourne la vue des dossiers de la plateforme
             return view('v1.backend.pages.clouds.platforms.others.folders', compact('platform', 'folders'));
@@ -213,7 +213,7 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de visualisation avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.folders', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.folders.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.folders', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.folders.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
         }
@@ -231,7 +231,7 @@ class CloudPlatformController extends Controller
 
             // Vérifie que le slug correspond
             if (! $this->platformSlugMatches($cloudPlatform, $slug, 'backend.cloud-platforms.files', 'files')) {
-                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->langPath}.files.slug_mismatch"));
+                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->backendLangPath}.files.slug_mismatch"));
             }
 
             $platformName = $platform->label;
@@ -240,7 +240,7 @@ class CloudPlatformController extends Controller
             $files = $platform->files()->with(['cloudFolder', 'fileable'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.files', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'count' => $files->count()], message: null, activity: __("{$this->langPath}.files.success", ['name' => $platformName]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.files', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'count' => $files->count()], message: null, activity: __("{$this->backendLangPath}.files.success", ['name' => $platformName]), is_success: true, loggable: $platform);
 
             // Retourne la vue des fichiers de la plateforme
             return view('v1.backend.pages.clouds.platforms.others.files', compact('platform', 'files'));
@@ -248,7 +248,7 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de visualisation avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.files', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.files.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.files', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.files.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
         }
@@ -266,18 +266,18 @@ class CloudPlatformController extends Controller
 
             // Vérifie que le slug correspond
             if (! $this->platformSlugMatches($cloudPlatform, $slug, 'backend.cloud-platforms.audits', 'audits')) {
-                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->langPath}.audits.slug_mismatch"));
+                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->backendLangPath}.audits.slug_mismatch"));
             }
 
             $audits = $platform->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.audits', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->langPath}.audits.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.audits', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
 
             return view('v1.backend.pages.clouds.platforms.others.audits', compact('platform', 'audits'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.audits', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.audits', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
         }
@@ -295,18 +295,18 @@ class CloudPlatformController extends Controller
 
             // Vérifie que le slug correspond
             if (! $this->platformSlugMatches($cloudPlatform, $slug, 'backend.cloud-platforms.activity-logs', 'activity-logs')) {
-                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->langPath}.activity-logs.slug_mismatch"));
+                return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->backendLangPath}.activity-logs.slug_mismatch"));
             }
 
             $logs = $platform->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.activity-logs', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->langPath}.activity-logs.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.activity-logs', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
 
             return view('v1.backend.pages.clouds.platforms.others.activity-logs', compact('platform', 'logs'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.activity-logs', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.activity-logs', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
         }
@@ -323,7 +323,7 @@ class CloudPlatformController extends Controller
             $platform = $cloudPlatform;
 
             // Log de l'accès à la page d'édition réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.edit', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.edit', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
 
             // Retourne la vue d'édition avec la plateforme
             return view('v1.backend.pages.clouds.platforms.edit', compact('platform'));
@@ -331,7 +331,7 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur d'accès à la page d'édition avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.edit', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.edit.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.edit', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
         }
@@ -355,15 +355,15 @@ class CloudPlatformController extends Controller
             $platformName = $platform->label; // Récupère le label de la plateforme pour les logs et les messages flash
 
             // Log de l'activité de mise à jour réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'changes' => $this->sanitizeForLog($platform->getChanges())], message: null, activity: __("{$this->langPath}.update.success", ['name' => $platformName]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName, 'changes' => $this->sanitizeForLog($platform->getChanges())], message: null, activity: __("{$this->backendLangPath}.update.success", ['name' => $platformName]), is_success: true, loggable: $platform);
 
             // Redirige vers la page de détails de la plateforme avec un message flash de succès
-            return redirect()->route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug])->with('success', __("{$this->langPath}.update.flash_success", ['name' => $platformName]));
+            return redirect()->route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug])->with('success', __("{$this->backendLangPath}.update.flash_success", ['name' => $platformName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de mise à jour avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -371,10 +371,10 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de mise à jour avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
-            return redirect()->back()->with('error', __("{$this->langPath}.update.flash_error"))->withInput();
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.update.flash_error"))->withInput();
         }
     }
 
@@ -399,23 +399,23 @@ class CloudPlatformController extends Controller
             // Log de l'activité de basculement de statut réussie
             if ($wasActive) {
                 // Si la plateforme était active avant, elle est maintenant désactivée
-                $this->logActivity(type: 'info', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->langPath}.toggle_active.success_deactivated", ['name' => $platformName]), is_success: true, loggable: $platform);
+                $this->logActivity(type: 'info', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->backendLangPath}.toggle_active.success_deactivated", ['name' => $platformName]), is_success: true, loggable: $platform);
 
                 // Redirige vers la page précédente avec un message flash de succès pour la désactivation
-                return redirect()->back()->with('success', __("{$this->langPath}.toggle_active.flash_success_deactivated", ['name' => $platformName]));
+                return redirect()->back()->with('success', __("{$this->backendLangPath}.toggle_active.flash_success_deactivated", ['name' => $platformName]));
 
             } else {
                 // Si la plateforme était inactive avant, elle est maintenant activée
-                $this->logActivity(type: 'info', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->langPath}.toggle_active.success_activated", ['name' => $platformName]), is_success: true, loggable: $platform);
+                $this->logActivity(type: 'info', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->backendLangPath}.toggle_active.success_activated", ['name' => $platformName]), is_success: true, loggable: $platform);
 
                 // Redirige vers la page précédente avec un message flash de succès pour l'activation
-                return redirect()->back()->with('success', __("{$this->langPath}.toggle_active.flash_success_activated", ['name' => $platformName]));
+                return redirect()->back()->with('success', __("{$this->backendLangPath}.toggle_active.flash_success_activated", ['name' => $platformName]));
             }
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de basculement de statut avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.toggle_active.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.toggle_active.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -423,10 +423,10 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de basculement de statut avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.toggle_active.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.toggle_active', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.toggle_active.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec du basculement
-            return redirect()->back()->with('error', __("{$this->langPath}.toggle_active.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.toggle_active.flash_error"));
         }
     }
 
@@ -447,15 +447,15 @@ class CloudPlatformController extends Controller
             $this->cloudPlatformService->backend_cloud_platforms_destroy($platform);
 
             // Log de l'activité de suppression réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.destroy', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $platformName]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.destroy', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['name' => $platformName]), is_success: true, loggable: $platform);
 
             // Redirige vers la liste des plateformes avec un message flash de succès
-            return redirect()->route('backend.cloud-platforms.index')->with('success', __("{$this->langPath}.destroy.flash_success", ['name' => $platformName]));
+            return redirect()->route('backend.cloud-platforms.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['name' => $platformName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de suppression avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.destroy', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.destroy', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -463,10 +463,10 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de suppression avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.destroy', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.destroy', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression
-            return redirect()->back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
     }
 
@@ -481,7 +481,7 @@ class CloudPlatformController extends Controller
             $platforms = CloudPlatform::onlyTrashed()->withCount(['audits', 'activityLogs', 'folders', 'files'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des plateformes supprimées réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.trashed', context: ['count' => $platforms->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.trashed', context: ['count' => $platforms->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
             // Retourne la vue avec les plateformes supprimées
             return view('v1.backend.pages.clouds.platforms.trashed', compact('platforms'));
@@ -489,7 +489,7 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de l'affichage de la liste des plateformes supprimées
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.trashed', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.trashed', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error"), is_success: false);
 
             abort(500);
         }
@@ -511,22 +511,22 @@ class CloudPlatformController extends Controller
             $platformName = $platform->label; // Récupère le label de la plateforme pour les logs et les messages flash
 
             // Log de l'activité de restauration réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $platformName]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->backendLangPath}.restore.success", ['name' => $platformName]), is_success: true, loggable: $platform);
 
             // Redirige vers la page précédente avec un message flash de succès pour la restauration
-            return redirect()->back()->with('success', __("{$this->langPath}.restore.flash_success", ['name' => $platformName]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['name' => $platformName]));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative de restauration d'une plateforme non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -534,9 +534,9 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.restore', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
-            return redirect()->back()->with('error', __("{$this->langPath}.restore.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.restore.flash_error"));
         }
     }
 
@@ -554,22 +554,22 @@ class CloudPlatformController extends Controller
             $this->cloudPlatformService->backend_cloud_platforms_force_destroy($platform);
 
             // Log de l'activité de suppression définitive réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $platform->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $platform->uuid], message: null, activity: __("{$this->backendLangPath}.force_destroy.success"), is_success: true, loggable: $platform);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression définitive
-            return redirect()->back()->with('success', __("{$this->langPath}.force_destroy.flash_success"));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive d'une plateforme non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -577,10 +577,10 @@ class CloudPlatformController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression définitive
-            return redirect()->back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_error"));
         }
     }
 
@@ -596,21 +596,21 @@ class CloudPlatformController extends Controller
 
             $this->cloudPlatformService->backend_cloud_platforms_architecture_store($platform);
 
-            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.architecture_store', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->langPath}.architecture_store.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
+            $this->logActivity(type: 'info', action: 'backend.cloud-platforms.architecture_store', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->backendLangPath}.architecture_store.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
 
-            return redirect()->route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug])->with('success', __("{$this->langPath}.architecture_store.flash_success", ['name' => $platform->label]));
+            return redirect()->route('backend.cloud-platforms.show', ['cloudPlatform' => $platform->uuid, 'slug' => $platform->slug])->with('success', __("{$this->backendLangPath}.architecture_store.flash_success", ['name' => $platform->label]));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.architecture_store', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.architecture_store.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-platforms.architecture_store', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.architecture_store.warning_meta", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             return redirect()->back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.architecture_store', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.architecture_store.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.architecture_store', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.architecture_store.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
-            return redirect()->back()->with('error', __("{$this->langPath}.architecture_store.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.architecture_store.flash_error"));
         }
     }
 }

@@ -10,7 +10,7 @@ use function __;
 class LangService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/langs/messages/lang-messages-service.langs';
+    protected string $backendLangPath = 'v1/backend/views/pages/langs/messages/lang-messages-service.langs';
 
     // ─────────────────────────────────────────────
     // ACTIVATE
@@ -36,7 +36,7 @@ class LangService
 
             // Vérifie que ce n'est pas la langue par défaut
             if ($lang->is_default) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.default_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.default_forbidden"));
             }
 
             // Désactivation de la langue

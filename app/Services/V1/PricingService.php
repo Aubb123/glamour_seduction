@@ -10,7 +10,7 @@ use function __;
 class PricingService
 {
     // Chemin de base pour les traductions (centralisé, messages des devises)
-    protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies';
+    protected string $backendLangPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies';
 
     // ─────────────────────────────────────────────
     // RESOLVE DISPLAY CURRENCY
@@ -71,7 +71,7 @@ class PricingService
         $targetRate = (float) $target->exchange_rate;
 
         if ($sourceRate <= 0 || $targetRate <= 0) {
-            throw new \InvalidArgumentException(__("{$this->langPath}.pricing.invalid_exchange_rate", ['code' => $sourceRate <= 0 ? $source->code : $target->code]));
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.pricing.invalid_exchange_rate", ['code' => $sourceRate <= 0 ? $source->code : $target->code]));
         }
 
         return $amount * $targetRate / $sourceRate;

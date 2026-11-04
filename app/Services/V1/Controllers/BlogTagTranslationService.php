@@ -11,10 +11,10 @@ use function __;
 class BlogTagTranslationService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/tags/messages/tags-messages-service.tags.translations';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/tags/messages/tags-messages-service.tags.translations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // DESTROY
@@ -30,7 +30,7 @@ class BlogTagTranslationService
                 ->find($translation->tag_id);
 
             if (! $tag) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.tag_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.tag_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction
@@ -39,17 +39,17 @@ class BlogTagTranslationService
                 ->find($translation->id);
 
             if (! $translation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.translation_not_found"));
             }
 
             // 3. Déjà en corbeille
             if ($translation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // 4. Dernière traduction active
             if ($tag->translations()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression
@@ -74,14 +74,14 @@ class BlogTagTranslationService
                 assertTranslationRestore(
                     $translation,
                     __('v1/backend/others/helpers/backend-helper-messages.entityLabels.tag'),
-                    $this->helperLangPath,
+                    $this->backendHelperLangPath,
                     'name',
                     'slug'
                 );
 
                 restore_function($translation);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -102,7 +102,7 @@ class BlogTagTranslationService
                 ->find($translation->tag_id);
 
             if (! $tag) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.tag_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.tag_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
@@ -111,17 +111,17 @@ class BlogTagTranslationService
                 ->find($translation->id);
 
             if (! $translation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.translation_not_found"));
             }
 
             // 3. Seule une traduction en corbeille peut être supprimée définitivement
             if (! $translation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
             // 4. Interdit de supprimer la dernière traduction du tag (corbeille incluse)
             if ($tag->translations()->withTrashed()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression définitive de la traduction et de ses dépendances

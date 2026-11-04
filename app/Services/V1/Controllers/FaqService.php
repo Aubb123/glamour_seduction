@@ -11,10 +11,10 @@ use function __;
 
 class FaqService
 {
-    protected string $langPath = 'v1/backend/views/pages/faqs/messages/faqs-messages-service.faqs';
+    protected string $backendLangPath = 'v1/backend/views/pages/faqs/messages/faqs-messages-service.faqs';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -90,11 +90,11 @@ class FaqService
 
             // Seule les faqs qui ne sont pas actives peuvent être supprimées
             if ($faq->status === FaqStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_faq_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_faq_forbidden"));
             }
 
             if ($faq->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($faq);
         });
@@ -109,7 +109,7 @@ class FaqService
             if ($faq->trashed()) {
                 restore_function($faq);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -123,13 +123,13 @@ class FaqService
 
             // Seule les faqs qui ne sont pas actives peuvent être supprimées
             if ($faq->status === FaqStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.active_faq_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_faq_forbidden"));
             }
 
             if ($faq->trashed()) {
                 force_destroy_function($faq);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -160,7 +160,7 @@ class FaqService
             $faq,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.faq'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'question',
             'slug'
         );
@@ -179,7 +179,7 @@ class FaqService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

@@ -18,7 +18,7 @@ class UserController extends Controller
     use LogActivity; // Trait pour le logging d'activité
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/users/messages/user-messages-controller.users';
+    protected string $backendLangPath = 'v1/backend/views/pages/users/messages/user-messages-controller.users';
 
     // Injection de dépendance du service de gestion des utilisateurs
     public function __construct(protected UserService $userService) {}
@@ -38,7 +38,7 @@ class UserController extends Controller
             $users = User::with(['cloudFiles'])->withCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des utilisateurs
-            $this->logActivity(type: 'info', action: 'backend.users.index', context: ['count' => $users->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.users.index', context: ['count' => $users->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
             // Affiche la vue avec les utilisateurs récupérés
             return view('v1.backend.pages.users.index', compact('users'));
@@ -46,7 +46,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur avec le message d'exception
-            $this->logActivity(type: 'error', action: 'backend.users.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.index', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.index.error"), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération des utilisateurs
         }
@@ -61,7 +61,7 @@ class UserController extends Controller
 
         if ($expectedSlug !== $slug) {
             // Log de l'erreur de correspondance du slug avec un message d'avertissement
-            $this->logActivity(type: 'warning', action: $action, context: ['user_uuid' => $user->uuid, 'user_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->langPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $user);
+            $this->logActivity(type: 'warning', action: $action, context: ['user_uuid' => $user->uuid, 'user_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $user);
 
             abort(404);
         }
@@ -85,7 +85,7 @@ class UserController extends Controller
             $userName = $user->first_name.' '.$user->last_name;
 
             // Log de la consultation du détail d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.show', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.show.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.show', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue de détail de l'utilisateur
             return view('v1.backend.pages.users.show', compact('user'));
@@ -93,7 +93,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation du détail d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.show', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.show', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -114,7 +114,7 @@ class UserController extends Controller
             $logs = $user->activityLogs()->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation du journal d'activité d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.activity-logs', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.activity-logs.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.activity-logs', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue du journal d'activité de l'utilisateur
             return view('v1.backend.pages.users.others.activity-logs', compact('user', 'logs'));
@@ -122,7 +122,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation du journal d'activité d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.activity-logs', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.activity-logs', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -143,7 +143,7 @@ class UserController extends Controller
             $subscribes = $user->subscribes()->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des abonnements d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.subscribes', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.subscribes.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.subscribes', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.subscribes.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue des abonnements de l'utilisateur
             return view('v1.backend.pages.users.others.subscribes', compact('user', 'subscribes'));
@@ -151,7 +151,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation des abonnements d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.subscribes', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.subscribes.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.subscribes', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.subscribes.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500);
         }
@@ -172,7 +172,7 @@ class UserController extends Controller
             $galleries = $user->galleries()->withActiveTranslation()->with(['cloudFiles'])->orderBy('sort_order', 'desc')->get();
 
             // Log de la consultation des galeries d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.galleries', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.galleries.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.galleries', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.galleries.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue des galeries de l'utilisateur
             return view('v1.backend.pages.users.others.galleries', compact('user', 'galleries'));
@@ -180,7 +180,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation des galeries d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.galleries', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.galleries.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.galleries', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.galleries.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -201,7 +201,7 @@ class UserController extends Controller
             $contacts = $user->contacts()->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des messages de contact d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.contacts', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.contacts.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.contacts', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.contacts.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue des messages de contact de l'utilisateur
             return view('v1.backend.pages.users.others.contacts', compact('user', 'contacts'));
@@ -209,7 +209,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation des messages de contact d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.contacts', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.contacts.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.contacts', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.contacts.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500);
         }
@@ -230,7 +230,7 @@ class UserController extends Controller
             $faqs = $user->faqs()->with(['user'])->orderBy('sort_order', 'desc')->get();
 
             // Log de la consultation des FAQ de l'utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.faqs', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.faqs.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.faqs', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.faqs.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue des FAQ de l'utilisateur
             return view('v1.backend.pages.users.others.faqs', compact('user', 'faqs'));
@@ -238,7 +238,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation des FAQ d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.faqs', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.faqs.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.faqs', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.faqs.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500);
         }
@@ -259,7 +259,7 @@ class UserController extends Controller
             $audits = $user->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation du journal d'audit d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.audits', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.audits.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.audits', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue du journal d'audit de l'utilisateur
             return view('v1.backend.pages.users.others.audits', compact('user', 'audits'));
@@ -267,7 +267,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation du journal d'audit d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.audits', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.audits', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -288,7 +288,7 @@ class UserController extends Controller
             $posts = $user->blogPosts()->withActiveTranslation()->with(['cloudFiles'])->orderBy('sort_order', 'desc')->get();
 
             // Log de la consultation des articles de blog d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.blog-posts', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.blog-posts.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.blog-posts', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.blog-posts.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue des articles de blog de l'utilisateur
             return view('v1.backend.pages.users.others.blog-posts', compact('user', 'posts'));
@@ -296,7 +296,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation des articles de blog d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.blog-posts', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.blog-posts.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.blog-posts', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.blog-posts.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -317,7 +317,7 @@ class UserController extends Controller
             $comments = $user->blogPostComments()->with(['post', 'user'])->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des commentaires de blog d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.blog-post-comments', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.blog-post-comments.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.blog-post-comments', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.blog-post-comments.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue des commentaires de blog de l'utilisateur
             return view('v1.backend.pages.users.others.blog-post-comments', compact('user', 'comments'));
@@ -325,7 +325,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation des commentaires de blog d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.blog-post-comments', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.blog-post-comments.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.blog-post-comments', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.blog-post-comments.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -346,7 +346,7 @@ class UserController extends Controller
             $replies = $user->blogPostCommentReplies()->with(['comment', 'user'])->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des réponses de commentaires de blog d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.blog-post-comment-replies', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.blog-post-comment-replies.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.blog-post-comment-replies', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.blog-post-comment-replies.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Retourne la vue des réponses de commentaires de blog de l'utilisateur
             return view('v1.backend.pages.users.others.blog-post-comment-replies', compact('user', 'replies'));
@@ -354,7 +354,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation des réponses de commentaires de blog d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.blog-post-comment-replies', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.blog-post-comment-replies.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.blog-post-comment-replies', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.blog-post-comment-replies.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -372,7 +372,7 @@ class UserController extends Controller
             $countries = GeoCountry::withActiveTranslation()->orderBy('sort_order', 'asc')->get();
 
             // Log de l'accès à la page de modification d'un utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.edit', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $user->first_name.' '.$user->last_name]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.edit', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $user->first_name.' '.$user->last_name]), is_success: true, loggable: $user);
 
             // Retourne la vue d'édition de l'utilisateur avec les données nécessaires
             return view('v1.backend.pages.users.edit', compact('user', 'roles', 'countries'));
@@ -380,7 +380,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de l'accès à la page de modification d'un utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.edit', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.edit.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.edit', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $user->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de l'utilisateur
         }
@@ -401,15 +401,15 @@ class UserController extends Controller
             $userName = $user->first_name.' '.$user->last_name;
 
             // Log de la mise à jour de l'utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.update', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email, 'changes' => $user->getChanges()], message: null, activity: __("{$this->langPath}.update.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.update', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email, 'changes' => $user->getChanges()], message: null, activity: __("{$this->backendLangPath}.update.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Redirection vers la page de détail de l'utilisateur avec un message de succès
-            return redirect()->route('backend.users.show', ['user' => $user->uuid, 'slug' => $user->slug])->with('success', __("{$this->langPath}.update.flash_success", ['name' => $userName]));
+            return redirect()->route('backend.users.show', ['user' => $user->uuid, 'slug' => $user->slug])->with('success', __("{$this->backendLangPath}.update.flash_success", ['name' => $userName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors de la mise à jour de l'utilisateur
-            $this->logActivity(type: 'warning', action: 'backend.users.update', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.warning_meta", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.users.update', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.warning_meta", ['uuid' => $user->uuid]), is_success: false);
 
             // Redirection avec le message métier explicite
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -417,10 +417,10 @@ class UserController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la mise à jour de l'utilisateur
-            $this->logActivity(type: 'error', action: 'backend.users.update', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.update', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.error", ['uuid' => $user->uuid]), is_success: false);
 
             // Redirection avec un message d'erreur
-            return back()->with('error', __("{$this->langPath}.update.flash_error"))->withInput();
+            return back()->with('error', __("{$this->backendLangPath}.update.flash_error"))->withInput();
         }
     }
 
@@ -438,24 +438,24 @@ class UserController extends Controller
             $userName = $user->first_name.' '.$user->last_name;
 
             // Log de l'activation de l'utilisateur
-            $this->logActivity(type: 'info', action: 'backend.users.activate', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'info', action: 'backend.users.activate', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.activate.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Redirection avec un message de succès
-            return back()->with('success', __("{$this->langPath}.activate.flash_success", ['name' => $userName]));
+            return back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['name' => $userName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors de l'activation
-            $this->logActivity(type: 'warning', action: 'backend.users.activate', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.warning_meta", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.users.activate', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activate.warning_meta", ['uuid' => $user->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.users.activate', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.activate', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activate.error", ['uuid' => $user->uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.activate.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.activate.flash_error"));
         }
     }
 
@@ -471,24 +471,24 @@ class UserController extends Controller
             $userName = $user->first_name.' '.$user->last_name;
 
             // Log de la suspension de l'utilisateur
-            $this->logActivity(type: 'warning', action: 'backend.users.suspend', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.suspend.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'warning', action: 'backend.users.suspend', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.suspend.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Redirection avec un message de succès
-            return back()->with('success', __("{$this->langPath}.suspend.flash_success", ['name' => $userName]));
+            return back()->with('success', __("{$this->backendLangPath}.suspend.flash_success", ['name' => $userName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors de la suspension
-            $this->logActivity(type: 'warning', action: 'backend.users.suspend', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.suspend.warning_meta", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.users.suspend', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.suspend.warning_meta", ['uuid' => $user->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.users.suspend', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.suspend.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.suspend', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.suspend.error", ['uuid' => $user->uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.suspend.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.suspend.flash_error"));
         }
     }
 
@@ -504,24 +504,24 @@ class UserController extends Controller
             $userName = $user->first_name.' '.$user->last_name;
 
             // Log du bannissement de l'utilisateur
-            $this->logActivity(type: 'warning', action: 'backend.users.ban', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->langPath}.ban.success", ['name' => $userName]), is_success: true, loggable: $user);
+            $this->logActivity(type: 'warning', action: 'backend.users.ban', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.ban.success", ['name' => $userName]), is_success: true, loggable: $user);
 
             // Redirection avec un message de succès
-            return back()->with('success', __("{$this->langPath}.ban.flash_success", ['name' => $userName]));
+            return back()->with('success', __("{$this->backendLangPath}.ban.flash_success", ['name' => $userName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors du bannissement
-            $this->logActivity(type: 'warning', action: 'backend.users.ban', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.ban.warning_meta", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.users.ban', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.ban.warning_meta", ['uuid' => $user->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.users.ban', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.ban.error", ['uuid' => $user->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.users.ban', context: ['user_uuid' => $user->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.ban.error", ['uuid' => $user->uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.ban.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.ban.flash_error"));
         }
     }
 }

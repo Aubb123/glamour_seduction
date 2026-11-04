@@ -13,7 +13,7 @@ class UpdateCloudFolderRequest extends FormRequest
 {
     use LogActivity;
 
-    protected string $langPath = 'v1/backend/views/pages/clouds/folders/messages/cloud-folders-messages-validation.cloud-folders';
+    protected string $backendLangPath = 'v1/backend/views/pages/clouds/folders/messages/cloud-folders-messages-validation.cloud-folders';
 
     // ID du dossier résolu une seule fois par requête
     protected ?int $cloudFolderId = null;
@@ -59,9 +59,9 @@ class UpdateCloudFolderRequest extends FormRequest
     {
         if (! $this->getCloudFolderId()) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-folders.update', context: ['cloud_folder_uuid' => $this->route('cloudFolder')?->uuid], message: 'CloudFolder not found for update.', activity: __("{$this->langPath}.not_found"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-folders.update', context: ['cloud_folder_uuid' => $this->route('cloudFolder')?->uuid], message: 'CloudFolder not found for update.', activity: __("{$this->backendLangPath}.not_found"), is_success: false);
 
-            abort(404, __("{$this->langPath}.not_found"));
+            abort(404, __("{$this->backendLangPath}.not_found"));
         }
 
         return [
@@ -77,11 +77,11 @@ class UpdateCloudFolderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
-            'folder_name.string' => __("{$this->langPath}.folder_name.string"),
-            'entity_table.string' => __("{$this->langPath}.entity_table.string"),
-            'content_type.array' => __("{$this->langPath}.content_type.array"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
+            'folder_name.string' => __("{$this->backendLangPath}.folder_name.string"),
+            'entity_table.string' => __("{$this->backendLangPath}.entity_table.string"),
+            'content_type.array' => __("{$this->backendLangPath}.content_type.array"),
         ];
     }
 }

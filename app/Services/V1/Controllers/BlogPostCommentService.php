@@ -10,7 +10,7 @@ use function __;
 class BlogPostCommentService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/comments/messages/comments-messages-service.comments';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/comments/messages/comments-messages-service.comments';
 
     // ─────────────────────────────────────────────
     // ACTIVATE
@@ -20,7 +20,7 @@ class BlogPostCommentService
         DB::transaction(function () use ($comment) {
 
             if ($comment->is_visible) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_approved"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_approved"));
             }
 
             $comment->update([
@@ -37,7 +37,7 @@ class BlogPostCommentService
         DB::transaction(function () use ($comment) {
 
             if (! $comment->is_visible) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_disapproved"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_disapproved"));
             }
 
             $comment->update([
@@ -54,11 +54,11 @@ class BlogPostCommentService
         DB::transaction(function () use ($comment) {
 
             if ($comment->is_visible) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.visible_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.visible_forbidden"));
             }
 
             if ($comment->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($comment);
         });
@@ -73,7 +73,7 @@ class BlogPostCommentService
             if ($comment->trashed()) {
                 restore_function($comment);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -87,7 +87,7 @@ class BlogPostCommentService
             if ($comment->trashed()) {
                 force_destroy_function($comment);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

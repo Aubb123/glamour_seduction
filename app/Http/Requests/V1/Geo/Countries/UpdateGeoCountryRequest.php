@@ -13,7 +13,7 @@ use function __;
 class UpdateGeoCountryRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/geos/countries/messages/countries-messages-validation';
+    protected string $backendLangPath = 'v1/backend/views/pages/geos/countries/messages/countries-messages-validation';
 
     /**
      * ID résolu du pays à partir de l'UUID de la route.
@@ -110,73 +110,73 @@ class UpdateGeoCountryRequest extends FormRequest
     {
         return [
             // Continent
-            'continent_id.required' => __($this->langPath.'.continent_id.required'),
-            'continent_id.integer' => __($this->langPath.'.continent_id.integer'),
-            'continent_id.exists' => __($this->langPath.'.continent_id.exists'),
+            'continent_id.required' => __($this->backendLangPath.'.continent_id.required'),
+            'continent_id.integer' => __($this->backendLangPath.'.continent_id.integer'),
+            'continent_id.exists' => __($this->backendLangPath.'.continent_id.exists'),
 
             // Type
-            'type.required' => __($this->langPath.'.type.required'),
-            'type.in' => __($this->langPath.'.type.in'),
+            'type.required' => __($this->backendLangPath.'.type.required'),
+            'type.in' => __($this->backendLangPath.'.type.in'),
             // Statut
-            'status.required' => __($this->langPath.'.status.required'),
-            'status.in' => __($this->langPath.'.status.in'),
+            'status.required' => __($this->backendLangPath.'.status.required'),
+            'status.in' => __($this->backendLangPath.'.status.in'),
 
             // Pays souverain
-            'sovereign_id.exists' => __($this->langPath.'.sovereign_id.exists'),
-            'sovereign_id.required_unless' => __($this->langPath.'.sovereign_id.required_unless'),
-            'sovereign_id.prohibited_if' => __($this->langPath.'.sovereign_id.prohibited_if'),
-            'sovereign_id.not_in' => __($this->langPath.'.sovereign_id.not_in'),
+            'sovereign_id.exists' => __($this->backendLangPath.'.sovereign_id.exists'),
+            'sovereign_id.required_unless' => __($this->backendLangPath.'.sovereign_id.required_unless'),
+            'sovereign_id.prohibited_if' => __($this->backendLangPath.'.sovereign_id.prohibited_if'),
+            'sovereign_id.not_in' => __($this->backendLangPath.'.sovereign_id.not_in'),
 
             // Code alpha-3
-            'code.string' => __($this->langPath.'.code.string'),
-            'code.size' => __($this->langPath.'.code.size'),
-            'code.regex' => __($this->langPath.'.code.regex'),
-            'code.unique' => __($this->langPath.'.code.unique'),
+            'code.string' => __($this->backendLangPath.'.code.string'),
+            'code.size' => __($this->backendLangPath.'.code.size'),
+            'code.regex' => __($this->backendLangPath.'.code.regex'),
+            'code.unique' => __($this->backendLangPath.'.code.unique'),
 
             // Code alpha-2
-            'code_2.required' => __($this->langPath.'.code_2.required'),
-            'code_2.string' => __($this->langPath.'.code_2.string'),
-            'code_2.max' => __($this->langPath.'.code_2.max'),
-            'code_2.regex' => __($this->langPath.'.code_2.regex'),
-            'code_2.unique' => __($this->langPath.'.code_2.unique'),
+            'code_2.required' => __($this->backendLangPath.'.code_2.required'),
+            'code_2.string' => __($this->backendLangPath.'.code_2.string'),
+            'code_2.max' => __($this->backendLangPath.'.code_2.max'),
+            'code_2.regex' => __($this->backendLangPath.'.code_2.regex'),
+            'code_2.unique' => __($this->backendLangPath.'.code_2.unique'),
 
             // Indicatif téléphonique
-            'phone_code.string' => __($this->langPath.'.phone_code.string'),
-            'phone_code.max' => __($this->langPath.'.phone_code.max'),
-            'phone_code.regex' => __($this->langPath.'.phone_code.regex'),
+            'phone_code.string' => __($this->backendLangPath.'.phone_code.string'),
+            'phone_code.max' => __($this->backendLangPath.'.phone_code.max'),
+            'phone_code.regex' => __($this->backendLangPath.'.phone_code.regex'),
 
             // Image
-            'file_path.image' => __($this->langPath.'.file_path.image'),
-            'file_path.mimes' => __($this->langPath.'.file_path.mimes'),
-            'file_path.max' => __($this->langPath.'.file_path.max'),
+            'file_path.image' => __($this->backendLangPath.'.file_path.image'),
+            'file_path.mimes' => __($this->backendLangPath.'.file_path.mimes'),
+            'file_path.max' => __($this->backendLangPath.'.file_path.max'),
 
             // Ordre d'affichage
-            'sort_order.integer' => __($this->langPath.'.sort_order.integer'),
-            'sort_order.min' => __($this->langPath.'.sort_order.min'),
-            'sort_order.unique' => __($this->langPath.'.sort_order.unique'),
+            'sort_order.integer' => __($this->backendLangPath.'.sort_order.integer'),
+            'sort_order.min' => __($this->backendLangPath.'.sort_order.min'),
+            'sort_order.unique' => __($this->backendLangPath.'.sort_order.unique'),
 
             // Devise
-            'currency_id.integer' => __($this->langPath.'.currency_id.integer'),
-            'currency_id.exists' => __($this->langPath.'.currency_id.exists'),
+            'currency_id.integer' => __($this->backendLangPath.'.currency_id.integer'),
+            'currency_id.exists' => __($this->backendLangPath.'.currency_id.exists'),
 
             // Traductions (tableau)
-            'translations.required' => __($this->langPath.'.translations.required'),
-            'translations.array' => __($this->langPath.'.translations.array'),
-            'translations.min' => __($this->langPath.'.translations.min'),
+            'translations.required' => __($this->backendLangPath.'.translations.required'),
+            'translations.array' => __($this->backendLangPath.'.translations.array'),
+            'translations.min' => __($this->backendLangPath.'.translations.min'),
 
             // Langue de la traduction
-            'translations.*.lang_id.required' => __($this->langPath.'.translations.lang_id.required'),
-            'translations.*.lang_id.integer' => __($this->langPath.'.translations.lang_id.integer'),
-            'translations.*.lang_id.exists' => __($this->langPath.'.translations.lang_id.exists'),
+            'translations.*.lang_id.required' => __($this->backendLangPath.'.translations.lang_id.required'),
+            'translations.*.lang_id.integer' => __($this->backendLangPath.'.translations.lang_id.integer'),
+            'translations.*.lang_id.exists' => __($this->backendLangPath.'.translations.lang_id.exists'),
 
             // Nom de la traduction
-            'translations.*.name.required' => __($this->langPath.'.translations.name.required'),
-            'translations.*.name.string' => __($this->langPath.'.translations.name.string'),
-            'translations.*.name.max' => __($this->langPath.'.translations.name.max'),
+            'translations.*.name.required' => __($this->backendLangPath.'.translations.name.required'),
+            'translations.*.name.string' => __($this->backendLangPath.'.translations.name.string'),
+            'translations.*.name.max' => __($this->backendLangPath.'.translations.name.max'),
 
             // Description de la traduction
-            'translations.*.description.required' => __($this->langPath.'.translations.description.required'),
-            'translations.*.description.string' => __($this->langPath.'.translations.description.string'),
+            'translations.*.description.required' => __($this->backendLangPath.'.translations.description.required'),
+            'translations.*.description.string' => __($this->backendLangPath.'.translations.description.string'),
         ];
     }
 }

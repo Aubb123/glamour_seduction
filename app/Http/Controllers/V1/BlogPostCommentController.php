@@ -19,7 +19,7 @@ class BlogPostCommentController extends Controller
     use LogActivity;
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/comments/messages/comments-messages-controller.comments';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/comments/messages/comments-messages-controller.comments';
 
     // Injection de dépendance du service de gestion des commentaires
     public function __construct(protected BlogPostCommentService $blogPostCommentService) {}
@@ -39,7 +39,7 @@ class BlogPostCommentController extends Controller
             $comments = BlogPostComment::withCount(['audits', 'activityLogs', 'replies'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.index', context: ['count' => $comments->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.index', context: ['count' => $comments->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
             // Retourne la vue avec les commentaires
             return view('v1.backend.pages.blogs.comments.index', compact('comments'));
@@ -47,7 +47,7 @@ class BlogPostCommentController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.index', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.index.error"), is_success: false);
 
             abort(500);
         }
@@ -71,7 +71,7 @@ class BlogPostCommentController extends Controller
             $commentContent = Str::limit($comment->content, 50);
 
             // Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.show', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.show.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.show', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.show.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
             // Retourne la vue de détails avec le commentaire et ses réponses
             return view('v1.backend.pages.blogs.comments.show', compact('comment', 'replies'));
@@ -79,7 +79,7 @@ class BlogPostCommentController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.show', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.show', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
             abort(500);
         }
@@ -103,14 +103,14 @@ class BlogPostCommentController extends Controller
             $commentContent = Str::limit($comment->content, 50);
 
             // Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.replies', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.replies.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.replies', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.replies.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
             return view('v1.backend.pages.blogs.comments.others.replies', compact('comment', 'replies'));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.replies', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.replies.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.replies', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.replies.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
             abort(500);
         }
@@ -131,13 +131,13 @@ class BlogPostCommentController extends Controller
 
             $audits = $comment->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.audits', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.audits.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.audits', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.audits.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
             return view('v1.backend.pages.blogs.comments.others.audits', compact('comment', 'audits'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.audits', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.audits', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
             abort(500);
         }
@@ -158,13 +158,13 @@ class BlogPostCommentController extends Controller
 
             $logs = $comment->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.activity-logs', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.activity-logs.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.activity-logs', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
             return view('v1.backend.pages.blogs.comments.others.activity-logs', compact('comment', 'logs'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.activity-logs', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.activity-logs', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
             abort(500);
         }
@@ -184,21 +184,21 @@ class BlogPostCommentController extends Controller
             $commentContent = Str::limit($comment->content, 50);
 
             // Log de l'activation
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.activate', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.activate.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.activate', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.activate.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
-            return back()->with('success', __("{$this->langPath}.activate.flash_success", ['content' => $commentContent]));
+            return back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['content' => $commentContent]));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.activate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.warning_meta", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.activate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activate.warning_meta", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.activate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activate.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.activate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activate.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.activate.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.activate.flash_error"));
         }
     }
 
@@ -216,21 +216,21 @@ class BlogPostCommentController extends Controller
             $commentContent = Str::limit($comment->content, 50);
 
             // Log de la désactivation
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.deactivate', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.deactivate.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.deactivate', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.deactivate.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
-            return back()->with('success', __("{$this->langPath}.deactivate.flash_success", ['content' => $commentContent]));
+            return back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['content' => $commentContent]));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.deactivate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.warning_meta", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.deactivate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.deactivate.warning_meta", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.deactivate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.deactivate.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.deactivate', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.deactivate.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.deactivate.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.deactivate.flash_error"));
         }
     }
 
@@ -249,22 +249,22 @@ class BlogPostCommentController extends Controller
             $this->blogPostCommentService->backend_blog_post_comments_destroy($comment);
 
             // Log de la suppression
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.destroy', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.destroy.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.destroy', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
-            return redirect()->route('backend.blog-post-comments.index')->with('success', __("{$this->langPath}.destroy.flash_success", ['content' => $commentContent]));
+            return redirect()->route('backend.blog-post-comments.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['content' => $commentContent]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors de la suppression du commentaire
-            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.destroy', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning_meta", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.destroy', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.destroy', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.destroy', context: ['comment_uuid' => $blogPostComment->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $blogPostComment->uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
     }
 
@@ -279,13 +279,13 @@ class BlogPostCommentController extends Controller
             $comments = BlogPostComment::onlyTrashed()->withCount(['audits', 'activityLogs', 'replies'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.trashed', context: ['count' => $comments->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.trashed', context: ['count' => $comments->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
             return view('v1.backend.pages.blogs.comments.trashed', compact('comments'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.trashed', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.trashed', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error"), is_success: false);
 
             abort(500);
         }
@@ -307,27 +307,27 @@ class BlogPostCommentController extends Controller
             $commentContent = Str::limit($comment->content, 50);
 
             // Log de la restauration
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->langPath}.restore.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.restore.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
-            return back()->with('success', __("{$this->langPath}.restore.flash_success", ['content' => $commentContent]));
+            return back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['content' => $commentContent]));
 
         } catch (ModelNotFoundException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.restore', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.restore.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.restore.flash_error"));
         }
     }
 
@@ -345,27 +345,27 @@ class BlogPostCommentController extends Controller
             $this->blogPostCommentService->backend_blog_post_comments_force_destroy($comment);
 
             // Log de la suppression définitive
-            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $comment->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $comment);
+            $this->logActivity(type: 'info', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $comment->uuid], message: null, activity: __("{$this->backendLangPath}.force_destroy.success"), is_success: true, loggable: $comment);
 
-            return back()->with('success', __("{$this->langPath}.force_destroy.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-post-comments.force_destroy', context: ['comment_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_error"));
         }
     }
 }

@@ -21,7 +21,7 @@ class CloudStorageService
 {
     use LogActivity;
 
-    protected string $langPath = 'v1/backend/others/services/cloud-storage-service.files';
+    protected string $backendLangPath = 'v1/backend/others/services/cloud-storage-service.files';
 
     protected ?CloudStorageInterface $driver = null;
 
@@ -40,7 +40,7 @@ class CloudStorageService
 
         if (! $diskName) {
             throw new \InvalidArgumentException(
-                __("{$this->langPath}.no_disk_name", ['platform' => $platform->name])
+                __("{$this->backendLangPath}.no_disk_name", ['platform' => $platform->name])
             );
         }
 
@@ -50,7 +50,7 @@ class CloudStorageService
         $this->driver = match (CloudPlatformName::tryFrom($platform->name)) {
             CloudPlatformName::BackblazeB2 => new BackblazeDriver($diskName),
             null => throw new \InvalidArgumentException(
-                __("{$this->langPath}.unsupported_platform", ['platform' => $platform->name])
+                __("{$this->backendLangPath}.unsupported_platform", ['platform' => $platform->name])
             ),
         };
 
@@ -75,7 +75,7 @@ class CloudStorageService
             $contentTypes = $cloudFolder->content_type ?? [];
             if (! empty($contentTypes) && ! in_array($extension, $contentTypes, true)) {
                 throw new \InvalidArgumentException(
-                    __("{$this->langPath}.extension_not_allowed", ['extension' => $extension, 'folder' => $cloudFolder->folder_name])
+                    __("{$this->backendLangPath}.extension_not_allowed", ['extension' => $extension, 'folder' => $cloudFolder->folder_name])
                 );
             }
 
@@ -86,7 +86,7 @@ class CloudStorageService
             $mime = $file->getMimeType();
             if (! CloudFileType::matchesMime($fileType, $mime)) {
                 throw new \InvalidArgumentException(
-                    __("{$this->langPath}.mime_mismatch", ['extension' => $extension, 'type' => $fileType->value])
+                    __("{$this->backendLangPath}.mime_mismatch", ['extension' => $extension, 'type' => $fileType->value])
                 );
             }
 
@@ -105,7 +105,7 @@ class CloudStorageService
 
             if ($duplicate) {
                 throw new \InvalidArgumentException(
-                    __("{$this->langPath}.duplicate_file", ['name' => $file->getClientOriginalName()])
+                    __("{$this->backendLangPath}.duplicate_file", ['name' => $file->getClientOriginalName()])
                 );
             }
 
@@ -192,7 +192,7 @@ class CloudStorageService
                 ]);
 
                 // Log de l'erreur
-                $this->logActivity(type: 'error', action: 'backend.cloud-files.migrate', context: ['uuid' => $cloudFile->uuid], message: __("{$this->langPath}.migrate_error", ['name' => $cloudFile->file_name]), is_success: false, loggable: $cloudFile);
+                $this->logActivity(type: 'error', action: 'backend.cloud-files.migrate', context: ['uuid' => $cloudFile->uuid], message: __("{$this->backendLangPath}.migrate_error", ['name' => $cloudFile->file_name]), is_success: false, loggable: $cloudFile);
 
                 return false;
             }
@@ -224,7 +224,7 @@ class CloudStorageService
             ]);
 
             // Log de l'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.migrate', context: ['uuid' => $cloudFile->uuid], message: __("{$this->langPath}.migrate_error", ['name' => $cloudFile->file_name]), is_success: false, loggable: $cloudFile);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.migrate', context: ['uuid' => $cloudFile->uuid], message: __("{$this->backendLangPath}.migrate_error", ['name' => $cloudFile->file_name]), is_success: false, loggable: $cloudFile);
 
             return false;
         }
@@ -328,7 +328,7 @@ class CloudStorageService
 
         if (! $platform) {
             throw new \RuntimeException(
-                __("{$this->langPath}.platform_not_found", ['uuid' => $cloudFile->uuid])
+                __("{$this->backendLangPath}.platform_not_found", ['uuid' => $cloudFile->uuid])
             );
         }
 

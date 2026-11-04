@@ -13,10 +13,10 @@ use function __;
 class BlogPostService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/posts/messages/posts-messages-service.posts';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/posts/messages/posts-messages-service.posts';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     public function __construct(
         protected CloudFileService $cloudFileService,
@@ -64,7 +64,7 @@ class BlogPostService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la publication créée
@@ -73,7 +73,7 @@ class BlogPostService
                     $data['cloud_platform_uuid'],
                     $post,
                     $post->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -140,7 +140,7 @@ class BlogPostService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la publication mise à jour
@@ -149,7 +149,7 @@ class BlogPostService
                     $data['cloud_platform_uuid'],
                     $post,
                     $post->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -185,11 +185,11 @@ class BlogPostService
 
             // Vérification : empêcher la suppression d'un post publié
             if ($post->status === BlogPostStatus::Published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.published_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.published_forbidden"));
             }
 
             if ($post->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($post);
@@ -205,7 +205,7 @@ class BlogPostService
             if ($post->trashed()) {
                 restore_function($post);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -219,7 +219,7 @@ class BlogPostService
             if ($post->trashed()) {
                 force_destroy_function($post);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -258,11 +258,11 @@ class BlogPostService
         }
 
         if (empty($publishedAt)) {
-            throw new \InvalidArgumentException(__("{$this->langPath}.scheduled_date_required"));
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.scheduled_date_required"));
         }
 
         if (Carbon::parse($publishedAt)->isPast()) {
-            throw new \InvalidArgumentException(__("{$this->langPath}.scheduled_date_past"));
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.scheduled_date_past"));
         }
     }
 
@@ -319,7 +319,7 @@ class BlogPostService
             $post,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.post'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'title',
             'slug'
         );
@@ -338,7 +338,7 @@ class BlogPostService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

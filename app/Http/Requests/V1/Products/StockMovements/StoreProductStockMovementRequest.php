@@ -11,7 +11,7 @@ use function __;
 class StoreProductStockMovementRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/stock-movements/messages/stock-movements-messages-validation.productStockMovements';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/stock-movements/messages/stock-movements-messages-validation.productStockMovements';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -59,7 +59,7 @@ class StoreProductStockMovementRequest extends FormRequest
             if ($hasType !== $hasId) {
                 $validator->errors()->add(
                     'reference_type',
-                    __("{$this->langPath}.reference.incomplete")
+                    __("{$this->backendLangPath}.reference.incomplete")
                 );
             }
         });
@@ -71,29 +71,29 @@ class StoreProductStockMovementRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'warehouse_id.required' => __("{$this->langPath}.warehouse_id.required"),
-            'warehouse_id.integer' => __("{$this->langPath}.warehouse_id.integer"),
-            'warehouse_id.exists' => __("{$this->langPath}.warehouse_id.exists"),
+            'warehouse_id.required' => __("{$this->backendLangPath}.warehouse_id.required"),
+            'warehouse_id.integer' => __("{$this->backendLangPath}.warehouse_id.integer"),
+            'warehouse_id.exists' => __("{$this->backendLangPath}.warehouse_id.exists"),
 
-            'product_variant_id.required' => __("{$this->langPath}.product_variant_id.required"),
-            'product_variant_id.integer' => __("{$this->langPath}.product_variant_id.integer"),
-            'product_variant_id.exists' => __("{$this->langPath}.product_variant_id.exists"),
+            'product_variant_id.required' => __("{$this->backendLangPath}.product_variant_id.required"),
+            'product_variant_id.integer' => __("{$this->backendLangPath}.product_variant_id.integer"),
+            'product_variant_id.exists' => __("{$this->backendLangPath}.product_variant_id.exists"),
 
-            'type.required' => __("{$this->langPath}.type.required"),
-            'type.string' => __("{$this->langPath}.type.string"),
-            'type.in' => __("{$this->langPath}.type.in"),
+            'type.required' => __("{$this->backendLangPath}.type.required"),
+            'type.string' => __("{$this->backendLangPath}.type.string"),
+            'type.in' => __("{$this->backendLangPath}.type.in"),
 
-            'quantity.required' => __("{$this->langPath}.quantity.required"),
-            'quantity.integer' => __("{$this->langPath}.quantity.integer"),
-            'quantity.min' => __("{$this->langPath}.quantity.min"),
+            'quantity.required' => __("{$this->backendLangPath}.quantity.required"),
+            'quantity.integer' => __("{$this->backendLangPath}.quantity.integer"),
+            'quantity.min' => __("{$this->backendLangPath}.quantity.min"),
 
-            'reference_type.string' => __("{$this->langPath}.reference_type.string"),
-            'reference_type.max' => __("{$this->langPath}.reference_type.max"),
-            'reference_id.integer' => __("{$this->langPath}.reference_id.integer"),
-            'reference_id.min' => __("{$this->langPath}.reference_id.min"),
+            'reference_type.string' => __("{$this->backendLangPath}.reference_type.string"),
+            'reference_type.max' => __("{$this->backendLangPath}.reference_type.max"),
+            'reference_id.integer' => __("{$this->backendLangPath}.reference_id.integer"),
+            'reference_id.min' => __("{$this->backendLangPath}.reference_id.min"),
 
-            'note.string' => __("{$this->langPath}.note.string"),
-            'note.max' => __("{$this->langPath}.note.max"),
+            'note.string' => __("{$this->backendLangPath}.note.string"),
+            'note.max' => __("{$this->backendLangPath}.note.max"),
         ];
     }
 }

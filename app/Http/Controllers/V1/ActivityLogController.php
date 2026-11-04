@@ -18,7 +18,7 @@ class ActivityLogController extends Controller
     use LogActivity;
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/activity-logs/messages/activity-logs-messages-controller.activity_logs';
+    protected string $backendLangPath = 'v1/backend/views/pages/activity-logs/messages/activity-logs-messages-controller.activity_logs';
 
     // Injection de dépendance du service de gestion des logs d'activité
     public function __construct(protected ActivityLogService $activityLogService) {}
@@ -65,7 +65,7 @@ class ActivityLogController extends Controller
             $actions = ActivityLog::select('action')->distinct()->pluck('action');
 
             // Log de l'activité
-            $this->logActivity(type: 'info', action: 'backend.activity-logs.index', context: ['count' => $logs->count()], message: null, activity: "{$this->langPath}.index.success", is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.activity-logs.index', context: ['count' => $logs->count()], message: null, activity: "{$this->backendLangPath}.index.success", is_success: true);
 
             // Retourne la vue avec les logs
             return view('v1.backend.pages.activity-logs.index', compact('logs', 'types', 'actions', 'filters'));
@@ -73,7 +73,7 @@ class ActivityLogController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur
-            $this->logActivity(type: 'error', action: 'backend.activity-logs.index', context: [], message: $e->getMessage(), activity: "{$this->langPath}.index.error", is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.activity-logs.index', context: [], message: $e->getMessage(), activity: "{$this->backendLangPath}.index.error", is_success: false);
 
             abort(500);
         }
@@ -90,7 +90,7 @@ class ActivityLogController extends Controller
             $log = $activityLog->load(['user', 'loggable']);
 
             // Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.activity-logs.show', context: ['log_uuid' => $log->uuid], message: null, activity: "{$this->langPath}.show.success", is_success: true, loggable: $log);
+            $this->logActivity(type: 'info', action: 'backend.activity-logs.show', context: ['log_uuid' => $log->uuid], message: null, activity: "{$this->backendLangPath}.show.success", is_success: true, loggable: $log);
 
             // Retourne la vue de détails avec le log
             return view('v1.backend.pages.activity-logs.show', compact('log'));
@@ -98,7 +98,7 @@ class ActivityLogController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de visualisation avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.activity-logs.show', context: ['log_uuid' => $activityLog->uuid, 'i18n_params' => ['uuid' => $activityLog->uuid]], message: $e->getMessage(), activity: "{$this->langPath}.show.error", is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.activity-logs.show', context: ['log_uuid' => $activityLog->uuid, 'i18n_params' => ['uuid' => $activityLog->uuid]], message: $e->getMessage(), activity: "{$this->backendLangPath}.show.error", is_success: false);
 
             abort(500);
         }
@@ -112,10 +112,10 @@ class ActivityLogController extends Controller
         try {
 
             // Journal résolu par binding implicite ({activityLog}) — Log de l'activité de suppression en cours
-            $this->logActivity(type: 'info', action: 'backend.activity-logs.destroy', context: ['log_uuid' => $activityLog->uuid], message: null, activity: "{$this->langPath}.destroy.flash_info", is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.activity-logs.destroy', context: ['log_uuid' => $activityLog->uuid], message: null, activity: "{$this->backendLangPath}.destroy.flash_info", is_success: true);
 
             // Faire un redirecte back avec un message flash impossible de supprimer le log
-            return redirect()->route('backend.activity-logs.index')->with('info', __("{$this->langPath}.destroy.flash_info", ['uuid' => $activityLog->uuid]));
+            return redirect()->route('backend.activity-logs.index')->with('info', __("{$this->backendLangPath}.destroy.flash_info", ['uuid' => $activityLog->uuid]));
 
             // // Récupère le log résolu par binding implicite
             // $log = $activityLog;
@@ -124,18 +124,18 @@ class ActivityLogController extends Controller
             // $this->activityLogService->destroy($log);
 
             // // Log de l'activité de suppression réussie
-            // $this->logActivity(type: 'info', action: 'backend.activity-logs.destroy', context: ['log_uuid' => $log->uuid], message: null, activity: __("{$this->langPath}.destroy.success"), is_success: true, loggable: $log);
+            // $this->logActivity(type: 'info', action: 'backend.activity-logs.destroy', context: ['log_uuid' => $log->uuid], message: null, activity: __("{$this->backendLangPath}.destroy.success"), is_success: true, loggable: $log);
 
             // // Redirige vers la liste des logs avec un message flash de succès
-            // return redirect()->route('backend.activity-logs.index')->with('success', __("{$this->langPath}.destroy.flash_success"));
+            // return redirect()->route('backend.activity-logs.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur de suppression avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.activity-logs.destroy', context: ['log_uuid' => $activityLog->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $activityLog->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.activity-logs.destroy', context: ['log_uuid' => $activityLog->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $activityLog->uuid]), is_success: false);
 
             // Redirige vers la liste des logs avec un message flash d'erreur
-            return redirect()->back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
     }
 
@@ -147,27 +147,27 @@ class ActivityLogController extends Controller
         try {
 
             // Log de l'activité de nettoyage en cours
-            $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: [], message: null, activity: "{$this->langPath}.clear.flash_info", is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: [], message: null, activity: "{$this->backendLangPath}.clear.flash_info", is_success: true);
 
             // Faire un redirecte back avec un message flash impossible de nettoyer les logs
-            return redirect()->route('backend.activity-logs.index')->with('info', __("{$this->langPath}.clear.flash_info", ['count' => $deletedCount ?? 0]));
+            return redirect()->route('backend.activity-logs.index')->with('info', __("{$this->backendLangPath}.clear.flash_info", ['count' => $deletedCount ?? 0]));
 
             // // Utilise le service pour supprimer les logs de plus de 3 jours
             // $deletedCount = $this->activityLogService->backend_activity_logs_clear_old_logs(3);
 
             // // Log de l'activité de nettoyage réussie
-            // $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->langPath}.clear.success", ['count' => $deletedCount]), is_success: true);
+            // $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->backendLangPath}.clear.success", ['count' => $deletedCount]), is_success: true);
 
             // // Redirige vers la liste des logs avec un message flash de succès
-            // return redirect()->route('backend.activity-logs.index')->with('success', __("{$this->langPath}.clear.flash_success", ['count' => $deletedCount]));
+            // return redirect()->route('backend.activity-logs.index')->with('success', __("{$this->backendLangPath}.clear.flash_success", ['count' => $deletedCount]));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur de nettoyage avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.activity-logs.clear', context: [], message: $e->getMessage(), activity: "{$this->langPath}.clear.error", is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.activity-logs.clear', context: [], message: $e->getMessage(), activity: "{$this->backendLangPath}.clear.error", is_success: false);
 
             // Redirige vers la liste des logs avec un message flash d'erreur
-            return redirect()->back()->with('error', __("{$this->langPath}.clear.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.clear.flash_error"));
         }
     }
 }

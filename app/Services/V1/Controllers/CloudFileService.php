@@ -18,7 +18,7 @@ use function __;
 class CloudFileService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/clouds/files/messages/cloud-files-messages-service.cloud-files';
+    protected string $backendLangPath = 'v1/backend/views/pages/clouds/files/messages/cloud-files-messages-service.cloud-files';
 
     public function __construct(
         protected CloudStorageService $cloudStorage,
@@ -73,7 +73,7 @@ class CloudFileService
         // Vérifie si le nombre de fichiers sélectionnés dépasse la limite définie dans les settings
         $setting_max_files_sync_batch = getSettingValue('max_files_sync_batch', app()->getLocale());
         if (count($fileUuids) > $setting_max_files_sync_batch) {
-            throw new \InvalidArgumentException(__("{$this->langPath}.sync.max_selection_exceeded", ['max' => $setting_max_files_sync_batch]));
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.sync.max_selection_exceeded", ['max' => $setting_max_files_sync_batch]));
         }
 
         // Récupère les fichiers sélectionnés éligibles à une migration (retries bornés) :
@@ -115,17 +115,17 @@ class CloudFileService
 
             // Vérifie si le fichier cloud est en cours de traitement
             if ($cloudFile->sync_status === CloudFileStatus::Processing) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.processing_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.processing_forbidden"));
             }
 
             // Si le fichier cloud est lié à un modele (fileable), empêcher la suppression
             if ($cloudFile->fileable) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.no_delete_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.no_delete_forbidden"));
             }
 
             // Vérifie si le fichier cloud est déjà supprimé
             if ($cloudFile->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($cloudFile);
@@ -146,14 +146,14 @@ class CloudFileService
             // (y compris dans la corbeille) OU est lui-même encore supprimé (soft deleted),
             // on ne peut pas restaurer le fichier cloud seul : il n'aurait plus d'entité de référence.
             if (! $fileable || $fileable->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.fileable_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.fileable_not_found"));
             }
 
             // Vérifie si le fichier cloud est déjà supprimé (soft deleted)
             if ($cloudFile->trashed()) {
                 restore_function($cloudFile);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -173,24 +173,24 @@ class CloudFileService
             // On peut donc lever une exception pour indiquer que seule la suppression définitive depuis le model/entité
             // est possible, mais pas depuis le fichier cloud lui-même.
             if ($fileable && $fileable->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.fileable_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.fileable_not_found"));
             }
 
             // Vérifie si le fichier cloud est en cours de traitement
             if ($cloudFile->sync_status === CloudFileStatus::Processing) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.processing_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.processing_forbidden"));
             }
 
             // Si le fichier cloud est lié à un modele (fileable), empêcher la suppression définitive
             if ($cloudFile->fileable) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.no_delete_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.no_delete_forbidden"));
             }
 
             // Vérifie si le fichier cloud est déjà supprimé (soft deleted)
             if ($cloudFile->trashed()) {
                 force_destroy_function($cloudFile);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -205,11 +205,11 @@ class CloudFileService
      * @param  string  $cloudPlatformUuid  UUID de la plateforme cloud
      * @param  Model  $entity  L'entité à laquelle associer l'image (BlogCategory, etc.)
      * @param  string  $entityTable  Nom de la table de l'entité (ex: blog_categories)
-     * @param  string  $langPath  Chemin de langue pour les messages d'erreur (ex: $this->langPath)
+     * @param  string  $backendLangPath  Chemin de langue pour les messages d'erreur (ex: $this->backendLangPath)
      *
      * @throws \InvalidArgumentException
      */
-    public function uploadEntityImage(UploadedFile $file, string $cloudPlatformUuid, Model $entity, string $entityTable, string $langPath): CloudFile
+    public function uploadEntityImage(UploadedFile $file, string $cloudPlatformUuid, Model $entity, string $entityTable, string $backendLangPath): CloudFile
     {
 
         // Supprimer tous les anciens fichiers cloud de type 'image' associés à l'entité
@@ -218,11 +218,11 @@ class CloudFileService
         $cloudPlatform = CloudPlatform::where('uuid', $cloudPlatformUuid)->firstOrFail();
 
         if ($cloudPlatform->status !== CloudPlatformStatus::Active) {
-            throw new \InvalidArgumentException(__("{$langPath}.store.cloud_platform_inactive"));
+            throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_inactive"));
         }
 
         if ($cloudPlatform->name !== 'backblaze_b2') {
-            throw new \InvalidArgumentException(__("{$langPath}.store.cloud_platform_not_supported"));
+            throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_not_supported"));
         }
 
         $extension = strtolower($file->getClientOriginalExtension());
@@ -239,7 +239,7 @@ class CloudFileService
             ->first();
 
         if (! $cloudFolder) {
-            throw new \InvalidArgumentException(__("{$langPath}.store.cloud_platform_folder_not_found"));
+            throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_folder_not_found"));
         }
 
         // Upload du fichier en local et création de l'enregistrement en base (statut "pending")

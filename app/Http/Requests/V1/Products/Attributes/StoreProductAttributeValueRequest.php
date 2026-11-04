@@ -19,7 +19,7 @@ class StoreProductAttributeValueRequest extends FormRequest
     /**
      * Chemin de base pour les traductions des messages de validation.
      */
-    protected string $langPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-validation.productAttributeValues';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-validation.productAttributeValues';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -103,32 +103,32 @@ class StoreProductAttributeValueRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'attribute_id.required' => __("{$this->langPath}.attribute_id.required"),
-            'attribute_id.integer' => __("{$this->langPath}.attribute_id.integer"),
-            'attribute_id.exists' => __("{$this->langPath}.attribute_id.exists"),
+            'attribute_id.required' => __("{$this->backendLangPath}.attribute_id.required"),
+            'attribute_id.integer' => __("{$this->backendLangPath}.attribute_id.integer"),
+            'attribute_id.exists' => __("{$this->backendLangPath}.attribute_id.exists"),
 
-            'value.required' => __("{$this->langPath}.value.required"),
-            'value.string' => __("{$this->langPath}.value.string"),
-            'value.max' => __("{$this->langPath}.value.max"),
-            'value.regex' => __("{$this->langPath}.value.regex"),
+            'value.required' => __("{$this->backendLangPath}.value.required"),
+            'value.string' => __("{$this->backendLangPath}.value.string"),
+            'value.max' => __("{$this->backendLangPath}.value.max"),
+            'value.regex' => __("{$this->backendLangPath}.value.regex"),
 
-            'sort_order.required' => __("{$this->langPath}.sort_order.required"),
-            'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
-            'sort_order.min' => __("{$this->langPath}.sort_order.min"),
+            'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
+            'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
+            'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
 
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
-            'translations.*.label.required' => __("{$this->langPath}.translations.label.required"),
-            'translations.*.label.string' => __("{$this->langPath}.translations.label.string"),
-            'translations.*.label.max' => __("{$this->langPath}.translations.label.max"),
-            'translations.*.label.unique' => __("{$this->langPath}.translations.label.unique"),
+            'translations.*.label.required' => __("{$this->backendLangPath}.translations.label.required"),
+            'translations.*.label.string' => __("{$this->backendLangPath}.translations.label.string"),
+            'translations.*.label.max' => __("{$this->backendLangPath}.translations.label.max"),
+            'translations.*.label.unique' => __("{$this->backendLangPath}.translations.label.unique"),
 
         ];
     }

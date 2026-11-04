@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class CloudFolderService
 {
-    protected string $langPath = 'v1/backend/views/pages/clouds/folders/messages/cloud-folders-messages-service.cloud-folders';
+    protected string $backendLangPath = 'v1/backend/views/pages/clouds/folders/messages/cloud-folders-messages-service.cloud-folders';
 
     // ─────────────────────────────────────────────
     // STORE

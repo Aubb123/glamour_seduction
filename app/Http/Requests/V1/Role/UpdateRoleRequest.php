@@ -11,7 +11,7 @@ use function __;
 class UpdateRoleRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/roles/messages/role-messages-validation';
+    protected string $backendLangPath = 'v1/backend/views/pages/roles/messages/role-messages-validation';
 
     public function authorize(): bool
     {
@@ -41,27 +41,27 @@ class UpdateRoleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
             // Traductions (tableau)
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
-            'translations.min' => __("{$this->langPath}.translations.min"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
+            'translations.min' => __("{$this->backendLangPath}.translations.min"),
 
             // Langue de la traduction
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.integer' => __("{$this->langPath}.translations.lang_id.integer"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.integer' => __("{$this->backendLangPath}.translations.lang_id.integer"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
             // Libellé
-            'translations.*.label.required' => __("{$this->langPath}.translations.label.required"),
-            'translations.*.label.string' => __("{$this->langPath}.translations.label.string"),
-            'translations.*.label.max' => __("{$this->langPath}.translations.label.max"),
+            'translations.*.label.required' => __("{$this->backendLangPath}.translations.label.required"),
+            'translations.*.label.string' => __("{$this->backendLangPath}.translations.label.string"),
+            'translations.*.label.max' => __("{$this->backendLangPath}.translations.label.max"),
 
             // Description
-            'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
-            'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
+            'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
+            'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
         ];
     }
 }

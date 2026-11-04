@@ -23,7 +23,7 @@ class CloudFileController extends Controller
 {
     use LogActivity;
 
-    protected string $langPath = 'v1/backend/views/pages/clouds/files/messages/cloud-files-messages-controller.cloud-files';
+    protected string $backendLangPath = 'v1/backend/views/pages/clouds/files/messages/cloud-files-messages-controller.cloud-files';
 
     public function __construct(
         protected CloudStorageService $cloudStorage,
@@ -49,7 +49,7 @@ class CloudFileController extends Controller
                 ->get();
 
             // Log de l'accès à la liste des fichiers cloud
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.index', context: ['count' => $files->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.index', context: ['count' => $files->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
             // Affiche la vue avec les fichiers cloud récupérés
             return view('v1.backend.pages.clouds.files.index', compact('files'));
@@ -57,7 +57,7 @@ class CloudFileController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur avec le message d'exception
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.index', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.index.error"), is_success: false);
 
             abort(500);
         }
@@ -74,7 +74,7 @@ class CloudFileController extends Controller
             $file = $cloudFile->loadCount(['audits', 'activityLogs']);
 
             // Log de la consultation du détail d'un fichier cloud
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.show', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $file->file_name], message: null, activity: __("{$this->langPath}.show.success", ['name' => $file->file_name]), is_success: true, loggable: $file);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.show', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $file->file_name], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $file->file_name]), is_success: true, loggable: $file);
 
             // Retourne la vue de détail du fichier cloud
             return view('v1.backend.pages.clouds.files.show', compact('file'));
@@ -82,7 +82,7 @@ class CloudFileController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la consultation du détail d'un fichier cloud
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $cloudFile->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $cloudFile->uuid]), is_success: false);
 
             abort(500);
         }
@@ -100,13 +100,13 @@ class CloudFileController extends Controller
 
             $audits = $file->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.audits', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $file->file_name], message: null, activity: __("{$this->langPath}.audits.success", ['name' => $file->file_name]), is_success: true, loggable: $file);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.audits', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $file->file_name], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $file->file_name]), is_success: true, loggable: $file);
 
             return view('v1.backend.pages.clouds.files.others.audits', compact('file', 'audits'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.audits', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $cloudFile->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.audits', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $cloudFile->uuid]), is_success: false);
 
             abort(500);
         }
@@ -124,13 +124,13 @@ class CloudFileController extends Controller
 
             $logs = $file->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.activity-logs', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $file->file_name], message: null, activity: __("{$this->langPath}.activity-logs.success", ['name' => $file->file_name]), is_success: true, loggable: $file);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.activity-logs', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $file->file_name], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $file->file_name]), is_success: true, loggable: $file);
 
             return view('v1.backend.pages.clouds.files.others.activity-logs', compact('file', 'logs'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.activity-logs', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $cloudFile->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.activity-logs', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $cloudFile->uuid]), is_success: false);
 
             abort(500);
         }
@@ -151,7 +151,7 @@ class CloudFileController extends Controller
                 ->get();
 
             // Log de l'accès à la page de synchronisation
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.sync', context: ['count' => $files->count()], message: null, activity: __("{$this->langPath}.sync.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.sync', context: ['count' => $files->count()], message: null, activity: __("{$this->backendLangPath}.sync.success"), is_success: true);
 
             // Affiche la vue de synchronisation avec les fichiers non synchronisés
             return view('v1.backend.pages.clouds.files.sync', compact('files'));
@@ -159,7 +159,7 @@ class CloudFileController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.sync', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.sync.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.sync', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.sync.error"), is_success: false);
 
             abort(500);
         }
@@ -176,28 +176,28 @@ class CloudFileController extends Controller
             $fileUuids = $request->input('file_uuids', []);
 
             if (empty($fileUuids)) {
-                return redirect()->route('backend.cloud-files.sync')->with('warning', __("{$this->langPath}.sync.no_selection"));
+                return redirect()->route('backend.cloud-files.sync')->with('warning', __("{$this->backendLangPath}.sync.no_selection"));
             }
 
             // Appelle le service pour synchroniser les fichiers sélectionnés
             $result = $this->cloudFileService->backend_cloud_files_sync_selected($fileUuids);
 
             // Log de la synchronisation
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.sync-selected', context: ['selected' => count($fileUuids), 'success' => $result['success_count'], 'failed' => $result['failed_count']], message: null, activity: __("{$this->langPath}.sync.flash_success", ['success' => $result['success_count'], 'failed' => $result['failed_count']]), is_success: $result['failed_count'] === 0);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.sync-selected', context: ['selected' => count($fileUuids), 'success' => $result['success_count'], 'failed' => $result['failed_count']], message: null, activity: __("{$this->backendLangPath}.sync.flash_success", ['success' => $result['success_count'], 'failed' => $result['failed_count']]), is_success: $result['failed_count'] === 0);
 
-            return redirect()->route('backend.cloud-files.sync')->with('success', __("{$this->langPath}.sync.flash_success", ['success' => $result['success_count'], 'failed' => $result['failed_count']]));
+            return redirect()->route('backend.cloud-files.sync')->with('success', __("{$this->backendLangPath}.sync.flash_success", ['success' => $result['success_count'], 'failed' => $result['failed_count']]));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.sync-selected', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.sync.flash_invalid_argument"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.sync-selected', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.sync.flash_invalid_argument"), is_success: false);
 
             return redirect()->route('backend.cloud-files.sync')->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.sync-selected', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.sync.flash_error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.sync-selected', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.sync.flash_error"), is_success: false);
 
-            return redirect()->route('backend.cloud-files.sync')->with('error', __("{$this->langPath}.sync.flash_error"));
+            return redirect()->route('backend.cloud-files.sync')->with('error', __("{$this->backendLangPath}.sync.flash_error"));
         }
     }
 
@@ -216,15 +216,15 @@ class CloudFileController extends Controller
             $this->cloudFileService->backend_cloud_files_destroy($file);
 
             // Log de la suppression du fichier cloud
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.destroy', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $fileName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $fileName]), is_success: true, loggable: $file);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.destroy', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $fileName], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['name' => $fileName]), is_success: true, loggable: $file);
 
             // Redirection vers la liste des fichiers cloud avec un message de succès
-            return redirect()->route('backend.cloud-files.index')->with('success', __("{$this->langPath}.destroy.flash_success", ['name' => $fileName]));
+            return redirect()->route('backend.cloud-files.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['name' => $fileName]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur spécifique (par exemple, cloud_platform_uuid manquant)
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.destroy', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.invalid_argument", ['uuid' => $cloudFile->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.destroy', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.invalid_argument", ['uuid' => $cloudFile->uuid]), is_success: false);
 
             // Redirection vers la liste des fichiers cloud avec un message d'erreur
             return redirect()->route('backend.cloud-files.index')->with('error', $e->getMessage());
@@ -232,10 +232,10 @@ class CloudFileController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la suppression du fichier cloud
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.destroy', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $cloudFile->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.destroy', context: ['cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $cloudFile->uuid]), is_success: false);
 
             // Redirection vers la liste des fichiers cloud avec un message d'erreur
-            return redirect()->route('backend.cloud-files.index')->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return redirect()->route('backend.cloud-files.index')->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
     }
 
@@ -250,7 +250,7 @@ class CloudFileController extends Controller
             $files = CloudFile::onlyTrashed()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des fichiers supprimés réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.trashed', context: ['count' => $files->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.trashed', context: ['count' => $files->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
             // Retourne la vue avec les fichiers supprimés
             return view('v1.backend.pages.clouds.files.trashed', compact('files'));
@@ -258,7 +258,7 @@ class CloudFileController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de l'affichage de la liste des fichiers supprimés
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.trashed', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.trashed', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error"), is_success: false);
 
             abort(500);
         }
@@ -280,22 +280,22 @@ class CloudFileController extends Controller
             $fileName = $file->file_name;  // Récupère le titre du fichier pour les logs et les messages flash
 
             // Log de l'activité de restauration réussie
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $file->uuid, 'file_name' => $fileName], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $fileName]), is_success: true, loggable: $file);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $file->uuid, 'file_name' => $fileName], message: null, activity: __("{$this->backendLangPath}.restore.success", ['name' => $fileName]), is_success: true, loggable: $file);
 
             // Redirige vers la page précédente avec un message flash de succès pour la restauration
-            return redirect()->back()->with('success', __("{$this->langPath}.restore.flash_success", ['name' => $fileName]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['name' => $fileName]));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative de restauration d'un fichier non trouvé
-            $this->logActivity(type: 'warning', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -303,9 +303,9 @@ class CloudFileController extends Controller
         } catch (\Exception $e) {
 
             //  Log de l'erreur lors de la tentative de restauration avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.restore', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
-            return redirect()->back()->with('error', __("{$this->langPath}.restore.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.restore.flash_error"));
         }
     }
 
@@ -323,22 +323,22 @@ class CloudFileController extends Controller
             $this->cloudFileService->backend_cloud_files_force_destroy($file);
 
             // Récupère le nom du fichier pour les logs et les messages flash
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $file->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $file);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $file->uuid], message: null, activity: __("{$this->backendLangPath}.force_destroy.success"), is_success: true, loggable: $file);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression définitive
-            return redirect()->back()->with('success', __("{$this->langPath}.force_destroy.flash_success"));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive d'un article non trouvé
-            $this->logActivity(type: 'warning', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -346,10 +346,10 @@ class CloudFileController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.force_destroy', context: ['cloud_file_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression définitive
-            return redirect()->back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_error"));
         }
     }
 
@@ -381,7 +381,7 @@ class CloudFileController extends Controller
                     abort(404);
                 }
 
-                $this->logActivity(type: 'info', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: null, activity: __("{$this->langPath}.show.success", ['name' => $cloudFile->file_name]), is_success: true, loggable: $cloudFile);
+                $this->logActivity(type: 'info', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $cloudFile->file_name]), is_success: true, loggable: $cloudFile);
 
                 return $this->streamFile($disk, $cloudFile->local_path, $headers);
             }
@@ -395,27 +395,27 @@ class CloudFileController extends Controller
                 abort(404);
             }
 
-            $this->logActivity(type: 'info', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: null, activity: __("{$this->langPath}.show.success", ['name' => $cloudFile->file_name]), is_success: true, loggable: $cloudFile);
+            $this->logActivity(type: 'info', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $cloudFile->file_name]), is_success: true, loggable: $cloudFile);
 
             return $this->streamFile($disk, $remotePath, $headers);
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'activité
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: null, activity: __("{$this->langPath}.show.not_found", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.show.not_found", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (FileNotFoundException $e) {
 
             // Fichier introuvable sur le stockage (disque configuré avec 'throw' => true) → 404
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.not_found", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.not_found", ['uuid' => $uuid]), is_success: false);
 
             abort(404);
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.proxy_error", ['message' => $e->getMessage()]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.show', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.proxy_error", ['message' => $e->getMessage()]), is_success: false);
 
             abort(500);
         }

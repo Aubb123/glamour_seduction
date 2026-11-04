@@ -11,7 +11,7 @@ use function __;
 class UpdateProductVariantRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/variants/messages/variants-messages-validation.productVariants';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/variants/messages/variants-messages-validation.productVariants';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -52,28 +52,28 @@ class UpdateProductVariantRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => __("{$this->langPath}.product_id.required"),
-            'product_id.exists' => __("{$this->langPath}.product_id.exists"),
+            'product_id.required' => __("{$this->backendLangPath}.product_id.required"),
+            'product_id.exists' => __("{$this->backendLangPath}.product_id.exists"),
 
-            'sku.required' => __("{$this->langPath}.sku.required"),
-            'sku.string' => __("{$this->langPath}.sku.string"),
-            'sku.max' => __("{$this->langPath}.sku.max"),
-            'sku.unique' => __("{$this->langPath}.sku.unique"),
+            'sku.required' => __("{$this->backendLangPath}.sku.required"),
+            'sku.string' => __("{$this->backendLangPath}.sku.string"),
+            'sku.max' => __("{$this->backendLangPath}.sku.max"),
+            'sku.unique' => __("{$this->backendLangPath}.sku.unique"),
 
-            'barcode.string' => __("{$this->langPath}.barcode.string"),
-            'barcode.max' => __("{$this->langPath}.barcode.max"),
+            'barcode.string' => __("{$this->backendLangPath}.barcode.string"),
+            'barcode.max' => __("{$this->backendLangPath}.barcode.max"),
 
-            'price.numeric' => __("{$this->langPath}.price.numeric"),
-            'price.min' => __("{$this->langPath}.price.min"),
-            'price.max' => __("{$this->langPath}.price.max"),
+            'price.numeric' => __("{$this->backendLangPath}.price.numeric"),
+            'price.min' => __("{$this->backendLangPath}.price.min"),
+            'price.max' => __("{$this->backendLangPath}.price.max"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'is_default.boolean' => __("{$this->langPath}.is_default.boolean"),
+            'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
 
-            'attribute_value_ids.array' => __("{$this->langPath}.attribute_value_ids.array"),
-            'attribute_value_ids.*.exists' => __("{$this->langPath}.attribute_value_ids.exists"),
+            'attribute_value_ids.array' => __("{$this->backendLangPath}.attribute_value_ids.array"),
+            'attribute_value_ids.*.exists' => __("{$this->backendLangPath}.attribute_value_ids.exists"),
         ];
     }
 }

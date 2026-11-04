@@ -11,7 +11,7 @@ use function __;
 class UpdatePermissionRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/permissions/messages/permission-messages-validation.permissions';
+    protected string $backendLangPath = 'v1/backend/views/pages/permissions/messages/permission-messages-validation.permissions';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -48,17 +48,17 @@ class UpdatePermissionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => __("{$this->langPath}.name.required"),
-            'name.string' => __("{$this->langPath}.name.string"),
-            'name.max' => __("{$this->langPath}.name.max"),
-            'name.unique' => __("{$this->langPath}.name.unique"),
-            'name.regex' => __("{$this->langPath}.name.regex"),
-            'guard_name.required' => __("{$this->langPath}.guard_name.required"),
-            'guard_name.string' => __("{$this->langPath}.guard_name.string"),
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
-            'roles.array' => __("{$this->langPath}.roles.array"),
-            'roles.*.exists' => __("{$this->langPath}.roles.exists"),
+            'name.required' => __("{$this->backendLangPath}.name.required"),
+            'name.string' => __("{$this->backendLangPath}.name.string"),
+            'name.max' => __("{$this->backendLangPath}.name.max"),
+            'name.unique' => __("{$this->backendLangPath}.name.unique"),
+            'name.regex' => __("{$this->backendLangPath}.name.regex"),
+            'guard_name.required' => __("{$this->backendLangPath}.guard_name.required"),
+            'guard_name.string' => __("{$this->backendLangPath}.guard_name.string"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
+            'roles.array' => __("{$this->backendLangPath}.roles.array"),
+            'roles.*.exists' => __("{$this->backendLangPath}.roles.exists"),
         ];
     }
 }

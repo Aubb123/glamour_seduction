@@ -13,10 +13,10 @@ use function __;
 class CurrencyService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies';
+    protected string $backendLangPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // UPDATE
@@ -41,7 +41,7 @@ class CurrencyService
             $exchangeRate = (float) ($data['exchange_rate'] ?? $currency->exchange_rate ?? 1);
 
             if ($isDefault && abs($exchangeRate - 1.0) > 0.0000005) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.update.exchange_rate_default_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.exchange_rate_default_forbidden"));
             }
 
             $attributes = [
@@ -87,7 +87,7 @@ class CurrencyService
 
             // Si la devise est déjà active, on lève une exception métier pour éviter une opération inutile
             if ($currency->status === CurrencyStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation de la devise sélectionnée
@@ -107,7 +107,7 @@ class CurrencyService
 
             // Si la devise est déjà inactive, on lève une exception métier
             if ($currency->status === CurrencyStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation de la devise sélectionnée
@@ -127,12 +127,12 @@ class CurrencyService
 
             // Une devise par défaut ne peut pas être supprimée (il faut d'abord en désigner une autre)
             if ($currency->is_default) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.default_currency_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.default_currency_forbidden"));
             }
 
             // Empêche la suppression si la devise est déjà en corbeille
             if ($currency->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // Suppression (soft delete) de la devise et de ses dépendances associées
@@ -152,7 +152,7 @@ class CurrencyService
             if ($currency->trashed()) {
                 restore_function($currency);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -167,14 +167,14 @@ class CurrencyService
 
             // Une devise par défaut ne peut pas être supprimée définitivement
             if ($currency->is_default) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.default_currency_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.default_currency_forbidden"));
             }
 
             // Suppression définitive (forceDelete)
             if ($currency->trashed()) {
                 force_destroy_function($currency);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -204,7 +204,7 @@ class CurrencyService
             $currency,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.currency'),
-            $this->helperLangPath
+            $this->backendHelperLangPath
         );
 
         // Pour chaque traduction reçue, on utilise updateOrCreate pour créer ou mettre à jour la traduction correspondante
@@ -226,7 +226,7 @@ class CurrencyService
                 // être mise à jour (remplace l'ancienne restauration automatique).
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $langId,
                         ])
                     );

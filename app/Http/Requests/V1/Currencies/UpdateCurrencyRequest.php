@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests\V1\Currencies;
- 
+
 use App\Enums\Currencies\CurrencyStatus;
 use App\Models\Currency;
 use Illuminate\Foundation\Http\FormRequest;
@@ -20,7 +20,7 @@ class UpdateCurrencyRequest extends FormRequest
     /**
      * Chemin de base pour les traductions des messages de validation.
      */
-    protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-validation';
+    protected string $backendLangPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-validation';
 
     /**
      * ID résolu de la devise à partir de l'UUID de la route.
@@ -100,67 +100,67 @@ class UpdateCurrencyRequest extends FormRequest
     /**
      * Get the custom validation messages.
      */
-    public function messages(): array 
+    public function messages(): array
     {
         return [
             // Code
-            'code.required' => __("{$this->langPath}.code.required"),
-            'code.string' => __("{$this->langPath}.code.string"),
-            'code.size' => __("{$this->langPath}.code.size"),
-            'code.regex' => __("{$this->langPath}.code.regex"),
-            'code.unique' => __("{$this->langPath}.code.unique"),
+            'code.required' => __("{$this->backendLangPath}.code.required"),
+            'code.string' => __("{$this->backendLangPath}.code.string"),
+            'code.size' => __("{$this->backendLangPath}.code.size"),
+            'code.regex' => __("{$this->backendLangPath}.code.regex"),
+            'code.unique' => __("{$this->backendLangPath}.code.unique"),
 
             // Symbole
-            'symbol.required' => __("{$this->langPath}.symbol.required"),
-            'symbol.string' => __("{$this->langPath}.symbol.string"),
-            'symbol.max' => __("{$this->langPath}.symbol.max"),
+            'symbol.required' => __("{$this->backendLangPath}.symbol.required"),
+            'symbol.string' => __("{$this->backendLangPath}.symbol.string"),
+            'symbol.max' => __("{$this->backendLangPath}.symbol.max"),
 
             // Décimales
-            'decimal_places.required' => __("{$this->langPath}.decimal_places.required"),
-            'decimal_places.integer' => __("{$this->langPath}.decimal_places.integer"),
-            'decimal_places.between' => __("{$this->langPath}.decimal_places.between"),
+            'decimal_places.required' => __("{$this->backendLangPath}.decimal_places.required"),
+            'decimal_places.integer' => __("{$this->backendLangPath}.decimal_places.integer"),
+            'decimal_places.between' => __("{$this->backendLangPath}.decimal_places.between"),
 
             // Code numérique
-            'numeric_code.string' => __("{$this->langPath}.numeric_code.string"),
-            'numeric_code.size' => __("{$this->langPath}.numeric_code.size"),
-            'numeric_code.regex' => __("{$this->langPath}.numeric_code.regex"),
-            'numeric_code.unique' => __("{$this->langPath}.numeric_code.unique"),
+            'numeric_code.string' => __("{$this->backendLangPath}.numeric_code.string"),
+            'numeric_code.size' => __("{$this->backendLangPath}.numeric_code.size"),
+            'numeric_code.regex' => __("{$this->backendLangPath}.numeric_code.regex"),
+            'numeric_code.unique' => __("{$this->backendLangPath}.numeric_code.unique"),
 
             // Ordre d'affichage
-            'sort_order.required' => __("{$this->langPath}.sort_order.required"),
-            'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
-            'sort_order.min' => __("{$this->langPath}.sort_order.min"),
-            'sort_order.unique' => __("{$this->langPath}.sort_order.unique"),
+            'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
+            'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
+            'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
+            'sort_order.unique' => __("{$this->backendLangPath}.sort_order.unique"),
 
             // Taux de change
-            'exchange_rate.required' => __("{$this->langPath}.exchange_rate.required"),
-            'exchange_rate.numeric' => __("{$this->langPath}.exchange_rate.numeric"),
-            'exchange_rate.min' => __("{$this->langPath}.exchange_rate.min"),
+            'exchange_rate.required' => __("{$this->backendLangPath}.exchange_rate.required"),
+            'exchange_rate.numeric' => __("{$this->backendLangPath}.exchange_rate.numeric"),
+            'exchange_rate.min' => __("{$this->backendLangPath}.exchange_rate.min"),
 
             // Devise par défaut
-            'is_default.boolean' => __("{$this->langPath}.is_default.boolean"),
+            'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
 
             // Statut
-            'status.required' => __("{$this->langPath}.status.required"), 
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
             // Traductions (tableau)
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
-            'translations.min' => __("{$this->langPath}.translations.min"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
+            'translations.min' => __("{$this->backendLangPath}.translations.min"),
 
             // Langue de la traduction
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.integer' => __("{$this->langPath}.translations.lang_id.integer"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.integer' => __("{$this->backendLangPath}.translations.lang_id.integer"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
             // Nom de la traduction
-            'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
-            'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
-            'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
+            'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
+            'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
+            'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
 
             // Description de la traduction
-            'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
+            'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
         ];
     }
 }

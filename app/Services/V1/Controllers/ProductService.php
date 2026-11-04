@@ -12,10 +12,10 @@ use function __;
 class ProductService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/products/messages/products-messages-service.products';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/products/messages/products-messages-service.products';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     public function __construct(protected CloudFileService $cloudFileService) {}
 
@@ -108,7 +108,7 @@ class ProductService
         DB::transaction(function () use ($product) {
 
             if ($product->status === ProductStatus::Published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.publish.already_published"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.publish.already_published"));
             }
 
             $product->update(['status' => ProductStatus::Published]);
@@ -123,7 +123,7 @@ class ProductService
         DB::transaction(function () use ($product) {
 
             if ($product->status !== ProductStatus::Published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.unpublish.not_published"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.unpublish.not_published"));
             }
 
             // Dépublication du produit (retour au brouillon)
@@ -139,7 +139,7 @@ class ProductService
         DB::transaction(function () use ($product) {
 
             if ($product->status === ProductStatus::Archived) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.archive.already_archived"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.archive.already_archived"));
             }
 
             $product->update(['status' => ProductStatus::Archived]);
@@ -155,12 +155,12 @@ class ProductService
 
             // Empêche la suppression d'un produit publié (règle métier : dépublier d'abord)
             if ($product->status === ProductStatus::Published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.published_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.published_forbidden"));
             }
 
             // Empêche la suppression double (soft delete)
             if ($product->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             destroy_function($product);
@@ -177,7 +177,7 @@ class ProductService
             if ($product->trashed()) {
                 restore_function($product);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -192,7 +192,7 @@ class ProductService
             if ($product->trashed()) {
                 force_destroy_function($product);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -233,7 +233,7 @@ class ProductService
             $product,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.product'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'name',
             'slug'
         );
@@ -253,7 +253,7 @@ class ProductService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

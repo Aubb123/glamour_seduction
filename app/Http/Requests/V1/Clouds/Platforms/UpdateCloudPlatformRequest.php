@@ -15,7 +15,7 @@ class UpdateCloudPlatformRequest extends FormRequest
 {
     use LogActivity;
 
-    protected string $langPath = 'v1/backend/views/pages/clouds/platforms/messages/cloud-platforms-messages-validation.cloud-platforms';
+    protected string $backendLangPath = 'v1/backend/views/pages/clouds/platforms/messages/cloud-platforms-messages-validation.cloud-platforms';
 
     // ID de la plateforme résolu une seule fois par requête
     protected ?int $cloudPlatformId = null;
@@ -39,9 +39,9 @@ class UpdateCloudPlatformRequest extends FormRequest
     {
         if (! $this->getCloudPlatformId()) {
 
-            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $this->route('cloudPlatform')?->uuid], message: 'CloudPlatform not found for update.', activity: __("{$this->langPath}.not_found"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.cloud-platforms.update', context: ['cloud_platform_uuid' => $this->route('cloudPlatform')?->uuid], message: 'CloudPlatform not found for update.', activity: __("{$this->backendLangPath}.not_found"), is_success: false);
 
-            abort(404, __("{$this->langPath}.not_found"));
+            abort(404, __("{$this->backendLangPath}.not_found"));
         }
 
         $platformId = $this->getCloudPlatformId();
@@ -62,37 +62,37 @@ class UpdateCloudPlatformRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => __("{$this->langPath}.name.required"),
-            'name.string' => __("{$this->langPath}.name.string"),
-            'name.max' => __("{$this->langPath}.name.max"),
+            'name.required' => __("{$this->backendLangPath}.name.required"),
+            'name.string' => __("{$this->backendLangPath}.name.string"),
+            'name.max' => __("{$this->backendLangPath}.name.max"),
 
-            'label.required' => __("{$this->langPath}.label.required"),
-            'label.string' => __("{$this->langPath}.label.string"),
-            'label.max' => __("{$this->langPath}.label.max"),
+            'label.required' => __("{$this->backendLangPath}.label.required"),
+            'label.string' => __("{$this->backendLangPath}.label.string"),
+            'label.max' => __("{$this->backendLangPath}.label.max"),
 
-            'api_endpoint.required' => __("{$this->langPath}.api_endpoint.required"),
-            'api_endpoint.url' => __("{$this->langPath}.api_endpoint.url"),
-            'api_endpoint.string' => __("{$this->langPath}.api_endpoint.string"),
-            'api_endpoint.max' => __("{$this->langPath}.api_endpoint.max"),
+            'api_endpoint.required' => __("{$this->backendLangPath}.api_endpoint.required"),
+            'api_endpoint.url' => __("{$this->backendLangPath}.api_endpoint.url"),
+            'api_endpoint.string' => __("{$this->backendLangPath}.api_endpoint.string"),
+            'api_endpoint.max' => __("{$this->backendLangPath}.api_endpoint.max"),
 
-            'api_key.string' => __("{$this->langPath}.api_key.string"),
-            'api_key.max' => __("{$this->langPath}.api_key.max"),
-            'api_key.unique' => __("{$this->langPath}.api_key.unique"),
+            'api_key.string' => __("{$this->backendLangPath}.api_key.string"),
+            'api_key.max' => __("{$this->backendLangPath}.api_key.max"),
+            'api_key.unique' => __("{$this->backendLangPath}.api_key.unique"),
 
-            'api_secret.string' => __("{$this->langPath}.api_secret.string"),
-            'api_secret.max' => __("{$this->langPath}.api_secret.max"),
+            'api_secret.string' => __("{$this->backendLangPath}.api_secret.string"),
+            'api_secret.max' => __("{$this->backendLangPath}.api_secret.max"),
 
-            'description.string' => __("{$this->langPath}.description.string"),
+            'description.string' => __("{$this->backendLangPath}.description.string"),
 
-            'disk_name.required' => __("{$this->langPath}.disk_name.required"),
-            'disk_name.string' => __("{$this->langPath}.disk_name.string"),
-            'disk_name.max' => __("{$this->langPath}.disk_name.max"),
-            'disk_name.in' => __("{$this->langPath}.disk_name.in"),
+            'disk_name.required' => __("{$this->backendLangPath}.disk_name.required"),
+            'disk_name.string' => __("{$this->backendLangPath}.disk_name.string"),
+            'disk_name.max' => __("{$this->backendLangPath}.disk_name.max"),
+            'disk_name.in' => __("{$this->backendLangPath}.disk_name.in"),
 
-            'metadata.json' => __("{$this->langPath}.metadata.json"),
+            'metadata.json' => __("{$this->backendLangPath}.metadata.json"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
         ];
     }
 }

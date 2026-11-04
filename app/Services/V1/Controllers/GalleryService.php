@@ -12,10 +12,10 @@ use function __;
 class GalleryService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/galleries/messages/galleries-messages-service.galleries';
+    protected string $backendLangPath = 'v1/backend/views/pages/galleries/messages/galleries-messages-service.galleries';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     public function __construct(
         protected CloudFileService $cloudFileService,
@@ -46,7 +46,7 @@ class GalleryService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la galerie créée
@@ -55,7 +55,7 @@ class GalleryService
                     $data['cloud_platform_uuid'],
                     $gallery,
                     $gallery->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -95,7 +95,7 @@ class GalleryService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la galerie mise à jour
@@ -104,7 +104,7 @@ class GalleryService
                     $data['cloud_platform_uuid'],
                     $gallery,
                     $gallery->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -136,11 +136,11 @@ class GalleryService
 
             // Seule les galeries qui ne sont pas actives peuvent être supprimées
             if ($gallery->status === GalleryStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_gallery_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_gallery_forbidden"));
             }
 
             if ($gallery->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($gallery);
         });
@@ -155,7 +155,7 @@ class GalleryService
             if ($gallery->trashed()) {
                 restore_function($gallery);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -169,19 +169,19 @@ class GalleryService
 
             // Seule les galeries qui sont supprimées peuvent être détruites définitivement
             if (! $gallery->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_gallery_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_gallery_forbidden"));
             }
 
             // Seule les galeries qui ne sont pas actives peuvent être détruites définitivement
             if ($gallery->status === GalleryStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.active_gallery_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_gallery_forbidden"));
             }
 
             // Suppression définitive de la galerie et de ses traductions associées
             if ($gallery->trashed()) {
                 force_destroy_function($gallery);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }
@@ -212,7 +212,7 @@ class GalleryService
             $gallery,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.gallery'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'title',
             'slug'
         );
@@ -231,7 +231,7 @@ class GalleryService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

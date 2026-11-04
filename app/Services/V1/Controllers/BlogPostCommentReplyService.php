@@ -10,7 +10,7 @@ use function __;
 class BlogPostCommentReplyService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/comment-replies/messages/replies-messages-service.replies';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/comment-replies/messages/replies-messages-service.replies';
 
     // ─────────────────────────────────────────────
     // ACTIVATE
@@ -21,7 +21,7 @@ class BlogPostCommentReplyService
 
             // Vérification que la réponse n'est pas déjà active
             if ($reply->is_visible) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_approved"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_approved"));
             }
 
             // Activation de la réponse sélectionnée
@@ -40,7 +40,7 @@ class BlogPostCommentReplyService
 
             // Vérification que la réponse n'est pas déjà inactive
             if (! $reply->is_visible) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_disapproved"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_disapproved"));
             }
 
             // Désactivation de la réponse sélectionnée
@@ -59,12 +59,12 @@ class BlogPostCommentReplyService
 
             // Vérification : empêcher la suppression d'une réponse visible
             if ($reply->is_visible) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.visible_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.visible_forbidden"));
             }
 
             // Suppression simple (soft delete)
             if ($reply->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($reply);
         });
@@ -81,7 +81,7 @@ class BlogPostCommentReplyService
             if ($reply->trashed()) {
                 restore_function($reply);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -97,7 +97,7 @@ class BlogPostCommentReplyService
             if ($reply->trashed()) {
                 force_destroy_function($reply);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

@@ -23,7 +23,7 @@ class UpdateBlogTagRequest extends FormRequest
     /**
      * Chemin de base pour les traductions des messages de validation.
      */
-    protected string $langPath = 'v1/backend/views/pages/blogs/tags/messages/tags-messages-validation.tags';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/tags/messages/tags-messages-validation.tags';
 
     // ID du tag résolu une seule fois par requête
     protected ?int $blogTagId = null;
@@ -65,9 +65,9 @@ class UpdateBlogTagRequest extends FormRequest
         // Si le tag n'est pas trouvé, on log l'erreur et on abort
         if (! $blogTagId) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-tags.update', context: ['blog_tag_uuid' => $this->route('blogTag')?->uuid], message: 'BlogTag not found for update.', activity: __("{$this->langPath}.not_found"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-tags.update', context: ['blog_tag_uuid' => $this->route('blogTag')?->uuid], message: 'BlogTag not found for update.', activity: __("{$this->backendLangPath}.not_found"), is_success: false);
 
-            abort(404, __("{$this->langPath}.not_found"));
+            abort(404, __("{$this->backendLangPath}.not_found"));
         }
 
         $rules = [
@@ -116,29 +116,29 @@ class UpdateBlogTagRequest extends FormRequest
     {
         return [
             // sort_order
-            'sort_order.required' => __("{$this->langPath}.sort_order.required"),
-            'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
-            'sort_order.min' => __("{$this->langPath}.sort_order.min"),
-            'sort_order.unique' => __("{$this->langPath}.sort_order.unique"),
+            'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
+            'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
+            'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
+            'sort_order.unique' => __("{$this->backendLangPath}.sort_order.unique"),
 
             // status
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
             // translations
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
 
             // translations.*.lang_id
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.distinct' => __("{$this->langPath}.translations.lang_id.distinct"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.distinct' => __("{$this->backendLangPath}.translations.lang_id.distinct"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
             // translations.*.name
-            'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
-            'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
-            'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
-            'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
+            'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
+            'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
+            'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
+            'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
         ];
     }
 }

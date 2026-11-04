@@ -13,7 +13,7 @@ use function __;
 class UpdatePlatformVersionRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-validation';
+    protected string $backendLangPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-validation';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -80,7 +80,7 @@ class UpdatePlatformVersionRequest extends FormRequest
             $langIds = collect($this->input('translations', []))->pluck('lang_id');
 
             if ($langIds->count() !== $langIds->unique()->count()) {
-                $validator->errors()->add('translations', __("{$this->langPath}.translations.lang_id.duplicate"));
+                $validator->errors()->add('translations', __("{$this->backendLangPath}.translations.lang_id.duplicate"));
             }
         });
     }
@@ -89,33 +89,33 @@ class UpdatePlatformVersionRequest extends FormRequest
     {
         return [
             // Code
-            'code.required' => __("{$this->langPath}.code.required"),
-            'code.string' => __("{$this->langPath}.code.string"),
-            'code.max' => __("{$this->langPath}.code.max"),
-            'code.unique' => __("{$this->langPath}.code.unique"),
-            'code.regex' => __("{$this->langPath}.code.regex"),
+            'code.required' => __("{$this->backendLangPath}.code.required"),
+            'code.string' => __("{$this->backendLangPath}.code.string"),
+            'code.max' => __("{$this->backendLangPath}.code.max"),
+            'code.unique' => __("{$this->backendLangPath}.code.unique"),
+            'code.regex' => __("{$this->backendLangPath}.code.regex"),
 
             // Released at — pas de after_or_equal sur Update
-            'released_at.date' => __("{$this->langPath}.released_at.date"),
+            'released_at.date' => __("{$this->backendLangPath}.released_at.date"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
             // Translations
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
-            'translations.min' => __("{$this->langPath}.translations.min"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
+            'translations.min' => __("{$this->backendLangPath}.translations.min"),
 
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.integer' => __("{$this->langPath}.translations.lang_id.integer"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.integer' => __("{$this->backendLangPath}.translations.lang_id.integer"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
-            'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
-            'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
-            'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
+            'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
+            'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
+            'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
 
-            'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
-            'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
+            'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
+            'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
         ];
     }
 }

@@ -9,7 +9,7 @@ use function __;
 class UpdateSettingRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/settings/messages/settings-messages-validation.settings';
+    protected string $backendLangPath = 'v1/backend/views/pages/settings/messages/settings-messages-validation.settings';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -48,20 +48,20 @@ class UpdateSettingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'settings.required' => __("{$this->langPath}.settings.required"),
-            'settings.array' => __("{$this->langPath}.settings.array"),
-            'settings.min' => __("{$this->langPath}.settings.min"),
+            'settings.required' => __("{$this->backendLangPath}.settings.required"),
+            'settings.array' => __("{$this->backendLangPath}.settings.array"),
+            'settings.min' => __("{$this->backendLangPath}.settings.min"),
 
-            'settings.*.uuid.required' => __("{$this->langPath}.uuid.required"),
-            'settings.*.uuid.exists' => __("{$this->langPath}.uuid.exists"),
+            'settings.*.uuid.required' => __("{$this->backendLangPath}.uuid.required"),
+            'settings.*.uuid.exists' => __("{$this->backendLangPath}.uuid.exists"),
 
-            'settings.*.value.string' => __("{$this->langPath}.value.string"),
+            'settings.*.value.string' => __("{$this->backendLangPath}.value.string"),
 
-            'settings.*.translations.*.lang_id.required_with' => __("{$this->langPath}.translations.lang_id.required"),
-            'settings.*.translations.*.lang_id.integer' => __("{$this->langPath}.translations.lang_id.integer"),
-            'settings.*.translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'settings.*.translations.*.lang_id.required_with' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'settings.*.translations.*.lang_id.integer' => __("{$this->backendLangPath}.translations.lang_id.integer"),
+            'settings.*.translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
-            'settings.*.translations.*.value.string' => __("{$this->langPath}.translations.value.string"),
+            'settings.*.translations.*.value.string' => __("{$this->backendLangPath}.translations.value.string"),
         ];
     }
 }

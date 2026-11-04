@@ -9,7 +9,7 @@ use function __;
 class SyncRolesPermissionRequest extends FormRequest
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/permissions/messages/permission-messages-validation.permissions';
+    protected string $backendLangPath = 'v1/backend/views/pages/permissions/messages/permission-messages-validation.permissions';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -30,8 +30,8 @@ class SyncRolesPermissionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'role_ids.array' => __("{$this->langPath}.roles.array"),
-            'role_ids.*.exists' => __("{$this->langPath}.roles.exists"),
+            'role_ids.array' => __("{$this->backendLangPath}.roles.array"),
+            'role_ids.*.exists' => __("{$this->backendLangPath}.roles.exists"),
         ];
     }
 }

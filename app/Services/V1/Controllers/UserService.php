@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 class UserService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/users/messages/user-messages-service.users';
+    protected string $backendLangPath = 'v1/backend/views/pages/users/messages/user-messages-service.users';
 
     public function __construct(protected CloudFileService $cloudFileService) {}
 
@@ -61,7 +61,7 @@ class UserService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à l'utilisateur mis à jour
@@ -70,7 +70,7 @@ class UserService
                     $data['cloud_platform_uuid'],
                     $user,
                     $user->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
 
             }
@@ -89,12 +89,12 @@ class UserService
 
             // Vérification que l'utilisateur n'est pas déjà actif
             if ($user->status === UserStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Un utilisateur banni ne peut pas être activé
             if ($user->status === UserStatus::Banned) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.banned_cannot_activate"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.banned_cannot_activate"));
             }
 
             // Activation de l'utilisateur (passage en statut 'actif')
@@ -112,12 +112,12 @@ class UserService
 
             // Vérification que l'utilisateur n'est pas déjà suspendu
             if ($user->status === UserStatus::Suspended) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.suspend.already_suspended"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.suspend.already_suspended"));
             }
 
             // Seuls les utilisateurs actifs peuvent être suspendus
             if ($user->status !== UserStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.suspend.only_active_can_suspend"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.suspend.only_active_can_suspend"));
             }
 
             // Suspension de l'utilisateur (passage en statut 'suspendu')
@@ -135,7 +135,7 @@ class UserService
 
             // Vérification que l'utilisateur n'est pas déjà banni
             if ($user->status === UserStatus::Banned) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.ban.already_banned"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.ban.already_banned"));
             }
 
             // Bannissement de l'utilisateur (passage en statut 'banni')

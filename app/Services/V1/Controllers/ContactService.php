@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class ContactService
 {
-    protected string $langPath = 'v1/backend/views/pages/contacts/messages/contacts-messages-service.contacts';
+    protected string $backendLangPath = 'v1/backend/views/pages/contacts/messages/contacts-messages-service.contacts';
 
     // ─────────────────────────────────────────────
     // MARK AS READ
@@ -38,11 +38,11 @@ class ContactService
 
             // Seule les messages déjà lus peuvent être supprimés
             if (! $contact->is_read) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.flash_warning"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.flash_warning"));
             }
 
             if ($contact->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($contact);
         });
@@ -57,7 +57,7 @@ class ContactService
             if ($contact->trashed()) {
                 restore_function($contact);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
         });
     }
@@ -71,13 +71,13 @@ class ContactService
 
             // Seule les messages déjà lus peuvent être supprimés définitivement
             if (! $contact->is_read) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.flash_warning"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.flash_warning"));
             }
 
             if ($contact->trashed()) {
                 force_destroy_function($contact);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
     }

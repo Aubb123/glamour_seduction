@@ -19,7 +19,7 @@ class StoreProductAttributeRequest extends FormRequest
     /**
      * Chemin de base pour les traductions des messages de validation.
      */
-    protected string $langPath = 'v1/backend/views/pages/products/attributes/messages/attributes-messages-validation.productAttributes';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/attributes/messages/attributes-messages-validation.productAttributes';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -100,28 +100,28 @@ class StoreProductAttributeRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'sort_order.required' => __("{$this->langPath}.sort_order.required"),
-            'sort_order.integer' => __("{$this->langPath}.sort_order.integer"),
-            'sort_order.min' => __("{$this->langPath}.sort_order.min"),
-            'sort_order.unique' => __("{$this->langPath}.sort_order.unique"),
+            'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
+            'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
+            'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
+            'sort_order.unique' => __("{$this->backendLangPath}.sort_order.unique"),
 
-            'status.required' => __("{$this->langPath}.status.required"),
-            'status.in' => __("{$this->langPath}.status.in"),
+            'status.required' => __("{$this->backendLangPath}.status.required"),
+            'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'translations.required' => __("{$this->langPath}.translations.required"),
-            'translations.array' => __("{$this->langPath}.translations.array"),
+            'translations.required' => __("{$this->backendLangPath}.translations.required"),
+            'translations.array' => __("{$this->backendLangPath}.translations.array"),
 
-            'translations.*.lang_id.required' => __("{$this->langPath}.translations.lang_id.required"),
-            'translations.*.lang_id.exists' => __("{$this->langPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
+            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
 
-            'translations.*.name.required' => __("{$this->langPath}.translations.name.required"),
-            'translations.*.name.string' => __("{$this->langPath}.translations.name.string"),
-            'translations.*.name.max' => __("{$this->langPath}.translations.name.max"),
-            'translations.*.name.unique' => __("{$this->langPath}.translations.name.unique"),
+            'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
+            'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
+            'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
+            'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
 
-            'translations.*.description.required' => __("{$this->langPath}.translations.description.required"),
-            'translations.*.description.string' => __("{$this->langPath}.translations.description.string"),
-            'translations.*.description.max' => __("{$this->langPath}.translations.description.max"),
+            'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
+            'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
+            'translations.*.description.max' => __("{$this->backendLangPath}.translations.description.max"),
         ];
     }
 }

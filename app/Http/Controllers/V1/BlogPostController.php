@@ -23,7 +23,7 @@ class BlogPostController extends Controller
     use LogActivity;
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/blogs/posts/messages/posts-messages-controller.posts';
+    protected string $backendLangPath = 'v1/backend/views/pages/blogs/posts/messages/posts-messages-controller.posts';
 
     // Injection de dépendance du service de gestion des articles
     public function __construct(protected BlogPostService $blogPostService) {}
@@ -43,7 +43,7 @@ class BlogPostController extends Controller
             $posts = BlogPost::withActiveTranslation()->with(['cloudFiles', 'category.translations.lang', 'user'])->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'activité
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.index', context: ['count' => $posts->count()], message: null, activity: __("{$this->langPath}.index.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.index', context: ['count' => $posts->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
             // Retourne la vue avec les articles
             return view('v1.backend.pages.blogs.posts.index', compact('posts'));
@@ -51,7 +51,7 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.index', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.index.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.index', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.index.error"), is_success: false);
 
             abort(500);
         }
@@ -72,7 +72,7 @@ class BlogPostController extends Controller
             $tags = BlogTag::withActiveTranslation()->active()->get();
 
             // Log de l'accès à la page de création
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.create', context: [], message: null, activity: __("{$this->langPath}.create.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Retourne la vue de création avec les données nécessaires
             return view('v1.backend.pages.blogs.posts.create', compact('langs', 'categories', 'tags'));
@@ -80,7 +80,7 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de l'accès à la page de création
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.create', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.create.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.create', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.create.error"), is_success: false);
 
             abort(500);
         }
@@ -100,15 +100,15 @@ class BlogPostController extends Controller
             $postName = $post->active_translation?->title ?? '';
 
             //  Log de l'activité de création réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.store', context: ['post_uuid' => $post->uuid, 'post_title' => $postName], message: null, activity: __("{$this->langPath}.store.success", ['name' => $postName]), is_success: true, loggable: $post);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.store', context: ['post_uuid' => $post->uuid, 'post_title' => $postName], message: null, activity: __("{$this->backendLangPath}.store.success", ['name' => $postName]), is_success: true, loggable: $post);
 
             // Redirige vers la page de détails de l'article avec un message flash de succès
-            return redirect()->route('backend.blog-posts.show', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null'])->with('success', __("{$this->langPath}.store.flash_success", ['name' => $postName]));
+            return redirect()->route('backend.blog-posts.show', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null'])->with('success', __("{$this->backendLangPath}.store.flash_success", ['name' => $postName]));
 
         } catch (\InvalidArgumentException $e) {
 
             //  Log de l'erreur de création avec un message d'avertissement
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->langPath}.store.error"), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -116,10 +116,10 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de création avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->langPath}.store.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
-            return redirect()->back()->with('error', __("{$this->langPath}.store.flash_error"))->withInput();
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.store.flash_error"))->withInput();
         }
     }
 
@@ -132,7 +132,7 @@ class BlogPostController extends Controller
 
         if ($expectedSlug !== $slug) {
             // Log de l'erreur de correspondance du slug avec un message d'avertissement
-            $this->logActivity(type: 'warning', action: $action, context: ['post_uuid' => $blogPost->uuid, 'post_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->langPath}.{$langKey}.slug_mismatch"), is_success: false);
+            $this->logActivity(type: 'warning', action: $action, context: ['post_uuid' => $blogPost->uuid, 'post_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$langKey}.slug_mismatch"), is_success: false);
 
             abort(404);
         }
@@ -163,10 +163,10 @@ class BlogPostController extends Controller
             $comments = $post->comments()->orderBy('created_at', 'desc')->get();
 
             // Récupère le titre de l'article pour les logs et les messages flash
-            $postTitle = $post->active_translation?->title ?? __("{$this->langPath}.show.no_name");
+            $postTitle = $post->active_translation?->title ?? __("{$this->backendLangPath}.show.no_name");
 
             //  Log de l'activité de visualisation réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.show', context: ['post_uuid' => $post->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.show.success", ['name' => $postTitle]), is_success: true, loggable: $post);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.show', context: ['post_uuid' => $post->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $postTitle]), is_success: true, loggable: $post);
 
             // Retourne la vue de détails avec l'article, les langues, les traductions supprimées et les commentaires
             return view('v1.backend.pages.blogs.posts.show', compact('post', 'langs', 'blogPostTranslations', 'comments'));
@@ -174,7 +174,7 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de visualisation avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.show', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.show.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.show', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $blogPost->uuid]), is_success: false);
 
             abort(500);
         }
@@ -197,13 +197,13 @@ class BlogPostController extends Controller
 
             $audits = $post->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.audits', context: ['post_uuid' => $post->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.audits.success", ['name' => $postTitle]), is_success: true, loggable: $post);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.audits', context: ['post_uuid' => $post->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $postTitle]), is_success: true, loggable: $post);
 
             return view('v1.backend.pages.blogs.posts.others.audits', compact('post', 'audits'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.audits', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.audits.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.audits', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $blogPost->uuid]), is_success: false);
 
             abort(500);
         }
@@ -226,13 +226,13 @@ class BlogPostController extends Controller
 
             $logs = $post->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.activity-logs', context: ['post_uuid' => $post->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.activity-logs.success", ['name' => $postTitle]), is_success: true, loggable: $post);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.activity-logs', context: ['post_uuid' => $post->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $postTitle]), is_success: true, loggable: $post);
 
             return view('v1.backend.pages.blogs.posts.others.activity-logs', compact('post', 'logs'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.activity-logs', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.activity-logs.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.activity-logs', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $blogPost->uuid]), is_success: false);
 
             abort(500);
         }
@@ -255,7 +255,7 @@ class BlogPostController extends Controller
             // Récupère l'article de blog avec ses traductions et tags
             $post = $blogPost->load(['translations.lang', 'tags']);
             // Log de l'accès à la page d'édition réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.edit', context: ['post_uuid' => $post->uuid, 'post_title' => $post->active_translation?->title], message: null, activity: __("{$this->langPath}.edit.success", ['name' => $post->active_translation?->title ?? '']), is_success: true, loggable: $post);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.edit', context: ['post_uuid' => $post->uuid, 'post_title' => $post->active_translation?->title], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $post->active_translation?->title ?? '']), is_success: true, loggable: $post);
 
             // Préparation des IDs des tags pour la vue
             $postTagIds = $post->tags->pluck('id')->toArray();
@@ -268,7 +268,7 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur d'accès à la page d'édition avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.edit', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.edit.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.edit', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $blogPost->uuid]), is_success: false);
 
             abort(500);
         }
@@ -292,15 +292,15 @@ class BlogPostController extends Controller
             $postTitle = $blogPost->active_translation?->title ?? ''; // Récupère le titre de l'article pour les logs et les messages flash
 
             // Log de l'activité de mise à jour réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.update', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle, 'changes' => $changes], message: null, activity: __("{$this->langPath}.update.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.update', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle, 'changes' => $changes], message: null, activity: __("{$this->backendLangPath}.update.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
 
             // Redirige vers la page de détails de l'article avec un message flash de succès
-            return redirect()->route('backend.blog-posts.show', ['blogPost' => $blogPost->uuid, 'slug' => $blogPost->active_translation?->slug ?? 'null'])->with('success', __("{$this->langPath}.update.flash_success", ['name' => $postTitle]));
+            return redirect()->route('backend.blog-posts.show', ['blogPost' => $blogPost->uuid, 'slug' => $blogPost->active_translation?->slug ?? 'null'])->with('success', __("{$this->backendLangPath}.update.flash_success", ['name' => $postTitle]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de mise à jour avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.update', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.update', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -308,10 +308,10 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de mise à jour avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.update', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.update.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.update', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.error", ['uuid' => $blogPost->uuid]), is_success: false);
 
             // Redirige en arrière avec un message d'erreur et les données du formulaire
-            return redirect()->back()->with('error', __("{$this->langPath}.update.flash_error"))->withInput();
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.update.flash_error"))->withInput();
         }
     }
 
@@ -325,7 +325,7 @@ class BlogPostController extends Controller
             $newStatus = BlogPostStatus::tryFrom($request->input('status', ''));
 
             if ($newStatus === null) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.change_status.invalid_status"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.change_status.invalid_status"));
             }
 
             // Ancien statut pour le log
@@ -339,24 +339,24 @@ class BlogPostController extends Controller
             $postName = $blogPost->active_translation?->title ?? ''; // Récupère le titre pour les logs et les messages flash
 
             // Log de l'activité de changement de statut réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.change_status', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postName, 'old_status' => $oldStatus->value, 'new_status' => $newStatus->value], message: null, activity: __("{$this->langPath}.change_status.success", ['name' => $postName, 'from' => $oldStatus->label(), 'to' => $newStatus->label()]), is_success: true, loggable: $blogPost);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.change_status', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postName, 'old_status' => $oldStatus->value, 'new_status' => $newStatus->value], message: null, activity: __("{$this->backendLangPath}.change_status.success", ['name' => $postName, 'from' => $oldStatus->label(), 'to' => $newStatus->label()]), is_success: true, loggable: $blogPost);
 
             // Redirige vers la page précédente avec un message flash de succès
-            return redirect()->back()->with('success', __("{$this->langPath}.change_status.flash_success", ['name' => $postName, 'to' => $newStatus->label()]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.change_status.flash_success", ['name' => $postName, 'to' => $newStatus->label()]));
 
         } catch (\InvalidArgumentException $e) {
             // Log de l'erreur de changement de statut avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.change_status', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.change_status.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.change_status', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.change_status.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
             // Log de l'erreur de changement de statut avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.change_status', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.change_status.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.change_status', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.change_status.error", ['uuid' => $blogPost->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec du changement de statut
-            return redirect()->back()->with('error', __("{$this->langPath}.change_status.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.change_status.flash_error"));
         }
     }
 
@@ -368,21 +368,21 @@ class BlogPostController extends Controller
         try {
 
             // Récupère le titre de l'article pour les logs et les messages flash
-            $postTitle = $blogPost->active_translation?->title ?? __("{$this->langPath}.destroy.unknown");
+            $postTitle = $blogPost->active_translation?->title ?? __("{$this->backendLangPath}.destroy.unknown");
 
             // Utilise le service pour supprimer l'article de blog
             $this->blogPostService->backend_blog_posts_destroy($blogPost);
 
             // Log de l'activité de suppression réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.destroy', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.destroy', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
 
             // Redirige vers la liste des articles avec un message flash de succès
-            return redirect()->route('backend.blog-posts.index')->with('success', __("{$this->langPath}.destroy.flash_success", ['name' => $postTitle]));
+            return redirect()->route('backend.blog-posts.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['name' => $postTitle]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de suppression avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.destroy', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.destroy', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $blogPost->uuid]), is_success: false);
 
             //  Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -390,10 +390,10 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de suppression avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.destroy', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $blogPost->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.destroy', context: ['post_uuid' => $blogPost->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $blogPost->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression
-            return redirect()->back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
     }
 
@@ -408,7 +408,7 @@ class BlogPostController extends Controller
             $posts = BlogPost::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des articles supprimés réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.trashed', context: ['count' => $posts->count()], message: null, activity: __("{$this->langPath}.trashed.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.trashed', context: ['count' => $posts->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
             // Retourne la vue avec les articles supprimés
             return view('v1.backend.pages.blogs.posts.trashed', compact('posts'));
@@ -416,7 +416,7 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de l'affichage de la liste des articles supprimés
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.trashed', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.trashed', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error"), is_success: false);
 
             abort(500);
         }
@@ -438,15 +438,15 @@ class BlogPostController extends Controller
             $postTitle = $blogPost->active_translation?->title ?? '';  // Récupère le titre de l'article pour les logs et les messages flash
 
             // Log de l'activité de restauration réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.restore', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.restore', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->backendLangPath}.restore.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
 
             // Redirige vers la page précédente avec un message flash de succès pour la restauration
-            return redirect()->back()->with('success', __("{$this->langPath}.restore.flash_success", ['name' => $postTitle]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['name' => $postTitle]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.restore', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.restore', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -454,9 +454,9 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             //  Log de l'erreur lors de la tentative de restauration avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.restore', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.restore', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
-            return redirect()->back()->with('error', __("{$this->langPath}.restore.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.restore.flash_error"));
         }
     }
 
@@ -471,21 +471,21 @@ class BlogPostController extends Controller
             $blogPost = BlogPost::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Récupère le titre de l'article pour les logs et les messages flash (avant suppression définitive)
-            $postTitle = $blogPost->active_translation?->title ?? __("{$this->langPath}.force_destroy.unknown");
+            $postTitle = $blogPost->active_translation?->title ?? __("{$this->backendLangPath}.force_destroy.unknown");
 
             // Utilise le service pour supprimer définitivement l'article de blog
             $this->blogPostService->backend_blog_posts_force_destroy($blogPost);
 
             // Log de l'activité de suppression définitive réussie
-            $this->logActivity(type: 'info', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->langPath}.force_destroy.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
+            $this->logActivity(type: 'info', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $blogPost->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['name' => $postTitle]), is_success: true, loggable: $blogPost);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression définitive
-            return redirect()->back()->with('success', __("{$this->langPath}.force_destroy.flash_success", ['name' => $postTitle]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success", ['name' => $postTitle]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -493,10 +493,10 @@ class BlogPostController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression définitive avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression définitive
-            return redirect()->back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
+            return redirect()->back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_error"));
         }
     }
 }

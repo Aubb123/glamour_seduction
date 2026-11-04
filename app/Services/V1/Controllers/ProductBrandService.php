@@ -12,10 +12,10 @@ use function __;
 class ProductBrandService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/products/brands/messages/brands-messages-service.productBrands';
+    protected string $backendLangPath = 'v1/backend/views/pages/products/brands/messages/brands-messages-service.productBrands';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // Injection de dépendance du service CloudFileService pour gérer les fichiers dans le cloud
     public function __construct(protected CloudFileService $cloudFileService) {}
@@ -42,7 +42,7 @@ class ProductBrandService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.store.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la marque créée
@@ -51,7 +51,7 @@ class ProductBrandService
                     $data['cloud_platform_uuid'],
                     $brand,
                     $brand->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -91,7 +91,7 @@ class ProductBrandService
 
                 // Si $data['image'] existe et que $data['cloud_platform_uuid'] n'est pas défini, on lance une exception
                 if (! isset($data['cloud_platform_uuid'])) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.update.cloud_platform_uuid_required"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cloud_platform_uuid_required"));
                 }
 
                 // Appel du service pour gérer le téléchargement de l'image vers le cloud ou le stockage local, en associant l'image à la marque mise à jour
@@ -100,7 +100,7 @@ class ProductBrandService
                     $data['cloud_platform_uuid'],
                     $brand,
                     $brand->getTable(),
-                    $this->langPath,
+                    $this->backendLangPath,
                 );
             }
 
@@ -118,7 +118,7 @@ class ProductBrandService
 
             // Vérification que la marque n'est pas déjà active
             if ($brand->status === ProductBrandStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Activation de la marque sélectionnée
@@ -138,7 +138,7 @@ class ProductBrandService
 
             // Vérification que la marque n'est pas déjà inactive
             if ($brand->status === ProductBrandStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation de la marque sélectionnée
@@ -158,12 +158,12 @@ class ProductBrandService
 
             // Vérification : empêcher la suppression d'une marque active
             if ($brand->status === ProductBrandStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // Si la marque est déjà en corbeille, on ne peut pas la supprimer à nouveau
             if ($brand->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // ← suppression de la marque et de ses traductions associées
@@ -185,7 +185,7 @@ class ProductBrandService
                 // ← restauration de la marque et de ses traductions associées
                 restore_function($brand);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -204,7 +204,7 @@ class ProductBrandService
                 // ← suppression définitive de la marque et de ses traductions associées
                 force_destroy_function($brand);
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
         });
@@ -235,7 +235,7 @@ class ProductBrandService
             $brand,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productBrand'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'name',
             'slug'
         );
@@ -255,7 +255,7 @@ class ProductBrandService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );

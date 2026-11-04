@@ -11,10 +11,10 @@ use function __;
 class CurrencyTranslationService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies.translations';
+    protected string $backendLangPath = 'v1/backend/views/pages/currencies/messages/currencies-messages-service.currencies.translations';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // DESTROY
@@ -30,7 +30,7 @@ class CurrencyTranslationService
                 ->find($currencyTranslation->currency_id);
 
             if (! $currency) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.currency_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.currency_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction
@@ -39,17 +39,17 @@ class CurrencyTranslationService
                 ->find($currencyTranslation->id);
 
             if (! $currencyTranslation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.translation_not_found"));
             }
 
             // 3. Déjà en corbeille
             if ($currencyTranslation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
             // 4. Dernière traduction active
             if ($currency->translations()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression
@@ -74,13 +74,13 @@ class CurrencyTranslationService
                 assertTranslationRestore(
                     $currencyTranslation,
                     __('v1/backend/others/helpers/backend-helper-messages.entityLabels.currency'),
-                    $this->helperLangPath
+                    $this->backendHelperLangPath
                 );
 
                 restore_function($currencyTranslation); // ← restauration de la traduction
 
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -101,7 +101,7 @@ class CurrencyTranslationService
                 ->find($currencyTranslation->currency_id);
 
             if (! $currency) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.currency_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.currency_not_found"));
             }
 
             // 2. Relecture verrouillée de la traduction (le binding peut être périmé)
@@ -110,17 +110,17 @@ class CurrencyTranslationService
                 ->find($currencyTranslation->id);
 
             if (! $currencyTranslation) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.translation_not_found"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.translation_not_found"));
             }
 
             // 3. Seule une traduction en corbeille peut être supprimée définitivement
             if (! $currencyTranslation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
             // 4. Interdit de supprimer la dernière traduction de la devise (corbeille incluse)
             if ($currency->translations()->withTrashed()->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.last_translation_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.last_translation_forbidden"));
             }
 
             // 5. Suppression définitive de la traduction et de ses dépendances

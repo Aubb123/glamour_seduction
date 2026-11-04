@@ -16,7 +16,7 @@ class PlatformVersionTranslationController extends Controller
     use LogActivity; // Trait pour le logging d'activité
 
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-controller.versions.translations';
+    protected string $backendLangPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-controller.versions.translations';
 
     public function __construct(
         protected PlatformVersionTranslationService $platformVersionTranslationService
@@ -37,23 +37,23 @@ class PlatformVersionTranslationController extends Controller
             $this->platformVersionTranslationService->backend_platform_version_translations_destroy($platformVersionTranslation);
 
             // Log de la suppression
-            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.destroy', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $platformVersionTranslation->uuid]), is_success: true, loggable: $platformVersionTranslation);
+            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.destroy', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['uuid' => $platformVersionTranslation->uuid]), is_success: true, loggable: $platformVersionTranslation);
 
-            return back()->with('success', __("{$this->langPath}.destroy.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de validation
-            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.destroy', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.warning_meta", ['uuid' => $platformVersionTranslation->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.destroy', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $platformVersionTranslation->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.destroy', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.destroy.error", ['uuid' => $platformVersionTranslation->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.destroy', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $platformVersionTranslation->uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
 
         }
     }
@@ -72,7 +72,7 @@ class PlatformVersionTranslationController extends Controller
             $platformVersionTranslations = PlatformVersionTranslation::onlyTrashed()->where('platform_version_id', $version->id)->get();
 
             // Log de l'accès à la corbeille des traductions
-            $this->logActivity(type: 'info', action: 'backend.platform-version-translations.trashed', context: ['count' => $platformVersionTranslations->count(), 'version_uuid' => $version->uuid], message: null, activity: __("{$this->langPath}.trashed.success", ['code' => $version->code]), is_success: true, loggable: $version);
+            $this->logActivity(type: 'info', action: 'backend.platform-version-translations.trashed', context: ['count' => $platformVersionTranslations->count(), 'version_uuid' => $version->uuid], message: null, activity: __("{$this->backendLangPath}.trashed.success", ['code' => $version->code]), is_success: true, loggable: $version);
 
             // Affiche la vue avec les traductions supprimées
             return view('v1.backend.pages.platform-versions.translations.trashed', compact('platformVersionTranslations', 'version'));
@@ -80,7 +80,7 @@ class PlatformVersionTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.trashed', context: ['version_uuid' => $platformVersion->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.trashed.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.trashed', context: ['version_uuid' => $platformVersion->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error"), is_success: false);
 
             return abort(500);
         }
@@ -100,23 +100,23 @@ class PlatformVersionTranslationController extends Controller
             $this->platformVersionTranslationService->backend_platform_version_translations_restore($platformVersionTranslation);
 
             // Log de la restauration
-            $this->logActivity(type: 'info', action: 'backend.platform-version-translations.restore', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $platformVersionTranslation->uuid]), is_success: true, loggable: $platformVersionTranslation);
+            $this->logActivity(type: 'info', action: 'backend.platform-version-translations.restore', context: ['version_translation_uuid' => $platformVersionTranslation->uuid], message: null, activity: __("{$this->backendLangPath}.restore.success", ['uuid' => $platformVersionTranslation->uuid]), is_success: true, loggable: $platformVersionTranslation);
 
-            return back()->with('success', __("{$this->langPath}.restore.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.restore.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur 404 si la traduction n'est pas trouvée
-            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.restore', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.restore', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.restore.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.restore.flash_warning"));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.restore', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.restore.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.restore', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.error", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.restore.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.restore.flash_error"));
 
         }
     }
@@ -135,30 +135,30 @@ class PlatformVersionTranslationController extends Controller
             $this->platformVersionTranslationService->backend_platform_version_translations_force_destroy($platformVersionTranslation);
 
             // Log de la suppression définitive
-            $this->logActivity(type: 'info', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $platformVersionTranslation);
+            $this->logActivity(type: 'info', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $platformVersionTranslation);
 
-            return back()->with('success', __("{$this->langPath}.force_destroy.flash_success"));
+            return back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success"));
 
         } catch (ModelNotFoundException $e) {
 
             // Log de l'erreur 404 si la traduction n'est pas trouvée
-            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.force_destroy.flash_warning"));
+            return back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_warning"));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur de validation
-            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur
-            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->langPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.platform-version-translations.force_destroy', context: ['version_translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
 
-            return back()->with('error', __("{$this->langPath}.force_destroy.flash_error"));
+            return back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_error"));
 
         }
     }
