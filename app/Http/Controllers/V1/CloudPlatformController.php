@@ -85,7 +85,7 @@ class CloudPlatformController extends Controller
         try {
 
             // Utilise le service pour créer une nouvelle plateforme cloud avec les données validées
-            $platform = $this->cloudPlatformService->store($request->validated());
+            $platform = $this->cloudPlatformService->backend_cloud_platforms_store($request->validated());
 
             // Récupère le label de la plateforme pour les logs et les messages flash
             $platformName = $platform->label;
@@ -212,7 +212,7 @@ class CloudPlatformController extends Controller
 
         } catch (\Exception $e) {
 
-            // Log de l'erreur de visualisation avec un message d'erreur
+            // Log de l'erreur de visualisation
             $this->logActivity(type: 'error', action: 'backend.cloud-platforms.folders', context: ['cloud_platform_uuid' => $cloudPlatform->uuid], message: $e->getMessage(), activity: __("{$this->langPath}.folders.error", ['uuid' => $cloudPlatform->uuid]), is_success: false);
 
             abort(500);
@@ -348,7 +348,7 @@ class CloudPlatformController extends Controller
             $platform = $cloudPlatform;
 
             // Utilise le service pour mettre à jour la plateforme cloud avec les données validées
-            $this->cloudPlatformService->update($platform, $request->validated());
+            $this->cloudPlatformService->backend_cloud_platforms_update($platform, $request->validated());
 
             $platform->refresh(); // Rafraîchit l'instance du modèle pour obtenir les dernières données après la mise à jour
 
@@ -392,7 +392,7 @@ class CloudPlatformController extends Controller
             $wasActive = $platform->status === CloudPlatformStatus::Active;
 
             // Utilise le service pour basculer le statut actif de la plateforme
-            $this->cloudPlatformService->toggleActive($platform);
+            $this->cloudPlatformService->backend_cloud_platforms_toggle_active($platform);
 
             $platformName = $platform->label; // Récupère le label de la plateforme pour les logs et les messages flash
 
@@ -444,7 +444,7 @@ class CloudPlatformController extends Controller
             $platformName = $platform->label;
 
             // Utilise le service pour supprimer la plateforme
-            $this->cloudPlatformService->destroy($platform);
+            $this->cloudPlatformService->backend_cloud_platforms_destroy($platform);
 
             // Log de l'activité de suppression réussie
             $this->logActivity(type: 'info', action: 'backend.cloud-platforms.destroy', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platformName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $platformName]), is_success: true, loggable: $platform);
@@ -506,7 +506,7 @@ class CloudPlatformController extends Controller
             $platform = CloudPlatform::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer la plateforme
-            $this->cloudPlatformService->restore($platform);
+            $this->cloudPlatformService->backend_cloud_platforms_restore($platform);
 
             $platformName = $platform->label; // Récupère le label de la plateforme pour les logs et les messages flash
 
@@ -551,7 +551,7 @@ class CloudPlatformController extends Controller
             $platform = CloudPlatform::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour supprimer définitivement la plateforme
-            $this->cloudPlatformService->forceDestroy($platform);
+            $this->cloudPlatformService->backend_cloud_platforms_force_destroy($platform);
 
             // Log de l'activité de suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.cloud-platforms.force_destroy', context: ['cloud_platform_uuid' => $platform->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $platform);
@@ -594,7 +594,7 @@ class CloudPlatformController extends Controller
             // Plateforme cloud résolue par binding implicite ({cloudPlatform})
             $platform = $cloudPlatform;
 
-            $this->cloudPlatformService->createArchitecture($platform);
+            $this->cloudPlatformService->backend_cloud_platforms_architecture_store($platform);
 
             $this->logActivity(type: 'info', action: 'backend.cloud-platforms.architecture_store', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->langPath}.architecture_store.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
 
