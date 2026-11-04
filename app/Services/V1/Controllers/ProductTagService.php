@@ -152,7 +152,7 @@ class ProductTagService
     public function backend_product_tags_force_destroy(ProductTag $tag): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function(function () use ($tag) {
+        DB::transaction(function () use ($tag) {
 
             // Suppression définitive (forceDelete)
             if ($tag->trashed()) {
