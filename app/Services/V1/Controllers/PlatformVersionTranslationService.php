@@ -19,7 +19,7 @@ class PlatformVersionTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(PlatformVersionTranslation $platformVersionTranslation): void
+    public function backend_platform_version_translations_destroy(PlatformVersionTranslation $platformVersionTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($platformVersionTranslation) {
@@ -59,7 +59,7 @@ class PlatformVersionTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(PlatformVersionTranslation $platformVersionTranslation): void
+    public function backend_platform_version_translations_restore(PlatformVersionTranslation $platformVersionTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($platformVersionTranslation) {
@@ -101,7 +101,7 @@ class PlatformVersionTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(PlatformVersionTranslation $platformVersionTranslation): void
+    public function backend_platform_version_translations_force_destroy(PlatformVersionTranslation $platformVersionTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($platformVersionTranslation) {
