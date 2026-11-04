@@ -12,7 +12,7 @@ class ContactService
     // ─────────────────────────────────────────────
     // MARK AS READ
     // ─────────────────────────────────────────────
-    public function markAsRead(Contact $contact): void
+    public function backend_contacts_mark_as_read(Contact $contact): void
     {
         DB::transaction(function () use ($contact) {
             $contact->update(['is_read' => true]);
@@ -22,7 +22,7 @@ class ContactService
     // ─────────────────────────────────────────────
     // MARK AS UNREAD
     // ─────────────────────────────────────────────
-    public function markAsUnread(Contact $contact): void
+    public function backend_contacts_mark_as_unread(Contact $contact): void
     {
         DB::transaction(function () use ($contact) {
             $contact->update(['is_read' => false]);
@@ -32,7 +32,7 @@ class ContactService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(Contact $contact): void
+    public function backend_contacts_destroy(Contact $contact): void
     {
         DB::transaction(function () use ($contact) {
 
@@ -51,7 +51,7 @@ class ContactService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(Contact $contact): void
+    public function backend_contacts_restore(Contact $contact): void
     {
         DB::transaction(function () use ($contact) {
             if ($contact->trashed()) {
@@ -65,7 +65,7 @@ class ContactService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(Contact $contact): void
+    public function backend_contacts_force_destroy(Contact $contact): void
     {
         DB::transaction(function () use ($contact) {
 
