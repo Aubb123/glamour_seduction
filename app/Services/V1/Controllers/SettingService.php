@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\DB;
 class SettingService
 {
     // ─────────────────────────────────────────────
-    // STORE / UPDATE (selon si le setting existe déjà)
+    // SAVE (création ou mise à jour selon si le setting existe déjà)
     // ─────────────────────────────────────────────
-    public function save(array $data): Setting
+    public function backend_settings_save(array $data): Setting
     {
         return DB::transaction(function () use ($data) {
 
@@ -48,7 +48,7 @@ class SettingService
     // ─────────────────────────────────────────────
     // UPDATE  (met à jour la valeur d'un setting existant)
     // ─────────────────────────────────────────────
-    public function updateValue(Setting $setting, array $data): Setting
+    public function backend_settings_update(Setting $setting, array $data): Setting
     {
         return DB::transaction(function () use ($setting, $data) {
 
