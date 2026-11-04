@@ -14,7 +14,7 @@ class CloudFolderService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store($data): CloudFolder
+    public function backend_cloud_folders_store($data): CloudFolder
     {
         return DB::transaction(function () use ($data) {
 
@@ -39,7 +39,7 @@ class CloudFolderService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(CloudFolder $folder, array $data): CloudFolder
+    public function backend_cloud_folders_update(CloudFolder $folder, array $data): CloudFolder
     {
         return DB::transaction(function () use ($folder, $data) {
 
@@ -67,7 +67,7 @@ class CloudFolderService
     // ─────────────────────────────────────────────
     // TOGGLE ACTIVE
     // ─────────────────────────────────────────────
-    public function toggleActive(CloudFolder $folder): void
+    public function backend_cloud_folders_toggle_active(CloudFolder $folder): void
     {
         DB::transaction(function () use ($folder) {
             $folder->update([
