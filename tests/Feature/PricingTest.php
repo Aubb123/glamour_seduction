@@ -214,5 +214,5 @@ it('empêche de définir un taux différent de 1 sur la devise par défaut (gard
         ],
     ];
 
-    expect(fn () => $service->update($eur, $payload))->toThrow(\InvalidArgumentException::class);
+    expect(fn () => $service->backend_currencies_update($eur, $payload))->toThrow(\InvalidArgumentException::class);
 });
