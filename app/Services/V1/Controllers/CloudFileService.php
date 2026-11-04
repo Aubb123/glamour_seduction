@@ -27,7 +27,7 @@ class CloudFileService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store($data): CloudFile
+    public function backend_cloud_files_store($data): CloudFile
     {
         return DB::transaction(function () use ($data) {
 
@@ -57,7 +57,7 @@ class CloudFileService
     // ─────────────────────────────────────────────
     // FILES SYNC SELECTED
     // ─────────────────────────────────────────────
-    public function files_sync_selected(array $fileUuids): array
+    public function backend_cloud_files_sync_selected(array $fileUuids): array
     {
         // Désactive la limite d'exécution pour permettre le traitement de plusieurs fichiers volumineux
         set_time_limit(0);
@@ -109,7 +109,7 @@ class CloudFileService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(CloudFile $cloudFile): void
+    public function backend_cloud_files_destroy(CloudFile $cloudFile): void
     {
         DB::transaction(function () use ($cloudFile) {
 
@@ -135,7 +135,7 @@ class CloudFileService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(CloudFile $cloudFile): void
+    public function backend_cloud_files_restore(CloudFile $cloudFile): void
     {
         DB::transaction(function () use ($cloudFile) {
 
@@ -161,7 +161,7 @@ class CloudFileService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(CloudFile $cloudFile): void
+    public function backend_cloud_files_force_destroy(CloudFile $cloudFile): void
     {
         DB::transaction(function () use ($cloudFile) {
 
@@ -247,7 +247,7 @@ class CloudFileService
         $data = $this->cloudStorage->uploadEntityFile($file, $cloudPlatform, $entity, $cloudFolder);
 
         // Création de l'enregistrement CloudFile en base
-        $cloudFile = $this->store($data);
+        $cloudFile = $this->backend_cloud_files_store($data);
 
         // Upload local + enregistrement en base (statut "pending") — la migration vers B2 est asynchrone
         return $cloudFile;
