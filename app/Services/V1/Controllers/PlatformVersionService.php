@@ -13,10 +13,10 @@ use function __;
 class PlatformVersionService
 {
     // Chemin de base pour les traductions (centralisé)
-    protected string $langPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-service.versions';
+    protected string $backendLangPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-service.versions';
 
     // Chemin des messages génériques du backend helper (factorisés pour toutes les entités traduisibles)
-    protected string $helperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
+    protected string $backendHelperLangPath = 'v1/backend/others/helpers/backend-helper-messages';
 
     // ─────────────────────────────────────────────
     // STORE
@@ -54,7 +54,7 @@ class PlatformVersionService
 
             // Si $version->is_published est true et que 'is_published' n'est pas défini à true dans $data, on fait un redirect back avec un message d'erreur car une version publiée ne peut pas être dépubliée
             if ($version->is_published && ! ($data['is_published'] ?? false)) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.update.unpublish_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.unpublish_forbidden"));
             }
 
             // Si 'is_published' est définie à true et que la version n'est pas encore publiée, on met à jour 'released_at' à la date actuelle si elle n'est pas déjà définie
@@ -96,17 +96,17 @@ class PlatformVersionService
 
             // Si la version est publiée, on fait un redirect back avec un message d'erreur car une version publiée ne peut pas être supprimée
             if ($version->is_published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.published_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.published_forbidden"));
             }
 
             // Si la version est active, on fait un redirect back avec un message d'erreur car une version active ne peut pas être supprimée
             if ($version->status === PlatformVersionStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.active_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // Suppression simple (deleted_at)
             if ($version->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.destroy.already_deleted"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
             destroy_function($version); // ← suppression de la version et de ses traductions associées + gestion de suppression des fichiers associés si besoin
 
@@ -123,12 +123,12 @@ class PlatformVersionService
 
             // Vérification que la version n'est pas déjà active
             if ($version->status === PlatformVersionStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.already_active"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
             // Seules les versions publiées peuvent être activées (cohérence avec VersionService::getActive)
             if (! $version->is_published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.activate.published_required"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.published_required"));
             }
 
             // Choix assumé : le multi-actif est autorisé. Plusieurs versions peuvent donc
@@ -155,7 +155,7 @@ class PlatformVersionService
 
             // Vérification que la version n'est pas déjà inactive
             if ($version->status !== PlatformVersionStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.deactivate.already_inactive"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
             // Désactivation de la version sélectionnée
@@ -175,7 +175,7 @@ class PlatformVersionService
 
             // Vérification que la version n'est pas déjà publiée
             if ($version->is_published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.publish.already_published"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.publish.already_published"));
             }
 
             // Publication de la version sélectionnée (mise à jour de released_at si pas déjà défini)
@@ -200,12 +200,12 @@ class PlatformVersionService
             // Une fois publiée, is_published reste vrai (historique de publication conservé).
             // Pour la retirer du front, il faut la DÉSACTIVER via backend_versions_deactivate() → status = inactive.
             if ($version->is_published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.unpublish.published_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.unpublish.published_forbidden"));
             }
 
             // Une version non publiée ne peut pas être "dépubliée" non plus : elle est déjà dépubliée.
             if (! $version->is_published) {
-                throw new \InvalidArgumentException(__("{$this->langPath}.unpublish.already_unpublished"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.unpublish.already_unpublished"));
             }
 
         });
@@ -230,12 +230,12 @@ class PlatformVersionService
                     ->exists();
 
                 if ($codeTaken) {
-                    throw new \InvalidArgumentException(__("{$this->langPath}.restore.code_conflict"));
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.code_conflict"));
                 }
 
                 restore_function($version); // <- restauration de la version sélectionnée et de ses traductions associées
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.restore.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
         });
@@ -253,7 +253,7 @@ class PlatformVersionService
             if ($version->trashed()) {
                 force_destroy_function($version); // <- suppression définitive de la version sélectionnée et de ses traductions associées + gestion de suppression des fichiers associés si besoin
             } else {
-                throw new \InvalidArgumentException(__("{$this->langPath}.force_destroy.not_trashed_forbidden"));
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
 
         });
@@ -285,7 +285,7 @@ class PlatformVersionService
             $version,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.version'),
-            $this->helperLangPath,
+            $this->backendHelperLangPath,
             'name',
             'slug'
         );
@@ -305,7 +305,7 @@ class PlatformVersionService
                 // Une traduction en corbeille ne doit pas être modifiée silencieusement
                 if ($existingTranslation->trashed()) {
                     throw new \InvalidArgumentException(
-                        __("{$this->langPath}.trashedTranslationConflict", [
+                        __("{$this->backendLangPath}.trashedTranslationConflict", [
                             'lang_id' => $translation['lang_id'],
                         ])
                     );
