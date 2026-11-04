@@ -30,7 +30,7 @@ class CurrencyTranslationController extends Controller
         try {
 
             // Suppression via le service (soft delete)
-            $this->currencyTranslationService->destroy($currencyTranslation);
+            $this->currencyTranslationService->backend_currencies_translations_destroy($currencyTranslation);
 
             // Log de la suppression
             $this->logActivity(type: 'warning', action: 'backend.currencies.translation.destroy', context: ['currency_translation_uuid' => $currencyTranslation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $currencyTranslation->uuid]), is_success: true, loggable: $currencyTranslation);
@@ -84,7 +84,7 @@ class CurrencyTranslationController extends Controller
 
             $currencyTranslation = CurrencyTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->currencyTranslationService->restore($currencyTranslation);
+            $this->currencyTranslationService->backend_currencies_translations_restore($currencyTranslation);
 
             $this->logActivity(type: 'info', action: 'backend.currencies.translation.restore', context: ['currency_translation_uuid' => $currencyTranslation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $currencyTranslation->uuid]), is_success: true, loggable: $currencyTranslation);
 
@@ -119,7 +119,7 @@ class CurrencyTranslationController extends Controller
 
             $currencyTranslation = CurrencyTranslation::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $this->currencyTranslationService->forceDestroy($currencyTranslation);
+            $this->currencyTranslationService->backend_currencies_translations_force_destroy($currencyTranslation);
 
             $this->logActivity(type: 'info', action: 'backend.currencies.translation.force_destroy', context: ['currency_translation_uuid' => $currencyTranslation->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $currencyTranslation->uuid]), is_success: true, loggable: $currencyTranslation);
 

@@ -21,7 +21,7 @@ class CurrencyService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(Currency $currency, array $data): Currency
+    public function backend_currencies_update(Currency $currency, array $data): Currency
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($currency, $data) {
@@ -79,7 +79,7 @@ class CurrencyService
 // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(Currency $currency): void
+    public function backend_currencies_activate(Currency $currency): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($currency) {
@@ -99,7 +99,7 @@ class CurrencyService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(Currency $currency): void
+    public function backend_currencies_deactivate(Currency $currency): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($currency) {
@@ -119,7 +119,7 @@ class CurrencyService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(Currency $currency): void
+    public function backend_currencies_destroy(Currency $currency): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($currency) {
@@ -142,7 +142,7 @@ class CurrencyService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(Currency $currency): void
+    public function backend_currencies_restore(Currency $currency): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($currency) {
@@ -159,7 +159,7 @@ class CurrencyService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(Currency $currency): void
+    public function backend_currencies_force_destroy(Currency $currency): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($currency) {

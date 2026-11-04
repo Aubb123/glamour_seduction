@@ -19,7 +19,7 @@ class GalleryTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(GalleryTranslation $galleryTranslation): void
+    public function backend_galleries_translations_destroy(GalleryTranslation $galleryTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($galleryTranslation) {
@@ -60,7 +60,7 @@ class GalleryTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(GalleryTranslation $galleryTranslation): void
+    public function backend_galleries_translations_restore(GalleryTranslation $galleryTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($galleryTranslation) {
@@ -90,7 +90,7 @@ class GalleryTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(GalleryTranslation $galleryTranslation): void
+    public function backend_galleries_translations_force_destroy(GalleryTranslation $galleryTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($galleryTranslation) {

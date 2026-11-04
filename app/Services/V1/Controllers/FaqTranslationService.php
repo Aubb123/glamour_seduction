@@ -19,7 +19,7 @@ class FaqTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(FaqTranslation $faqTranslation): void
+    public function backend_faqs_translations_destroy(FaqTranslation $faqTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($faqTranslation) {
@@ -60,7 +60,7 @@ class FaqTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(FaqTranslation $faqTranslation): void
+    public function backend_faqs_translations_restore(FaqTranslation $faqTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($faqTranslation) {
@@ -90,7 +90,7 @@ class FaqTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(FaqTranslation $faqTranslation): void
+    public function backend_faqs_translations_force_destroy(FaqTranslation $faqTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($faqTranslation) {

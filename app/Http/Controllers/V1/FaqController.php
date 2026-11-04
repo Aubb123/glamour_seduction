@@ -89,7 +89,7 @@ class FaqController extends Controller
         try {
 
             // Utilise le service pour créer une nouvelle FAQ avec les données validées
-            $faq = $this->faqService->store($request->validated());
+            $faq = $this->faqService->backend_faqs_store($request->validated());
 
             // Récupère la question de la FAQ pour les logs et les messages flash
             $faqName = $faq->active_translation?->question ?? '';
@@ -263,7 +263,7 @@ class FaqController extends Controller
         try {
 
             // Utilise le service pour mettre à jour la FAQ avec les données validées
-            $this->faqService->update($faq, $request->validated());
+            $this->faqService->backend_faqs_update($faq, $request->validated());
 
             $faq = $faq->refresh(); // Rafraîchit l'instance du modèle pour obtenir les dernières données après la mise à jour
 
@@ -304,7 +304,7 @@ class FaqController extends Controller
             $wasActive = $faq->status === FaqStatus::Active;
 
             // Utilise le service pour basculer le statut actif de la FAQ
-            $this->faqService->toggleActive($faq);
+            $this->faqService->backend_faqs_toggle_active($faq);
 
             $faqName = $faq->active_translation?->question ?? ''; // Récupère la question de la FAQ pour les logs et les messages flash
 
@@ -353,7 +353,7 @@ class FaqController extends Controller
             $faqName = $faq->active_translation?->question ?? __("{$this->langPath}.destroy.unknown");
 
             // Utilise le service pour supprimer la FAQ
-            $this->faqService->destroy($faq);
+            $this->faqService->backend_faqs_destroy($faq);
 
             // Log de l'activité de suppression réussie
             $this->logActivity(type: 'info', action: 'backend.faqs.destroy', context: ['faq_uuid' => $faq->uuid, 'faq_question' => $faqName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $faqName]), is_success: true, loggable: $faq);
@@ -415,7 +415,7 @@ class FaqController extends Controller
             $faq = Faq::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer la FAQ
-            $this->faqService->restore($faq);
+            $this->faqService->backend_faqs_restore($faq);
 
             $faqName = $faq->active_translation?->question ?? ''; // Récupère la question de la FAQ pour les logs et les messages flash
 
@@ -460,7 +460,7 @@ class FaqController extends Controller
             $faq = Faq::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour supprimer définitivement la FAQ
-            $this->faqService->forceDestroy($faq);
+            $this->faqService->backend_faqs_force_destroy($faq);
 
             // Log de l'activité de suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.faqs.force_destroy', context: ['faq_uuid' => $faq->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $faq);

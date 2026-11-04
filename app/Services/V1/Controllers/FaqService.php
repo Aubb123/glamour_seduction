@@ -19,7 +19,7 @@ class FaqService
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function store(array $data): Faq
+    public function backend_faqs_store(array $data): Faq
     {
         return DB::transaction(function () use ($data) {
 
@@ -40,7 +40,7 @@ class FaqService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(Faq $faq, array $data): Faq
+    public function backend_faqs_update(Faq $faq, array $data): Faq
     {
         return DB::transaction(function () use ($faq, $data) {
 
@@ -69,7 +69,7 @@ class FaqService
     // ─────────────────────────────────────────────
     // TOGGLE ACTIVE (Activer/Désactiver)
     // ─────────────────────────────────────────────
-    public function toggleActive(Faq $faq): void
+    public function backend_faqs_toggle_active(Faq $faq): void
     {
         DB::transaction(function () use ($faq) {
             $faq->update([
@@ -84,7 +84,7 @@ class FaqService
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function destroy(Faq $faq): void
+    public function backend_faqs_destroy(Faq $faq): void
     {
         DB::transaction(function () use ($faq) {
 
@@ -103,7 +103,7 @@ class FaqService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(Faq $faq): void
+    public function backend_faqs_restore(Faq $faq): void
     {
         DB::transaction(function () use ($faq) {
             if ($faq->trashed()) {
@@ -117,7 +117,7 @@ class FaqService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(Faq $faq): void
+    public function backend_faqs_force_destroy(Faq $faq): void
     {
         DB::transaction(function () use ($faq) {
 

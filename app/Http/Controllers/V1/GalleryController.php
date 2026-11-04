@@ -89,7 +89,7 @@ class GalleryController extends Controller
         try {
 
             // Utilise le service pour créer une nouvelle galerie avec les données validées
-            $gallery = $this->galleryService->store($request->validated());
+            $gallery = $this->galleryService->backend_galleries_store($request->validated());
 
             // Récupère le titre de la galerie pour les logs et les messages flash
             $galleryName = $gallery->active_translation?->title ?? '';
@@ -263,7 +263,7 @@ class GalleryController extends Controller
         try {
 
             // Utilise le service pour mettre à jour la galerie avec les données validées
-            $this->galleryService->update($gallery, $request->validated());
+            $this->galleryService->backend_galleries_update($gallery, $request->validated());
 
             $gallery = $gallery->refresh(); // Rafraîchit l'instance du modèle pour obtenir les dernières données après la mise à jour
 
@@ -304,7 +304,7 @@ class GalleryController extends Controller
             $wasActive = $gallery->status === GalleryStatus::Active;
 
             // Utilise le service pour basculer le statut actif de la galerie
-            $this->galleryService->toggleActive($gallery);
+            $this->galleryService->backend_galleries_toggle_active($gallery);
 
             $galleryName = $gallery->active_translation?->title ?? ''; // Récupère le titre de la galerie pour les logs et les messages flash
 
@@ -353,7 +353,7 @@ class GalleryController extends Controller
             $galleryName = $gallery->active_translation?->title ?? __("{$this->langPath}.destroy.unknown");
 
             // Utilise le service pour supprimer la galerie
-            $this->galleryService->destroy($gallery);
+            $this->galleryService->backend_galleries_destroy($gallery);
 
             // Log de l'activité de suppression réussie
             $this->logActivity(type: 'info', action: 'backend.galleries.destroy', context: ['gallery_uuid' => $gallery->uuid, 'gallery_title' => $galleryName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $galleryName]), is_success: true, loggable: $gallery);
@@ -415,7 +415,7 @@ class GalleryController extends Controller
             $gallery = Gallery::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer la galerie
-            $this->galleryService->restore($gallery);
+            $this->galleryService->backend_galleries_restore($gallery);
 
             $galleryName = $gallery->active_translation?->title ?? ''; // Récupère le titre de la galerie pour les logs et les messages flash
 
@@ -460,7 +460,7 @@ class GalleryController extends Controller
             $gallery = Gallery::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour supprimer définitivement la galerie
-            $this->galleryService->forceDestroy($gallery);
+            $this->galleryService->backend_galleries_force_destroy($gallery);
 
             // Log de l'activité de suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.galleries.force_destroy', context: ['gallery_uuid' => $gallery->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $gallery);
