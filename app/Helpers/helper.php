@@ -53,17 +53,17 @@ if (! function_exists('deleteOldCloudFiles')) {
 
 // Function assertTranslationUniqueness()
 if (! function_exists('assertTranslationUniqueness')) {
-    function assertTranslationUniqueness($entity, array $translations, string $entityLabel, string $langPath, string $nameField = 'name', ?string $slugField = 'slug')
+    function assertTranslationUniqueness($entity, array $translations, string $entityLabel, string $backendLangPath, string $nameField = 'name', ?string $slugField = 'slug')
     {
-        return BackendHelper::assertTranslationUniqueness($entity, $translations, $entityLabel, $langPath, $nameField, $slugField);
+        return BackendHelper::assertTranslationUniqueness($entity, $translations, $entityLabel, $backendLangPath, $nameField, $slugField);
     }
 }
 
 // Function assertTranslationRestore()
 if (! function_exists('assertTranslationRestore')) {
-    function assertTranslationRestore($translation, string $entityLabel, string $langPath, string $nameField = 'name', ?string $slugField = 'slug')
+    function assertTranslationRestore($translation, string $entityLabel, string $backendLangPath, string $nameField = 'name', ?string $slugField = 'slug')
     {
-        return BackendHelper::assertTranslationRestore($translation, $entityLabel, $langPath, $nameField, $slugField);
+        return BackendHelper::assertTranslationRestore($translation, $entityLabel, $backendLangPath, $nameField, $slugField);
     }
 }
 

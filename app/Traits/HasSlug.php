@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 trait HasSlug
 {
     // Chemin de base pour les traductions (centralisé, surchargeable par modèle)
-    protected static string $langPath = 'v1/backend/others/traits/messages-trait.hasSlug';
+    protected static string $backendLangPath = 'v1/backend/others/traits/messages-trait.hasSlug';
 
     // Nombre maximal de tentatives pour trouver un slug unique (garde-fou anti-boucle infinie)
     protected static int $maxSlugAttempts = 1000;
@@ -128,7 +128,7 @@ trait HasSlug
         // plutôt que de laisser Str::slug() planter avec un TypeError obscur
         if (empty($value)) {
             throw new \InvalidArgumentException(
-                __(static::$langPath.'.empty_source_field', ['champ_source' => static::getSlugSourceField()])
+                __(static::$backendLangPath.'.empty_source_field', ['champ_source' => static::getSlugSourceField()])
             );
         }
 
