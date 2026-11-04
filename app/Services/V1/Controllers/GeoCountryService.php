@@ -21,7 +21,7 @@ class GeoCountryService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(GeoCountry $country, array $data): GeoCountry
+    public function backend_geocountries_update(GeoCountry $country, array $data): GeoCountry
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($country, $data) {
@@ -62,7 +62,7 @@ class GeoCountryService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(GeoCountry $country): void
+    public function backend_geocountries_activate(GeoCountry $country): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($country) {
@@ -82,7 +82,7 @@ class GeoCountryService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(GeoCountry $country): void
+    public function backend_geocountries_deactivate(GeoCountry $country): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($country) {
