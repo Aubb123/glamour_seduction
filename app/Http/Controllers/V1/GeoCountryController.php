@@ -254,7 +254,7 @@ class GeoCountryController extends Controller
             $country = $geoCountry;
 
             // Mise à jour du pays via le service, en passant les données validées du formulaire
-            $this->geoCountryService->update($country, $request->validated());
+            $this->geoCountryService->backend_geocountries_update($country, $request->validated());
 
             // Log de la mise à jour du pays avec le uuid et les changements effectués
             $this->logActivity(type: 'info', action: 'backend.geocountries.update', context: ['country_uuid' => $country->uuid, 'country_code' => $country->code, 'changes' => $country->getChanges()], message: null, activity: __("{$this->langPath}.update.success", ['name' => $country->active_translation?->name ?? $country->code]), is_success: true, loggable: $country);
@@ -294,7 +294,7 @@ class GeoCountryController extends Controller
             $country = $geoCountry;
 
             // Activation du pays via le service
-            $this->geoCountryService->activate($country);
+            $this->geoCountryService->backend_geocountries_activate($country);
 
             // Log de l'activation du pays
             $this->logActivity(type: 'info', action: 'backend.geocountries.activate', context: ['country_uuid' => $country->uuid, 'country_code' => $country->code], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $country->active_translation?->name ?? $country->code]), is_success: true, loggable: $country);
@@ -331,7 +331,7 @@ class GeoCountryController extends Controller
             $country = $geoCountry;
 
             // Désactivation du pays via le service
-            $this->geoCountryService->deactivate($country);
+            $this->geoCountryService->backend_geocountries_deactivate($country);
 
             // Log de la désactivation du pays
             $this->logActivity(type: 'info', action: 'backend.geocountries.deactivate', context: ['country_uuid' => $country->uuid, 'country_code' => $country->code], message: null, activity: __("{$this->langPath}.deactivate.success", ['name' => $country->active_translation?->name ?? $country->code]), is_success: true, loggable: $country);
