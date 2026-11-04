@@ -234,7 +234,7 @@ class RoleController extends Controller
             // Rôle résolu par le binding implicite sur uuid (404 automatique si introuvable)
 
             // Mise à jour du rôle via le service, en passant les données validées du formulaire
-            $this->roleService->update($role, $request->validated());
+            $this->roleService->backend_roles_update($role, $request->validated());
 
             // Log de la mise à jour du rôle
             $this->logActivity(type: 'info', action: 'backend.roles.update', context: ['role_uuid' => $role->uuid, 'role_slug' => $role->slug, 'changes' => $role->getChanges()], message: null, activity: __("{$this->langPath}.update.success", ['name' => $role->active_translation?->label ?? $role->slug]), is_success: true, loggable: $role);
@@ -270,7 +270,7 @@ class RoleController extends Controller
             // Rôle résolu par le binding implicite sur uuid (404 automatique si introuvable)
 
             // Activation du rôle via le service
-            $this->roleService->activate($role);
+            $this->roleService->backend_roles_activate($role);
 
             // Log de l'activation du rôle
             $this->logActivity(type: 'info', action: 'backend.roles.activate', context: ['role_uuid' => $role->uuid, 'role_slug' => $role->slug], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $role->active_translation?->label ?? $role->slug]), is_success: true, loggable: $role);
@@ -304,7 +304,7 @@ class RoleController extends Controller
             // Rôle résolu par le binding implicite sur uuid (404 automatique si introuvable)
 
             // Désactivation du rôle via le service
-            $this->roleService->deactivate($role);
+            $this->roleService->backend_roles_deactivate($role);
 
             // Log de la désactivation du rôle
             $this->logActivity(type: 'info', action: 'backend.roles.deactivate', context: ['role_uuid' => $role->uuid, 'role_slug' => $role->slug], message: null, activity: __("{$this->langPath}.deactivate.success", ['name' => $role->active_translation?->label ?? $role->slug]), is_success: true, loggable: $role);
