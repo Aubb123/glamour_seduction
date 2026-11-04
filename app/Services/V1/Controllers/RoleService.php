@@ -21,7 +21,7 @@ class RoleService
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function activate(Role $role): void
+    public function backend_roles_activate(Role $role): void
     {
         DB::transaction(function () use ($role) {
 
@@ -40,7 +40,7 @@ class RoleService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function deactivate(Role $role): void
+    public function backend_roles_deactivate(Role $role): void
     {
         DB::transaction(function () use ($role) {
 
@@ -59,7 +59,7 @@ class RoleService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function update(Role $role, array $data): Role
+    public function backend_roles_update(Role $role, array $data): Role
     {
         return DB::transaction(function () use ($role, $data) {
 
