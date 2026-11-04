@@ -23,6 +23,6 @@ class CloudFolderSeeder extends Seeder
             return;
         }
 
-        $this->cloudPlatformService->createArchitecture($cloudPlatform);
+        $this->cloudPlatformService->backend_cloud_platforms_architecture_store($cloudPlatform);
     }
 }
