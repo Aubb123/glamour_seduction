@@ -19,7 +19,7 @@ class RoleTranslationService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function destroy(RoleTranslation $roleTranslation): void
+    public function backend_roles_translations_destroy(RoleTranslation $roleTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($roleTranslation) {
@@ -60,7 +60,7 @@ class RoleTranslationService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function restore(RoleTranslation $roleTranslation): void
+    public function backend_roles_translations_restore(RoleTranslation $roleTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($roleTranslation) {
@@ -90,7 +90,7 @@ class RoleTranslationService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function forceDestroy(RoleTranslation $roleTranslation): void
+    public function backend_roles_translations_force_destroy(RoleTranslation $roleTranslation): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($roleTranslation) {
