@@ -31,22 +31,22 @@ use App\Http\Controllers\V1\LangController as V1LangController;
 use App\Http\Controllers\V1\PermissionController as V1PermissionController;
 use App\Http\Controllers\V1\PlatformVersionController as V1PlatformVersionController;
 use App\Http\Controllers\V1\PlatformVersionTranslationController as V1PlatformVersionTranslationController;
-use App\Http\Controllers\V1\ProductBrandController as V1ProductBrandController;
-use App\Http\Controllers\V1\ProductBrandTranslationController as V1ProductBrandTranslationController;
-use App\Http\Controllers\V1\ProductCategoryController as V1ProductCategoryController;
-use App\Http\Controllers\V1\ProductCategoryTranslationController as V1ProductCategoryTranslationController;
 use App\Http\Controllers\V1\ProductAttributeController as V1ProductAttributeController;
 use App\Http\Controllers\V1\ProductAttributeTranslationController as V1ProductAttributeTranslationController;
 use App\Http\Controllers\V1\ProductAttributeValueController as V1ProductAttributeValueController;
 use App\Http\Controllers\V1\ProductAttributeValueTranslationController as V1ProductAttributeValueTranslationController;
+use App\Http\Controllers\V1\ProductBrandController as V1ProductBrandController;
+use App\Http\Controllers\V1\ProductBrandTranslationController as V1ProductBrandTranslationController;
+use App\Http\Controllers\V1\ProductCategoryController as V1ProductCategoryController;
+use App\Http\Controllers\V1\ProductCategoryTranslationController as V1ProductCategoryTranslationController;
 use App\Http\Controllers\V1\ProductController as V1ProductController;
-use App\Http\Controllers\V1\ProductTranslationController as V1ProductTranslationController;
+use App\Http\Controllers\V1\ProductStockMovementController as V1ProductStockMovementController;
 use App\Http\Controllers\V1\ProductTagController as V1ProductTagController;
 use App\Http\Controllers\V1\ProductTagTranslationController as V1ProductTagTranslationController;
+use App\Http\Controllers\V1\ProductTranslationController as V1ProductTranslationController;
 use App\Http\Controllers\V1\ProductVariantController as V1ProductVariantController;
 use App\Http\Controllers\V1\ProductWarehouseController as V1ProductWarehouseController;
 use App\Http\Controllers\V1\ProductWarehouseStockController as V1ProductWarehouseStockController;
-use App\Http\Controllers\V1\ProductStockMovementController as V1ProductStockMovementController;
 use App\Http\Controllers\V1\RoleController as V1RoleController;
 use App\Http\Controllers\V1\RoleTranslationController as V1RoleTranslationController;
 use App\Http\Controllers\V1\SettingController as V1SettingController;
@@ -278,7 +278,6 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/users/blog-post-comment-replies/{user}/{slug}', 'backend_users_blog_post_comment_replies')->middleware(['permission:users.blog_post_comment_replies'])->name('backend.users.blog-post-comment-replies');
         });
 
-        
         // Routes pour : Gestion des Catégories de Produits (module Boutique)
         Route::controller(V1ProductCategoryController::class)->group(function () {
             Route::get('/backend/product-categories/index', 'backend_product_categories_index')->middleware(['permission:product-categories.index'])->name('backend.product-categories.index');

@@ -84,6 +84,7 @@ class ProductTagTranslationController extends Controller
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.product-tag-translations.trashed', context: ['tag_uuid' => $tag_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $tag_uuid]), is_success: false);
+
             return back()->with('error', __("{$this->backendLangPath}.trashed.error", ['uuid' => $tag_uuid]));
         }
     }

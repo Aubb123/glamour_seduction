@@ -14,7 +14,7 @@ return new class extends Migration
         // Table: product_warehouse_stocks, enregistre les stocks de produits dans les entrepôts
         // Un entrepôt peut contenir plusieurs variantes de produits (relation one-to-many)
         // Une variante de produit peut être stockée dans plusieurs entrepôts (relation many-to-many via product_warehouse_stocks)
-        // Exemple de relation : "Entrepôt de Paris" (entrepôt) > "T-shirt rouge, taille M" (variante de produit) > "Quantité: 100" (stock)     
+        // Exemple de relation : "Entrepôt de Paris" (entrepôt) > "T-shirt rouge, taille M" (variante de produit) > "Quantité: 100" (stock)
         Schema::create('product_warehouse_stocks', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

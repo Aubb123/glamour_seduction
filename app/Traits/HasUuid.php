@@ -10,7 +10,7 @@ trait HasUuid
         static::creating(function ($model) {
 
             // Vérifie si la colonne 'uuid' existe dans la table du modèle
-            if (!$model->getConnection()->getSchemaBuilder()->hasColumn($model->getTable(), 'uuid')) {
+            if (! $model->getConnection()->getSchemaBuilder()->hasColumn($model->getTable(), 'uuid')) {
                 return;
             }
 

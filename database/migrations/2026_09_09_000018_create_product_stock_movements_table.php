@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // Table: product_stock_movements, enregistre les mouvements de stock des variantes de produits dans les entrepôts
         // Un mouvement de stock appartient à un entrepôt et à une variante de produit (relation one-to-many)
-        // Exemple de mouvement : "Entrepôt de Paris" (entrepôt) > "T-shirt rouge, taille M" (variante de produit) > "Quantité: 10" (mouvement d'entrée)        
+        // Exemple de mouvement : "Entrepôt de Paris" (entrepôt) > "T-shirt rouge, taille M" (variante de produit) > "Quantité: 10" (mouvement d'entrée)
         Schema::create('product_stock_movements', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();

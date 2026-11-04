@@ -18,7 +18,7 @@ class Auth
         $user = $request->user();
 
         // Middleware d'authentification
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
         }
 

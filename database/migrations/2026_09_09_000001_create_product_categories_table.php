@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // Table: product_categories, enregistre les catégories de produits (hiérarchie)
         // Une catégorie peut avoir une catégorie parente (parent_id) ou être une catégorie racine (parent_id = null)
-        // Une catégorie peut avoir plusieurs sous-catégories (relation one-to-many), 
+        // Une catégorie peut avoir plusieurs sous-catégories (relation one-to-many),
         // // et plusieurs produits (relation many-to-many via product_category_product)
         // Exemple de catégories : "Vêtements" (racine) > "Hauts" (sous-catégorie) > "T-shirts" (sous-sous-catégorie)
         Schema::create('product_categories', function (Blueprint $table) {

@@ -1,6 +1,8 @@
 <?php
 
 use App\Helpers\Web\Backend\BackendHelper;
+use App\Models\Currency;
+use App\Services\V1\PricingService;
 use Illuminate\Database\Eloquent\Model;
 
 if (! function_exists('getEnvFolder')) {
@@ -161,24 +163,24 @@ if (! function_exists('getSettingValue')) {
 
 // Function getDisplayCurrency : devise d'affichage (users.currency_id → session → pays → défaut)
 if (! function_exists('getDisplayCurrency')) {
-    function getDisplayCurrency($user = null): \App\Models\Currency
+    function getDisplayCurrency($user = null): Currency
     {
-        return app(\App\Services\V1\PricingService::class)->resolveDisplayCurrency($user);
+        return app(PricingService::class)->resolveDisplayCurrency($user);
     }
 }
 
 // Function convertPrice : montant × taux cible / taux source
 if (! function_exists('convertPrice')) {
-    function convertPrice(float $amount, ?\App\Models\Currency $source = null, ?\App\Models\Currency $target = null): float
+    function convertPrice(float $amount, ?Currency $source = null, ?Currency $target = null): float
     {
-        return app(\App\Services\V1\PricingService::class)->convertPrice($amount, $source, $target);
+        return app(PricingService::class)->convertPrice($amount, $source, $target);
     }
 }
 
 // Function formatPrice : arrondi selon decimal_places, symbole, locale
 if (! function_exists('formatPrice')) {
-    function formatPrice(float $amount, ?\App\Models\Currency $currency = null): string
+    function formatPrice(float $amount, ?Currency $currency = null): string
     {
-        return app(\App\Services\V1\PricingService::class)->formatPrice($amount, $currency);
+        return app(PricingService::class)->formatPrice($amount, $currency);
     }
 }

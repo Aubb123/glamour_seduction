@@ -36,7 +36,7 @@ class Setting extends Model
      */
     public function getValue(?string $locale = null): mixed
     {
-        if (!$this->is_translatable) {
+        if (! $this->is_translatable) {
             return $this->castValue($this->value);
         }
 

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Routing\RouteCollection;
+use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
 /*
@@ -69,13 +71,13 @@ function something()
 */
 function bootV1WebRoutes(): void
 {
-    $router = \Illuminate\Support\Facades\Route::getFacadeRoot();
-    $router->setRoutes(new \Illuminate\Routing\RouteCollection);
+    $router = Route::getFacadeRoot();
+    $router->setRoutes(new RouteCollection);
 
     // routes/web.php est normalement chargé par le framework DANS le groupe de
     // middleware 'web' (session, partage de $errors, CSRF…). On reproduit ce
     // comportement pour que les routes ré-enregistrées fonctionnent correctement.
-    \Illuminate\Support\Facades\Route::middleware('web')->group(function () {
+    Route::middleware('web')->group(function () {
         require base_path('routes/web.php');
     });
 
