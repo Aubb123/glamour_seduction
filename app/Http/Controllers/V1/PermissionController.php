@@ -27,12 +27,6 @@ class PermissionController extends Controller
     // Injection de dépendance du service de gestion des permissions
     public function __construct(protected PermissionService $permissionService) {}
 
-    // Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ///////////////////  Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////
-
     // ═══════════════════════════════════════════════════════════════
     // BACKEND
     // ═══════════════════════════════════════════════════════════════
@@ -94,7 +88,7 @@ class PermissionController extends Controller
         try {
 
             // Création de la permission via le service, en passant les données validées du formulaire
-            $permission = $this->permissionService->store($request->validated());
+            $permission = $this->permissionService->backend_permissions_store($request->validated());
 
             // Log de la création de la permission avec le nom de la permission créée
             $this->logActivity(type: 'info', action: 'backend.permissions.store', context: ['permission_uuid' => $permission->uuid, 'permission_name' => $permission->name], message: null, activity: __("{$this->langPath}.store.success", ['name' => $permission->name]), is_success: true, loggable: $permission);
@@ -284,7 +278,7 @@ class PermissionController extends Controller
             // Permission résolue par le binding implicite sur uuid (404 automatique si introuvable)
 
             // Mise à jour de la permission via le service, en passant les données validées du formulaire
-            $this->permissionService->update($permission, $request->validated());
+            $this->permissionService->backend_permissions_update($permission, $request->validated());
 
             // Récupère une instance fraîche pour capturer les vrais changements
             $permission->refresh();
@@ -323,7 +317,7 @@ class PermissionController extends Controller
             // Permission résolue par le binding implicite sur uuid (404 automatique si introuvable)
 
             // Activation de la permission via le service
-            $this->permissionService->activate($permission);
+            $this->permissionService->backend_permissions_activate($permission);
 
             // Log de l'activation de la permission avec le nom de la permission activée
             $this->logActivity(type: 'info', action: 'backend.permissions.activate', context: ['permission_uuid' => $permission->uuid, 'permission_name' => $permission->name], message: null, activity: __("{$this->langPath}.activate.success", ['name' => $permission->name]), is_success: true, loggable: $permission);
@@ -359,7 +353,7 @@ class PermissionController extends Controller
             // Permission résolue par le binding implicite sur uuid (404 automatique si introuvable)
 
             // Désactivation de la permission via le service
-            $this->permissionService->deactivate($permission);
+            $this->permissionService->backend_permissions_deactivate($permission);
 
             // Log de la désactivation de la permission avec le nom de la permission désactivée
             $this->logActivity(type: 'info', action: 'backend.permissions.deactivate', context: ['permission_uuid' => $permission->uuid, 'permission_name' => $permission->name], message: null, activity: __("{$this->langPath}.deactivate.success", ['name' => $permission->name]), is_success: true, loggable: $permission);
@@ -423,7 +417,7 @@ class PermissionController extends Controller
             $roleIds = $request->input('role_ids', []);
 
             // Synchronisation des rôles via le service
-            $this->permissionService->syncRoles($permission, $roleIds);
+            $this->permissionService->backend_permissions_sync_roles($permission, $roleIds);
 
             // Log de la synchronisation des rôles de la permission
             $this->logActivity(type: 'info', action: 'backend.permissions.sync_roles', context: ['permission_uuid' => $permission->uuid, 'permission_name' => $permission->name, 'roles_count' => count($roleIds)], message: null, activity: __("{$this->langPath}.sync_roles.success", ['name' => $permission->name]), is_success: true, loggable: $permission);
@@ -468,7 +462,7 @@ class PermissionController extends Controller
 
             // Permission résolue par le binding implicite sur uuid (404 automatique si introuvable)
 
-            $this->permissionService->destroy($permission);
+            $this->permissionService->backend_permissions_destroy($permission);
 
             $this->logActivity(type: 'info', action: 'backend.permissions.destroy', context: ['permission_uuid' => $permission->uuid, 'permission_name' => $permission->name], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $permission->name]), is_success: true, loggable: $permission);
 
@@ -492,7 +486,7 @@ class PermissionController extends Controller
     public function backend_permissions_restore(string $uuid): RedirectResponse
     {
         try {
-            $permission = $this->permissionService->restore($uuid);
+            $permission = $this->permissionService->backend_permissions_restore($uuid);
 
             $this->logActivity(type: 'info', action: 'backend.permissions.restore', context: ['permission_uuid' => $permission->uuid, 'permission_name' => $permission->name], message: null, activity: __("{$this->langPath}.restore.success", ['name' => $permission->name]), is_success: true, loggable: $permission);
 
@@ -521,7 +515,7 @@ class PermissionController extends Controller
     public function backend_permissions_force_destroy(string $uuid): RedirectResponse
     {
         try {
-            $this->permissionService->forceDestroy($uuid);
+            $this->permissionService->backend_permissions_force_destroy($uuid);
 
             $this->logActivity(type: 'info', action: 'backend.permissions.force_destroy', context: ['permission_uuid' => $uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $uuid]), is_success: true);
 
