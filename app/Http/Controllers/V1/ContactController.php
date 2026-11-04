@@ -135,9 +135,8 @@ class ContactController extends Controller
         try {
 
             // Contact résolu par binding implicite ({contact})
-
             // Utilise le service pour marquer le message comme lu
-            $this->contactService->markAsRead($contact);
+            $this->contactService->backend_contacts_mark_as_read($contact);
 
             $contactName = $contact->fullname; // Récupère le nom complet pour les logs
 
@@ -171,9 +170,8 @@ class ContactController extends Controller
         try {
 
             // Contact résolu par binding implicite ({contact})
-
             // Utilise le service pour marquer le message comme non lu
-            $this->contactService->markAsUnread($contact);
+            $this->contactService->backend_contacts_mark_as_unread($contact);
 
             $contactName = $contact->fullname; // Récupère le nom complet pour les logs
 
@@ -207,12 +205,11 @@ class ContactController extends Controller
         try {
 
             // Contact résolu par binding implicite ({contact})
-
             // Récupère le nom complet pour les logs et les messages flash
             $contactName = $contact->fullname;
 
             // Utilise le service pour supprimer le contact
-            $this->contactService->destroy($contact);
+            $this->contactService->backend_contacts_destroy($contact);
 
             // Log de l'activité de suppression réussie
             $this->logActivity(type: 'info', action: 'backend.contacts.destroy', context: ['contact_uuid' => $contact->uuid, 'contact_fullname' => $contactName], message: null, activity: __("{$this->langPath}.destroy.success", ['name' => $contactName]), is_success: true, loggable: $contact);
@@ -272,7 +269,7 @@ class ContactController extends Controller
             $contact = Contact::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour restaurer le contact
-            $this->contactService->restore($contact);
+            $this->contactService->backend_contacts_restore($contact);
 
             $contactName = $contact->fullname; // Récupère le nom complet pour les logs
 
@@ -316,7 +313,7 @@ class ContactController extends Controller
             $contact = Contact::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
             // Utilise le service pour supprimer définitivement le contact
-            $this->contactService->forceDestroy($contact);
+            $this->contactService->backend_contacts_force_destroy($contact);
 
             // Log de l'activité de suppression définitive réussie
             $this->logActivity(type: 'info', action: 'backend.contacts.force_destroy', context: ['contact_uuid' => $contact->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success"), is_success: true, loggable: $contact);
