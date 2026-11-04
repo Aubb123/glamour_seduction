@@ -153,7 +153,7 @@ class ActivityLogController extends Controller
             return redirect()->route('backend.activity-logs.index')->with('info', __("{$this->langPath}.clear.flash_info", ['count' => $deletedCount ?? 0]));
 
             // // Utilise le service pour supprimer les logs de plus de 3 jours
-            // $deletedCount = $this->activityLogService->clearOldLogs(3);
+            // $deletedCount = $this->activityLogService->backend_activity_logs_clear_old_logs(3);
 
             // // Log de l'activité de nettoyage réussie
             // $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->langPath}.clear.success", ['count' => $deletedCount]), is_success: true);
@@ -164,7 +164,7 @@ class ActivityLogController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur de nettoyage avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.activity-logs.clear', context: [], message: $e->getMessage(), activity: __("{$this->langPath}.clear.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.activity-logs.clear', context: [], message: $e->getMessage(), activity: "{$this->langPath}.clear.error", is_success: false);
 
             // Redirige vers la liste des logs avec un message flash d'erreur
             return redirect()->back()->with('error', __("{$this->langPath}.clear.flash_error"));
