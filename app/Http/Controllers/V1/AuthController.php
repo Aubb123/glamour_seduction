@@ -13,7 +13,7 @@ use function __;
 
 class AuthController extends Controller
 {
-    protected string $langPath = 'v1.backend.auth';
+    protected string $backendLangPath = 'v1.backend.auth';
 
     public function login(): View
     {
@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         // Tentative de connexion
         if (! Auth::attempt($validated, $request->boolean('remember'))) {
-            return redirect()->back()->withInput($request->only('email'))->with('error', __("{$this->langPath}.login.invalid_credentials"));
+            return redirect()->back()->withInput($request->only('email'))->with('error', __("{$this->backendLangPath}.login.invalid_credentials"));
         }
 
         // Régénérer la session immédiatement après connexion
@@ -44,7 +44,7 @@ class AuthController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('account.disabled')->with('error', __("{$this->langPath}.login.account_suspended"));
+            return redirect()->route('account.disabled')->with('error', __("{$this->backendLangPath}.login.account_suspended"));
         }
 
         // Email non vérifié → envoyer OTP (le middleware gère la redirection vers la vérification)
@@ -52,7 +52,7 @@ class AuthController extends Controller
             sendEmailOtpCode($user);
         }
 
-        return redirect()->intended(route('frontend.index'))->with('success', __("{$this->langPath}.login.success"));
+        return redirect()->intended(route('frontend.index'))->with('success', __("{$this->backendLangPath}.login.success"));
     }
 
     // ─────────────────────────────────────────────
@@ -82,7 +82,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', __("{$this->langPath}.logout.success"));
+        return redirect()->route('login')->with('success', __("{$this->backendLangPath}.logout.success"));
 
     }
 }
