@@ -22,12 +22,6 @@ class GeoCountryTranslationController extends Controller
         protected GeoCountryTranslationService $geoCountryTranslationService
     ) {}
 
-    // Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // ///////////////////  Fonction backend ///////////////////////////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////////////////////////
-    // //////////////////////////////////////////////////////////////////////////////// Fonction backend ///////////////////////////////
-
     // ═══════════════════════════════════════════════════════════════
     // BACKEND
     // ═══════════════════════════════════════════════════════════════
@@ -40,7 +34,7 @@ class GeoCountryTranslationController extends Controller
         try {
 
             // Suppression via le service (soft delete)
-            $this->geoCountryTranslationService->destroy($geoCountryTranslation);
+            $this->geoCountryTranslationService->backend_geocountries_translations_destroy($geoCountryTranslation);
 
             // Log de la suppression
             $this->logActivity(type: 'warning', action: 'backend.geocountries.translation.destroy', context: ['country_translation_uuid' => $geoCountryTranslation->uuid], message: null, activity: __("{$this->langPath}.destroy.success", ['uuid' => $geoCountryTranslation->uuid]), is_success: true, loggable: $geoCountryTranslation);
@@ -101,7 +95,7 @@ class GeoCountryTranslationController extends Controller
             $geoCountryTranslation = GeoCountryTranslation::withTrashed()->where('uuid', $translation_uuid)->firstOrFail();
 
             // Restauration de la traduction via le service (restore)
-            $this->geoCountryTranslationService->restore($geoCountryTranslation);
+            $this->geoCountryTranslationService->backend_geocountries_translations_restore($geoCountryTranslation);
 
             // Log de la restauration de la traduction
             $this->logActivity(type: 'info', action: 'backend.geocountries.translation.restore', context: ['country_translation_uuid' => $geoCountryTranslation->uuid], message: null, activity: __("{$this->langPath}.restore.success", ['uuid' => $geoCountryTranslation->uuid]), is_success: true, loggable: $geoCountryTranslation);
@@ -143,7 +137,7 @@ class GeoCountryTranslationController extends Controller
             $geoCountryTranslation = GeoCountryTranslation::onlyTrashed()->where('uuid', $translation_uuid)->firstOrFail();
 
             // Suppression définitive de la traduction via le service (force delete)
-            $this->geoCountryTranslationService->forceDestroy($geoCountryTranslation);
+            $this->geoCountryTranslationService->backend_geocountries_translations_force_destroy($geoCountryTranslation);
 
             // Log de la suppression définitive de la traduction
             $this->logActivity(type: 'warning', action: 'backend.geocountries.translation.force_destroy', context: ['country_translation_uuid' => $geoCountryTranslation->uuid], message: null, activity: __("{$this->langPath}.force_destroy.success", ['uuid' => $geoCountryTranslation->uuid]), is_success: true, loggable: $geoCountryTranslation);
