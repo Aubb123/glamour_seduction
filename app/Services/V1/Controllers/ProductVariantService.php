@@ -59,10 +59,6 @@ class ProductVariantService
 
             $updateData = [];
 
-            if (isset($data['product_id'])) {
-                $updateData['product_id'] = $data['product_id'];
-            }
-
             if (isset($data['sku'])) {
                 $updateData['sku'] = $data['sku'];
             }
