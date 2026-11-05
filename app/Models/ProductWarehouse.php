@@ -6,6 +6,7 @@ use App\Enums\Products\Warehouses\ProductWarehouseStatus;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductWarehouse extends Model
 {
@@ -21,8 +22,11 @@ class ProductWarehouse extends Model
     // au lieu de chercher une classe ProductWarehouseTranslation inexistante.
     protected bool $hasTranslations = false;
 
-    // Relations enfants dont la présence bloque la suppression de cet entrepôt.
-    // NB : destroy refusé si des stocks ou des mouvements existent (relations ajoutées aux modules 8-9).
+    // Relations enfants dont la présence bloque la suppression de cet entrepôt
+    // (delete / force_delete) lors d'une suppression temporaire (BackendHelper::destroy_function)
+    // ou définitive (BackendHelper::force_destroy_function).
+    // NB : chaque relation listée ici DOIT avoir une méthode de relation correspondante
+    // sur le modèle, sinon destroy_function lève une BadMethodCallException.
     protected array $dependentRelations = ['stocks', 'movements'];
 
     // Attributs autorisés pour l'assignation de masse
@@ -64,5 +68,23 @@ class ProductWarehouse extends Model
     public function scopeDefaultWarehouse($query): Builder
     {
         return $query->where('is_default', true);
+    }
+
+    /**
+     * Relation : un entrepôt possède plusieurs lignes de stock (module 8).
+     * NB : bloque la suppression d'un entrepôt qui a encore des stocks associés.
+     */
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseStock::class, 'warehouse_id');
+    }
+
+    /**
+     * Relation : un entrepôt possède plusieurs mouvements de stock (module 9).
+     * NB : bloque la suppression d'un entrepôt qui a encore des mouvements associés.
+     */
+    public function movements(): HasMany
+    {
+        return $this->hasMany(ProductStockMovement::class, 'warehouse_id');
     }
 }

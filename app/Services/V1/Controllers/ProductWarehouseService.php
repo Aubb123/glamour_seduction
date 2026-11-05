@@ -78,10 +78,18 @@ class ProductWarehouseService
                 $updateData['status'] = ($data['status'] ?? null) === ProductWarehouseStatus::Active->value ? ProductWarehouseStatus::Active : ProductWarehouseStatus::Inactive;
             }
 
-            // Si is_default est explicitement false → on dé-sélectionne.
-            // NB : on ne peut pas dé-sélectionner un entrepôt par défaut s'il est le dernier actif.
+            // Gestion du statut par défaut.
+            // NB : on ne peut pas retirer le statut « par défaut » au dernier entrepôt
+            // par défaut restant (sinon la boutique n'a plus aucun entrepôt par défaut).
             if (array_key_exists('is_default', $data)) {
-                $updateData['is_default'] = ($data['is_default'] ?? null) === '1' || ($data['is_default'] ?? false) === true;
+
+                $wantsDefault = ($data['is_default'] ?? null) === '1' || ($data['is_default'] ?? false) === true;
+
+                if (! $wantsDefault && $warehouse->is_default && $this->isLastDefault($warehouse)) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.default_forbidden"));
+                }
+
+                $updateData['is_default'] = $wantsDefault;
             }
 
             $warehouse->update($updateData);
@@ -103,6 +111,16 @@ class ProductWarehouseService
         ProductWarehouse::where('id', '!=', $warehouse->id)
             ->where('is_default', true)
             ->update(['is_default' => false]);
+    }
+
+    // ─────────────────────────────────────────────
+    // IS LAST DEFAULT (privé) — vrai si l'entrepôt est le seul par défaut restant
+    // ─────────────────────────────────────────────
+    private function isLastDefault(ProductWarehouse $warehouse): bool
+    {
+        return ProductWarehouse::where('id', '!=', $warehouse->id)
+            ->where('is_default', true)
+            ->doesntExist();
     }
 
     // ─────────────────────────────────────────────
@@ -131,6 +149,12 @@ class ProductWarehouseService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
+            // Un entrepôt par défaut ne peut pas être désactivé s'il est le dernier par défaut :
+            // la boutique perdrait son entrepôt de réservation par défaut.
+            if ($warehouse->is_default && $this->isLastDefault($warehouse)) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.default_forbidden"));
+            }
+
             $warehouse->update(['status' => ProductWarehouseStatus::Inactive]);
         });
     }
@@ -147,7 +171,8 @@ class ProductWarehouseService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
-            // NB : destroy refusé si stocks existent (relation ajoutée au module 8)
+            // NB : destroy refusé si des stocks ou des mouvements existent
+            // (géré par BackendHelper::destroy_function via $dependentRelations = ['stocks', 'movements']).
 
             // Empêche la suppression double (soft delete)
             if ($warehouse->trashed()) {
