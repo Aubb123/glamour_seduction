@@ -24,7 +24,6 @@ return new class extends Migration
             //
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft'); // Statut de publication du produit
             $table->boolean('is_featured')->default(false); // Produit mis en avant sur la boutique
-            $table->boolean('requires_discreet_packaging')->default(true); // Emballage discret requis (spécifique à la boutique)
             $table->unsignedInteger('views_count')->default(0); // Compteur de vues
             $table->decimal('weight', 8, 2)->nullable(); // Poids du produit en kg (logistique)
             //
