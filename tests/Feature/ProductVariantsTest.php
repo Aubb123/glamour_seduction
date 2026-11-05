@@ -23,6 +23,10 @@ uses(RefreshDatabase::class);
 
 /**
  * Module Produits — Variantes (`product_variants` + pivot `product_variant_attribute_value`).
+ *
+ * Workflow : le CRUD des variantes vit dans le contexte de la fiche produit.
+ * Le produit parent est transporté dans l'URL (?product=uuid) sur create/store
+ * et injecté côté serveur — il n'est jamais choisi ni modifié depuis le formulaire.
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
@@ -90,10 +94,25 @@ function variantSetup(): array
     return ['fr' => $fr, 'product' => $product, 'attribute' => $attribute, 'value' => $value];
 }
 
+/** Contexte produit transporté dans l'URL des routes create/store (?product=uuid). */
+function variantProductContext(array $setup): array
+{
+    return ['product' => $setup['product']->uuid];
+}
+
+/** URL de la fiche du produit parent — cible des redirections après store/update. */
+function variantProductShowUrl(array $setup): string
+{
+    return route('backend.products.show', [
+        'product' => $setup['product']->uuid,
+        'slug' => $setup['product']->active_translation?->slug ?? 'null',
+    ]);
+}
+
+/** Payload du formulaire — SANS product_id : le parent vient de l'URL, jamais du POST. */
 function variantPayload(array $setup, array $overrides = []): array
 {
     return array_merge([
-        'product_id' => $setup['product']->id,
         'sku' => 'SKU-'.strtoupper(uniqid()),
         'barcode' => 'EAN-'.random_int(100000, 999999),
         'price' => 24990,
@@ -114,39 +133,77 @@ it('liste les variantes avec DataTables', function () {
     expect($html)->toContain('product-variants-table');
 });
 
-it('affiche la page de création de variante', function () {
-    $admin = variantAdmin();
-
-    $this->actingAs($admin)
-        ->get(route('backend.product-variants.create'))
-        ->assertOk();
-});
-
-it('crée une variante (première → is_default auto) avec ses valeurs d\'attributs', function () {
+it('affiche la page de création de variante depuis la fiche produit', function () {
     $admin = variantAdmin();
     $setup = variantSetup();
 
     $this->actingAs($admin)
-        ->post(route('backend.product-variants.store'), variantPayload($setup))
+        ->get(route('backend.product-variants.create', variantProductContext($setup)))
+        ->assertOk();
+});
+
+it('refuse la création de variante hors contexte produit (404)', function () {
+    $admin = variantAdmin();
+
+    $this->actingAs($admin)
+        ->get(route('backend.product-variants.create'))
+        ->assertNotFound();
+});
+
+it('crée une variante (première → is_default auto) et redirige vers la fiche produit / onglet Variantes', function () {
+    $admin = variantAdmin();
+    $setup = variantSetup();
+
+    $response = $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
+
+    $response->assertRedirect()->assertSessionHas('success');
+
+    $location = $response->headers->get('Location');
+    expect($location)->toContain(variantProductShowUrl($setup));
+    expect($location)->toContain('#tab_variants');
+
+    $variant = ProductVariant::firstOrFail();
+
+    expect(ProductVariant::count())->toBe(1);
+    expect($variant->product_id)->toBe($setup['product']->id);
+    expect($variant->is_default)->toBeTrue(); // Première variante → par défaut automatiquement
+    expect($variant->attributeValues()->count())->toBe(1);
+});
+
+it('ignore un product_id posté par le formulaire — le parent vient de l\'URL', function () {
+    $admin = variantAdmin();
+    $setup = variantSetup();
+    $other = variantSetup();
+
+    $this->actingAs($admin)
+        ->post(
+            route('backend.product-variants.store', variantProductContext($setup)),
+            variantPayload($setup, ['product_id' => $other['product']->id]),
+        )
         ->assertRedirect()
         ->assertSessionHas('success');
 
     $variant = ProductVariant::firstOrFail();
 
-    expect(ProductVariant::count())->toBe(1);
-    expect($variant->is_default)->toBeTrue(); // Première variante → par défaut automatiquement
-    expect($variant->attributeValues()->count())->toBe(1);
+    expect($variant->product_id)->toBe($setup['product']->id);
+    expect($variant->product_id)->not->toBe($other['product']->id);
 });
 
 it('gère un seul is_default par produit (la nouvelle remplace)', function () {
     $admin = variantAdmin();
     $setup = variantSetup();
 
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup));
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
     $first = ProductVariant::firstOrFail();
 
     // Deuxième variante marquée par défaut
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup, ['sku' => 'SKU-2-'.uniqid(), 'is_default' => true]));
+    $this->actingAs($admin)
+        ->post(
+            route('backend.product-variants.store', variantProductContext($setup)),
+            variantPayload($setup, ['sku' => 'SKU-2-'.uniqid(), 'is_default' => true]),
+        );
 
     expect(ProductVariant::count())->toBe(2);
     expect($first->fresh()->is_default)->toBeFalse();
@@ -158,10 +215,14 @@ it('refuse un SKU dupliqué', function () {
     $setup = variantSetup();
 
     $payload = variantPayload($setup);
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), $payload);
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), $payload);
 
     $this->actingAs($admin)
-        ->post(route('backend.product-variants.store'), variantPayload($setup, ['sku' => $payload['sku']]))
+        ->post(
+            route('backend.product-variants.store', variantProductContext($setup)),
+            variantPayload($setup, ['sku' => $payload['sku']]),
+        )
         ->assertRedirect()
         ->assertSessionHasErrors(['sku']);
 
@@ -173,17 +234,22 @@ it('refuse un prix non positif', function () {
     $setup = variantSetup();
 
     $this->actingAs($admin)
-        ->post(route('backend.product-variants.store'), variantPayload($setup, ['price' => 0]))
+        ->post(
+            route('backend.product-variants.store', variantProductContext($setup)),
+            variantPayload($setup, ['price' => 0]),
+        )
         ->assertRedirect()
         ->assertSessionHasErrors(['price']);
 
     expect(ProductVariant::count())->toBe(0);
 });
+
 it('affiche le détail d\'une variante', function () {
     $admin = variantAdmin();
     $setup = variantSetup();
 
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup));
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
     $variant = ProductVariant::firstOrFail();
 
     $this->actingAs($admin)
@@ -191,7 +257,7 @@ it('affiche le détail d\'une variante', function () {
         ->assertOk();
 });
 
-it('met à jour une variante et synchronise ses valeurs d\'attributs', function () {
+it('met à jour une variante, synchronise ses valeurs d\'attributs et redirige vers l\'onglet Variantes', function () {
     $admin = variantAdmin();
     $setup = variantSetup();
 
@@ -204,7 +270,8 @@ it('met à jour une variante et synchronise ses valeurs d\'attributs', function 
     ]);
     $secondValue->translations()->create(['lang_id' => $setup['fr']->id, 'label' => 'Noir V '.uniqid()]);
 
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup));
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
     $variant = ProductVariant::firstOrFail();
 
     $payload = variantPayload($setup, [
@@ -212,10 +279,14 @@ it('met à jour une variante et synchronise ses valeurs d\'attributs', function 
         'attribute_value_ids' => [$secondValue->id],
     ]);
 
-    $this->actingAs($admin)
-        ->put(route('backend.product-variants.update', ['productVariant' => $variant->uuid]), $payload)
-        ->assertRedirect()
-        ->assertSessionHas('success');
+    $response = $this->actingAs($admin)
+        ->put(route('backend.product-variants.update', ['productVariant' => $variant->uuid]), $payload);
+
+    $response->assertRedirect()->assertSessionHas('success');
+
+    $location = $response->headers->get('Location');
+    expect($location)->toContain(variantProductShowUrl($setup));
+    expect($location)->toContain('#tab_variants');
 
     $variant->refresh();
     expect($variant->sku)->toBe($payload['sku']);
@@ -223,11 +294,38 @@ it('met à jour une variante et synchronise ses valeurs d\'attributs', function 
     expect($variant->attributeValues()->first()->id)->toBe($secondValue->id);
 });
 
+it('rend le produit parent immuable à l\'édition', function () {
+    $admin = variantAdmin();
+    $setup = variantSetup();
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
+    $variant = ProductVariant::firstOrFail();
+
+    $other = variantSetup();
+
+    // Même en falsifiant le POST avec un product_id d'un autre produit,
+    // la variante ne doit jamais changer de parent.
+    $this->actingAs($admin)
+        ->put(
+            route('backend.product-variants.update', ['productVariant' => $variant->uuid]),
+            variantPayload($setup, ['sku' => 'SKU-IMMUTABLE-'.uniqid(), 'product_id' => $other['product']->id]),
+        )
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    $variant->refresh();
+
+    expect($variant->product_id)->toBe($setup['product']->id);
+    expect($variant->product_id)->not->toBe($other['product']->id);
+});
+
 it('active et désactive une variante', function () {
     $admin = variantAdmin();
     $setup = variantSetup();
 
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup));
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
     $variant = ProductVariant::firstOrFail();
 
     $this->actingAs($admin)
@@ -247,7 +345,8 @@ it('refuse la suppression d\'une variante active puis autorise après désactiva
     $admin = variantAdmin();
     $setup = variantSetup();
 
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup));
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
     $variant = ProductVariant::firstOrFail();
 
     // Active → suppression refusée
@@ -273,7 +372,8 @@ it('passe une variante en corbeille puis la restaure', function () {
     $admin = variantAdmin();
     $setup = variantSetup();
 
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup));
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
     $variant = ProductVariant::firstOrFail();
     $variant->update(['status' => 'inactive']);
 
@@ -295,7 +395,8 @@ it('refuse la suppression d\'un produit possédant des variantes (dependentRelat
     $admin = variantAdmin();
     $setup = variantSetup();
 
-    $this->actingAs($admin)->post(route('backend.product-variants.store'), variantPayload($setup));
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
 
     $this->actingAs($admin)
         ->from(route('backend.products.index'))
