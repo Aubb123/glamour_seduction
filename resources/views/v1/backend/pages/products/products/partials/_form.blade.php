@@ -83,7 +83,9 @@
     {{-- Étape 2 : Prix & Poids --}}
     <div class="step-content d-none" data-step-content="2">
         <div class="row">
-            @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
+            @php
+                $defaultCurrency = \App\Models\Currency::where('is_default', true)->first();
+            @endphp
             <div class="col-md-6 mb-3">
                 <label for="base_price" class="form-label">{{ __('Prix de base') }} <span class="text-danger">*</span></label>
                 <input type="number" step="0.01" min="0.01" name="base_price" id="base_price" class="form-control @error('base_price') is-invalid @enderror" placeholder="0.00" value="{{ old('base_price', $product->base_price ?? null) }}" required />
@@ -118,9 +120,6 @@
                 <li class="nav-item">
                     <a class="nav-link {{ $index === 0 ? 'active' : '' }}" data-bs-toggle="tab" href="#lang-{{ $lang->id }}">
                         {{ $lang->name }}
-                        @error('translations.'.$index.'.name')
-                            <span class="text-danger ms-1">•</span>
-                        @enderror
                     </a>
                 </li>
             @endforeach
