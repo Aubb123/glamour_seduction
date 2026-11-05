@@ -90,56 +90,48 @@
                                     </div>
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center">
-                                        <div class="col-4 text-muted fw-semibold">{{ __('Tags') }}</div>
-                                        <div class="col-8">
-                                            @forelse($product->tags as $tag)
-                                                <span class="badge badge-soft-info me-1 text-decoration-none">
-                                                    {{ $tag->active_translation?->name ?? '—' }}
-                                                </span>
-                                            @empty
-                                                <span class="text-muted">—</span>
-                                            @endforelse
-                                        </div>
-                                    </div>
-                                    <hr class="my-2">
-                                    <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __('Prix de base') }}</div>
                                         <div class="col-8 fw-bold">
                                             {{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}
-                                            @if($defaultCurrency)
+                                            @if ($defaultCurrency)
                                                 <span class="text-muted fw-normal small ms-1">({{ __('devise par défaut') }} : {{ $defaultCurrency->active_translation?->name ?? $defaultCurrency->code }})</span>
                                             @endif
                                         </div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center">
-                                        <div class="col-4 text-muted fw-semibold">{{ __('Poids') }}</div>
-                                        <div class="col-8">{{ $product->weight ? $product->weight.' kg' : '—' }}</div>
-                                    </div>
-                                    <hr class="my-2">
-                                    <div class="row mb-3 align-items-center">
-                                        <div class="col-4 text-muted fw-semibold">{{ __('Statut') }}</div>
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Prix barré') }}</div>
                                         <div class="col-8">
-                                            <span class="badge {{ $product->status->badgeClass() }} fs-14 px-3 py-2">
-                                                {{ $product->status->label() }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <hr class="my-2">
-                                    <div class="row mb-3 align-items-center">
-                                        <div class="col-4 text-muted fw-semibold">{{ __('Mis en avant') }}</div>
-                                        <div class="col-8">
-                                            @if($product->is_featured)
-                                                <span class="badge badge-soft-success">{{ __('Oui') }}</span>
+                                            @if ($product->compare_at_price)
+                                                <del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</del>
                                             @else
-                                                <span class="badge badge-soft-secondary">{{ __('Non') }}</span>
+                                                <span class="text-muted">—</span>
                                             @endif
                                         </div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center">
-                                        <div class="col-4 text-muted fw-semibold">{{ __('Nombre de vues') }}</div>
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Poids') }}</div>
+                                        <div class="col-8">{{ $product->weight ? $product->weight . ' kg' : '—' }}</div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="row mb-3 align-items-center">
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Vues') }}</div>
                                         <div class="col-8">{{ number_format($product->views_count) }}</div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="row align-items-start">
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Tags') }}</div>
+                                        <div class="col-8">
+                                            @forelse ($product->tags as $tag)
+                                                <a href="{{ route('backend.product-tags.show', ['productTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
+                                                    class="badge badge-soft-info me-1 text-decoration-none">
+                                                    {{ $tag->active_translation?->name ?? '#' . $tag->id }}
+                                                </a>
+                                            @empty
+                                                <span class="text-muted">—</span>
+                                            @endforelse
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -152,41 +144,151 @@
                                         <i class="bx bx-pulse me-2 text-primary"></i>{{ __('Statut') }}
                                     </h6>
                                 </div>
-                                <div class="card-body text-center">
-                                    <span class="badge {{ $product->status->badgeClass() }} fs-14 px-3 py-2">
-                                        {{ $product->status->label() }}
-                                    </span>
-                                    <hr>
-                                    @if ($product->is_featured)
-                                        <span class="badge badge-soft-success">{{ __('Produit mis en avant') }}</span>
-                                    @else
-                                        <span class="badge badge-soft-secondary">{{ __('Produit standard') }}</span>
-                                    @endif
+                                <div class="card-body d-flex flex-column gap-3">
+
+                                    <div class="d-flex align-items-center justify-content-between p-3 rounded"
+                                            style="background: {{ $product->status === \App\Enums\Products\Products\ProductStatus::Published ? '#e8f9f0' : '#fef0f0' }}">
+                                        <div>
+                                            <div class="fw-semibold">{{ __('Statut') }}</div>
+                                            <small class="text-muted">
+                                                @if ($product->status === \App\Enums\Products\Products\ProductStatus::Published)
+                                                    {{ __('En vente sur la boutique') }}
+                                                @elseif ($product->status === \App\Enums\Products\Products\ProductStatus::Draft)
+                                                    {{ __('Brouillon — visible uniquement côté admin') }}
+                                                @elseif ($product->status === \App\Enums\Products\Products\ProductStatus::Archived)
+                                                    {{ __('Retiré de la vente') }}
+                                                @else
+                                                    {{ __('Statut inconnu') }}
+                                                @endif
+                                            </small>
+                                        </div>
+                                        <span class="{{ $product->status?->badgeClass() ?? 'badge badge-soft-secondary' }} px-3 py-2">
+                                            {{ $product->status?->label() ?? '—' }}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background: #f8f8f8;">
+                                        <div>
+                                            <div class="fw-semibold">{{ __('Mise en avant') }}</div>
+                                            <small class="text-muted">{{ __('Produit phare sur la boutique') }}</small>
+                                        </div>
+                                        @if ($product->is_featured)
+                                            <span class="badge badge-soft-warning px-3 py-2"><i class="bx bxs-star me-1"></i> {{ __('Oui') }}</span>
+                                        @else
+                                            <span class="badge badge-soft-secondary px-3 py-2">{{ __('Non') }}</span>
+                                        @endif
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-12">
-                            <div class="card border">
-                                <div class="card-header bg-light py-2">
-                                    <h6 class="mb-0 fw-bold">
-                                        <i class="bx bx-file me-2 text-primary"></i>{{ __('Description') }}
-                                    </h6>
-                                </div>
-                                <div class="card-body">
-                                    {!! $product->active_translation?->description ?? '' !!}
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Traductions -->
                 <div class="tab-pane fade" id="tab_translations">
-                    @include('v1.backend.pages.products.products.translations.index', [
-                        'product' => $product,
-                        'translations' => $product->translations,
-                    ])
+
+                    <ul class="nav nav-pills mb-3">
+                        @foreach ($langs as $index => $lang)
+                            <li class="nav-item">
+                                <a class="nav-link {{ $index === 0 ? 'active' : '' }}" data-bs-toggle="tab" href="#trans_{{ $lang->code }}">
+                                    {{ $lang->name }}
+                                </a>
+                            </li>
+                        @endforeach
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#trans_trash">
+                                <i class="bx bx-trash me-1 text-warning"></i> {{ __('Corbeille') }}
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        @foreach ($langs as $index => $lang)
+                            @php($translation = getTranslation($product, $lang->id))
+                            <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="trans_{{ $lang->code }}">
+                                <div class="row g-4">
+                                    <div class="col-md-12">
+                                        <div class="card border">
+                                            <div class="card-header bg-light py-2">
+                                                <h6 class="mb-0 fw-bold">
+                                                    <i class="bx bx-font me-2 text-primary"></i>{{ $lang->name }}
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row mb-3 align-items-center">
+                                                    <div class="col-2 text-muted fw-semibold">{{ __('Nom') }}</div>
+                                                    <div class="col-9 fw-bold">{{ $translation?->name ?? '—' }}</div>
+                                                </div>
+                                                <hr class="my-2">
+                                                <div class="row mb-3 align-items-center">
+                                                    <div class="col-2 text-muted fw-semibold">{{ __('Slug') }}</div>
+                                                    <div class="col-9"><code>{{ $translation?->slug ?? '—' }}</code></div>
+                                                </div>
+                                                <hr class="my-2">
+                                                <div class="row mb-3 align-items-start">
+                                                    <div class="col-2 text-muted fw-semibold">{{ __('Description courte') }}</div>
+                                                    <div class="col-9" style="max-height: 200px; overflow-y: auto;">
+                                                        {{ $translation?->short_description ?? '—' }}
+                                                    </div>
+                                                </div>
+                                                <hr class="my-2">
+                                                <div class="row mb-3 align-items-start">
+                                                    <div class="col-2 text-muted fw-semibold">{{ __('Description') }}</div>
+                                                    <div class="col-9" style="max-height: 400px; overflow-y: auto;">
+                                                        {!! $translation?->description ?? '—' !!}
+                                                    </div>
+                                                </div>
+                                                <hr class="my-2">
+
+                                                <div class="row align-items-start">
+                                                    <div class="col-2 text-muted fw-semibold">{{ __('Actions') }}</div>
+                                                    <div class="col-9">
+                                                        @if($translation && !$translation->trashed())
+                                                            <form action="{{ route('backend.product-translations.destroy', ['uuid' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', '{{ __('Supprimer') }}', 'warning')">
+                                                                    <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+
+                        <div class="tab-pane fade" id="trans_trash">
+                            <div class="row g-4">
+                                <div class="col-md-12">
+                                    <div class="card border">
+                                        <div class="card-header bg-light py-2">
+                                            <h6 class="mb-0 fw-bold">
+                                                <i class="bx bx-trash me-2 text-warning"></i>{{ __('Corbeille des traductions') }}
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            @if ($productTranslations->isEmpty())
+                                                <p class="text-muted mb-0">{{ __('Aucune traduction supprimée.') }}</p>
+                                            @else
+                                                @include('v1.backend.pages.products.products.partials._trashed-table-translations', [
+                                                    'productTranslations' => $productTranslations,
+                                                    'product' => $product
+                                                ])
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Variantes -->
@@ -202,12 +304,11 @@
                                         <i class="bx bx-plus me-1"></i> {{ __('Nouvelle variante') }}
                                     </a>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body p-0">
                                     <div class="table-responsive">
-                                        <table class="table table-striped table-hover align-middle w-100">
+                                        <table class="table table-centered mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
                                                     <th>{{ __('SKU') }}</th>
                                                     <th>{{ __("Valeurs d'attributs") }}</th>
                                                     <th>{{ __('Prix') }}</th>
@@ -219,28 +320,23 @@
                                             <tbody>
                                                 @forelse ($variants as $variant)
                                                     <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                        <td><span class="fw-semibold">{{ $variant->sku }}</span></td>
+                                                        <td><code>{{ $variant->sku }}</code></td>
                                                         <td>
                                                             @forelse ($variant->attributeValues as $value)
-                                                                <span class="badge badge-soft-primary me-1">
-                                                                    {{ $value->active_translation?->label ?? $value->value }}
-                                                                </span>
+                                                                <span class="badge badge-soft-primary me-1">{{ $value->active_translation?->label ?? $value->value }}</span>
                                                             @empty
                                                                 <span class="text-muted">—</span>
                                                             @endforelse
                                                         </td>
                                                         <td>
                                                             @if ($variant->price)
-                                                                {{ number_format((float) $variant->price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}
+                                                                <span class="fw-bold">{{ number_format((float) $variant->price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
                                                             @else
-                                                                <span class="text-muted">{{ __('Hérite du produit') }} ({{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }})</span>
+                                                                <span class="text-muted">{{ __('Hérite du produit') }}</span>
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <span class="badge {{ $variant->status->badgeClass() }} fs-14 px-3 py-2">
-                                                                {{ $variant->status->label() }}
-                                                            </span>
+                                                            <span class="badge {{ $variant->status->badgeClass() }}">{{ $variant->status->label() }}</span>
                                                         </td>
                                                         <td>
                                                             @if ($variant->is_default)
@@ -269,10 +365,7 @@
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="7" class="text-center text-muted py-4">
-                                                            <i class="bx bx-layer fs-3 d-block mb-2"></i>
-                                                            {{ __('Aucune variante trouvée pour ce produit.') }}
-                                                        </td>
+                                                        <td colspan="6" class="text-center text-muted py-4">{{ __('Aucune variante pour ce produit.') }}</td>
                                                     </tr>
                                                 @endforelse
                                             </tbody>
@@ -285,13 +378,48 @@
                 </div>
 
                 <!-- Multimédias -->
-                <div class="tab-pane fade" id="tab_multimedia">
-                    @include('v1.backend.pages.products.products.partials._tab-multimedia', ['product' => $product])
-                </div>
+                @include('v1.backend.layouts.partials._tab-multimedia', ['entity' => $product, 'entityLabel' => 'produit'])
 
                 <!-- Métadonnées -->
                 <div class="tab-pane fade" id="tab_meta">
-                    @include('v1.backend.pages.products.products.partials._show-meta', ['product' => $product])
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <div class="card border">
+                                <div class="card-header bg-light py-2">
+                                    <h6 class="mb-0 fw-bold">
+                                        <i class="bx bx-data me-2 text-primary"></i>{{ __('Métadonnées') }}
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-3 align-items-center">
+                                        <div class="col-4 text-muted fw-semibold">{{ __('UUID') }}</div>
+                                        <div class="col-8"><code>{{ $product->uuid }}</code></div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="row mb-3 align-items-center">
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Créé le') }}</div>
+                                        <div class="col-8">@formatDate($product->created_at, 'D MMMM YYYY - HH:mm:ss')</div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="row mb-3 align-items-center">
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Modifié le') }}</div>
+                                        <div class="col-8">@formatDate($product->updated_at, 'D MMMM YYYY - HH:mm:ss')</div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="row align-items-center">
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Supprimé le') }}</div>
+                                        <div class="col-8">
+                                            @if ($product->deleted_at)
+                                                @formatDate($product->deleted_at, 'D MMMM YYYY - HH:mm:ss')
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -299,29 +427,3 @@
         @include('v1.backend.pages.products.products.partials._show-end', ['product' => $product])
 
 @endsection
-
-@push('scripts')
-    <script>
-        // Bootstrap does not activate a tab from the URL fragment by itself.
-        // Respect #tab_variants (and other tab fragments) after the tab plugin loads.
-        document.addEventListener('DOMContentLoaded', function () {
-            function activateTabFromHash() {
-                if (!window.location.hash || !window.bootstrap || !window.bootstrap.Tab) {
-                    return;
-                }
-
-                const tabLink = Array.from(document.querySelectorAll('[data-bs-toggle="tab"]'))
-                    .find(function (link) {
-                        return link.hash === window.location.hash;
-                    });
-
-                if (tabLink) {
-                    window.bootstrap.Tab.getOrCreateInstance(tabLink).show();
-                }
-            }
-
-            activateTabFromHash();
-            window.addEventListener('hashchange', activateTabFromHash);
-        });
-    </script>
-@endpush
