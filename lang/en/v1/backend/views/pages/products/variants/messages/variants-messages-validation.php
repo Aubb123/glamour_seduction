@@ -2,11 +2,6 @@
 
 return [
     'productVariants' => [
-        'product_id' => [
-            'required' => 'The parent product is required.',
-            'integer' => 'The parent product must be a valid identifier.',
-            'exists' => 'The selected parent product does not exist.',
-        ],
         'sku' => [
             'required' => 'The SKU reference is required.',
             'string' => 'The SKU reference must be a string.',
