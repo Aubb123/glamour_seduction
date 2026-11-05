@@ -183,13 +183,12 @@
     {{-- Étape 5 : Multimédias (image principale du produit) --}}
     <div class="step-content d-none" data-step-content="5">
 
-        @include('v1.backend.layouts.partials._image-upload-preview', [
-            'form_label' => __('Image principale du produit'),
-            'format_accept' => __('Formats acceptés : JPG, PNG, WEBP. Taille max : 2 Mo.'),
-            'entity' => $product ?? null,
-            'cloudPlatformRequired' => true,
-            'imageRequired' => ! isset($product),
-        ])
+        @php
+            $imageLabel = __('Image principale du produit');
+            $imageFormats = __('Formats acceptés : JPG, PNG, WEBP. Taille max : 2 Mo.');
+        @endphp
+
+        @include('v1.backend.layouts.partials._image-upload-preview', ['form_label' => $imageLabel, 'format_accept' => $imageFormats, 'entity' => $product ?? null, 'cloudPlatformRequired' => true, 'imageRequired' => ! isset($product)])
 
     </div>
 
