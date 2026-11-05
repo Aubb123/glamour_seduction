@@ -56,24 +56,25 @@ class ProductVariantController extends Controller
     // ─────────────────────────────────────────────
     // CREATE
     // ─────────────────────────────────────────────
-    public function backend_product_variants_create(): View
+    // NB : la création d'une variante se fait TOUJOURS depuis la fiche du produit
+    // (route liée à {product}) — le produit parent est fourni par l'URL, jamais choisi dans un select.
+    public function backend_product_variants_create(Product $product): View
     {
         try {
 
-            // Données pour les selects du formulaire
-            $products = Product::withActiveTranslation()->orderBy('created_at', 'desc')->get();
-            $attributes = ProductAttribute::withActiveTranslation()->orderBy('sort_order', 'desc')->with('values.activeTranslation')->get();
+            // Attributs (et leurs valeurs) pour les cases à cocher du formulaire
+            $attributes = ProductAttribute::withActiveTranslation()->orderBy('sort_order', 'desc')->with(['values' => fn ($q) => $q->withActiveTranslation()])->get();
 
             // Log de l'accès à la page de création d'une variante
-            $this->logActivity(type: 'info', action: 'backend.product-variants.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.create', context: ['product_uuid' => $product->uuid], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true, loggable: $product);
 
-            // Affiche la vue de création d'une variante
-            return view('v1.backend.pages.products.variants.create', compact('products', 'attributes'));
+            // Affiche la vue de création d'une variante, dans le contexte du produit parent
+            return view('v1.backend.pages.products.variants.create', compact('product', 'attributes'));
 
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de l'accès à la page de création d'une variante
-            $this->logActivity(type: 'error', action: 'backend.product-variants.create', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.create.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-variants.create', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.create.error"), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de l'accès à la page de création
         }
@@ -82,23 +83,25 @@ class ProductVariantController extends Controller
     // ─────────────────────────────────────────────
     // STORE
     // ─────────────────────────────────────────────
-    public function backend_product_variants_store(StoreProductVariantRequest $request): RedirectResponse
+    // NB : le produit parent vient de la route (jamais du formulaire) — impossible de créer
+    // une variante pour un autre produit que celui affiché sur la fiche d'origine.
+    public function backend_product_variants_store(StoreProductVariantRequest $request, Product $product): RedirectResponse
     {
         try {
 
-            // Création de la variante via le service, en passant les données validées du formulaire
-            $variant = $this->productVariantService->backend_product_variants_store($request->validated());
+            // Création de la variante via le service : le produit parent est injecté depuis la route
+            $variant = $this->productVariantService->backend_product_variants_store(array_merge($request->validated(), ['product_id' => $product->id]));
 
             // Log de la création de la variante avec le SKU de la variante créée
-            $this->logActivity(type: 'info', action: 'backend.product-variants.store', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->backendLangPath}.store.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.store', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku, 'product_uuid' => $product->uuid], message: null, activity: __("{$this->backendLangPath}.store.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            // Redirection vers le show de la variante avec un message de succès
-            return redirect()->route('backend.product-variants.show', ['productVariant' => $variant->uuid])->with('success', __("{$this->backendLangPath}.store.flash_success", ['sku' => $variant->sku]));
+            // Redirection vers la fiche du produit parent (onglet Variantes) avec un message de succès
+            return redirect()->route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null'])->with('success', __("{$this->backendLangPath}.store.flash_success", ['sku' => $variant->sku]));
 
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors de la création de la variante
-            $this->logActivity(type: 'warning', action: 'backend.product-variants.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.store', context: ['product_uuid' => $product->uuid, 'data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
 
             // Redirection avec le message métier explicite
             return redirect()->back()->with('error', $e->getMessage())->withInput();
@@ -106,7 +109,7 @@ class ProductVariantController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la création de la variante
-            $this->logActivity(type: 'error', action: 'backend.product-variants.store', context: ['data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-variants.store', context: ['product_uuid' => $product->uuid, 'data' => $request->validated()], message: $e->getMessage(), activity: __("{$this->backendLangPath}.store.error"), is_success: false);
 
             // Redirection avec un message d'erreur en cas de problème, en conservant les données du formulaire
             return redirect()->back()->with('error', __("{$this->backendLangPath}.store.flash_error"))->withInput();
@@ -123,7 +126,7 @@ class ProductVariantController extends Controller
             // Charge les compteurs (withCount)
             $productVariant->loadCount(['audits', 'activityLogs']);
 
-            // Log de la consultation du détail d'une variante
+            // Log de la consultation des détails d'une variante
             $this->logActivity(type: 'info', action: 'backend.product-variants.show', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.show.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
 
             $variant = $productVariant;
@@ -133,7 +136,7 @@ class ProductVariantController extends Controller
 
         } catch (\Exception $e) {
 
-            // Log de l'erreur serveur lors de la consultation du détail d'une variante
+            // Log de l'erreur serveur lors de la consultation des détails d'une variante
             $this->logActivity(type: 'error', action: 'backend.product-variants.show', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $productVariant->uuid]), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération de la variante
@@ -197,16 +200,15 @@ class ProductVariantController extends Controller
     {
         try {
 
-            // Données pour les selects du formulaire
-            $products = Product::withActiveTranslation()->orderBy('created_at', 'desc')->get();
-            $attributes = ProductAttribute::withActiveTranslation()->orderBy('sort_order', 'desc')->with('values.activeTranslation')->get();
+            // Attributs (et leurs valeurs) pour les cases à cocher du formulaire
+            $attributes = ProductAttribute::withActiveTranslation()->orderBy('sort_order', 'desc')->with(['values' => fn ($q) => $q->withActiveTranslation()])->get();
 
             // Log de l'accès à la page de modification d'une variante
             $this->logActivity(type: 'info', action: 'backend.product-variants.edit', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.edit.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
 
             $variant = $productVariant;
 
-            return view('v1.backend.pages.products.variants.edit', compact('variant', 'products', 'attributes'));
+            return view('v1.backend.pages.products.variants.edit', compact('variant', 'attributes'));
 
         } catch (\Exception $e) {
 
@@ -229,7 +231,8 @@ class ProductVariantController extends Controller
 
             $this->logActivity(type: 'info', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $variantSku], message: null, activity: __("{$this->backendLangPath}.update.success", ['sku' => $variantSku]), is_success: true, loggable: $productVariant);
 
-            return redirect()->route('backend.product-variants.show', ['productVariant' => $productVariant->uuid])->with('success', __("{$this->backendLangPath}.update.flash_success", ['sku' => $variantSku]));
+            // Redirection vers la fiche du produit parent (onglet Variantes) avec un message de succès
+            return redirect()->route('backend.products.show', ['product' => $productVariant->product->uuid, 'slug' => $productVariant->product->active_translation?->slug ?? 'null'])->with('success', __("{$this->backendLangPath}.update.flash_success", ['sku' => $variantSku]));
 
         } catch (ModelNotFoundException $e) {
 
