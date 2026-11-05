@@ -18,6 +18,15 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
+        // ── Idempotence : skip si le produit de référence existe déjà ──
+        $existingFrTranslation = ProductTranslation::where('name', 'Vibromasseur Magic')->first();
+
+        if ($existingFrTranslation) {
+            $this->command->info('ProductSeeder : le produit « Vibromasseur Magic » existe déjà, seeder ignoré.');
+
+            return;
+        }
+
         // ── Dépendances : catégorie, marque et tags de référence ──
         $category = ProductCategory::first();
         if (! $category) {
@@ -53,14 +62,14 @@ class ProductSeeder extends Seeder
 
         $tags = ProductTag::limit(2)->pluck('id')->all();
 
-        // ── Données des produits (prix en devise par défaut de la boutique) ──
+        // ── Données des produits (prix en unités majeures, devise par défaut de la boutique) ──
         $products = [
             [
                 'status' => 'published',
                 'is_featured' => true,
                 'weight' => 0.35,
-                'base_price' => 24990,
-                'compare_at_price' => 29990,
+                'base_price' => 249.90,
+                'compare_at_price' => 299.90,
                 'translations' => [
                     ['lang_code' => 'fr', 'name' => 'Vibromasseur Magic',  'short_description' => 'Vibromasseur discret et élégant.', 'description' => 'Le vibromasseur Magic allie puissance et discrétion pour des moments inoubliables.'],
                     ['lang_code' => 'en', 'name' => 'Magic Vibrator',       'short_description' => 'Discreet and elegant vibrator.',  'description' => 'The Magic vibrator combines power and discretion for unforgettable moments.'],
@@ -70,7 +79,7 @@ class ProductSeeder extends Seeder
                 'status' => 'published',
                 'is_featured' => false,
                 'weight' => 0.22,
-                'base_price' => 15990,
+                'base_price' => 159.90,
                 'compare_at_price' => null,
                 'translations' => [
                     ['lang_code' => 'fr', 'name' => 'Bague de massage',    'short_description' => 'Bague de massage flexible.',        'description' => 'Une bague de massage flexible pour enrichir les moments à deux.'],
@@ -81,8 +90,8 @@ class ProductSeeder extends Seeder
                 'status' => 'draft',
                 'is_featured' => false,
                 'weight' => 0.50,
-                'base_price' => 34990,
-                'compare_at_price' => 39990,
+                'base_price' => 349.90,
+                'compare_at_price' => 399.90,
                 'translations' => [
                     ['lang_code' => 'fr', 'name' => 'Coffret Luxe Découverte', 'short_description' => 'Coffret découverte complet.', 'description' => 'Un coffret complet pour découvrir l\'univers glamour avec style.'],
                     ['lang_code' => 'en', 'name' => 'Luxury Discovery Set',     'short_description' => 'Complete discovery set.',    'description' => 'A complete set to explore the glamour universe in style.'],
