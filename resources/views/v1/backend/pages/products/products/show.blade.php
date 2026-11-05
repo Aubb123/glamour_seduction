@@ -41,6 +41,7 @@
                 <!-- Informations générales -->
                 <div class="tab-pane fade show active" id="tab_general">
                     <div class="row g-4">
+                        @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
 
                         <div class="col-md-8">
                             <div class="card border h-100">
@@ -85,14 +86,19 @@
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __('Prix de base') }}</div>
-                                        <div class="col-8 fw-bold">{{ number_format((float) $product->base_price, 2, ',', ' ') }}</div>
+                                        <div class="col-8 fw-bold">
+                                            {{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}
+                                            @if ($defaultCurrency)
+                                                <span class="text-muted fw-normal small ms-1">({{ __('devise par défaut') }} : {{ $defaultCurrency->active_translation?->name ?? $defaultCurrency->code }})</span>
+                                            @endif
+                                        </div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __('Prix barré') }}</div>
                                         <div class="col-8">
                                             @if ($product->compare_at_price)
-                                                <del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}</del>
+                                                <del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</del>
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif
@@ -107,17 +113,6 @@
                                     <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __('Vues') }}</div>
                                         <div class="col-8">{{ number_format($product->views_count) }}</div>
-                                    </div>
-                                    <hr class="my-2">
-                                    <div class="row mb-3 align-items-center">
-                                        <div class="col-4 text-muted fw-semibold">{{ __('Emballage discret') }}</div>
-                                        <div class="col-8">
-                                            @if ($product->requires_discreet_packaging)
-                                                <span class="badge badge-soft-success">{{ __('Requis') }}</span>
-                                            @else
-                                                <span class="badge badge-soft-secondary">{{ __('Non requis') }}</span>
-                                            @endif
-                                        </div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="row align-items-start">
@@ -236,8 +231,8 @@
                                                 <hr class="my-2">
                                                 <div class="row mb-3 align-items-start">
                                                     <div class="col-2 text-muted fw-semibold">{{ __('Description') }}</div>
-                                                    <div class="col-9" style="max-height: 200px; overflow-y: auto;">
-                                                        {{ $translation?->description ?? '—' }}
+                                                    <div class="col-9" style="max-height: 400px; overflow-y: auto;">
+                                                        {!! $translation?->description ?? '—' !!}
                                                     </div>
                                                 </div>
                                                 <hr class="my-2">
@@ -330,7 +325,7 @@
                                                         </td>
                                                         <td>
                                                             @if ($variant->price)
-                                                                <span class="fw-bold">{{ number_format((float) $variant->price, 2, ',', ' ') }}</span>
+                                                                <span class="fw-bold">{{ number_format((float) $variant->price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
                                                             @else
                                                                 <span class="text-muted">{{ __('Hérite du produit') }}</span>
                                                             @endif
@@ -410,5 +405,5 @@
             </div>
 
         @include('v1.backend.pages.products.products.partials._show-end', ['product' => $product])
-                    
+
 @endsection
