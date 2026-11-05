@@ -6,6 +6,8 @@
 
 @section('content')
 
+    @include('v1.backend.layouts.partials._summernote_editor', ['editMode' => false])
+
     @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('Créer un produit')])
 
     <div class="row">
