@@ -83,7 +83,7 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'category_id.required' => __(__("{$this->backendLangPath}.category_id.required")),
+            'category_id.required' => __("{$this->backendLangPath}.category_id.required"),
             'category_id.integer' => __("{$this->backendLangPath}.category_id.integer"),
             'category_id.exists' => __("{$this->backendLangPath}.category_id.exists"),
 
