@@ -11,53 +11,6 @@
     </style>
 @endpush
 
-@include('v1.backend.layouts.partials._statistics', [
-    'statistics' => [
-        [
-            'label' => __('Produits'),
-            'value' => $products->count(),
-            'icon'  => 'bx bx-box',
-            'color' => 'primary',
-        ],
-        [
-            'label' => __('Publiés'),
-            'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Published)->count(),
-            'icon'  => 'bx bx-check-circle',
-            'color' => 'success',
-        ],
-        [
-            'label' => __('Brouillons'),
-            'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Draft)->count(),
-            'icon'  => 'bx bx-edit',
-            'color' => 'warning',
-        ],
-        [
-            'label' => __('Archivés'),
-            'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Archived)->count(),
-            'icon'  => 'bx bx-archive',
-            'color' => 'secondary',
-        ],
-        [
-            'label' => __('Mis en avant'),
-            'value' => $products->where('is_featured', true)->count(),
-            'icon'  => 'bx bx-star',
-            'color' => 'info',
-        ],
-        [
-            'label' => __('Audits'),
-            'value' => $products->sum('audits_count'),
-            'icon'  => 'bx bx-file',
-            'color' => 'danger',
-        ],
-        [
-            'label' => __('Activités'),
-            'value' => $products->sum('activity_logs_count'),
-            'icon'  => 'bx bx-pulse',
-            'color' => 'secondary',
-        ],
-    ],
-])
-
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -73,42 +26,6 @@
             </div>
 
             <div class="card-body">
-
-                {{-- Filtres --}}
-                <div class="row g-2 mb-3">
-                    <div class="col-md-3">
-                        <label class="form-label text-muted small">{{ __('Statut') }}</label>
-                        <select id="filter-status" class="form-select form-select-sm">
-                            <option value="">{{ __('Tous les statuts') }}</option>
-                            @foreach (\App\Enums\Products\Products\ProductStatus::cases() as $status)
-                                <option value="{{ $status->value }}">{{ $status->label() }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label text-muted small">{{ __('Catégorie') }}</label>
-                        <select id="filter-category" class="form-select form-select-sm">
-                            <option value="">{{ __('Toutes les catégories') }}</option>
-                            @foreach ($products->pluck('category')->filter()->unique('id') as $category)
-                                <option value="{{ $category->id }}">{{ $category->active_translation?->name ?? ('#'.$category->id) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label text-muted small">{{ __('Marque') }}</label>
-                        <select id="filter-brand" class="form-select form-select-sm">
-                            <option value="">{{ __('Toutes les marques') }}</option>
-                            @foreach ($products->pluck('brand')->filter()->unique('id') as $brand)
-                                <option value="{{ $brand->id }}">{{ $brand->active_translation?->name ?? ('#'.$brand->id) }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-sm btn-soft-secondary w-100" id="btn-reset-filters">
-                            <i class="bx bx-reset me-1"></i> {{ __('Réinitialiser') }}
-                        </button>
-                    </div>
-                </div>
 
                 <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle w-100" id="products-table">
@@ -128,6 +45,7 @@
                         </thead>
                         <tbody>
                             @forelse ($products as $product)
+                                @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
@@ -142,9 +60,9 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="fw-bold">{{ number_format((float) $product->base_price, 2, ',', ' ') }}</span>
+                                        <span class="fw-bold">{{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
                                         @if ($product->compare_at_price)
-                                            <del class="text-muted ms-1">{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}</del>
+                                            <del class="text-muted ms-1">{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</del>
                                         @endif
                                     </td>
                                     <td>
@@ -266,7 +184,7 @@
 
     <script>
         $(document).ready(function () {
-            const table = $('#products-table').DataTable({
+            $('#products-table').DataTable({
                 dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>' +
                 'tr'                                        +
                 '<"row mt-3"<"col-md-5"l><"col-md-7"p>>',
@@ -278,22 +196,6 @@
                 },
                 order: [[0, 'asc']],
                 pageLength: 25,
-            });
-
-            // Filtres
-            $('#filter-status').on('change', function () {
-                table.column(4).search(this.value).draw();
-            });
-            $('#filter-category').on('change', function () {
-                table.column(2).search(this.value).draw();
-            });
-            $('#filter-brand').on('change', function () {
-                table.column(3).search(this.value).draw();
-            });
-            $('#btn-reset-filters').on('click', function () {
-                $('#filter-status').val('').trigger('change');
-                $('#filter-category').val('').trigger('change');
-                $('#filter-brand').val('').trigger('change');
             });
         });
     </script>

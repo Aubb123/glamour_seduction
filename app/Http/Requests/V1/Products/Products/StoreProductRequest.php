@@ -39,12 +39,16 @@ class StoreProductRequest extends FormRequest
             'brand_id' => ['nullable', 'integer', 'exists:product_brands,id'],
             'status' => ['required', Rule::in(ProductStatus::values())],
             'is_featured' => ['sometimes', 'boolean'],
-            'requires_discreet_packaging' => ['sometimes', 'boolean'],
             'weight' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'base_price' => ['required', 'numeric', 'min:0.01', 'max:99999999.99'],
             'compare_at_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['integer', 'exists:product_tags,id'],
+
+            // Image principale du produit (pattern blog_posts : obligatoire à la création)
+            'cloud_platform_uuid' => ['required', 'exists:cloud_platforms,uuid'],
+            'image' => ['required', 'image', 'mimes:jpg,png,webp', 'max:2048'],
+
             'translations' => ['required', 'array'],
             'translations.*.lang_id' => ['required', 'exists:langs,id'],
             'translations.*.short_description' => ['required', 'string', 'max:500'],
@@ -90,7 +94,6 @@ class StoreProductRequest extends FormRequest
             'status.in' => __("{$this->backendLangPath}.status.in"),
 
             'is_featured.boolean' => __("{$this->backendLangPath}.is_featured.boolean"),
-            'requires_discreet_packaging.boolean' => __("{$this->backendLangPath}.requires_discreet_packaging.boolean"),
 
             'weight.numeric' => __("{$this->backendLangPath}.weight.numeric"),
             'weight.min' => __("{$this->backendLangPath}.weight.min"),
@@ -107,6 +110,14 @@ class StoreProductRequest extends FormRequest
 
             'tags.array' => __("{$this->backendLangPath}.tags.array"),
             'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
+
+            'cloud_platform_uuid.required' => __("{$this->backendLangPath}.cloud_platform_uuid.required"),
+            'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
+
+            'image.required' => __("{$this->backendLangPath}.image.required"),
+            'image.image' => __("{$this->backendLangPath}.image.image"),
+            'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
+            'image.max' => __("{$this->backendLangPath}.image.max"),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

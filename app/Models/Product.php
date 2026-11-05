@@ -37,7 +37,6 @@ class Product extends Model
         'brand_id',
         'status',
         'is_featured',
-        'requires_discreet_packaging',
         'views_count',
         'weight',
         'base_price',
@@ -48,7 +47,6 @@ class Product extends Model
     protected $casts = [
         'status' => ProductStatus::class,
         'is_featured' => 'boolean',
-        'requires_discreet_packaging' => 'boolean',
         'views_count' => 'integer',
         'weight' => 'decimal:2',
         'base_price' => 'decimal:2',

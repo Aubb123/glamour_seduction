@@ -39,12 +39,16 @@ class UpdateProductRequest extends FormRequest
             'brand_id' => ['sometimes', 'nullable', 'integer', 'exists:product_brands,id'],
             'status' => ['sometimes', 'required', Rule::in(ProductStatus::values())],
             'is_featured' => ['sometimes', 'boolean'],
-            'requires_discreet_packaging' => ['sometimes', 'boolean'],
             'weight' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'base_price' => ['sometimes', 'required', 'numeric', 'min:0.01', 'max:99999999.99'],
             'compare_at_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['integer', 'exists:product_tags,id'],
+
+            // Image principale du produit (pattern blog_posts : optionnelle à la mise à jour)
+            'cloud_platform_uuid' => ['nullable', 'required_with:image', 'exists:cloud_platforms,uuid'],
+            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:2048'],
+
             'translations' => ['sometimes', 'required', 'array'],
             'translations.*.lang_id' => ['required', 'exists:langs,id'],
             'translations.*.short_description' => ['required', 'string', 'max:500'],
@@ -87,13 +91,20 @@ class UpdateProductRequest extends FormRequest
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
             'is_featured.boolean' => __("{$this->backendLangPath}.is_featured.boolean"),
-            'requires_discreet_packaging.boolean' => __("{$this->backendLangPath}.requires_discreet_packaging.boolean"),
             'weight.numeric' => __("{$this->backendLangPath}.weight.numeric"),
             'base_price.required' => __("{$this->backendLangPath}.base_price.required"),
             'base_price.numeric' => __("{$this->backendLangPath}.base_price.numeric"),
             'base_price.min' => __("{$this->backendLangPath}.base_price.min"),
             'compare_at_price.numeric' => __("{$this->backendLangPath}.compare_at_price.numeric"),
             'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
+
+            'cloud_platform_uuid.required_with' => __("{$this->backendLangPath}.cloud_platform_uuid.required_with"),
+            'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
+
+            'image.image' => __("{$this->backendLangPath}.image.image"),
+            'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
+            'image.max' => __("{$this->backendLangPath}.image.max"),
+
             'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
             'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
             'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),

@@ -1,4 +1,4 @@
-<form id="{{ isset($product) ? 'edit-product-form' : 'create-product-form' }}" action="{{ isset($product) ? route('backend.products.update', ['product' => $product->uuid]) : route('backend.products.store') }}" method="POST">
+<form id="{{ isset($product) ? 'edit-product-form' : 'create-product-form' }}" action="{{ isset($product) ? route('backend.products.update', ['product' => $product->uuid]) : route('backend.products.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @if (isset($product)) @method('PUT') @endif
 
@@ -21,6 +21,11 @@
         <div class="step-item" data-step="4">
             <span class="step-badge">4</span>
             <span class="step-label">{{ __('Tags & Options') }}</span>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-item" data-step="5">
+            <span class="step-badge">5</span>
+            <span class="step-label">{{ __('Multimédias') }}</span>
         </div>
     </div>
 
@@ -67,13 +72,9 @@
 
             <div class="col-md-6 mb-3">
                 <label class="form-label d-block">{{ __('Options') }}</label>
-                <div class="form-check form-switch mb-1">
+                <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" name="is_featured" id="is_featured" value="1" {{ old('is_featured', $product->is_featured ?? false) ? 'checked' : '' }}>
                     <label class="form-check-label" for="is_featured">{{ __('Mis en avant sur la boutique') }}</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" name="requires_discreet_packaging" id="requires_discreet_packaging" value="1" {{ old('requires_discreet_packaging', $product->requires_discreet_packaging ?? true) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="requires_discreet_packaging">{{ __('Emballage discret requis') }}</label>
                 </div>
             </div>
         </div>
@@ -82,11 +83,19 @@
     {{-- Étape 2 : Prix & Poids --}}
     <div class="step-content d-none" data-step-content="2">
         <div class="row">
+            @php
+                $defaultCurrency = \App\Models\Currency::where('is_default', true)->first();
+            @endphp
             <div class="col-md-6 mb-3">
                 <label for="base_price" class="form-label">{{ __('Prix de base') }} <span class="text-danger">*</span></label>
                 <input type="number" step="0.01" min="0.01" name="base_price" id="base_price" class="form-control @error('base_price') is-invalid @enderror" placeholder="0.00" value="{{ old('base_price', $product->base_price ?? null) }}" required />
                 @error('base_price') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                <small class="text-muted">{{ __('Saisi dans la devise par défaut de la boutique.') }}</small>
+                <small class="text-muted">
+                    {{ __('Saisi dans la devise par défaut de la boutique') }}
+                    @if ($defaultCurrency)
+                        — {{ $defaultCurrency->active_translation?->name ?? $defaultCurrency->code }} ({{ $defaultCurrency->symbol }})
+                    @endif
+                </small>
             </div>
 
             <div class="col-md-6 mb-3">
@@ -109,7 +118,9 @@
         <ul class="nav nav-tabs mb-3">
             @foreach ($langs as $index => $lang)
                 <li class="nav-item">
-                    <a class="nav-link {{ $index === 0 ? 'active' : '' }}" data-bs-toggle="tab" href="#lang-{{ $lang->id }}">{{ strtoupper($lang->code) }}</a>
+                    <a class="nav-link {{ $index === 0 ? 'active' : '' }}" data-bs-toggle="tab" href="#lang-{{ $lang->id }}">
+                        {{ $lang->name }}
+                    </a>
                 </li>
             @endforeach
         </ul>
@@ -123,20 +134,20 @@
                     <input type="hidden" name="translations[{{ $index }}][lang_id]" value="{{ $lang->id }}" />
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="translations-{{ $index }}-name" class="form-label">{{ __('Nom') }} <span class="text-danger">*</span></label>
+                            <label for="translations-{{ $index }}-name" class="form-label">{{ __('Nom') }} <span class="text-danger">*</span> <span class="text-muted">({{ $lang->name }})</span></label>
                             <input type="text" name="translations[{{ $index }}][name]" id="translations-{{ $index }}-name" class="form-control @error('translations.'.$index.'.name') is-invalid @enderror" placeholder="{{ __('Nom du produit') }}" value="{{ old('translations.'.$index.'.name', $existing->name ?? '') }}" required />
                             @error('translations.'.$index.'.name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label for="translations-{{ $index }}-short_description" class="form-label">{{ __('Description courte') }} <span class="text-danger">*</span></label>
+                            <label for="translations-{{ $index }}-short_description" class="form-label">{{ __('Description courte') }} <span class="text-danger">*</span> <span class="text-muted">({{ $lang->name }})</span></label>
                             <input type="text" name="translations[{{ $index }}][short_description]" id="translations-{{ $index }}-short_description" class="form-control @error('translations.'.$index.'.short_description') is-invalid @enderror" placeholder="{{ __('Résumé (max 500 car.)') }}" value="{{ old('translations.'.$index.'.short_description', $existing->short_description ?? '') }}" required />
                             @error('translations.'.$index.'.short_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                         <div class="col-md-12 mb-3">
-                            <label for="translations-{{ $index }}-description" class="form-label">{{ __('Description') }} <span class="text-danger">*</span></label>
-                            <textarea name="translations[{{ $index }}][description]" id="translations-{{ $index }}-description" rows="4" class="form-control @error('translations.'.$index.'.description') is-invalid @enderror" placeholder="{{ __('Description complète du produit') }}" required>{{ old('translations.'.$index.'.description', $existing->description ?? '') }}</textarea>
+                            <label for="summernote-{{ $index }}" class="form-label">{{ __('Description') }} <span class="text-danger">*</span> <span class="text-muted">({{ $lang->name }})</span></label>
+                            <textarea name="translations[{{ $index }}][description]" id="summernote-{{ $index }}" rows="4" class="form-control @error('translations.'.$index.'.description') is-invalid @enderror" placeholder="{{ __('Description complète du produit') }}" required>{!! old('translations.'.$index.'.description', $existing->description ?? '') !!}</textarea>
                             @error('translations.'.$index.'.description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                     </div>
@@ -168,6 +179,18 @@
         </div>
     </div>
 
+    {{-- Étape 5 : Multimédias (image principale du produit) --}}
+    <div class="step-content d-none" data-step-content="5">
+
+        @php
+            $imageLabel = __('Image principale du produit');
+            $imageFormats = __('Formats acceptés : JPG, PNG, WEBP. Taille max : 2 Mo.');
+        @endphp
+
+        @include('v1.backend.layouts.partials._image-upload-preview', ['form_label' => $imageLabel, 'format_accept' => $imageFormats, 'entity' => $product ?? null, 'cloudPlatformRequired' => true, 'imageRequired' => ! isset($product)])
+
+    </div>
+
     {{-- Navigation --}}
     <div class="d-flex mt-4 gap-2">
         <button type="button" class="btn btn-secondary d-none" id="btn-prev">
@@ -187,7 +210,7 @@
 @push('scripts')
 <script>
     const form = document.getElementById('{{ isset($product) ? 'edit-product-form' : 'create-product-form' }}');
-    const totalSteps = 4;
+    const totalSteps = 5;
     let currentStep = 1;
 
     const stepContents = form.querySelectorAll('[data-step-content]');

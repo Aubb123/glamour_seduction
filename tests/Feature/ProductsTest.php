@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\CloudPlatform;
 use App\Models\GeoCountry;
 use App\Models\Lang;
 use App\Models\Product;
@@ -9,6 +10,8 @@ use App\Models\ProductBrand;
 use App\Models\ProductCategory;
 use App\Models\ProductTag;
 use App\Models\User;
+use Database\Seeders\CloudFolderSeeder;
+use Database\Seeders\CloudPlatformSeeder;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
@@ -16,6 +19,7 @@ use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 
 uses(RefreshDatabase::class);
 
@@ -29,6 +33,8 @@ beforeEach(function () {
     $this->seed(GeoCountrySeeder::class);
     $this->seed(RoleSeeder::class);
     $this->seed(PermissionSeeder::class);
+    $this->seed(CloudPlatformSeeder::class);
+    $this->seed(CloudFolderSeeder::class);
     bootV1WebRoutes();
 });
 
@@ -77,20 +83,22 @@ function productSetup(): array
 function productPayload(array $setup, array $overrides = []): array
 {
     $uid = uniqid();
+    $platform = CloudPlatform::firstOrFail();
 
     return array_merge([
         'category_id' => $setup['category']->id,
         'brand_id' => $setup['brand']->id,
         'status' => 'published',
         'is_featured' => true,
-        'requires_discreet_packaging' => 1,
         'weight' => 0.35,
         'base_price' => 24990,
         'compare_at_price' => 29990,
         'tags' => [$setup['tag']->id],
+        'cloud_platform_uuid' => $platform->uuid,
+        'image' => UploadedFile::fake()->create('product.jpg', 100, 'image/jpeg'),
         'translations' => [
-            ['lang_id' => $setup['fr']->id, 'name' => 'Produit FR '.$uid, 'short_description' => 'Short FR.', 'description' => 'Desc FR longue.'],
-            ['lang_id' => $setup['en']->id, 'name' => 'Product EN '.$uid, 'short_description' => 'Short EN.', 'description' => 'Long EN description.'],
+            ['lang_id' => $setup['fr']->id, 'name' => 'Produit FR '.$uid, 'short_description' => 'Short FR.', 'description' => '<p>Desc FR longue.</p>'],
+            ['lang_id' => $setup['en']->id, 'name' => 'Product EN '.$uid, 'short_description' => 'Short EN.', 'description' => '<p>Long EN description.</p>'],
         ],
     ], $overrides);
 }
@@ -106,15 +114,18 @@ it('liste les produits avec DataTables', function () {
     expect($html)->toContain('products-table');
 });
 
-it('affiche la page de création de produit', function () {
+it('affiche la page de création de produit (avec Summernote)', function () {
     $admin = productAdmin();
 
-    $this->actingAs($admin)
+    $html = $this->actingAs($admin)
         ->get(route('backend.products.create'))
-        ->assertOk();
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain('summernote');
 });
 
-it('crée un produit avec traductions et tags (pivot)', function () {
+it('crée un produit avec traductions, tags et image (pivot + cloud file)', function () {
     $admin = productAdmin();
     $setup = productSetup();
 
@@ -130,6 +141,23 @@ it('crée un produit avec traductions et tags (pivot)', function () {
     expect($product->tags()->count())->toBe(1);
     expect($product->base_price)->toBe('24990.00');
     expect($product->status->value)->toBe('published');
+    expect($product->cloudFiles()->count())->toBe(1);
+});
+
+it('refuse la création d\'un produit sans image (pattern blog strict)', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $payload = productPayload($setup);
+    unset($payload['image']);
+    unset($payload['cloud_platform_uuid']);
+
+    $this->actingAs($admin)
+        ->post(route('backend.products.store'), $payload)
+        ->assertRedirect()
+        ->assertSessionHasErrors(['image', 'cloud_platform_uuid']);
+
+    expect(Product::count())->toBe(0);
 });
 
 it('refuse un produit sans base_price', function () {
@@ -171,7 +199,7 @@ it('affiche le détail d\'un produit (show avec slug)', function () {
         ->assertOk();
 });
 
-it('met à jour un produit et synchronise ses tags', function () {
+it('met à jour un produit et synchronise ses tags (sans nouvelle image)', function () {
     $admin = productAdmin();
     $setup = productSetup();
 
@@ -183,6 +211,8 @@ it('met à jour un produit et synchronise ses tags', function () {
     $product = Product::firstOrFail();
 
     $payload = productPayload($setup, ['tags' => [$secondTag->id], 'is_featured' => false]);
+    unset($payload['image']);
+    unset($payload['cloud_platform_uuid']);
     $this->actingAs($admin)
         ->put(route('backend.products.update', ['product' => $product->uuid]), $payload)
         ->assertRedirect()
@@ -192,6 +222,8 @@ it('met à jour un produit et synchronise ses tags', function () {
     expect($product->tags()->count())->toBe(1);
     expect($product->tags()->first()->id)->toBe($secondTag->id);
     expect($product->is_featured)->toBeFalse();
+    // Une seule image conservée (celle de la création, pas de nouvelle image)
+    expect($product->cloudFiles()->count())->toBe(1);
 });
 
 it('publie, dépublic et archive un produit', function () {

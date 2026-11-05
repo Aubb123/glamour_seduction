@@ -21,6 +21,9 @@ return [
         'force_destroy' => [
             'not_trashed_forbidden' => 'Only products already deleted or in the trash can be permanently deleted.',
         ],
+        'update' => [
+            'cloud_platform_uuid_required' => 'Cannot upload the image: the cloud platform was not selected.',
+        ],
 
         // Refusal to update a translation sitting in the trash (syncTranslations guard)
         'trashedTranslationConflict' => 'Cannot update this product translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',

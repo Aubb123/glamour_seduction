@@ -18,9 +18,6 @@ return [
         'is_featured' => [
             'boolean' => 'Le champ "mis en avant" doit être un booléen.',
         ],
-        'requires_discreet_packaging' => [
-            'boolean' => 'Le champ "emballage discret" doit être un booléen.',
-        ],
         'weight' => [
             'numeric' => 'Le poids doit être un nombre.',
             'min' => 'Le poids doit être au minimum 0.',
@@ -40,6 +37,17 @@ return [
         'tags' => [
             'array' => 'Les tags doivent être un tableau.',
             'exists' => 'Un des tags sélectionnés n\'existe pas.',
+        ],
+        'cloud_platform_uuid' => [
+            'required' => 'La plateforme cloud est obligatoire pour téléverser l\'image.',
+            'required_with' => 'La plateforme cloud est obligatoire lorsqu\'une image est fournie.',
+            'exists' => 'La plateforme cloud sélectionnée n\'existe pas.',
+        ],
+        'image' => [
+            'required' => 'L\'image principale du produit est obligatoire.',
+            'image' => 'Le fichier doit être une image.',
+            'mimes' => 'Formats acceptés : JPG, PNG, WEBP.',
+            'max' => 'L\'image ne peut pas dépasser 2 Mo.',
         ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',
