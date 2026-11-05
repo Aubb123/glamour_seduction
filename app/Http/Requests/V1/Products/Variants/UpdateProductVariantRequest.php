@@ -23,14 +23,15 @@ class UpdateProductVariantRequest extends FormRequest
 
     /**
      * Règles de validation.
+     *
+     * NB : le produit parent est IMMUABLE — une variante ne peut jamais être
+     * déplacée d'un produit à un autre. product_id n'est donc pas une règle.
      */
     public function rules(): array
     {
         return [
-            'product_id' => ['sometimes', 'required', 'integer', 'exists:products,id'],
-
             // SKU obligatoire et unique — ignore la propre variante (update)
-            'sku' => ['sometimes', 'required', 'string', 'max:100', Rule::unique('product_variants', 'sku')->ignore($this->route('productVariant')?->id)],
+            'sku' => ['sometimes', 'required', 'string', 'max:100', Rule::unique('product_variants', 'sku')->ignore($this->route('productVariant'))],
 
             'barcode' => ['nullable', 'string', 'max:100'],
 
@@ -52,9 +53,6 @@ class UpdateProductVariantRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => __("{$this->backendLangPath}.product_id.required"),
-            'product_id.exists' => __("{$this->backendLangPath}.product_id.exists"),
-
             'sku.required' => __("{$this->backendLangPath}.sku.required"),
             'sku.string' => __("{$this->backendLangPath}.sku.string"),
             'sku.max' => __("{$this->backendLangPath}.sku.max"),
