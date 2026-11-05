@@ -15,14 +15,23 @@
     <div class="col-sm-12">
         <div class="card">
 
-            <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 class="card-title mb-0">{{ __('Liste des produits') }}</h5>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ __('Actions') }}
+                    </button>
 
-                @if (! request()->routeIs('backend.products.trashed'))
-                    <a href="{{ route('backend.products.create') }}" class="btn btn-primary btn-sm">
-                        <i class="bx bx-plus me-1"></i> {{ __('Nouveau produit') }}
-                    </a>
-                @endif
+                    <ul class="dropdown-menu dropdown-menu-end text-nowrap">
+                        @include('v1.backend.layouts.partials._card_actions_menu', [
+                            'actions' => [
+                                ['label' => 'Nouveau produit', 'icon' => 'bx bx-plus', 'route' => 'backend.products.create'],
+                                ['label' => 'Liste des produits', 'icon' => 'bx bx-list-ul', 'route' => 'backend.products.index'],
+                                ['label' => 'Corbeille', 'icon' => 'bx bx-trash', 'route' => 'backend.products.trashed'],
+                            ]
+                        ])
+                    </ul>
+                </div>
             </div>
 
             <div class="card-body">
