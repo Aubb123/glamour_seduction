@@ -164,7 +164,7 @@
                                                     </button>
                                                 </form>
 
-                                                <form action="{{ route('backend.product-attribute-values.force-destroy', ['uuid' => $value->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $value->uuid }}">
+                                                <form action="{{ route('backend.product-attribute-values.force_destroy', ['uuid' => $value->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $value->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $value->uuid }}', '{{ __('Supprimer définitivement cette valeur ? Cette action est irréversible.') }}')">
