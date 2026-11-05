@@ -14,34 +14,46 @@
 @include('v1.backend.layouts.partials._statistics', [
     'statistics' => [
         [
-            'label' => 'Produits',
+            'label' => __('Produits'),
             'value' => $products->count(),
             'icon'  => 'bx bx-box',
             'color' => 'primary',
         ],
         [
-            'label' => 'Publiés',
+            'label' => __('Publiés'),
             'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Published)->count(),
             'icon'  => 'bx bx-check-circle',
             'color' => 'success',
         ],
         [
-            'label' => 'Brouillons',
+            'label' => __('Brouillons'),
             'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Draft)->count(),
             'icon'  => 'bx bx-edit',
             'color' => 'warning',
         ],
         [
-            'label' => 'Archivés',
+            'label' => __('Archivés'),
             'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Archived)->count(),
             'icon'  => 'bx bx-archive',
             'color' => 'secondary',
         ],
         [
-            'label' => 'Mis en avant',
+            'label' => __('Mis en avant'),
             'value' => $products->where('is_featured', true)->count(),
             'icon'  => 'bx bx-star',
             'color' => 'info',
+        ],
+        [
+            'label' => __('Audits'),
+            'value' => $products->sum('audits_count'),
+            'icon'  => 'bx bx-file',
+            'color' => 'danger',
+        ],
+        [
+            'label' => __('Activités'),
+            'value' => $products->sum('activity_logs_count'),
+            'icon'  => 'bx bx-pulse',
+            'color' => 'secondary',
         ],
     ],
 ])
@@ -51,11 +63,11 @@
         <div class="card">
 
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">Liste des produits</h5>
+                <h5 class="card-title mb-0">{{ __('Liste des produits') }}</h5>
 
                 @if (! request()->routeIs('backend.products.trashed'))
                     <a href="{{ route('backend.products.create') }}" class="btn btn-primary btn-sm">
-                        <i class="bx bx-plus me-1"></i> Nouveau produit
+                        <i class="bx bx-plus me-1"></i> {{ __('Nouveau produit') }}
                     </a>
                 @endif
             </div>
@@ -65,27 +77,27 @@
                 {{-- Filtres --}}
                 <div class="row g-2 mb-3">
                     <div class="col-md-3">
-                        <label class="form-label text-muted small">Statut</label>
+                        <label class="form-label text-muted small">{{ __('Statut') }}</label>
                         <select id="filter-status" class="form-select form-select-sm">
-                            <option value="">Tous les statuts</option>
+                            <option value="">{{ __('Tous les statuts') }}</option>
                             @foreach (\App\Enums\Products\Products\ProductStatus::cases() as $status)
                                 <option value="{{ $status->value }}">{{ $status->label() }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label text-muted small">Catégorie</label>
+                        <label class="form-label text-muted small">{{ __('Catégorie') }}</label>
                         <select id="filter-category" class="form-select form-select-sm">
-                            <option value="">Toutes les catégories</option>
+                            <option value="">{{ __('Toutes les catégories') }}</option>
                             @foreach ($products->pluck('category')->filter()->unique('id') as $category)
                                 <option value="{{ $category->id }}">{{ $category->active_translation?->name ?? ('#'.$category->id) }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label class="form-label text-muted small">Marque</label>
+                        <label class="form-label text-muted small">{{ __('Marque') }}</label>
                         <select id="filter-brand" class="form-select form-select-sm">
-                            <option value="">Toutes les marques</option>
+                            <option value="">{{ __('Toutes les marques') }}</option>
                             @foreach ($products->pluck('brand')->filter()->unique('id') as $brand)
                                 <option value="{{ $brand->id }}">{{ $brand->active_translation?->name ?? ('#'.$brand->id) }}</option>
                             @endforeach
@@ -93,7 +105,7 @@
                     </div>
                     <div class="col-md-3 d-flex align-items-end">
                         <button type="button" class="btn btn-sm btn-soft-secondary w-100" id="btn-reset-filters">
-                            <i class="bx bx-reset me-1"></i> Réinitialiser
+                            <i class="bx bx-reset me-1"></i> {{ __('Réinitialiser') }}
                         </button>
                     </div>
                 </div>
@@ -103,13 +115,15 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nom</th>
-                                <th>Catégorie</th>
-                                <th>Marque</th>
-                                <th>Statut</th>
-                                <th>Prix</th>
-                                <th>Mis en avant</th>
-                                <th class="text-center">Actions</th>
+                                <th>{{ __('Nom') }}</th>
+                                <th>{{ __('Catégorie') }}</th>
+                                <th>{{ __('Marque') }}</th>
+                                <th>{{ __('Statut') }}</th>
+                                <th>{{ __('Prix') }}</th>
+                                <th>{{ __('Audits') }}</th>
+                                <th>{{ __('Logs') }}</th>
+                                <th>{{ __('Mis en avant') }}</th>
+                                <th class="text-center">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -134,8 +148,24 @@
                                         @endif
                                     </td>
                                     <td>
+                                        <a href="{{ route('backend.products.audits', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}"
+                                           class="text-decoration-none">
+                                            <span class="badge badge-soft-primary">
+                                                <i class="bx bx-file me-1"></i> {{ $product->audits_count ?? 0 }}
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('backend.products.activity-logs', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}"
+                                           class="text-decoration-none">
+                                            <span class="badge badge-soft-info">
+                                                <i class="bx bx-pulse me-1"></i> {{ $product->activity_logs_count ?? 0 }}
+                                            </span>
+                                        </a>
+                                    </td>
+                                    <td>
                                         @if ($product->is_featured)
-                                            <span class="badge badge-soft-warning"><i class="bx bxs-star me-1"></i> En avant</span>
+                                            <span class="badge badge-soft-warning"><i class="bx bxs-star me-1"></i> {{ __('En avant') }}</span>
                                         @else
                                             <span class="badge badge-soft-secondary">—</span>
                                         @endif
@@ -147,26 +177,26 @@
                                                 <form action="{{ route('backend.products.restore', ['uuid' => $product->uuid]) }}" method="POST" class="d-inline" id="restore-form-{{ $product->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('restore-form-{{ $product->uuid }}', 'Restaurer ce produit ?', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $product->uuid }}', '{{ __('Restaurer ce produit ?') }}', '{{ __('Restaurer') }}', 'success')">
                                                         <i class="bx bx-rotate-left"></i>
                                                     </button>
                                                 </form>
 
-                                                <form action="{{ route('backend.products.force-destroy', ['uuid' => $product->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $product->uuid }}">
+                                                <form action="{{ route('backend.products.force_destroy', ['uuid' => $product->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $product->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $product->uuid }}', 'Supprimer définitivement ce produit ?', 'Supprimer définitivement', 'danger')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $product->uuid }}', '{{ __('Supprimer définitivement ce produit ? Cette action est irréversible.') }}')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
 
                                             @else
 
-                                                <a href="{{ route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-soft-secondary" title="Détails">
+                                                <a href="{{ route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="btn btn-sm btn-soft-secondary" title="{{ __('Détails') }}">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.products.edit', ['product' => $product->uuid]) }}" class="btn btn-sm btn-soft-primary" title="Modifier">
+                                                <a href="{{ route('backend.products.edit', ['product' => $product->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
@@ -174,7 +204,7 @@
                                                     <form action="{{ route('backend.products.unpublish', ['product' => $product->uuid]) }}" method="POST" class="d-inline" id="unpublish-form-{{ $product->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-warning" title="Dépublier" onclick="confirmAction('unpublish-form-{{ $product->uuid }}', 'Dépublier ce produit ?', 'Dépublier', 'warning')">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" title="{{ __('Dépublier') }}" onclick="confirmAction('unpublish-form-{{ $product->uuid }}', '{{ __('Dépublier ce produit ?') }}', '{{ __('Dépublier') }}', 'warning')">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -182,7 +212,7 @@
                                                     <form action="{{ route('backend.products.publish', ['product' => $product->uuid]) }}" method="POST" class="d-inline" id="publish-form-{{ $product->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-success" title="Publier" onclick="confirmAction('publish-form-{{ $product->uuid }}', 'Publier ce produit ?', 'Publier', 'success')">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Publier') }}" onclick="confirmAction('publish-form-{{ $product->uuid }}', '{{ __('Publier ce produit ?') }}', '{{ __('Publier') }}', 'success')">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -190,7 +220,7 @@
                                                     <form action="{{ route('backend.products.archive', ['product' => $product->uuid]) }}" method="POST" class="d-inline" id="archive-form-{{ $product->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-secondary" title="Archiver" onclick="confirmAction('archive-form-{{ $product->uuid }}', 'Archiver ce produit ?', 'Archiver', 'warning')">
+                                                        <button type="button" class="btn btn-sm btn-soft-secondary" title="{{ __('Archiver') }}" onclick="confirmAction('archive-form-{{ $product->uuid }}', '{{ __('Archiver ce produit ?') }}', '{{ __('Archiver') }}', 'warning')">
                                                             <i class="bx bx-archive"></i>
                                                         </button>
                                                     </form>
@@ -199,7 +229,7 @@
                                                 <form action="{{ route('backend.products.destroy', ['product' => $product->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $product->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="Supprimer" onclick="confirmAction('delete-form-{{ $product->uuid }}', 'Supprimer ce produit ?', 'Supprimer', 'warning')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer') }}" onclick="confirmAction('delete-form-{{ $product->uuid }}', '{{ __('Supprimer ce produit ?') }}', '{{ __('Supprimer') }}', 'warning')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -210,9 +240,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="10" class="text-center text-muted py-4">
                                         <i class="bx bx-box fs-3 d-block mb-2"></i>
-                                        Aucun produit trouvé.
+                                        {{ __('Aucun produit trouvé.') }}
                                     </td>
                                 </tr>
                             @endforelse
@@ -225,13 +255,27 @@
 </div>
 
 @push('scripts')
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jszip.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/pdfmake.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/vfs_fonts.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.print.min.js') }}"></script>
 
     <script>
         $(document).ready(function () {
             const table = $('#products-table').DataTable({
-                language: { url: '{{ asset(getEnvFolder() . 'others/backend/datatables/French.json') }}' },
+                dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>' +
+                'tr'                                        +
+                '<"row mt-3"<"col-md-5"l><"col-md-7"p>>',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                language: {
+                    url: "{{ app()->getLocale() === 'fr' ? asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/fr-FR.json') : asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/en-GB.json') }}"
+                },
                 order: [[0, 'asc']],
                 pageLength: 25,
             });
