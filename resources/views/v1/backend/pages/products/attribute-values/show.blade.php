@@ -185,7 +185,13 @@
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __('Supprimé le') }}</div>
-                                        <div class="col-8">{{ $value->deleted_at ? @formatDate($value->deleted_at, 'D MMMM YYYY - HH:mm:ss') : '—' }}</div>
+                                        <div class="col-8">
+                                            @if ($value->deleted_at)
+                                                @formatDate($value->deleted_at, 'D MMMM YYYY - HH:mm:ss')
+                                            @else
+                                                —
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
