@@ -300,7 +300,7 @@
                                     <h6 class="mb-0 fw-bold">
                                         <i class="bx bx-layer me-2 text-primary"></i>{{ __('Variantes') }}
                                     </h6>
-                                    <a href="{{ route('backend.product-variants.create') }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ route('backend.product-variants.create', ['product' => $product->uuid]) }}" class="btn btn-sm btn-primary">
                                         <i class="bx bx-plus me-1"></i> {{ __('Nouvelle variante') }}
                                     </a>
                                 </div>
@@ -346,9 +346,21 @@
                                                             @endif
                                                         </td>
                                                         <td class="text-center">
-                                                            <a href="{{ route('backend.product-variants.show', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-secondary" title="{{ __('Détails') }}">
-                                                                <i class="bx bx-show"></i>
-                                                            </a>
+                                                            <div class="d-inline-flex gap-1">
+                                                                <a href="{{ route('backend.product-variants.show', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-secondary" title="{{ __('Détails') }}">
+                                                                    <i class="bx bx-show"></i>
+                                                                </a>
+                                                                <a href="{{ route('backend.product-variants.edit', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
+                                                                    <i class="bx bx-edit"></i>
+                                                                </a>
+                                                                <form action="{{ route('backend.product-variants.destroy', ['productVariant' => $variant->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $variant->uuid }}">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer') }}" onclick="confirmAction('delete-form-{{ $variant->uuid }}', '{{ __('Supprimer cette variante ?') }}', '{{ __('Supprimer') }}', 'warning')">
+                                                                        <i class="bx bx-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @empty
