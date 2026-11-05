@@ -1,21 +1,21 @@
-@extends('v1.backend.layouts.app') 
+@extends('v1.backend.layouts.app')
 
-@section('title') 
-    Créer une variante de produit
-@endsection 
+@section('title')
+    {{ __('Créer une variante de produit') }}
+@endsection
 
-@section('content') 
+@section('content')
 
-    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => 'Créer une variante de produit'])
+    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('Créer une variante de produit')])
 
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
 
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Créer une variante de produit</h5>
+                    <h5 class="card-title mb-0">{{ __('Créer une variante de produit') }}</h5>
                     <a href="{{ route('backend.product-variants.index') }}" class="btn btn-secondary btn-sm">
-                        <i class="bx bx-arrow-back me-1"></i> Retour
+                        <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
                     </a>
                 </div>
 
