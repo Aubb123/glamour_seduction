@@ -1,21 +1,22 @@
-<form id="{{ isset($variant) ? 'edit-variant-form' : 'create-variant-form' }}" action="{{ isset($variant) ? route('backend.product-variants.update', ['productVariant' => $variant->uuid]) : route('backend.product-variants.store') }}" method="POST">
+<form id="{{ isset($variant) ? 'edit-variant-form' : 'create-variant-form' }}" action="{{ isset($variant) ? route('backend.product-variants.update', ['productVariant' => $variant->uuid]) : route('backend.product-variants.store', ['product' => $product->uuid]) }}" method="POST">
     @csrf
     @if (isset($variant)) @method('PUT') @endif
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <label for="product_id" class="form-label">{{ __('Produit parent') }} <span class="text-danger">*</span></label>
-            <select name="product_id" id="product_id" class="form-select @error('product_id') is-invalid @enderror" required>
-                <option value="">{{ __('— Sélectionner un produit —') }}</option>
-                @foreach ($products as $product)
-                    <option value="{{ $product->id }}" {{ old('product_id', $variant->product_id ?? null) == $product->id ? 'selected' : '' }}>
-                        {{ $product->active_translation?->name ?? ('#'.$product->id) }}
-                    </option>
-                @endforeach
-            </select>
-            @error('product_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    {{-- Produit parent : affiché en lecture seule — jamais sélectionnable ni modifiable --}}
+    <div class="card border mb-3">
+        <div class="card-body py-2">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-muted fw-semibold">{{ __('Produit parent') }}</div>
+                <div class="col-md-8">
+                    <span class="badge badge-soft-primary">
+                        {{ (isset($variant) ? $variant->product?->active_translation?->name : $product->active_translation?->name) ?? '#' . (isset($variant) ? $variant->product_id : $product->id) }}
+                    </span>
+                </div>
+            </div>
         </div>
+    </div>
 
+    <div class="row">
         <div class="col-md-6 mb-3">
             <label for="sku" class="form-label">{{ __('Référence SKU') }} <span class="text-danger">*</span></label>
             <input type="text" name="sku" id="sku" class="form-control @error('sku') is-invalid @enderror" placeholder="{{ __('ex : MAGIC-ROUGE-S') }}" value="{{ old('sku', $variant->sku ?? '') }}" required />
@@ -58,15 +59,16 @@
     <h6 class="fw-bold mb-3">{{ __("Valeurs d'attributs") }}</h6>
     <p class="text-muted small">{{ __('Combinaison de valeurs (ex : Couleur = Rouge, Taille = S).') }}</p>
 
+    @php
+        $selectedValueIds = old('attribute_value_ids', isset($variant) ? $variant->attributeValues->pluck('id')->all() : []);
+    @endphp
+
     <div class="row">
         @foreach ($attributes as $attribute)
             <div class="col-md-12 mb-3">
                 <label class="form-label d-block fw-semibold">{{ $attribute->active_translation?->name ?? ('#'.$attribute->id) }}</label>
                 <div class="d-flex flex-wrap gap-2">
                     @foreach ($attribute->values as $value)
-                        @php
-                            $selectedValueIds = old('attribute_value_ids', isset($variant) ? $variant->attributeValues->pluck('id')->all() : []);
-                        @endphp
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="attribute_value_ids[]" id="attr-value-{{ $value->id }}" value="{{ $value->id }}"
                                 @if (in_array($value->id, $selectedValueIds)) checked @endif />
@@ -83,7 +85,7 @@
     <hr class="my-4">
 
     <div class="d-flex justify-content-end gap-2">
-        <a href="{{ route('backend.product-variants.index') }}" class="btn btn-secondary">
+        <a href="{{ (isset($variant) ? route('backend.products.show', ['product' => $variant->product->uuid, 'slug' => $variant->product->active_translation?->slug ?? 'null']) : route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null'])) }}" class="btn btn-secondary">
             <i class="bx bx-x me-1"></i> {{ __('Annuler') }}
         </a>
         <button type="submit" class="btn btn-success">
