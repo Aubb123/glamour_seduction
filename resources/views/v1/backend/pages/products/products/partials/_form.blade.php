@@ -154,7 +154,7 @@
                     @forelse ($tags as $tag)
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="tags[]" id="tag-{{ $tag->id }}" value="{{ $tag->id }}"
-                                @if (in_array($tag->id, old('tags', $product->tags->pluck('id')->all() ?? []))) checked @endif />
+                                @if (in_array($tag->id, old('tags', isset($product) ? $product->tags->pluck('id')->all() : []))) checked @endif />
                             <label class="form-check-label" for="tag-{{ $tag->id }}">
                                 {{ $tag->active_translation?->name ?? ('#'.$tag->id) }}
                             </label>
