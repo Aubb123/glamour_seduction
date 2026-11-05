@@ -44,6 +44,32 @@
     <!-- Custom JS Fait par moi -dev aubanel- -->
     <script src="{{ asset(getEnvFolder() . 'others/all/assets/js/global-form-loader.js')}}"> </script>
 
+    <script>
+        (function () {
+            function activateTabFromHash() {
+                if (!window.location.hash || !window.bootstrap || !window.bootstrap.Tab) {
+                    return;
+                }
+
+                var tabLink = Array.from(document.querySelectorAll('[data-bs-toggle="tab"]'))
+                    .find(function (link) {
+                        return link.hash === window.location.hash;
+                    });
+
+                if (tabLink) {
+                    window.bootstrap.Tab.getOrCreateInstance(tabLink).show();
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', activateTabFromHash, { once: true });
+            } else {
+                activateTabFromHash();
+            }
+
+            window.addEventListener('hashchange', activateTabFromHash);
+        })();
+    </script>
 
     @stack('scripts')
 </body>
