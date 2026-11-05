@@ -23,13 +23,14 @@ class StoreProductVariantRequest extends FormRequest
 
     /**
      * Règles de validation.
+     *
+     * NB : le produit parent ne fait PAS partie des règles — il est fourni par l'URL
+     * (contexte de la fiche produit), jamais choisi dans le formulaire. Le contrôleur
+     * l'injecte lui-même au service après résolution de l'UUID.
      */
     public function rules(): array
     {
         return [
-            // Le produit parent est obligatoire et doit exister
-            'product_id' => ['required', 'integer', 'exists:products,id'],
-
             // SKU obligatoire et unique (contrainte DB + validation)
             'sku' => ['required', 'string', 'max:100', 'unique:product_variants,sku'],
 
@@ -55,10 +56,6 @@ class StoreProductVariantRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => __("{$this->backendLangPath}.product_id.required"),
-            'product_id.integer' => __("{$this->backendLangPath}.product_id.integer"),
-            'product_id.exists' => __("{$this->backendLangPath}.product_id.exists"),
-
             'sku.required' => __("{$this->backendLangPath}.sku.required"),
             'sku.string' => __("{$this->backendLangPath}.sku.string"),
             'sku.max' => __("{$this->backendLangPath}.sku.max"),
