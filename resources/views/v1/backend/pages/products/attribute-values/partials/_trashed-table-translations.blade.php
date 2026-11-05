@@ -4,11 +4,11 @@
 
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <h5 class="card-title mb-0">
-                    Traductions supprimées de la valeur d'attribut — {{ $value->active_translation?->label ?? $value->value }}
+                    {{ __("Traductions supprimées de la valeur d'attribut") }} — {{ $value->active_translation?->label ?? $value->value }}
                 </h5>
 
                 <a href="{{ route('backend.product-attribute-values.index') }}" class="btn btn-secondary btn-sm">
-                    <i class="bx bx-arrow-back me-1"></i> Retour
+                    <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
                 </a>
             </div>
 
@@ -19,11 +19,11 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Langue</th>
-                                <th>Libellé</th>
+                                <th>{{ __('Langue') }}</th>
+                                <th>{{ __('Libellé') }}</th>
                                 <th>Slug</th>
-                                <th>Supprimée le</th>
-                                <th class="text-center">Actions</th>
+                                <th>{{ __('Supprimée le') }}</th>
+                                <th class="text-center">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,7 +42,7 @@
                                                 <form action="{{ route('backend.product-attribute-value-translations.restore', ['uuid' => $translation->uuid]) }}" method="POST" class="d-inline" id="restore-form-{{ $translation->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('restore-form-{{ $translation->uuid }}', 'Restaurer cette traduction ?', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('Restaurer cette traduction ?') }}', '{{ __('Restaurer') }}', 'success')">
                                                         <i class="bx bx-rotate-left"></i>
                                                     </button>
                                                 </form>
@@ -50,7 +50,7 @@
                                                 <form action="{{ route('backend.product-attribute-value-translations.force-destroy', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $translation->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', 'Supprimer définitivement cette traduction ?', 'Supprimer définitivement', 'danger')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer définitivement cette traduction ?') }}', '{{ __('Supprimer définitivement') }}', 'danger')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -64,7 +64,7 @@
                                 <tr>
                                     <td colspan="6" class="text-center text-muted py-4">
                                         <i class="bx bx-globe fs-3 d-block mb-2"></i>
-                                        Aucune traduction supprimée.
+                                        {{ __('Aucune traduction supprimée.') }}
                                     </td>
                                 </tr>
                             @endforelse

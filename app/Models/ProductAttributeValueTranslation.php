@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductAttributeValueTranslation extends Model
 {
-    // Comportements parvaleurés entre modèles (ex. UUID, slug, timestamps personnalisés)
+    // Comportements partagés entre modèles (ex. UUID, slug, timestamps personnalisés)
     use HasModelBehaviors;
 
     // Table de traduction des valeurs d'attributs de produits
@@ -32,6 +32,15 @@ class ProductAttributeValueTranslation extends Model
     protected static function getSlugSourceField(): string
     {
         return 'label';
+    }
+
+    /**
+     * Champs surveillés pour régénérer le slug lors d'une mise à jour.
+     * (aligné sur BlogPostTranslation : le slug suit le libellé si le label change)
+     */
+    protected static function getSlugWatchedFields(): array
+    {
+        return ['label'];
     }
 
     /**

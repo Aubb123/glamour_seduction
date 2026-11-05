@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Http\Requests\V1\Products\Attributes;
+namespace App\Http\Requests\V1\Products\AttributeValues;
 
 use App\Enums\Products\Attributes\ProductAttributeValueStatus;
+use App\Models\ProductAttributeValue;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 use function __;
 
 /**
- * Requête de validation pour la création d'une valeur d'attribut de produit.
+ * Requête de validation pour la mise à jour d'une valeur d'attribut de produit.
  *
- * Valide les données entrantes pour la création d'une valeur (product_attribute_values)
+ * Valide les données entrantes pour la modification d'une valeur (product_attribute_values)
  * avec ses traductions associées (product_attribute_value_translations).
+ * Gère l'unicité de sort_order en excluant la valeur en cours de modification.
  */
-class StoreProductAttributeValueRequest extends FormRequest
+class UpdateProductAttributeValueRequest extends FormRequest
 {
     /**
      * Chemin de base pour les traductions des messages de validation.
@@ -22,8 +24,29 @@ class StoreProductAttributeValueRequest extends FormRequest
     protected string $backendLangPath = 'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-validation.productAttributeValues';
 
     /**
-     * Determine if the user is authorized to make this request.
+     * ID résolu de la valeur à partir de l'UUID de la route.
+     * Utilisé pour exclure la valeur courante des règles d'unicité.
      */
+    protected ?int $productAttributeValueId = null;
+
+    /**
+     * Résolution de l'ID de la valeur avant la validation.
+     * La valeur est déjà résolue par le binding implicite de la route {productAttributeValue}
+     * (clé = uuid via ProductAttributeValue::getRouteKeyName()).
+     */
+    protected function prepareForValidation(): void
+    {
+        /** @var ProductAttributeValue|null $productAttributeValue */
+        $productAttributeValue = $this->route('productAttributeValue');
+
+        // Sécurité : si le paramètre n'a pas été injecté comme modèle, on renvoie une 404.
+        if (! $productAttributeValue instanceof ProductAttributeValue) {
+            abort(404);
+        }
+
+        $this->productAttributeValueId = $productAttributeValue->id;
+    }
+
     public function authorize(): bool
     {
         return true; // ← géré par middleware
@@ -32,28 +55,26 @@ class StoreProductAttributeValueRequest extends FormRequest
     /**
      * Règles de validation.
      *
-     * NOTE IMPORTANTE :
-     * ne peuvent PAS être écrites en syntaxe statique de type :
-     *   'unique:product_attribute_value_translations,name,NULL,id,lang_id,{translations.*.lang_id}'
-     * car Laravel n'interprète PAS "{translations.*.lang_id}" comme une référence
-     * dynamique — il le traite comme une chaîne littérale. Résultat : le filtre
-     * where("lang_id", "{translations.*.lang_id}") ne correspond à aucune ligne réelle,
-     * et la contrainte d'unicité "par langue" ne fonctionne pas du tout.
-     *
-     * La solution est de construire ces règles dynamiquement en PHP, en itérant
-     * sur les traductions réellement envoyées dans la requête, pour injecter
-     * la vraie valeur de lang_id de chaque ligne dans un vrai closure.
+     * NOTE IMPORTANTE (même approche que StoreProductAttributeValueRequest) :
+     * La syntaxe statique 'unique:...,lang_id,{translations.*.lang_id}' ne
+     * fonctionne PAS — Laravel traite "{translations.*.lang_id}" comme une
+     * chaîne littérale, pas comme une référence dynamique au champ frère.
+     * On reconstruit ces règles dynamiquement en PHP, avec un vrai closure
+     * qui reçoit la vraie valeur de lang_id de chaque ligne de traduction.
      */
     public function rules(): array
     {
+        $productAttributeValueId = $this->productAttributeValueId;
+
         $rules = [
             // L'attribut parent est obligatoire et doit exister
             'attribute_id' => ['required', 'integer', 'exists:product_attributes,id'],
 
-            // La clé machine est obligatoire et unique pour l'attribut concerné (contrainte DB attribute_id + value)
+            // La clé machine est obligatoire (l'unicité attribute_id + value est assurée par la contrainte DB,
+            // le serveur lève une QueryException traduite si la paire existe déjà sur une autre valeur)
             'value' => ['required', 'string', 'max:100', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
 
-            // sort_order n'est PAS unique ici (contrairement aux attributs) : l'ordre est géré par attribut
+            // sort_order n'est PAS unique ici : l'ordre est géré par attribut
             'sort_order' => ['required', 'integer', 'min:0'],
 
             'status' => ['required', Rule::in(ProductAttributeValueStatus::values())],
@@ -66,29 +87,29 @@ class StoreProductAttributeValueRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
-        // Génération dynamique des règles "unique par langue",
-        // basées sur les données réellement envoyées dans la requête
-        // (accessible via $this->input()).
+        // Génération dynamique des règles "unique par langue" pour
+        // "label", en excluant l'enregistrement en cours de modification.
         // ────────────────────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
         foreach ($translations as $index => $translation) {
-            // Récupère le lang_id RÉEL de cette ligne précise de traduction.
-            // Si lang_id est absent/invalide, la règle 'exists' définie plus haut
-            // se chargera de le signaler séparément — ici on se contente de
-            // sécuriser l'accès pour éviter une erreur PHP.
+            // lang_id RÉEL de cette ligne précise (pas un placeholder texte).
             $langId = $translation['lang_id'] ?? null;
 
-            // Règle unique dynamique pour le "label" :
-            // → le libellé doit être unique, mais seulement PARMI les traductions
-            //   de la MÊME langue (lang_id identique), et uniquement parmi les
-            //   lignes actives (non soft-deleted).
+            // Règle unique dynamique pour "label" :
+            // → unique parmi les traductions ayant le MÊME lang_id que cette
+            //   ligne, MAIS en excluant celles qui appartiennent déjà à la
+            //   valeur en cours de modification.
             $rules["translations.{$index}.label"] = [
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('product_attribute_value_translations', 'label')
                     ->where(fn ($query) => $query->where('lang_id', $langId))
+                    ->ignore($productAttributeValueId, 'attribute_value_id')
+                    // Ignore aussi les lignes soft-deleted (cohérent avec le
+                    // SoftDeletes de la table) : un nom "libéré" par une
+                    // suppression logique ne doit pas bloquer la sauvegarde.
                     ->whereNull('deleted_at'),
             ];
 

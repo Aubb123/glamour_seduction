@@ -26,7 +26,7 @@ class ProductAttributeValueService
         return DB::transaction(function () use ($data) {
 
             // Création de la valeur (sauf les traductions)
-            $valeur = ProductAttributeValue::create([
+            $value = ProductAttributeValue::create([
                 'attribute_id' => $data['attribute_id'],
                 'value' => $data['value'],
                 'sort_order' => $data['sort_order'],
@@ -34,18 +34,18 @@ class ProductAttributeValueService
             ]);
 
             // Synchronisation des traductions (création ou mise à jour)
-            $this->syncTranslations($valeur, $data['translations']);
+            $this->syncTranslations($value, $data['translations']);
 
-            return $valeur; // ← retourne la valeur créée avec ses traductions
+            return $value; // ← retourne la valeur créée avec ses traductions
         });
     }
 
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_values_update(ProductAttributeValue $valeur, array $data): ProductAttributeValue
+    public function backend_product_attribute_values_update(ProductAttributeValue $value, array $data): ProductAttributeValue
     {
-        return DB::transaction(function () use ($valeur, $data) {
+        return DB::transaction(function () use ($value, $data) {
 
             $updateData = [];
 
@@ -65,32 +65,31 @@ class ProductAttributeValueService
                 ? ProductAttributeValueStatus::Active
                 : ProductAttributeValueStatus::Inactive;
 
-            $valeur->update($updateData);
+            $value->update($updateData);
 
             if (isset($data['translations'])) {
-                $this->syncTranslations($valeur, $data['translations']);
+                $this->syncTranslations($value, $data['translations']);
             }
 
-            return $valeur;
+            return $value;
         });
     }
 
-    // __APPEND_1__
     // ─────────────────────────────────────────────
     // ACTIVATE
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_values_activate(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_activate(ProductAttributeValue $value): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($valeur) {
+        DB::transaction(function () use ($value) {
 
-            // Vérification que le valeur n'est pas déjà actif
-            if ($valeur->status === ProductAttributeValueStatus::Active) {
+            // Vérification que la valeur n'est pas déjà active
+            if ($value->status === ProductAttributeValueStatus::Active) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             }
 
-            // Activation du valeur sélectionné
-            $valeur->update([
+            // Activation de la valeur sélectionnée
+            $value->update([
                 'status' => ProductAttributeValueStatus::Active,
             ]);
         });
@@ -99,18 +98,18 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // DEACTIVATE
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_values_deactivate(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_deactivate(ProductAttributeValue $value): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($valeur) {
+        DB::transaction(function () use ($value) {
 
-            // Vérification que le valeur n'est pas déjà inactif
-            if ($valeur->status === ProductAttributeValueStatus::Inactive) {
+            // Vérification que la valeur n'est pas déjà inactive
+            if ($value->status === ProductAttributeValueStatus::Inactive) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             }
 
-            // Désactivation du valeur sélectionné
-            $valeur->update([
+            // Désactivation de la valeur sélectionnée
+            $value->update([
                 'status' => ProductAttributeValueStatus::Inactive,
             ]);
         });
@@ -119,21 +118,21 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_values_destroy(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_destroy(ProductAttributeValue $value): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($valeur) {
+        DB::transaction(function () use ($value) {
 
-            // Vérification : empêcher la suppression d'un valeur actif
-            if ($valeur->status === ProductAttributeValueStatus::Active) {
+            // Vérification : empêcher la suppression d'une valeur active
+            if ($value->status === ProductAttributeValueStatus::Active) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
             // Suppression simple (soft delete)
-            if ($valeur->trashed()) {
+            if ($value->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
-            destroy_function($valeur); // ← suppression du valeur et de ses traductions associées
+            destroy_function($value); // ← suppression de la valeur et de ses traductions associées
 
         });
     }
@@ -141,14 +140,14 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_values_restore(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_restore(ProductAttributeValue $value): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($valeur) {
+        DB::transaction(function () use ($value) {
 
             // Restauration simple (restore)
-            if ($valeur->trashed()) {
-                restore_function($valeur); // ← restauration du valeur et de ses traductions associées
+            if ($value->trashed()) {
+                restore_function($value); // ← restauration de la valeur et de ses traductions associées
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
@@ -159,14 +158,14 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_values_force_destroy(ProductAttributeValue $valeur): void
+    public function backend_product_attribute_values_force_destroy(ProductAttributeValue $value): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($valeur) {
+        DB::transaction(function () use ($value) {
 
             // Suppression définitive (forceDelete)
-            if ($valeur->trashed()) {
-                force_destroy_function($valeur); // ← suppression définitive du valeur et de ses traductions associées
+            if ($value->trashed()) {
+                force_destroy_function($value); // ← suppression définitive de la valeur et de ses traductions associées
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
@@ -177,26 +176,26 @@ class ProductAttributeValueService
     // ─────────────────────────────────────────────
     // SYNC TRANSLATIONS (privé)
     // ─────────────────────────────────────────────
-    private function syncTranslations(ProductAttributeValue $valeur, array $translations): void
+    private function syncTranslations(ProductAttributeValue $value, array $translations): void
     {
         // Récupère les IDs des langues soumises
         $submittedLangIds = collect($translations)->pluck('lang_id')->toArray();
 
         // Supprime temporairement les traductions qui ne sont pas présentes dans les données soumises
-        ProductAttributeValueTranslation::where('attribute_value_id', $valeur->id)
+        ProductAttributeValueTranslation::where('attribute_value_id', $value->id)
             ->whereNotIn('lang_id', $submittedLangIds)
             ->delete();
-        // Suppression définitive des traductions supprimées (soft delete) qui sont en corbeille, supprimer précédemment
-        ProductAttributeValueTranslation::onlyTrashed()->where('attribute_value_id', $valeur->id)
+        // Suppression définitive des traductions supprimées (soft delete) qui sont en corbeille, supprimées précédemment
+        ProductAttributeValueTranslation::onlyTrashed()->where('attribute_value_id', $value->id)
             ->whereNotIn('lang_id', $submittedLangIds)
             ->forceDelete();
 
         // Validation générique factorisée (BackendHelper) :
-        //  - conflit nom/slug avec une autre entité (active ou en corbeille) dans la même langue ;
-        //  - conflit avec la propre traduction du valeur, placée en corbeille.
+        //  - conflit label/slug avec une autre entité (active ou en corbeille) dans la même langue ;
+        //  - conflit avec la propre traduction de la valeur, placée en corbeille.
         // Lève une InvalidArgumentException avec un message explicite si besoin.
         assertTranslationUniqueness(
-            $valeur,
+            $value,
             $translations,
             __('v1/backend/others/helpers/backend-helper-messages.entityLabels.productAttributeValue'),
             $this->backendHelperLangPath,
@@ -204,12 +203,12 @@ class ProductAttributeValueService
             'slug'
         );
 
-        // Pour chaque traduction reçue, on utilise updateOrCreate pour créer ou mettre à jour la traduction correspondante
+        // Pour chaque traduction reçue, on met à jour la traduction existante ou on la crée
         foreach ($translations as $translation) {
 
-            // Vérifie si une traduction existe déjà pour le valeur et la langue
+            // Vérifie si une traduction existe déjà pour la valeur et la langue
             $existingTranslation = ProductAttributeValueTranslation::withTrashed()
-                ->where('attribute_value_id', $valeur->id)
+                ->where('attribute_value_id', $value->id)
                 ->where('lang_id', $translation['lang_id'])
                 ->first();
 
@@ -234,7 +233,7 @@ class ProductAttributeValueService
 
                 // Sinon, on crée une nouvelle traduction
                 ProductAttributeValueTranslation::create([
-                    'attribute_value_id' => $valeur->id,
+                    'attribute_value_id' => $value->id,
                     'lang_id' => $translation['lang_id'],
                     'label' => $translation['label'],
                 ]);

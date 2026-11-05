@@ -7,6 +7,7 @@ use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProductAttributeValue extends Model
 {
@@ -23,8 +24,10 @@ class ProductAttributeValue extends Model
     protected string $translationModel = ProductAttributeValueTranslation::class;
 
     // Relations enfants dont la présence bloque la suppression de cette valeur.
-    // NB : 'variants' (pivot product_variant_attribute_value) sera ajouté lors de
-    // l'intégration du module Variantes.
+    // NB : contrairement aux tags des articles (voir BlogPost), le pivot
+    // product_variant_attribute_value n'est PAS volontairement bloquant :
+    // la suppression d'une valeur reste possible même si des variantes la
+    // référencent (comportement identique à BlogPost::tags).
     protected array $dependentRelations = [];
 
     // Attributs autorisés pour l'assignation de masse
@@ -54,6 +57,15 @@ class ProductAttributeValue extends Model
     public function attribute(): BelongsTo
     {
         return $this->belongsTo(ProductAttribute::class, 'attribute_id');
+    }
+
+    /**
+     * Relation many-to-many vers les variantes de produits utilisant cette valeur
+     * (pivot `product_variant_attribute_value`).
+     */
+    public function variants(): BelongsToMany
+    {
+        return $this->belongsToMany(ProductVariant::class, 'product_variant_attribute_value', 'attribute_value_id', 'product_variant_id');
     }
 
     /**
