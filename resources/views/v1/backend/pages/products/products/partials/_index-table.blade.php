@@ -46,11 +46,19 @@
                         <tbody>
                             @forelse ($products as $product)
                                 @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
+                                @php($image = $product->getFirstImage())
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>
-                                        <span class="fw-semibold" data-search-name>{{ $product->active_translation?->name ?? '—' }}</span>
-                                        <small class="text-muted d-block"><code>{{ $product->uuid }}</code></small>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a href="{{ $image['url_img'] }}" target="_blank" rel="noopener noreferrer">
+                                                <img src="{{ $image['url_img'] }}" alt="{{ $product->active_translation?->name ?? __('Image produit') }}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
+                                            </a>
+                                            <div>
+                                                <span class="fw-semibold" data-search-name>{{ $product->active_translation?->name ?? '—' }}</span>
+                                                <small class="text-muted d-block"><code>{{ $product->uuid }}</code></small>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td data-category="{{ $product->category_id }}">{{ $product->category?->active_translation?->name ?? '—' }}</td>
                                     <td data-brand="{{ $product->brand_id ?? 'null' }}">{{ $product->brand?->active_translation?->name ?? '—' }}</td>
