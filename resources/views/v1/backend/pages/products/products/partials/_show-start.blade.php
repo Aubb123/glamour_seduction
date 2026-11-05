@@ -101,17 +101,4 @@
 
                 <div class="card-body">
 
-                    {{-- Image principale du produit (aperçu cliquable, pattern _tab-multimedia) --}}
-                    @php($productImage = $product->getFirstImage())
-                    <div class="text-center mb-4">
-                        <a href="{{ $productImage['url_img'] }}" target="_blank" rel="noopener noreferrer">
-                            <img src="{{ $productImage['url_img'] }}" alt="{{ $product->active_translation?->name ?? __('Image produit') }}" class="img-fluid rounded shadow-sm" style="max-width: 100%; max-height: 300px; object-fit: cover;">
-                        </a>
-                        <div class="mt-2">
-                            <a href="{{ $productImage['url_img'] }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-muted small">
-                                <i class="bx bx-zoom-in me-1"></i> {{ __('Cliquer pour agrandir l\'image') }}
-                            </a>
-                        </div>
-                    </div>
-
                     @include('v1.backend.pages.products.products.partials._show-navigation', ['product' => $product])

@@ -132,6 +132,9 @@
                 @endphp
                 <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="lang-{{ $lang->id }}">
                     <input type="hidden" name="translations[{{ $index }}][lang_id]" value="{{ $lang->id }}" />
+                    @if ($existing)
+                        <input type="hidden" name="translations[{{ $index }}][id]" value="{{ $existing->id }}" />
+                    @endif
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="translations-{{ $index }}-name" class="form-label">{{ __('Nom') }} <span class="text-danger">*</span> <span class="text-muted">({{ $lang->name }})</span></label>

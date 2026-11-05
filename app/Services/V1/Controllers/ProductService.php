@@ -91,6 +91,10 @@ class ProductService
                 $updateData['is_featured'] = ($data['is_featured'] ?? null) === '1' || ($data['is_featured'] ?? false) === true;
             }
 
+            if (isset($data['status'])) {
+                $updateData['status'] = $data['status'];
+            }
+
             $product->update($updateData);
 
             if (isset($data['translations'])) {
@@ -281,8 +285,8 @@ class ProductService
                     );
                 }
 
-                // Met à jour la traduction existante avec les nouvelles données
-                // (description = HTML Summernote → nettoyé comme BlogPostService)
+                // Le slug est généré automatiquement par le trait HasSlug (événement updating)
+                // via le champ source 'name'. On ne le passe pas manuellement ici.
                 $existingTranslation->update([
                     'name' => $translation['name'],
                     'short_description' => $translation['short_description'] ?? null,
@@ -291,7 +295,8 @@ class ProductService
 
             } else {
 
-                // Sinon, on crée une nouvelle traduction
+                // Le slug est généré automatiquement par le trait HasSlug (événement creating)
+                // via le champ source 'name'. On ne le passe pas manuellement ici.
                 ProductTranslation::create([
                     'product_id' => $product->id,
                     'lang_id' => $translation['lang_id'],

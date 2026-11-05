@@ -30,6 +30,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#tab_multimedia">
+                        <i class="bx bx-image me-1"></i> {{ __('Multimédias') }}
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" data-bs-toggle="tab" href="#tab_meta">
                         <i class="bx bx-time-five me-1"></i> {{ __('Métadonnées') }}
                     </a>
@@ -359,6 +364,9 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Multimédias -->
+                @include('v1.backend.layouts.partials._tab-multimedia', ['entity' => $product, 'entityLabel' => 'produit'])
 
                 <!-- Métadonnées -->
                 <div class="tab-pane fade" id="tab_meta">

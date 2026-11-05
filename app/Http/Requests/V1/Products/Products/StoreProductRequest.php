@@ -72,6 +72,7 @@ class StoreProductRequest extends FormRequest
                     ->where(fn ($query) => $query->where('lang_id', $langId))
                     ->whereNull('deleted_at'),
             ];
+
         }
 
         return $rules;

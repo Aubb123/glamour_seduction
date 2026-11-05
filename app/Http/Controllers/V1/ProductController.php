@@ -150,6 +150,9 @@ class ProductController extends Controller
             // Charge les compteurs (withCount)
             $product->loadCount(['audits', 'activityLogs']);
 
+            // Charge les fichiers cloud (pour l'affichage de l'image dans la vue)
+            $product->load('cloudFiles');
+
             // Récupère toutes les traductions supprimées (soft deleted) de ce produit
             $productTranslations = ProductTranslation::onlyTrashed()->where('product_id', $product->id)->get();
 
