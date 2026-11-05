@@ -18,9 +18,6 @@ return [
         'is_featured' => [
             'boolean' => 'The "featured" field must be a boolean.',
         ],
-        'requires_discreet_packaging' => [
-            'boolean' => 'The "discreet packaging" field must be a boolean.',
-        ],
         'weight' => [
             'numeric' => 'The weight must be a number.',
             'min' => 'The weight must be at least 0.',
@@ -40,6 +37,17 @@ return [
         'tags' => [
             'array' => 'The tags must be an array.',
             'exists' => 'One of the selected tags does not exist.',
+        ],
+        'cloud_platform_uuid' => [
+            'required' => 'The cloud platform is required to upload the image.',
+            'required_with' => 'The cloud platform is required when an image is provided.',
+            'exists' => 'The selected cloud platform does not exist.',
+        ],
+        'image' => [
+            'required' => 'The product main image is required.',
+            'image' => 'The file must be an image.',
+            'mimes' => 'Accepted formats: JPG, PNG, WEBP.',
+            'max' => 'The image may not exceed 2 MB.',
         ],
         'translations' => [
             'required' => 'The translations are required.',
