@@ -61,7 +61,6 @@
                     <ul class="dropdown-menu dropdown-menu-end text-nowrap">
                         @include('v1.backend.layouts.partials._card_actions_menu', [
                             'actions' => [
-                                ['label' => 'Créer une variante', 'icon' => 'bx bx-plus', 'route' => 'backend.product-variants.create'],
                                 ['label' => 'Liste des variantes', 'icon' => 'bx bx-list-ul', 'route' => 'backend.product-variants.index'],
                                 ['label' => 'Corbeille', 'icon' => 'bx bx-trash', 'route' => 'backend.product-variants.trashed'],
                             ]

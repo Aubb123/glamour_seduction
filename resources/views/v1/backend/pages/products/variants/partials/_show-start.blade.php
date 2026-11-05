@@ -9,8 +9,8 @@
 
                 <div class="hstack gap-2 flex-wrap">
 
-                    <a href="{{ route('backend.product-variants.index') }}" class="btn btn-secondary btn-sm">
-                        <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
+                    <a href="{{ route('backend.products.show', ['product' => $variant->product->uuid, 'slug' => $variant->product->active_translation?->slug ?? 'null']) }}" class="btn btn-secondary btn-sm">
+                        <i class="bx bx-arrow-back me-1"></i> {{ __('Retour au produit') }}
                     </a>
 
                     <div class="dropdown">
