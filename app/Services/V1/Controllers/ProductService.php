@@ -33,7 +33,6 @@ class ProductService
                 'brand_id' => $data['brand_id'] ?? null,
                 'status' => ($data['status'] ?? null) === ProductStatus::Published->value ? ProductStatus::Published : ProductStatus::Draft,
                 'is_featured' => ($data['is_featured'] ?? null) === '1' || ($data['is_featured'] ?? false) === true,
-                'requires_discreet_packaging' => ($data['requires_discreet_packaging'] ?? null) !== '0' && ($data['requires_discreet_packaging'] ?? true) !== false,
                 'weight' => $data['weight'] ?? null,
                 'base_price' => $data['base_price'],
                 'compare_at_price' => $data['compare_at_price'] ?? null,
@@ -44,6 +43,16 @@ class ProductService
 
             // Synchronisation des tags (pivot product_tag)
             $this->syncTags($product, $data['tags'] ?? []);
+
+            // Image principale du produit (pattern blog_posts : obligatoire au store,
+            // la validation StoreProductRequest garantit sa présence)
+            $this->cloudFileService->uploadEntityImage(
+                $data['image'],
+                $data['cloud_platform_uuid'],
+                $product,
+                $product->getTable(),
+                $this->backendLangPath,
+            );
 
             return $product; // ← retourne le produit créé avec ses traductions et ses tags
         });
@@ -82,10 +91,6 @@ class ProductService
                 $updateData['is_featured'] = ($data['is_featured'] ?? null) === '1' || ($data['is_featured'] ?? false) === true;
             }
 
-            if (array_key_exists('requires_discreet_packaging', $data)) {
-                $updateData['requires_discreet_packaging'] = ($data['requires_discreet_packaging'] ?? null) !== '0' && ($data['requires_discreet_packaging'] ?? true) !== false;
-            }
-
             $product->update($updateData);
 
             if (isset($data['translations'])) {
@@ -94,6 +99,23 @@ class ProductService
 
             if (array_key_exists('tags', $data)) {
                 $this->syncTags($product, $data['tags'] ?? []);
+            }
+
+            // Image principale du produit (pattern blog_posts : optionnelle à l'update)
+            if (isset($data['image'])) {
+
+                // Si une image est fournie sans plateforme cloud, on refuse explicitement
+                if (! isset($data['cloud_platform_uuid'])) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cloud_platform_uuid_required"));
+                }
+
+                $this->cloudFileService->uploadEntityImage(
+                    $data['image'],
+                    $data['cloud_platform_uuid'],
+                    $product,
+                    $product->getTable(),
+                    $this->backendLangPath,
+                );
             }
 
             return $product;
@@ -260,10 +282,11 @@ class ProductService
                 }
 
                 // Met à jour la traduction existante avec les nouvelles données
+                // (description = HTML Summernote → nettoyé comme BlogPostService)
                 $existingTranslation->update([
                     'name' => $translation['name'],
                     'short_description' => $translation['short_description'] ?? null,
-                    'description' => $translation['description'] ?? null,
+                    'description' => clean($translation['description'] ?? null), // Nettoyage du contenu HTML pour éviter les scripts malveillants
                 ]);
 
             } else {
@@ -274,7 +297,7 @@ class ProductService
                     'lang_id' => $translation['lang_id'],
                     'name' => $translation['name'],
                     'short_description' => $translation['short_description'] ?? null,
-                    'description' => $translation['description'] ?? null,
+                    'description' => clean($translation['description'] ?? null), // Nettoyage du contenu HTML pour éviter les scripts malveillants
                 ]);
 
             }
