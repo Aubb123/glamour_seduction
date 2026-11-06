@@ -293,88 +293,7 @@
 
                 <!-- Variantes -->
                 <div class="tab-pane fade" id="tab_variants">
-                    <div class="row g-4">
-                        <div class="col-md-12">
-                            <div class="card border">
-                                <div class="card-header bg-light py-2 d-flex align-items-center justify-content-between">
-                                    <h6 class="mb-0 fw-bold">
-                                        <i class="bx bx-layer me-2 text-primary"></i>{{ __('Variantes') }}
-                                    </h6>
-                                    <a href="{{ route('backend.product-variants.create', ['product' => $product->uuid]) }}" class="btn btn-sm btn-primary">
-                                        <i class="bx bx-plus me-1"></i> {{ __('Nouvelle variante') }}
-                                    </a>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="table-responsive">
-                                        <table class="table table-centered mb-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>{{ __('SKU') }}</th>
-                                                    <th>{{ __("Valeurs d'attributs") }}</th>
-                                                    <th>{{ __('Prix') }}</th>
-                                                    <th>{{ __('Statut') }}</th>
-                                                    <th>{{ __('Par défaut') }}</th>
-                                                    <th class="text-center">{{ __('Actions') }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse ($variants as $variant)
-                                                    <tr>
-                                                        <td><code>{{ $variant->sku }}</code></td>
-                                                        <td>
-                                                            @forelse ($variant->attributeValues as $value)
-                                                                <span class="badge badge-soft-primary me-1">{{ $value->active_translation?->label ?? $value->value }}</span>
-                                                            @empty
-                                                                <span class="text-muted">—</span>
-                                                            @endforelse
-                                                        </td>
-                                                        <td>
-                                                            @if ($variant->price)
-                                                                <span class="fw-bold">{{ number_format((float) $variant->price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
-                                                            @else
-                                                                <span class="text-muted">{{ __('Hérite du produit') }}</span>
-                                                            @endif
-                                                        </td>
-                                                        <td>
-                                                            <span class="badge {{ $variant->status->badgeClass() }}">{{ $variant->status->label() }}</span>
-                                                        </td>
-                                                        <td>
-                                                            @if ($variant->is_default)
-                                                                <span class="badge badge-soft-success">{{ __('Par défaut') }}</span>
-                                                            @else
-                                                                <span class="badge badge-soft-secondary">—</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <div class="d-inline-flex gap-1">
-                                                                <a href="{{ route('backend.product-variants.show', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-secondary" title="{{ __('Détails') }}">
-                                                                    <i class="bx bx-show"></i>
-                                                                </a>
-                                                                <a href="{{ route('backend.product-variants.edit', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
-                                                                    <i class="bx bx-edit"></i>
-                                                                </a>
-                                                                <form action="{{ route('backend.product-variants.destroy', ['productVariant' => $variant->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $variant->uuid }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer') }}" onclick="confirmAction('delete-form-{{ $variant->uuid }}', '{{ __('Supprimer cette variante ?') }}', '{{ __('Supprimer') }}', 'warning')">
-                                                                        <i class="bx bx-trash"></i>
-                                                                    </button>
-                                                                </form>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="6" class="text-center text-muted py-4">{{ __('Aucune variante pour ce produit.') }}</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('v1.backend.pages.products.variants.partials._index-table', ['variants' => $variants])
                 </div>
 
                 <!-- Multimédias -->
@@ -427,3 +346,14 @@
         @include('v1.backend.pages.products.products.partials._show-end', ['product' => $product])
 
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('shown.bs.tab', function (event) {
+            if (event.target.getAttribute('href') === '#tab_variants'
+                && window.jQuery && jQuery.fn.DataTable.isDataTable('#product-variants-table')) {
+                jQuery('#product-variants-table').DataTable().columns.adjust();
+            }
+        });
+    </script>
+@endpush
