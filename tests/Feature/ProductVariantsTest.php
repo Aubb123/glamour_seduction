@@ -420,3 +420,54 @@ it('déclare stocks/movements comme relations bloquantes pour ProductVariant (mo
     $property = new ReflectionProperty($variant, 'dependentRelations');
     expect($property->getValue($variant))->toBe(['stocks', 'movements']);
 });
+
+it('affiche, sur la fiche d\'une variante, un lien vers le produit parent', function () {
+    $admin = variantAdmin();
+    $setup = variantSetup();
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-variants.store', variantProductContext($setup)), variantPayload($setup));
+    $variant = ProductVariant::firstOrFail();
+
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-variants.show', ['productVariant' => $variant->uuid]))
+        ->assertOk()
+        ->getContent();
+
+    // Le lien « Produit » de la fiche variante pointe vers la fiche du produit parent
+    expect($html)->toContain(route('backend.products.show', [
+        'product' => $setup['product']->uuid,
+        'slug' => $setup['product']->active_translation?->slug ?? 'null',
+    ]));
+});
+
+it('isole les variantes du produit courant dans l\'onglet #tab_variants de la fiche produit', function () {
+    $admin = variantAdmin();
+
+    // Deux produits distincts, chacun avec sa variante
+    $setupA = variantSetup();
+    $setupB = variantSetup();
+
+    $skuA = 'SKU-A-'.uniqid();
+    $skuB = 'SKU-B-'.uniqid();
+
+    $this->actingAs($admin)->post(
+        route('backend.product-variants.store', variantProductContext($setupA)),
+        variantPayload($setupA, ['sku' => $skuA]),
+    );
+    $this->actingAs($admin)->post(
+        route('backend.product-variants.store', variantProductContext($setupB)),
+        variantPayload($setupB, ['sku' => $skuB]),
+    );
+
+    $html = $this->actingAs($admin)
+        ->get(variantProductShowUrl($setupA))
+        ->assertOk()
+        ->getContent();
+
+    // L'onglet Variantes est rendu par le partial partagé…
+    expect($html)->toContain('product-variants-table');
+    // …et n'affiche QUE les variantes du produit courant
+    expect($html)->toContain($skuA);
+    expect($html)->not->toContain($skuB);
+});
