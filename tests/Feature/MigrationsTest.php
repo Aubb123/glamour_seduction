@@ -42,6 +42,7 @@ it('crée toutes les tables du schéma de base', function () {
         'product_warehouses',
         'product_warehouse_stocks',
         'product_stock_movements',
+        'shops', 'shop_translations', 'shop_warehouse',
     ];
 
     $actualTables = Schema::getTableListing(null, false);
@@ -86,6 +87,19 @@ it('reproduit les colonnes clés du contrat de schéma', function () {
 
     expect(Schema::hasColumn('activity_logs', 'loggable_type'))->toBeTrue();
     expect(Schema::hasColumn('activity_logs', 'is_success'))->toBeTrue();
+
+    expect(Schema::hasColumn('shops', 'uuid'))->toBeTrue();
+    expect(Schema::hasColumn('shops', 'code'))->toBeTrue();
+    expect(Schema::hasColumn('shops', 'status'))->toBeTrue();
+    expect(Schema::hasColumn('shops', 'is_default'))->toBeTrue();
+    expect(Schema::hasColumn('shops', 'deleted_at'))->toBeTrue();
+
+    expect(Schema::hasColumn('shop_translations', 'shop_id'))->toBeTrue();
+    expect(Schema::hasColumn('shop_translations', 'slug'))->toBeTrue();
+
+    expect(Schema::hasColumn('shop_warehouse', 'shop_id'))->toBeTrue();
+    expect(Schema::hasColumn('shop_warehouse', 'warehouse_id'))->toBeTrue();
+    expect(Schema::hasColumn('shop_warehouse', 'is_primary'))->toBeTrue();
 
     // Contraintes uniques de traduction : un seul (name/lang_id) par langue
     $indexes = Schema::getIndexes('role_translations');
