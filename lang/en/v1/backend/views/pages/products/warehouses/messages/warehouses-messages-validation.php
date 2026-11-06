@@ -34,4 +34,16 @@ return [
         ],
         'not_found' => 'The warehouse was not found.',
     ],
+    'warehouseUsers' => [
+        'user_uuid' => [
+            'required' => 'The user is required.',
+            'exists' => 'The selected user could not be found.',
+        ],
+        'position_uuid' => [
+            'exists' => 'The selected position could not be found.',
+        ],
+        'is_manager' => [
+            'boolean' => 'The "manager" field must be a boolean.',
+        ],
+    ],
 ];
