@@ -61,6 +61,10 @@ class PermissionSeeder extends Seeder
         'product-stock-movements' => [], // Mouvements de stock (audit & traçabilité) (module Boutique)
         'shops' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Boutiques / points de vente (module Boutique)
         'shop-translations' => [], // Traductions des boutiques
+        'positions' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Postes du personnel (module Boutique)
+        'position-translations' => [], // Traductions des postes
+        'shop-users' => [], // Personnel affecté aux boutiques (module Boutique)
+        'warehouse-users' => [], // Personnel affecté aux entrepôts (module Boutique)
         'faqs' => ['toggle_active', 'audits', 'activity_logs'], // FAQs
         'faq-translations' => [], // Traductions des FAQs
         'subscribes' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Abonnés newsletter
@@ -219,6 +223,31 @@ class PermissionSeeder extends Seeder
             'shops.activate',
             'shops.deactivate',
             // shop-translations (index, create, store, show, edit, update)
+
+            // positions
+            'positions.index',
+            'positions.show',
+            'positions.create',
+            'positions.store',
+            'positions.edit',
+            'positions.update',
+            'positions.activate',
+            'positions.deactivate',
+            // position-translations (index, create, store, show, edit, update)
+
+            // shop-users
+            'shop-users.index',
+            'shop-users.show',
+            'shop-users.store',
+            'shop-users.update',
+            'shop-users.destroy',
+
+            // warehouse-users
+            'warehouse-users.index',
+            'warehouse-users.show',
+            'warehouse-users.store',
+            'warehouse-users.update',
+            'warehouse-users.destroy',
 
             // roles
             'roles.index',
