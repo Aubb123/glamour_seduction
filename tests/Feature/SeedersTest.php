@@ -7,7 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 /**
  * Étape 4 — Seeders : présence des seeders attendus (contrat 1:1 avec base + modules Boutique).
  */
-it('contient les 53 seeders attendus', function () {
+it('contient les 55 seeders attendus', function () {
     $filesystem = new Filesystem;
 
     $seeders = collect($filesystem->files(database_path('seeders')))
@@ -18,7 +18,7 @@ it('contient les 53 seeders attendus', function () {
         ->values()
         ->all();
 
-    expect($seeders)->toHaveCount(53);
+    expect($seeders)->toHaveCount(55);
 
     $expected = [
         'ActivityLogSeeder', 'AuditSeeder',
@@ -47,6 +47,7 @@ it('contient les 53 seeders attendus', function () {
         'ProductWarehouseSeeder', 'ProductWarehouseStockSeeder', 'ProductStockMovementSeeder',
         'RoleSeeder', 'RoleTranslationSeeder',
         'SettingSeeder', 'SettingTranslationSeeder',
+        'ShopSeeder', 'ShopTranslationSeeder',
         'SubscribeHistorySeeder', 'SubscribeSeeder',
         'UserSeeder',
     ];
