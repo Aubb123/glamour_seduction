@@ -62,13 +62,12 @@ class ShopController extends Controller
     {
         try {
 
-            // Récupère les langues actives pour les formulaire de traductions
+            // Récupère les langues actives pour les formulaires de traductions
             $langs = getActiveLangs()['langs'];
 
             // Entrepôts actifs pour le rattachement obligatoire de la boutique
             $warehouses = ProductWarehouse::active()->orderBy('name')->get();
 
-            // Récupère une éventuelle plateforme cloud par défaut (non utilisée ici : boutique sans image)
             // Log de l'accès à la page de création
             $this->logActivity(type: 'info', action: 'backend.shops.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
@@ -127,10 +126,9 @@ class ShopController extends Controller
         try {
 
             // Charge les traductions (dont trashed pour l'onglet corbeille) et les entrepôts rattachés
-            $shop->load(['translations.lang'])->loadCount(['audits', 'activityLogs']);
-            $shop->load('warehouses');
+            $shop->load(['translations.lang', 'warehouses'])->loadCount(['audits', 'activityLogs']);
 
-            // Vérifie la cohérence du slug avec la traduction active (404 sinon)
+            // Vérifie la cohérence du slug avec la traduction active (redirection cohérente sinon)
             $expectedSlug = $shop->active_translation?->slug ?? 'null';
 
             if ($slug !== $expectedSlug) {
@@ -159,12 +157,15 @@ class ShopController extends Controller
     {
         try {
 
+            // Récupère les audits de la boutique (les plus récents en premier)
+            $audits = $shop->audits()->with('user')->latest()->get();
+
             $shop->loadCount('audits');
 
             // Log de l'accès aux audits
             $this->logActivity(type: 'info', action: 'backend.shops.audits', context: ['shop_uuid' => $shop->uuid], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $shop->active_translation?->name ?? '']), is_success: true, loggable: $shop);
 
-            return view('v1.backend.pages.shops.shops.others.audits', compact('shop'));
+            return view('v1.backend.pages.shops.shops.others.audits', compact('shop', 'audits'));
 
         } catch (\Exception $e) {
 
@@ -181,12 +182,15 @@ class ShopController extends Controller
     {
         try {
 
+            // Récupère les journaux d'activité de la boutique (les plus récents en premier)
+            $logs = $shop->activityLogs()->with('user')->latest()->get();
+
             $shop->loadCount('activityLogs');
 
             // Log de l'accès aux journaux d'activité
             $this->logActivity(type: 'info', action: 'backend.shops.activity-logs', context: ['shop_uuid' => $shop->uuid], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $shop->active_translation?->name ?? '']), is_success: true, loggable: $shop);
 
-            return view('v1.backend.pages.shops.shops.others.activity-logs', compact('shop'));
+            return view('v1.backend.pages.shops.shops.others.activity-logs', compact('shop', 'logs'));
 
         } catch (\Exception $e) {
 
