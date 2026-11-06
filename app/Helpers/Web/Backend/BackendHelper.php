@@ -563,6 +563,7 @@ class BackendHelper
                             ['label' => 'Entrepôts', 'route' => 'backend.product-warehouses.index', 'patterns' => ['backend.product-warehouses.*']],
                             ['label' => 'Stocks', 'route' => 'backend.product-warehouse-stocks.index', 'patterns' => ['backend.product-warehouse-stocks.*']],
                             ['label' => 'Mouvements de stock', 'route' => 'backend.product-stock-movements.index', 'patterns' => ['backend.product-stock-movements.*']],
+                            ['label' => 'Boutiques', 'route' => 'backend.shops.index', 'patterns' => ['backend.shops.*', 'backend.shop-translations.*']],
                         ],
                     ],
                     [
@@ -714,6 +715,11 @@ class BackendHelper
                 'icon' => 'ti ti-arrows-exchange',
                 'route' => 'backend.product-stock-movements.create',
                 'permission' => 'product-stock-movements.create',
+            ],
+            [
+                'label' => 'Boutique', 
+                'route' => 'backend.shops.create', 
+                'permission' => 'shops.create'
             ],
             [
                 'label' => __("Valeur d'attribut"),
