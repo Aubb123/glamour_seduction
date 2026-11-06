@@ -74,6 +74,10 @@
                 </div>
             </div>
 
+            <div class="col-12" id="personnel">
+                @include('v1.backend.pages.products.warehouses.partials._show-staff', ['warehouse' => $warehouse])
+            </div>
+
         </div>
 
     @include('v1.backend.pages.products.warehouses.partials._show-end', ['warehouse' => $warehouse])
