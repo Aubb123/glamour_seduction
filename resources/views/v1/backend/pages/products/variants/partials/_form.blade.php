@@ -114,14 +114,24 @@
 
     </div>
 
-    <hr class="my-4">
-
-    <div class="d-flex justify-content-end gap-2">
-        <a href="{{ (isset($variant) ? route('backend.products.show', ['product' => $variant->product?->uuid, 'slug' => $variant->product?->active_translation?->slug ?? 'null']) : route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null'])) }}" class="btn btn-secondary">
-            <i class="bx bx-x me-1"></i> Annuler
-        </a>
-        <button type="submit" class="btn btn-success">
-            <i class="bx bx-save me-1"></i> {{ isset($variant) ? 'Mettre à jour' : 'Enregistrer' }}
+    <div class="d-flex justify-content-between mt-4">
+        <button type="button" class="btn btn-secondary d-none" id="btn-prev">
+            <i class="bx bx-arrow-back me-1"></i> Précédent
         </button>
+        <div class="ms-auto d-flex gap-2">
+            <a href="{{ (isset($variant) ? route('backend.products.show', ['product' => $variant->product?->uuid, 'slug' => $variant->product?->active_translation?->slug ?? 'null']) : route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null'])) }}" class="btn btn-secondary">
+                <i class="bx bx-x me-1"></i> Annuler
+            </a>
+            <button type="button" class="btn btn-primary" id="btn-next">
+                Suivant <i class="bx bx-right-arrow-alt ms-1"></i>
+            </button>
+            <button type="submit" class="btn btn-success" id="btn-submit">
+                <i class="bx bx-save me-1"></i> {{ isset($variant) ? 'Mettre à jour' : 'Enregistrer' }}
+            </button>
+        </div>
     </div>
 </form>
+
+@push('scripts')
+    @include('v1.backend.layouts.partials._stepper-script', ['formId' => isset($variant) ? 'edit-variant-form' : 'create-variant-form'])
+@endpush
