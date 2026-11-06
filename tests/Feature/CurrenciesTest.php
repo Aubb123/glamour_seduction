@@ -55,14 +55,32 @@ function currencyAdmin(): User
     return $admin;
 }
 
+/**
+ * Code ISO 4217 alpha-3 unique et strictement alphabétique (AAA, AAB, …)
+ * + un ordre de tri unique (contrainte DB `currencies.sort_order`).
+ */
+function currencyUnique(int &$counter): array
+{
+    $counter++;
+
+    $code = chr(65 + intdiv($counter, 676) % 26)
+        .chr(65 + intdiv($counter, 26) % 26)
+        .chr(65 + $counter % 26);
+
+    return ['code' => $code, 'sort_order' => 100000 + $counter];
+}
+
 function makeCurrency(array $overrides = []): Currency
 {
+    static $counter = 0;
+    $unique = currencyUnique($counter);
+
     return Currency::create(array_merge([
-        'code' => strtoupper(substr(uniqid(), -3)),
+        'code' => $unique['code'],
         'symbol' => 'X',
         'decimal_places' => 2,
         'numeric_code' => null,
-        'sort_order' => random_int(1, 999999),
+        'sort_order' => $unique['sort_order'],
         'is_default' => false,
         'exchange_rate' => 1.5,
         'status' => 'active',
@@ -160,7 +178,7 @@ it('refuse la suppression de la devise par défaut puis autorise après bascule'
 
     // Basculer le drapeau par défaut puis supprimer
     $default->update(['is_default' => false]);
-    $other = makeCurrency(['is_default' => true, 'exchange_rate' => 1.0]);
+    makeCurrency(['is_default' => true, 'exchange_rate' => 1.0]);
 
     $this->actingAs($admin)
         ->delete(route('backend.currencies.destroy', ['currency' => $default->uuid]))
