@@ -53,19 +53,30 @@
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <h5 class="card-title mb-0">Liste des variantes de produits</h5>
 
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Actions
-                    </button>
+                <div class="d-flex align-items-center gap-2">
 
-                    <ul class="dropdown-menu dropdown-menu-end text-nowrap">
-                        @include('v1.backend.layouts.partials._card_actions_menu', [
-                            'actions' => [
-                                ['label' => 'Liste des variantes', 'icon' => 'bx bx-list-ul', 'route' => 'backend.product-variants.index'],
-                                ['label' => 'Corbeille', 'icon' => 'bx bx-trash', 'route' => 'backend.product-variants.trashed'],
-                            ]
-                        ])
-                    </ul>
+                    {{-- Bouton de création : uniquement dans le contexte d'un produit précis
+                         (l'inclusion depuis backend.products.show fournit $product) --}}
+                    @isset($product)
+                        <a href="{{ route('backend.product-variants.create', ['product' => $product->uuid]) }}" class="btn btn-primary btn-sm">
+                            <i class="bx bx-plus me-1"></i> Nouvelle variante
+                        </a>
+                    @endisset
+
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end text-nowrap">
+                            @include('v1.backend.layouts.partials._card_actions_menu', [
+                                'actions' => [
+                                    ['label' => 'Liste des variantes', 'icon' => 'bx bx-list-ul', 'route' => 'backend.product-variants.index'],
+                                    ['label' => 'Corbeille', 'icon' => 'bx bx-trash', 'route' => 'backend.product-variants.trashed'],
+                                ]
+                            ])
+                        </ul>
+                    </div>
                 </div>
             </div>
 
