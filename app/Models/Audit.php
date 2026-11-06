@@ -65,6 +65,7 @@ class Audit extends Model
         'geoCountry',
         'platformVersion',
         'subscribeHistory',
+        'shop',
     ];
 
     // Mapping des types auditable vers les routes show et leurs paramètres
@@ -90,6 +91,7 @@ class Audit extends Model
         'App\Models\GeoContinent' => ['route' => 'backend.geocontinents.show', 'params' => ['geoContinent', 'slug']],
         'App\Models\GeoCountry' => ['route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug']],
         'App\Models\PlatformVersion' => ['route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug']],
+        'App\Models\Shop' => ['route' => 'backend.shops.show', 'params' => ['shop', 'slug']],
     ];
 
     /**
@@ -165,6 +167,7 @@ class Audit extends Model
             'App\Models\GeoContinent' => $this->auditable->active_translation?->name,
             'App\Models\GeoCountry' => $this->auditable->active_translation?->name,
             'App\Models\PlatformVersion' => $this->auditable->active_translation?->name,
+            'App\Models\Shop' => $this->auditable->active_translation?->name,
             default => null,
         } ?: null;
     }
@@ -196,6 +199,7 @@ class Audit extends Model
             'App\Models\GeoContinent' => __('Continent'),
             'App\Models\GeoCountry' => __('Pays'),
             'App\Models\PlatformVersion' => __('Version'),
+            'App\Models\Shop' => __('Boutique'),
             default => __('Entité'),
         };
 
