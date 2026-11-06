@@ -20,6 +20,7 @@ return [
         'product' => 'product',
         'shop' => 'shop',
         'position' => 'position',
+        'warehouse' => 'warehouse',
         'role' => 'role',
         'version' => 'version',
     ],
@@ -114,6 +115,13 @@ return [
             ],
             'ProductCategory' => [
                 'label' => 'product category',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
+            'ProductWarehouse' => [
+                'label' => 'warehouse',
                 'demonstrative' => 'this',
                 'pronoun' => 'it',
                 'participle' => 'linked',
