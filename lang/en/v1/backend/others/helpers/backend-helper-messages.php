@@ -19,6 +19,7 @@ return [
         'productAttributeValue' => 'product attribute value',
         'product' => 'product',
         'shop' => 'shop',
+        'position' => 'position',
         'role' => 'role',
         'version' => 'version',
     ],
@@ -120,6 +121,13 @@ return [
             ],
             'Shop' => [
                 'label' => 'shop',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
+            'Position' => [
+                'label' => 'position',
                 'demonstrative' => 'this',
                 'pronoun' => 'it',
                 'participle' => 'linked',
