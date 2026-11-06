@@ -53,19 +53,32 @@ function currencyTranslationAdmin(): User
     return $admin;
 }
 
-/** Devise avec deux traductions (fr + en) — condition pour pouvoir en supprimer une. */
-function currencyWithTwoTranslations(): Currency
+/** Devise neuve : code alpha-3 unique et sort_order unique (contraintes DB). */
+function newCurrency(): Currency
 {
-    $currency = Currency::create([
-        'code' => strtoupper(substr(uniqid(), -3)),
+    static $counter = 0;
+    $counter++;
+
+    $code = chr(65 + intdiv($counter, 676) % 26)
+        .chr(65 + intdiv($counter, 26) % 26)
+        .chr(65 + $counter % 26);
+
+    return Currency::create([
+        'code' => $code,
         'symbol' => 'X',
         'decimal_places' => 2,
         'numeric_code' => null,
-        'sort_order' => random_int(1, 999999),
+        'sort_order' => 200000 + $counter,
         'is_default' => false,
         'exchange_rate' => 1.5,
         'status' => 'active',
     ]);
+}
+
+/** Devise avec deux traductions (fr + en) — condition pour pouvoir en supprimer une. */
+function currencyWithTwoTranslations(): Currency
+{
+    $currency = newCurrency();
 
     foreach (['fr', 'en'] as $code) {
         $lang = Lang::where('code', $code)->firstOrFail();
@@ -82,16 +95,7 @@ function currencyWithTwoTranslations(): Currency
 it('refuse la suppression de la dernière traduction', function () {
     $admin = currencyTranslationAdmin();
 
-    $currency = Currency::create([
-        'code' => strtoupper(substr(uniqid(), -3)),
-        'symbol' => 'X',
-        'decimal_places' => 2,
-        'numeric_code' => null,
-        'sort_order' => random_int(1, 999999),
-        'is_default' => false,
-        'exchange_rate' => 1.5,
-        'status' => 'active',
-    ]);
+    $currency = newCurrency();
     $fr = Lang::where('code', 'fr')->firstOrFail();
     $translation = CurrencyTranslation::create([
         'currency_id' => $currency->id,
