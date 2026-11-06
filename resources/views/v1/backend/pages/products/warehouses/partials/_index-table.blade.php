@@ -1,5 +1,6 @@
 @push('styles')
-    <link rel="stylesheet" type="text/css" href="{{ asset(getEnvFolder() . 'others/backend/datatables/dataTables.bootstrap5.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery.dataTables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.dataTables.min.css') }}">
 
     <style>
         .dataTables_paginate .paginate_button {
@@ -43,7 +44,7 @@
             'color' => 'secondary',
         ],
         [
-            'label' => __('Logs d\'activité'),
+            'label' => __("Logs d'activité"),
             'value' => $warehouses->sum('activity_logs_count'),
             'icon'  => 'bx bx-pulse',
             'color' => 'warning',
@@ -78,30 +79,35 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle w-100" id="product-warehouses-table">
+                    <table class="table table-centered text-nowrap" id="product-warehouses-table">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>{{ __('Code') }}</th>
-                                <th>{{ __('Nom') }}</th>
-                                <th>{{ __('Ville') }}</th>
-                                <th>{{ __('Téléphone') }}</th>
-                                <th>{{ __('Statut') }}</th>
-                                <th>{{ __('Par défaut') }}</th>
+                                <th scope="col">#</th>
+                                <th scope="col">{{ __('Code') }}</th>
+                                <th scope="col">{{ __('Nom') }}</th>
+                                <th scope="col">{{ __('Ville') }}</th>
+                                <th scope="col">{{ __('Téléphone') }}</th>
+                                <th scope="col">{{ __('Statut') }}</th>
+                                <th scope="col">{{ __('Par défaut') }}</th>
+                                <th scope="col">{{ __('Créé le') }}</th>
+                                @if(request()->routeIs('backend.product-warehouses.trashed'))
+                                    <th scope="col">{{ __('Supprimé le') }}</th>
+                                @endif
                                 <th class="text-center">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($warehouses as $warehouse)
+                                @php($translation = $warehouse->active_translation)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td><span class="fw-semibold"><code>{{ $warehouse->code }}</code></span></td>
-                                    <td>{{ $warehouse->name }}</td>
-                                    <td>{{ $warehouse->city ?? '—' }}</td>
-                                    <td>{{ $warehouse->phone ?? '—' }}</td>
+                                    <td class="fw-bold">{{ $translation?->name ?? '—' }}</td>
+                                    <td>{{ $translation?->city ?? '—' }}</td>
+                                    <td>{{ $translation?->phone ?? '—' }}</td>
                                     <td>
-                                        <span class="badge {{ $warehouse->status->badgeClass() }} fs-14 px-3 py-2">
-                                            {{ $warehouse->status->label() }}
+                                        <span class="{{ $warehouse->status?->badgeClass() ?? 'badge badge-soft-secondary' }}">
+                                            {{ $warehouse->status?->label() ?? '—' }}
                                         </span>
                                     </td>
                                     <td>
@@ -111,6 +117,16 @@
                                             <span class="badge badge-soft-secondary">—</span>
                                         @endif
                                     </td>
+                                    <td class="text-muted">
+                                        @formatDate($warehouse->created_at, 'D MMMM YYYY - HH:mm:ss')
+                                    </td>
+
+                                    @if(request()->routeIs('backend.product-warehouses.trashed'))
+                                        <td class="text-muted">
+                                            @formatDate($warehouse->deleted_at, 'D MMMM YYYY - HH:mm:ss')
+                                        </td>
+                                    @endif
+
                                     <td class="text-center">
                                         <div class="d-inline-flex gap-1">
                                             @if (request()->routeIs('backend.product-warehouses.trashed'))
@@ -123,7 +139,7 @@
                                                     </button>
                                                 </form>
 
-                                                <form action="{{ route('backend.product-warehouses.force-destroy', ['uuid' => $warehouse->uuid]) }}" method="POST" class="d-inline" id="force-delete-form-{{ $warehouse->uuid }}">
+                                                <form action="{{ route('backend.product-warehouses.force_destroy', ['uuid' => $warehouse->uuid]) }}" method="POST" class="d-inline" id="force-delete-form-{{ $warehouse->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" onclick="confirmAction('force-delete-form-{{ $warehouse->uuid }}', '{{ __('Supprimer définitivement cet entrepôt ?') }}', '{{ __('Supprimer définitivement') }}', 'danger')">
@@ -173,7 +189,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="{{ request()->routeIs('backend.product-warehouses.trashed') ? 10 : 9 }}" class="text-center text-muted py-4">
                                         <i class="bx bx-building-house fs-3 d-block mb-2"></i>
                                         {{ __('Aucun entrepôt trouvé.') }}
                                     </td>
@@ -188,13 +204,27 @@
 </div>
 
 @push('scripts')
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/dataTables.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jszip.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/pdfmake.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/vfs_fonts.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.print.min.js') }}"></script>
 
     <script>
         $(document).ready(function () {
             $('#product-warehouses-table').DataTable({
-                language: { url: '{{ asset(getEnvFolder() . 'others/backend/datatables/French.json') }}' },
+                dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>' +
+                'tr'                                        +
+                '<"row mt-3"<"col-md-5"l><"col-md-7"p>>',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                language: {
+                    url: "{{ app()->getLocale() === 'fr' ? asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/fr-FR.json') : asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/en-GB.json') }}"
+                },
                 order: [[0, 'asc']],
                 pageLength: 25,
             });
