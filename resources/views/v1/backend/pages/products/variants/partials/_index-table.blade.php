@@ -14,31 +14,31 @@
 @include('v1.backend.layouts.partials._statistics', [
     'statistics' => [
         [
-            'label' => __('Variantes'),
+            'label' => 'Variantes',
             'value' => $variants->count(),
             'icon'  => 'bx bx-layer',
             'color' => 'primary',
         ],
         [
-            'label' => __('Actives'),
+            'label' => 'Actives',
             'value' => $variants->where('status', \App\Enums\Products\Variants\ProductVariantStatus::Active)->count(),
             'icon'  => 'bx bx-check-circle',
             'color' => 'success',
         ],
         [
-            'label' => __('Inactives'),
+            'label' => 'Inactives',
             'value' => $variants->where('status', \App\Enums\Products\Variants\ProductVariantStatus::Inactive)->count(),
             'icon'  => 'bx bx-x-circle',
             'color' => 'danger',
         ],
         [
-            'label' => __('Audits'),
+            'label' => 'Audits',
             'value' => $variants->sum('audits_count'),
             'icon'  => 'bx bx-file',
             'color' => 'info',
         ],
         [
-            'label' => __("Logs d'activité"),
+            'label' => "Logs d'activité",
             'value' => $variants->sum('activity_logs_count'),
             'icon'  => 'bx bx-pulse',
             'color' => 'warning',
@@ -51,11 +51,11 @@
         <div class="card">
 
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">{{ __('Liste des variantes de produits') }}</h5>
+                <h5 class="card-title mb-0">Liste des variantes de produits</h5>
 
                 <div class="dropdown">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ __('Actions') }}
+                        Actions
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-end text-nowrap">
@@ -76,13 +76,13 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>{{ __('SKU') }}</th>
-                                <th>{{ __('Produit') }}</th>
-                                <th>{{ __("Valeurs d'attributs") }}</th>
-                                <th>{{ __('Prix') }}</th>
-                                <th>{{ __('Statut') }}</th>
-                                <th>{{ __('Par défaut') }}</th>
-                                <th class="text-center">{{ __('Actions') }}</th>
+                                <th>SKU</th>
+                                <th>Produit</th>
+                                <th>Valeurs d'attributs</th>
+                                <th>Prix</th>
+                                <th>Statut</th>
+                                <th>Par défaut</th>
+                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -103,7 +103,7 @@
                                         @if ($variant->price)
                                             <span class="fw-bold">{{ number_format((float) $variant->price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
                                         @else
-                                            <span class="text-muted" title="{{ __('Hérite du produit') }}">{{ number_format((float) ($variant->product?->base_price ?? 0), 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
+                                            <span class="text-muted" title="Hérite du produit">{{ number_format((float) ($variant->product?->base_price ?? 0), 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
                                         @endif
                                     </td>
                                     <td>
@@ -113,7 +113,7 @@
                                     </td>
                                     <td>
                                         @if ($variant->is_default)
-                                            <span class="badge badge-soft-success">{{ __('Par défaut') }}</span>
+                                            <span class="badge badge-soft-success">Par défaut</span>
                                         @else
                                             <span class="badge badge-soft-secondary">—</span>
                                         @endif
@@ -125,7 +125,7 @@
                                                 <form action="{{ route('backend.product-variants.restore', ['uuid' => $variant->uuid]) }}" method="POST" class="d-inline" id="restore-form-{{ $variant->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $variant->uuid }}', '{{ __('Restaurer cette variante ?') }}', '{{ __('Restaurer') }}', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="Restaurer" onclick="confirmAction('restore-form-{{ $variant->uuid }}', 'Restaurer cette variante ?', 'Restaurer', 'success')">
                                                         <i class="bx bx-rotate-left"></i>
                                                     </button>
                                                 </form>
@@ -133,18 +133,18 @@
                                                 <form action="{{ route('backend.product-variants.force_destroy', ['uuid' => $variant->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $variant->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" onclick="confirmDelete('{{ $variant->uuid }}', '{{ __('Supprimer définitivement cette variante ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="Supprimer définitivement" onclick="confirmDelete('{{ $variant->uuid }}', 'Supprimer définitivement cette variante ? Cette action est irréversible.')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
 
                                             @else
 
-                                                <a href="{{ route('backend.product-variants.show', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-secondary" title="{{ __('Détails') }}">
+                                                <a href="{{ route('backend.product-variants.show', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-secondary" title="Détails">
                                                     <i class="bx bx-show"></i>
                                                 </a>
 
-                                                <a href="{{ route('backend.product-variants.edit', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
+                                                <a href="{{ route('backend.product-variants.edit', ['productVariant' => $variant->uuid]) }}" class="btn btn-sm btn-soft-primary" title="Modifier">
                                                     <i class="bx bx-edit"></i>
                                                 </a>
 
@@ -152,7 +152,7 @@
                                                     <form action="{{ route('backend.product-variants.deactivate', ['productVariant' => $variant->uuid]) }}" method="POST" class="d-inline" id="deactivate-form-{{ $variant->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-warning" title="{{ __('Désactiver') }}" onclick="confirmAction('deactivate-form-{{ $variant->uuid }}', '{{ __('Désactiver cette variante ?') }}', '{{ __('Désactiver') }}', 'warning')">
+                                                        <button type="button" class="btn btn-sm btn-soft-warning" title="Désactiver" onclick="confirmAction('deactivate-form-{{ $variant->uuid }}', 'Désactiver cette variante ?', 'Désactiver', 'warning')">
                                                             <i class="bx bx-toggle-left"></i>
                                                         </button>
                                                     </form>
@@ -160,7 +160,7 @@
                                                     <form action="{{ route('backend.product-variants.activate', ['productVariant' => $variant->uuid]) }}" method="POST" class="d-inline" id="activate-form-{{ $variant->uuid }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Activer') }}" onclick="confirmAction('activate-form-{{ $variant->uuid }}', '{{ __('Activer cette variante ?') }}', '{{ __('Activer') }}', 'success')">
+                                                        <button type="button" class="btn btn-sm btn-soft-success" title="Activer" onclick="confirmAction('activate-form-{{ $variant->uuid }}', 'Activer cette variante ?', 'Activer', 'success')">
                                                             <i class="bx bx-toggle-right"></i>
                                                         </button>
                                                     </form>
@@ -169,7 +169,7 @@
                                                 <form action="{{ route('backend.product-variants.destroy', ['productVariant' => $variant->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $variant->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer') }}" onclick="confirmAction('delete-form-{{ $variant->uuid }}', '{{ __('Supprimer cette variante ?') }}', '{{ __('Supprimer') }}', 'warning')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="Supprimer" onclick="confirmAction('delete-form-{{ $variant->uuid }}', 'Supprimer cette variante ?', 'Supprimer', 'warning')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
@@ -182,7 +182,7 @@
                                 <tr>
                                     <td colspan="8" class="text-center text-muted py-4">
                                         <i class="bx bx-layer fs-3 d-block mb-2"></i>
-                                        {{ __('Aucune variante trouvée.') }}
+                                        Aucune variante trouvée.
                                     </td>
                                 </tr>
                             @endforelse
