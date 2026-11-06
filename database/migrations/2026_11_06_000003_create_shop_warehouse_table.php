@@ -16,9 +16,15 @@ return new class extends Migration
         // à au moins un entrepôt (règle métier appliquée dans ShopService, pas ici).
         // `is_primary` désigne l'entrepôt principal d'approvisionnement d'une boutique
         // (au plus un par boutique, garanti applicativement).
+        //
+        // NB : PAS de colonne `uuid` ici. Cette table est un PIVOT PUR piloté par la
+        // relation Eloquent `belongsToMany` : `->sync()` effectue un INSERT direct en
+        // base et ne déclenche AUCUN événement de modèle, donc le trait
+        // HasModelBehaviors ne pourrait jamais générer le uuid (d'où l'erreur
+        // « Field 'uuid' doesn't have a default value »). L'identité d'une ligne
+        // est le couple unique (shop_id, warehouse_id).
         Schema::create('shop_warehouse', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
             //
             $table->foreignId('shop_id')->constrained('shops')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('warehouse_id')->constrained('product_warehouses')->cascadeOnUpdate()->cascadeOnDelete();
