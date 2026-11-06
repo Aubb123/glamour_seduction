@@ -16,4 +16,10 @@
             <span class="badge bg-primary ms-1">{{ $warehouse->activity_logs_count ?? 0 }}</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link @if(request()->routeIs('backend.product-warehouses.show')) active @endif" href="{{ route('backend.product-warehouses.show', ['productWarehouse' => $warehouse->uuid]) }}#personnel">
+            <i class="bx bx-group me-1"></i> Personnel
+            <span class="badge bg-primary ms-1">{{ $warehouse->warehouse_users_count ?? 0 }}</span>
+        </a>
+    </li>
 </ul>
