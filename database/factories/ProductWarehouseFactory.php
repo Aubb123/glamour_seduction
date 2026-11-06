@@ -14,16 +14,16 @@ class ProductWarehouseFactory extends Factory
     /**
      * Define the model's default state.
      *
+     * NB : les champs traduisibles (name, address, city, phone) sont portés par
+     * product_warehouse_translations. La factory ne renseigne donc que les données
+     * non traduites ; utilisez le state withTranslations() pour créer les traductions.
+     *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
             'code' => 'WH-'.strtoupper($this->faker->unique()->bothify('??##')),
-            'name' => $this->faker->company().' — Entrepôt',
-            'address' => $this->faker->streetAddress(),
-            'city' => $this->faker->city(),
-            'phone' => $this->faker->phoneNumber(),
             'status' => ProductWarehouseStatus::Inactive,
             'is_default' => false,
         ];
