@@ -38,9 +38,8 @@ class Audit extends Model
     }
 
     /**
-     * Noms de paramètres de route résolus par binding implicite ({blogPost}, {user}, {gallery}, etc.).
-     * Ces paramètres reçoivent directement l'UUID de l'entité lors de la génération des URLs.
-     * NB : 'uuid' (legacy, modules non encore migrés vers le binding implicite) reste également accepté.
+     * Noms de paramètres de route résolus par binding implicite.
+     * NB : 'uuid' (legacy) reste également accepté.
      */
     protected const BOUND_ROUTE_PARAMS = [
         'uuid',
@@ -66,6 +65,7 @@ class Audit extends Model
         'platformVersion',
         'subscribeHistory',
         'shop',
+        'position',
     ];
 
     // Mapping des types auditable vers les routes show et leurs paramètres
@@ -92,55 +92,42 @@ class Audit extends Model
         'App\Models\GeoCountry' => ['route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug']],
         'App\Models\PlatformVersion' => ['route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug']],
         'App\Models\Shop' => ['route' => 'backend.shops.show', 'params' => ['shop', 'slug']],
+        'App\Models\Position' => ['route' => 'backend.positions.show', 'params' => ['position', 'slug']],
     ];
 
-    /**
-     * Retourne l'URL de la page de détail de l'entité auditée.
-     * Retourne null si l'action est une suppression ou si l'entité n'existe plus.
-     */
     public function getEntityUrlAttribute(): ?string
     {
-        // Pas de lien pour les actions de suppression
         if (in_array($this->action, ['deleted', 'force_deleted'])) {
             return null;
         }
 
-        // Vérifie que l'entité existe encore
         if (! $this->relationLoaded('auditable') || ! $this->auditable) {
             return null;
         }
 
-        // Vérifie si le type est dans le mapping
         $mapping = static::$routeMapping[$this->auditable_type] ?? null;
 
         if (! $mapping) {
             return null;
         }
 
-        // Construit les paramètres de la route
         $routeParams = [];
 
         foreach ($mapping['params'] as $param) {
             if (in_array($param, self::BOUND_ROUTE_PARAMS, true)) {
                 $routeParams[$param] = $this->auditable->uuid;
             } elseif ($param === 'slug') {
-                // Certains modèles ont un slug direct, d'autres via leur traduction active
                 $routeParams['slug'] = $this->auditable->slug ?? $this->auditable->active_translation?->slug ?? 'null';
             }
         }
 
-        // Vérifie que la route existe
         if (! Route::has($mapping['route'])) {
             return null;
         }
 
-        // Retourne l'URL de la route
         return route($mapping['route'], $routeParams);
     }
 
-    /**
-     * Retourne le titre de l'entité auditée (ex: question d'une FAQ, titre d'un article...).
-     */
     public function getEntityTitleAttribute(): ?string
     {
         if (! $this->auditable) {
@@ -168,13 +155,11 @@ class Audit extends Model
             'App\Models\GeoCountry' => $this->auditable->active_translation?->name,
             'App\Models\PlatformVersion' => $this->auditable->active_translation?->name,
             'App\Models\Shop' => $this->auditable->active_translation?->name,
+            'App\Models\Position' => $this->auditable->active_translation?->name,
             default => null,
         } ?: null;
     }
 
-    /**
-     * Retourne le libellé du type d'entité pour l'affichage du bouton.
-     */
     public function getEntityLabelAttribute(): string
     {
         $title = $this->entity_title;
@@ -200,6 +185,7 @@ class Audit extends Model
             'App\Models\GeoCountry' => __('Pays'),
             'App\Models\PlatformVersion' => __('Version'),
             'App\Models\Shop' => __('Boutique'),
+            'App\Models\Position' => __('Poste'),
             default => __('Entité'),
         };
 
@@ -210,33 +196,21 @@ class Audit extends Model
             : __(':type', ['type' => $type]);
     }
 
-    /**
-     * Accesseur : classe CSS du badge selon l'action.
-     */
     public function getActionBadgeAttribute(): string
     {
         return AuditAction::tryFrom($this->action)?->badgeClass() ?? 'badge-soft-secondary';
     }
 
-    /**
-     * Accesseur : icône Feather selon l'action.
-     */
     public function getActionIconAttribute(): string
     {
         return AuditAction::tryFrom($this->action)?->icon() ?? 'feather-circle';
     }
 
-    /**
-     * Accesseur : libellé traduit de l'action.
-     */
     public function getActionLabelAttribute(): string
     {
         return AuditAction::tryFrom($this->action)?->label() ?? (string) $this->action;
     }
 
-    /**
-     * Accesseur : old_values sous forme de tableau garanti.
-     */
     public function getOldValuesArrayAttribute(): ?array
     {
         $values = $this->old_values;
@@ -248,9 +222,6 @@ class Audit extends Model
         return is_array($values) ? $values : null;
     }
 
-    /**
-     * Accesseur : new_values sous forme de tableau garanti.
-     */
     public function getNewValuesArrayAttribute(): ?array
     {
         $values = $this->new_values;
@@ -262,13 +233,11 @@ class Audit extends Model
         return is_array($values) ? $values : null;
     }
 
-    // Un audit appartient à un utilisateur
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Un audit peut appartenir à n'importe quel modèle auditable
     public function auditable(): MorphTo
     {
         return $this->morphTo();
