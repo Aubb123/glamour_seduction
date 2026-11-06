@@ -29,9 +29,9 @@ uses(TestCase::class)->in('Unit');
 | Expectations
 |--------------------------------------------------------------------------
 |
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
+| When you're writing tests, you often need to check that values meet certain conditions.
+| The "expect()" function gives you access to a set of "expectations" methods that you can use
+| to assert different things. You may extend the Expectation API at any time.
 |
 */
 
@@ -68,6 +68,11 @@ function something()
 | vide la collection de routes puis on recharge routes/web.php pour que
 | toutes les routes V1 (auth, backend, proxy…) soient disponibles en test.
 |
+| NB : les routes isolées dans routes/product-warehouse-translations.php sont
+| chargées par bootstrap/app.php (withRouting -> then) au boot initial — donc
+| perdues lorsqu'on vide la collection ici. On les recharge explicitement
+| après web.php pour qu'elles restent disponibles en test.
+|
 */
 function bootV1WebRoutes(): void
 {
@@ -80,6 +85,9 @@ function bootV1WebRoutes(): void
     Route::middleware('web')->group(function () {
         require base_path('routes/web.php');
     });
+
+    // Routes additionnelles isolées (le fichier se charge dans son propre groupe de middlewares).
+    require base_path('routes/product-warehouse-translations.php');
 
     // Les noms de routes sont résolus via la table de lookups (`nameList`),
     // qui n'est rafraîchie qu'à la compilation. On force le refresh pour que
