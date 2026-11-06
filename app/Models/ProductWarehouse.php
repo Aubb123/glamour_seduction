@@ -27,7 +27,7 @@ class ProductWarehouse extends Model
     // ou définitive (BackendHelper::force_destroy_function).
     // NB : chaque relation listée ici DOIT avoir une méthode de relation correspondante
     // sur le modèle, sinon destroy_function lève une BadMethodCallException.
-    protected array $dependentRelations = ['stocks', 'movements'];
+    protected array $dependentRelations = ['stocks', 'movements', 'warehouseUsers'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -86,5 +86,14 @@ class ProductWarehouse extends Model
     public function movements(): HasMany
     {
         return $this->hasMany(ProductStockMovement::class, 'warehouse_id');
+    }
+
+    /**
+     * Relation : personnel affecté à l'entrepôt (pivot enrichi `warehouse_users`).
+     * NB : bloque la suppression d'un entrepôt tant que du personnel y est affecté.
+     */
+    public function warehouseUsers(): HasMany
+    {
+        return $this->hasMany(WarehouseUser::class, 'warehouse_id');
     }
 }
