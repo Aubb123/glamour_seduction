@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Enums\Shops\Positions\PositionContext;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Products\Warehouses\StoreProductWarehouseRequest;
 use App\Http\Requests\V1\Products\Warehouses\UpdateProductWarehouseRequest;
+use App\Models\Position;
 use App\Models\ProductWarehouse;
+use App\Models\User;
 use App\Services\V1\Controllers\ProductWarehouseService;
 use App\Traits\LogActivity;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -120,10 +123,17 @@ class ProductWarehouseController extends Controller
             // Log de la consultation du détail d'un entrepôt
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.show', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.show.success", ['code' => $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
 
-            $warehouse = $productWarehouse;
+            $warehouse->load(['warehouseUsers.user', 'warehouseUsers.position.translations'])->loadCount(['audits', 'activityLogs', 'warehouseUsers']);
+
+            $availableUsers = User::orderBy('first_name')->get();
+
+            $availablePositions = Position::withActiveTranslation()
+                ->active()
+                ->forContext(PositionContext::Warehouse)
+                ->orderBy('sort_order')->get();
 
             // Retourne la vue de l'entrepôt avec les données nécessaires
-            return view('v1.backend.pages.products.warehouses.show', compact('warehouse'));
+            return view('v1.backend.pages.products.warehouses.show', compact('warehouse', 'availableUsers', 'availablePositions'));
 
         } catch (\Exception $e) {
 

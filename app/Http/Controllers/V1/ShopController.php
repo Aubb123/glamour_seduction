@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Enums\Shops\Positions\PositionContext;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Shops\Shops\StoreShopRequest;
 use App\Http\Requests\V1\Shops\Shops\UpdateShopRequest;
+use App\Models\Position;
 use App\Models\ProductWarehouse;
 use App\Models\Shop;
+use App\Models\User;
 use App\Services\V1\Controllers\ShopService;
 use App\Traits\LogActivity;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 use function __;
@@ -185,12 +187,19 @@ class ShopController extends Controller
             // Récupère les journaux d'activité de la boutique (les plus récents en premier)
             $logs = $shop->activityLogs()->with('user')->latest()->get();
 
-            $shop->loadCount('activityLogs');
+            $shop->load(['translations.lang', 'warehouses', 'shopUsers.user', 'shopUsers.position.translations'])->loadCount(['audits', 'activityLogs', 'shopUsers']);
+
+            $availableUsers = User::orderBy('first_name')->get();
+
+            $availablePositions = Position::withActiveTranslation()
+                ->active()
+                ->forContext(PositionContext::Shop)
+                ->orderBy('sort_order')->get();
 
             // Log de l'accès aux journaux d'activité
             $this->logActivity(type: 'info', action: 'backend.shops.activity-logs', context: ['shop_uuid' => $shop->uuid], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $shop->active_translation?->name ?? '']), is_success: true, loggable: $shop);
 
-            return view('v1.backend.pages.shops.shops.others.activity-logs', compact('shop', 'logs'));
+            return view('v1.backend.pages.shops.shops.others.activity-logs', compact('shop', 'logs', 'availableUsers', 'availablePositions'));
 
         } catch (\Exception $e) {
 
