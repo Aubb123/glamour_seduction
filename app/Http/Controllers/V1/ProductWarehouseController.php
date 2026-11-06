@@ -36,8 +36,11 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            // ✅ Récupère tous les entrepôts, triés par date de création décroissante
-            $warehouses = ProductWarehouse::withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            // ✅ Récupère tous les entrepôts avec leurs traductions actives, triés par date de création décroissante
+            $warehouses = ProductWarehouse::withActiveTranslation()
+                ->withCount(['audits', 'activityLogs'])
+                ->orderBy('created_at', 'desc')
+                ->get();
 
             // Log de l'accès à la liste des entrepôts
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.index', context: ['count' => $warehouses->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -61,11 +64,14 @@ class ProductWarehouseController extends Controller
     {
         try {
 
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs'];
+
             // Log de l'accès à la page de création d'un entrepôt
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Affiche la vue de création d'un entrepôt
-            return view('v1.backend.pages.products.warehouses.create');
+            return view('v1.backend.pages.products.warehouses.create', compact('langs'));
 
         } catch (\Exception $e) {
 
@@ -86,11 +92,14 @@ class ProductWarehouseController extends Controller
             // Création de l'entrepôt via le service, en passant les données validées du formulaire
             $warehouse = $this->productWarehouseService->backend_product_warehouses_store($request->validated());
 
+            // Identifiant d'affichage : nom traduit actif, repli sur le code
+            $warehouseLabel = $warehouse->active_translation?->name ?? $warehouse->code;
+
             // Log de la création de l'entrepôt avec le code de l'entrepôt créé
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.store', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->backendLangPath}.store.success", ['code' => $warehouse->code]), is_success: true, loggable: $warehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.store', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->backendLangPath}.store.success", ['name' => $warehouseLabel]), is_success: true, loggable: $warehouse);
 
             // Redirection vers le show de l'entrepôt avec un message de succès
-            return redirect()->route('backend.product-warehouses.show', ['productWarehouse' => $warehouse->uuid])->with('success', __("{$this->backendLangPath}.store.flash_success", ['code' => $warehouse->code]));
+            return redirect()->route('backend.product-warehouses.show', ['productWarehouse' => $warehouse->uuid])->with('success', __("{$this->backendLangPath}.store.flash_success", ['name' => $warehouseLabel]));
 
         } catch (\InvalidArgumentException $e) {
 
@@ -117,14 +126,16 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            // Charge les compteurs (withCount)
-            $productWarehouse->loadCount(['audits', 'activityLogs']);
+            // Charge les traductions actives et les compteurs
+            $warehouse = $productWarehouse;
+            $warehouse->load(['warehouseUsers.user', 'warehouseUsers.position.translations'])
+                ->loadCount(['audits', 'activityLogs', 'warehouseUsers']);
+            $warehouse->load('translations.lang');
 
             // Log de la consultation du détail d'un entrepôt
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.show', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.show.success", ['code' => $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.show', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $warehouse->active_translation?->name ?? $warehouse->code]), is_success: true, loggable: $warehouse);
 
-            $warehouse->load(['warehouseUsers.user', 'warehouseUsers.position.translations'])->loadCount(['audits', 'activityLogs', 'warehouseUsers']);
-
+            // Données pour le panneau « Personnel » de la fiche entrepôt
             $availableUsers = User::orderBy('first_name')->get();
 
             $availablePositions = Position::withActiveTranslation()
@@ -155,7 +166,7 @@ class ProductWarehouseController extends Controller
             $audits = $productWarehouse->audits()->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des audits de l'entrepôt
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.audits', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.audits.success", ['code' => $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.audits', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $productWarehouse->active_translation?->name ?? $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
 
             $warehouse = $productWarehouse;
 
@@ -180,7 +191,7 @@ class ProductWarehouseController extends Controller
             $logs = $productWarehouse->activityLogs()->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des journaux d'activité de l'entrepôt
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.activity-logs', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['code' => $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.activity-logs', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $productWarehouse->active_translation?->name ?? $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
 
             $warehouse = $productWarehouse;
 
@@ -201,12 +212,16 @@ class ProductWarehouseController extends Controller
     {
         try {
 
+            // Récupère les langues actives pour les passer à la vue
+            $langs = getActiveLangs()['langs'];
+
             // Log de l'accès à la page de modification d'un entrepôt
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.edit', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.edit.success", ['code' => $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.edit', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $productWarehouse->active_translation?->name ?? $productWarehouse->code]), is_success: true, loggable: $productWarehouse);
 
             $warehouse = $productWarehouse;
+            $warehouse->load('translations.lang');
 
-            return view('v1.backend.pages.products.warehouses.edit', compact('warehouse'));
+            return view('v1.backend.pages.products.warehouses.edit', compact('warehouse', 'langs'));
 
         } catch (\Exception $e) {
 
@@ -223,13 +238,14 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouseCode = $productWarehouse->code;
-
             $this->productWarehouseService->backend_product_warehouses_update($productWarehouse, $request->validated());
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.update', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->backendLangPath}.update.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
+            // Identifiant d'affichage : nom traduit actif, repli sur le code
+            $warehouseLabel = $productWarehouse->fresh()->active_translation?->name ?? $productWarehouse->code;
 
-            return redirect()->route('backend.product-warehouses.show', ['productWarehouse' => $productWarehouse->uuid])->with('success', __("{$this->backendLangPath}.update.flash_success", ['code' => $warehouseCode]));
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.update', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.update.success", ['name' => $warehouseLabel]), is_success: true, loggable: $productWarehouse);
+
+            return redirect()->route('backend.product-warehouses.show', ['productWarehouse' => $productWarehouse->uuid])->with('success', __("{$this->backendLangPath}.update.flash_success", ['name' => $warehouseLabel]));
 
         } catch (ModelNotFoundException $e) {
 
@@ -258,13 +274,13 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouseCode = $productWarehouse->code;
+            $warehouseLabel = $productWarehouse->active_translation?->name ?? $productWarehouse->code;
 
             $this->productWarehouseService->backend_product_warehouses_activate($productWarehouse);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.activate', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->backendLangPath}.activate.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.activate', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.activate.success", ['name' => $warehouseLabel]), is_success: true, loggable: $productWarehouse);
 
-            return back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['code' => $warehouseCode]));
+            return back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['name' => $warehouseLabel]));
 
         } catch (\InvalidArgumentException $e) {
 
@@ -287,13 +303,13 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouseCode = $productWarehouse->code;
+            $warehouseLabel = $productWarehouse->active_translation?->name ?? $productWarehouse->code;
 
             $this->productWarehouseService->backend_product_warehouses_deactivate($productWarehouse);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.deactivate', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->backendLangPath}.deactivate.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.deactivate', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.deactivate.success", ['name' => $warehouseLabel]), is_success: true, loggable: $productWarehouse);
 
-            return back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['code' => $warehouseCode]));
+            return back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['name' => $warehouseLabel]));
 
         } catch (\InvalidArgumentException $e) {
 
@@ -316,13 +332,13 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouseCode = $productWarehouse->code;
+            $warehouseLabel = $productWarehouse->active_translation?->name ?? $productWarehouse->code;
 
             $this->productWarehouseService->backend_product_warehouses_destroy($productWarehouse);
 
-            $this->logActivity(type: 'warning', action: 'backend.product-warehouses.destroy', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['code' => $warehouseCode]), is_success: true, loggable: $productWarehouse);
+            $this->logActivity(type: 'warning', action: 'backend.product-warehouses.destroy', context: ['warehouse_uuid' => $productWarehouse->uuid, 'warehouse_code' => $productWarehouse->code], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['name' => $warehouseLabel]), is_success: true, loggable: $productWarehouse);
 
-            return redirect()->route('backend.product-warehouses.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['code' => $warehouseCode]));
+            return redirect()->route('backend.product-warehouses.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['name' => $warehouseLabel]));
 
         } catch (ModelNotFoundException $e) {
 
@@ -351,7 +367,11 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouses = ProductWarehouse::onlyTrashed()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $warehouses = ProductWarehouse::onlyTrashed()
+                ->withActiveTranslation()
+                ->withCount(['audits', 'activityLogs'])
+                ->orderBy('deleted_at', 'desc')
+                ->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.trashed', context: ['count' => $warehouses->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
@@ -375,13 +395,13 @@ class ProductWarehouseController extends Controller
             // Récupère l'entrepôt supprimé par son UUID ou échoue
             $warehouse = ProductWarehouse::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $warehouseCode = $warehouse->code;
+            $warehouseLabel = $warehouse->active_translation?->name ?? $warehouse->code;
 
             $this->productWarehouseService->backend_product_warehouses_restore($warehouse);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.restore', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->backendLangPath}.restore.success", ['code' => $warehouseCode]), is_success: true, loggable: $warehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.restore', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->backendLangPath}.restore.success", ['name' => $warehouseLabel]), is_success: true, loggable: $warehouse);
 
-            return back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['code' => $warehouseCode]));
+            return back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['name' => $warehouseLabel]));
 
         } catch (ModelNotFoundException $e) {
 
@@ -413,13 +433,13 @@ class ProductWarehouseController extends Controller
             // Récupère l'entrepôt supprimé par son UUID ou échoue
             $warehouse = ProductWarehouse::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $warehouseCode = $warehouse->code;
+            $warehouseLabel = $warehouse->active_translation?->name ?? $warehouse->code;
 
             $this->productWarehouseService->backend_product_warehouses_force_destroy($warehouse);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouses.force_destroy', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouseCode], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['code' => $warehouseCode]), is_success: true, loggable: $warehouse);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.force_destroy', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['name' => $warehouseLabel]), is_success: true, loggable: $warehouse);
 
-            return back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success", ['code' => $warehouseCode]));
+            return back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success", ['name' => $warehouseLabel]));
 
         } catch (ModelNotFoundException $e) {
 
