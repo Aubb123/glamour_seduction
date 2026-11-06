@@ -18,6 +18,7 @@ return [
         'productAttribute' => 'product attribute',
         'productAttributeValue' => 'product attribute value',
         'product' => 'product',
+        'shop' => 'shop',
         'role' => 'role',
         'version' => 'version',
     ],
@@ -117,6 +118,13 @@ return [
                 'participle' => 'linked',
                 'object' => 'it',
             ],
+            'Shop' => [
+                'label' => 'shop',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
         ],
 
         // Plural labels of the children (key = Eloquent relation name).
@@ -133,6 +141,9 @@ return [
             'files' => 'files',
             'children' => 'subfolders',
             'histories' => 'histories',
+            'warehouses' => 'warehouses',
+            'shopUsers' => 'staff',
+            'warehouseUsers' => 'staff',
 
             'ProductCategory' => [
                 'products' => 'products',
