@@ -18,6 +18,7 @@ return [
         'productAttribute' => 'attribut de produits',
         'productAttributeValue' => "valeur d'attribut de produits",
         'product' => 'produit',
+        'shop' => 'boutique',
         'role' => 'rôle',
         'version' => 'version',
     ],
@@ -117,6 +118,13 @@ return [
                 'participle' => 'liée',
                 'object' => 'la',
             ],
+            'Shop' => [
+                'label' => 'boutique',
+                'demonstrative' => 'cette',
+                'pronoun' => 'elle',
+                'participle' => 'liée',
+                'object' => 'la',
+            ],
         ],
 
         // Libellés pluriels des enfants (clé = nom de la relation Eloquent).
@@ -133,6 +141,9 @@ return [
             'files' => 'fichiers',
             'children' => 'sous-dossiers',
             'histories' => 'historiques',
+            'warehouses' => 'entrepôts',
+            'shopUsers' => 'personnel',
+            'warehouseUsers' => 'personnel',
 
             'ProductCategory' => [
                 'products' => 'produits',
