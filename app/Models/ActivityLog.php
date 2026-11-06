@@ -69,6 +69,7 @@ class ActivityLog extends Model
         'geoCountry',
         'platformVersion',
         'subscribeHistory',
+        'shop',
     ];
 
     // Un journal d'activité appartient à un utilisateur
@@ -158,6 +159,7 @@ class ActivityLog extends Model
         'continent_uuid' => ['model' => GeoContinent::class, 'route' => 'backend.geocontinents.show', 'params' => ['geoContinent', 'slug'], 'title' => 'active_translation.name'],
         'country_uuid' => ['model' => GeoCountry::class, 'route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug'], 'title' => 'active_translation.name'],
         'version_uuid' => ['model' => PlatformVersion::class, 'route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug'], 'title' => 'active_translation.name'],
+        'shop_uuid' => ['model' => Shop::class, 'route' => 'backend.shops.show', 'params' => ['shop', 'slug'], 'title' => 'active_translation.name'],
     ];
 
     /**
@@ -312,6 +314,7 @@ class ActivityLog extends Model
                     'continent_uuid' => __('Continent'),
                     'country_uuid' => __('Pays'),
                     'version_uuid' => __('Version'),
+                    'shop_uuid' => __('Boutique'),
                     default => __('Entité'),
                 };
 
@@ -371,6 +374,7 @@ class ActivityLog extends Model
             GeoContinent::class => __('Continent'),
             GeoCountry::class => __('Pays'),
             PlatformVersion::class => __('Version'),
+            Shop::class => __('Boutique'),
             default => __('Entité'),
         };
     }
