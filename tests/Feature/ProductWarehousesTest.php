@@ -157,8 +157,11 @@ it('met à jour un entrepôt', function () {
 it('active et désactive un entrepôt', function () {
     $admin = warehouseAdmin();
 
+    // Second entrepôt (non défaut) : on garde un entrepôt par défaut distinct pour
+    // pouvoir désactiver celui-ci sans déclencher la garde « dernier par défaut ».
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $warehouse = ProductWarehouse::firstOrFail();
+    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
 
     $this->actingAs($admin)
         ->patch(route('backend.product-warehouses.activate', ['productWarehouse' => $warehouse->uuid]))
@@ -176,8 +179,12 @@ it('active et désactive un entrepôt', function () {
 it('refuse la suppression d\'un entrepôt actif puis autorise après désactivation', function () {
     $admin = warehouseAdmin();
 
+    // Second entrepôt (non défaut) pour isoler la règle testée de la garde « dernier par défaut ».
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['status' => 'active']));
-    $warehouse = ProductWarehouse::firstOrFail();
+    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
+
+    expect($warehouse->status->value)->toBe('active');
 
     // Active → suppression refusée (règle du ProductWarehouseService::backend_product_warehouses_destroy)
     $this->actingAs($admin)
@@ -201,8 +208,10 @@ it('refuse la suppression d\'un entrepôt actif puis autorise après désactivat
 it('passe un entrepôt en corbeille puis le restaure', function () {
     $admin = warehouseAdmin();
 
+    // Second entrepôt (non défaut) pour isoler la règle testée de la garde « dernier par défaut ».
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $warehouse = ProductWarehouse::firstOrFail();
+    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
 
     $this->actingAs($admin)
         ->delete(route('backend.product-warehouses.destroy', ['productWarehouse' => $warehouse->uuid]))
@@ -223,4 +232,55 @@ it('déclare dependentRelations = [stocks, movements] pour ProductWarehouse (mod
 
     $property = new ReflectionProperty($warehouse, 'dependentRelations');
     expect($property->getValue($warehouse))->toBe(['stocks', 'movements']);
+});
+
+// ─────────────────────────────────────────────
+// Garde métier : dernier entrepôt par défaut
+// ─────────────────────────────────────────────
+
+it('refuse de retirer le statut « par défaut » au dernier entrepôt par défaut (update)', function () {
+    $admin = warehouseAdmin();
+
+    // Un seul entrepôt → il est automatiquement l'entrepôt par défaut.
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
+    $warehouse = ProductWarehouse::firstOrFail();
+
+    expect($warehouse->is_default)->toBeTrue();
+
+    // Tentative de retrait du statut par défaut sur le dernier entrepôt par défaut → refusée.
+    $this->actingAs($admin)
+        ->from(route('backend.product-warehouses.edit', ['productWarehouse' => $warehouse->uuid]))
+        ->put(route('backend.product-warehouses.update', ['productWarehouse' => $warehouse->uuid]), warehousePayload([
+            'code' => $warehouse->code,
+            'name' => $warehouse->name,
+            'is_default' => false,
+        ]))
+        ->assertRedirect()
+        ->assertSessionHas('error');
+
+    // L'entrepôt reste l'entrepôt par défaut (la garde a bloqué la mise à jour).
+    expect($warehouse->fresh()->is_default)->toBeTrue();
+    expect(ProductWarehouse::where('is_default', true)->count())->toBe(1);
+});
+
+it('refuse de désactiver le dernier entrepôt par défaut', function () {
+    $admin = warehouseAdmin();
+
+    // Un seul entrepôt, créé actif → il est actif ET par défaut.
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['status' => 'active']));
+    $warehouse = ProductWarehouse::firstOrFail();
+
+    expect($warehouse->is_default)->toBeTrue();
+    expect($warehouse->status->value)->toBe('active');
+
+    // Désactivation du dernier entrepôt par défaut → refusée.
+    $this->actingAs($admin)
+        ->from(route('backend.product-warehouses.index'))
+        ->patch(route('backend.product-warehouses.deactivate', ['productWarehouse' => $warehouse->uuid]))
+        ->assertRedirect()
+        ->assertSessionHas('error');
+
+    // L'entrepôt reste actif.
+    expect($warehouse->fresh()->status->value)->toBe('active');
+    expect($warehouse->fresh()->is_default)->toBeTrue();
 });
