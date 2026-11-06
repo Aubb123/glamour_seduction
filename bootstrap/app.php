@@ -24,6 +24,12 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        // Routes additionnelles (hors monolithe routes/web.php) : traductions d'entrepôts.
+        // NB : tests/Pest.php::bootV1WebRoutes() recharge aussi ce fichier après avoir
+        // vidé la collection de routes (le chargement initial n'a lieu qu'une fois au boot).
+        then: function (): void {
+            require __DIR__.'/../routes/product-warehouse-translations.php';
+        },
     )
     ->withSchedule(function (Schedule $schedule): void {
         // Migration des fichiers cloud vers Backblaze B2 toutes les 5 minutes.
