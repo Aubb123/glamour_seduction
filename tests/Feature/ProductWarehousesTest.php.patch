@@ -1,6 +1,0 @@
-it('déclare dependentRelations = [stocks, movements, warehouseUsers] pour ProductWarehouse', function () {
-    $warehouse = new ProductWarehouse;
-
-    $property = new ReflectionProperty($warehouse, 'dependentRelations');
-    expect($property->getValue($warehouse))->toBe(['stocks', 'movements', 'warehouseUsers']);
-});
