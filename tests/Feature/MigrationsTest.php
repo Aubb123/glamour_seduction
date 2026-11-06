@@ -43,6 +43,7 @@ it('crée toutes les tables du schéma de base', function () {
         'product_warehouse_stocks',
         'product_stock_movements',
         'shops', 'shop_translations', 'shop_warehouse',
+        'positions', 'position_translations', 'shop_users', 'warehouse_users',
     ];
 
     $actualTables = Schema::getTableListing(null, false);
@@ -100,6 +101,25 @@ it('reproduit les colonnes clés du contrat de schéma', function () {
     expect(Schema::hasColumn('shop_warehouse', 'shop_id'))->toBeTrue();
     expect(Schema::hasColumn('shop_warehouse', 'warehouse_id'))->toBeTrue();
     expect(Schema::hasColumn('shop_warehouse', 'is_primary'))->toBeTrue();
+
+    expect(Schema::hasColumn('positions', 'uuid'))->toBeTrue();
+    expect(Schema::hasColumn('positions', 'code'))->toBeTrue();
+    expect(Schema::hasColumn('positions', 'context'))->toBeTrue();
+    expect(Schema::hasColumn('positions', 'status'))->toBeTrue();
+    expect(Schema::hasColumn('positions', 'deleted_at'))->toBeTrue();
+
+    expect(Schema::hasColumn('position_translations', 'position_id'))->toBeTrue();
+    expect(Schema::hasColumn('position_translations', 'slug'))->toBeTrue();
+
+    expect(Schema::hasColumn('shop_users', 'shop_id'))->toBeTrue();
+    expect(Schema::hasColumn('shop_users', 'user_id'))->toBeTrue();
+    expect(Schema::hasColumn('shop_users', 'position_id'))->toBeTrue();
+    expect(Schema::hasColumn('shop_users', 'is_manager'))->toBeTrue();
+
+    expect(Schema::hasColumn('warehouse_users', 'warehouse_id'))->toBeTrue();
+    expect(Schema::hasColumn('warehouse_users', 'user_id'))->toBeTrue();
+    expect(Schema::hasColumn('warehouse_users', 'position_id'))->toBeTrue();
+    expect(Schema::hasColumn('warehouse_users', 'is_manager'))->toBeTrue();
 
     // Contraintes uniques de traduction : un seul (name/lang_id) par langue
     $indexes = Schema::getIndexes('role_translations');
