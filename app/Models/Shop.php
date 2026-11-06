@@ -7,6 +7,7 @@ use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Shop extends Model
 {
@@ -24,11 +25,11 @@ class Shop extends Model
 
     // Relations enfants dont la présence bloque la suppression de cette boutique
     // (delete / force_delete) via BackendHelper::destroy_function / force_destroy_function.
-    // NB : la relation `users` (shop_users, personnel) sera ajoutée au Lot 2 — NE PAS
-    // la déclarer ici tant que la méthode de relation n'existe pas, sous peine de
-    // BadMethodCallException à la suppression. Les entrepôts (pivot shop_warehouse)
-    // ne bloquent volontairement PAS : un simple détachement suffit.
-    protected array $dependentRelations = [];
+    // NB : la relation `shopUsers` (personnel) bloque la suppression : on refuse de supprimer
+    // une boutique tant que du personnel y est affecté (affectations orphelines interdites).
+    // Les entrepôts (pivot shop_warehouse) ne bloquent volontairement PAS : un simple
+    // détachement suffit.
+    protected array $dependentRelations = ['shopUsers'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -75,6 +76,14 @@ class Shop extends Model
     public function primaryWarehouse(): BelongsToMany
     {
         return $this->warehouses()->wherePivot('is_primary', true);
+    }
+
+    /**
+     * Relation : personnel affecté à la boutique (pivot enrichi `shop_users`).
+     */
+    public function shopUsers(): HasMany
+    {
+        return $this->hasMany(ShopUser::class, 'shop_id');
     }
 
     /**
