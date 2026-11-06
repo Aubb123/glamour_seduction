@@ -1,3 +1,14 @@
+@php
+    // Repli : si le contrôleur ne fournit pas ces collections, on les charge ici.
+    // (évite « Undefined variable $availableUsers » si la méthode show n'a pas été mise à jour)
+    $availableUsers = $availableUsers ?? \App\Models\User::orderBy('first_name')->get();
+    $availablePositions = $availablePositions ?? \App\Models\Position::withActiveTranslation()
+        ->active()
+        ->forContext(\App\Enums\Shops\Positions\PositionContext::Warehouse)
+        ->orderBy('sort_order')
+        ->get();
+@endphp
+
 <div class="col-12">
     <div class="card border">
         <div class="card-header bg-light py-2 d-flex align-items-center justify-content-between">
