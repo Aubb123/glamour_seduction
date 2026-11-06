@@ -125,6 +125,10 @@
                 </div>
             </div>
 
+            <div class="col-12" id="personnel">
+                @include('v1.backend.pages.shops.shops.partials._show-staff', ['shop' => $shop])
+            </div>
+
         </div>
 
     @include('v1.backend.pages.shops.shops.partials._show-end', ['shop' => $shop])
