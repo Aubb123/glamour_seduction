@@ -70,6 +70,7 @@ class ActivityLog extends Model
         'platformVersion',
         'subscribeHistory',
         'shop',
+        'position',
     ];
 
     // Un journal d'activité appartient à un utilisateur
@@ -160,6 +161,7 @@ class ActivityLog extends Model
         'country_uuid' => ['model' => GeoCountry::class, 'route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug'], 'title' => 'active_translation.name'],
         'version_uuid' => ['model' => PlatformVersion::class, 'route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug'], 'title' => 'active_translation.name'],
         'shop_uuid' => ['model' => Shop::class, 'route' => 'backend.shops.show', 'params' => ['shop', 'slug'], 'title' => 'active_translation.name'],
+        'position_uuid' => ['model' => Position::class, 'route' => 'backend.positions.show', 'params' => ['position', 'slug'], 'title' => 'active_translation.name'],
     ];
 
     /**
@@ -315,6 +317,7 @@ class ActivityLog extends Model
                     'country_uuid' => __('Pays'),
                     'version_uuid' => __('Version'),
                     'shop_uuid' => __('Boutique'),
+                    'position_uuid' => __('Poste'),
                     default => __('Entité'),
                 };
 
@@ -375,6 +378,7 @@ class ActivityLog extends Model
             GeoCountry::class => __('Pays'),
             PlatformVersion::class => __('Version'),
             Shop::class => __('Boutique'),
+            Position::class => __('Poste'),
             default => __('Entité'),
         };
     }
