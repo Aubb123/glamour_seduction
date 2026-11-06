@@ -93,7 +93,7 @@ it('crée un entrepôt (premier → is_default auto)', function () {
     $warehouse = ProductWarehouse::firstOrFail();
 
     expect(ProductWarehouse::count())->toBe(1);
-    expect($warehouse->is_default)->toBeTrue(); // Premier entrepôt → par défaut automatiquement
+    expect($warehouse->is_default)->toBeTrue();
     expect($warehouse->status->value)->toBe('inactive');
 });
 
@@ -117,7 +117,6 @@ it('gère un seul entrepôt par défaut (la nouvelle remplace)', function () {
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
     $first = ProductWarehouse::firstOrFail();
 
-    // Second entrepôt marqué par défaut
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
 
     expect(ProductWarehouse::count())->toBe(2);
@@ -157,8 +156,11 @@ it('met à jour un entrepôt', function () {
 it('active et désactive un entrepôt', function () {
     $admin = warehouseAdmin();
 
+    // Second entrepôt (non défaut) : on garde un entrepôt par défaut distinct pour
+    // pouvoir désactiver celui-ci sans déclencher la garde « dernier par défaut ».
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $warehouse = ProductWarehouse::firstOrFail();
+    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
 
     $this->actingAs($admin)
         ->patch(route('backend.product-warehouses.activate', ['productWarehouse' => $warehouse->uuid]))
@@ -176,10 +178,12 @@ it('active et désactive un entrepôt', function () {
 it('refuse la suppression d\'un entrepôt actif puis autorise après désactivation', function () {
     $admin = warehouseAdmin();
 
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['status' => 'active']));
-    $warehouse = ProductWarehouse::firstOrFail();
+    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
 
-    // Active → suppression refusée (règle du ProductWarehouseService::backend_product_warehouses_destroy)
+    expect($warehouse->status->value)->toBe('active');
+
     $this->actingAs($admin)
         ->from(route('backend.product-warehouses.index'))
         ->delete(route('backend.product-warehouses.destroy', ['productWarehouse' => $warehouse->uuid]))
@@ -188,7 +192,6 @@ it('refuse la suppression d\'un entrepôt actif puis autorise après désactivat
 
     expect(ProductWarehouse::find($warehouse->id))->not->toBeNull();
 
-    // Désactivé → suppression autorisée
     $warehouse->update(['status' => 'inactive']);
 
     $this->actingAs($admin)
@@ -201,8 +204,9 @@ it('refuse la suppression d\'un entrepôt actif puis autorise après désactivat
 it('passe un entrepôt en corbeille puis le restaure', function () {
     $admin = warehouseAdmin();
 
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $warehouse = ProductWarehouse::firstOrFail();
+    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
 
     $this->actingAs($admin)
         ->delete(route('backend.product-warehouses.destroy', ['productWarehouse' => $warehouse->uuid]))
@@ -218,9 +222,54 @@ it('passe un entrepôt en corbeille puis le restaure', function () {
     expect(ProductWarehouse::find($warehouse->id))->not->toBeNull();
 });
 
-it('déclare dependentRelations = [stocks, movements] pour ProductWarehouse (modules 8-9 livrés)', function () {
+it('déclare dependentRelations = [stocks, movements, warehouseUsers] pour ProductWarehouse', function () {
     $warehouse = new ProductWarehouse;
 
     $property = new ReflectionProperty($warehouse, 'dependentRelations');
-    expect($property->getValue($warehouse))->toBe(['stocks', 'movements']);
+    expect($property->getValue($warehouse))->toBe(['stocks', 'movements', 'warehouseUsers']);
+});
+
+// ─────────────────────────────────────────────
+// Garde métier : dernier entrepôt par défaut
+// ─────────────────────────────────────────────
+
+it('refuse de retirer le statut « par défaut » au dernier entrepôt par défaut (update)', function () {
+    $admin = warehouseAdmin();
+
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
+    $warehouse = ProductWarehouse::firstOrFail();
+
+    expect($warehouse->is_default)->toBeTrue();
+
+    $this->actingAs($admin)
+        ->from(route('backend.product-warehouses.edit', ['productWarehouse' => $warehouse->uuid]))
+        ->put(route('backend.product-warehouses.update', ['productWarehouse' => $warehouse->uuid]), warehousePayload([
+            'code' => $warehouse->code,
+            'name' => $warehouse->name,
+            'is_default' => false,
+        ]))
+        ->assertRedirect()
+        ->assertSessionHas('error');
+
+    expect($warehouse->fresh()->is_default)->toBeTrue();
+    expect(ProductWarehouse::where('is_default', true)->count())->toBe(1);
+});
+
+it('refuse de désactiver le dernier entrepôt par défaut', function () {
+    $admin = warehouseAdmin();
+
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['status' => 'active']));
+    $warehouse = ProductWarehouse::firstOrFail();
+
+    expect($warehouse->is_default)->toBeTrue();
+    expect($warehouse->status->value)->toBe('active');
+
+    $this->actingAs($admin)
+        ->from(route('backend.product-warehouses.index'))
+        ->patch(route('backend.product-warehouses.deactivate', ['productWarehouse' => $warehouse->uuid]))
+        ->assertRedirect()
+        ->assertSessionHas('error');
+
+    expect($warehouse->fresh()->status->value)->toBe('active');
+    expect($warehouse->fresh()->is_default)->toBeTrue();
 });
