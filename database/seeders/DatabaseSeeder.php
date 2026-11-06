@@ -68,6 +68,9 @@ class DatabaseSeeder extends Seeder
             ProductWarehouseSeeder::class,
             ProductWarehouseStockSeeder::class,
             ProductStockMovementSeeder::class,
+
+            ShopSeeder::class,
+            ShopTranslationSeeder::class,
         ]);
 
     }
