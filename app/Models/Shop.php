@@ -24,10 +24,10 @@ class Shop extends Model
 
     // Relations enfants dont la présence bloque la suppression de cette boutique
     // (delete / force_delete) via BackendHelper::destroy_function / force_destroy_function.
-    // NB : la relation `users` (personnel via le pivot `shop_users`) bloque la suppression :
-    // on refuse de supprimer une boutique tant que du personnel y est affecté.
+    // NB : la relation `shopUsers` (personnel via le pivot `shop_users`) bloque la
+    // suppression : on refuse de supprimer une boutique tant que du personnel y est affecté.
     // Les entrepôts (pivot shop_warehouse) ne bloquent volontairement PAS.
-    protected array $dependentRelations = ['users'];
+    protected array $dependentRelations = ['shopUsers'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -79,11 +79,13 @@ class Shop extends Model
     /**
      * Relation many-to-many vers le personnel affecté à la boutique.
      *
-     * Le pivot `shop_users` est enrichi (colonne `uuid`, `position_id`, `is_manager`),
-     * exactement comme les autres pivots du projet (ex : blog_post_tag). Il n'y a
-     * volontairement PAS de modèle ShopUser : on accède au pivot via `$user->pivot`.
+     * Le pivot `shop_users` est une table pivot enrichie (colonnes `uuid`,
+     * `position_id`, `is_manager`), au même titre que `blog_post_tag`. Il n'y a
+     * volontairement PLUS de modèle ShopUser : on manipule le pivot via les
+     * méthodes Eloquent (attach/updateExistingPivot/detach) et on lit les colonnes
+     * enrichies via `$user->pivot`.
      */
-    public function users(): BelongsToMany
+    public function shopUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'shop_users', 'shop_id', 'user_id')
             ->withPivot(['uuid', 'position_id', 'is_manager'])

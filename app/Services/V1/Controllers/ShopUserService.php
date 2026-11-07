@@ -5,9 +5,9 @@ namespace App\Services\V1\Controllers;
 use App\Enums\Shops\Positions\PositionContext;
 use App\Models\Position;
 use App\Models\Shop;
-use App\Models\ShopUser;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ShopUserService
 {
@@ -17,7 +17,7 @@ class ShopUserService
     // ─────────────────────────────────────────────
     // STORE (affectation d'un membre du personnel)
     // ─────────────────────────────────────────────
-    public function backend_shop_users_store(Shop $shop, array $data): ShopUser
+    public function backend_shop_users_store(Shop $shop, array $data): User
     {
         return DB::transaction(function () use ($shop, $data) {
 
@@ -34,29 +34,39 @@ class ShopUserService
 
             $isManager = ($data['is_manager'] ?? null) === '1' || ($data['is_manager'] ?? false) === true;
 
-            // Affectation : unique par couple (shop_id, user_id)
-            $shopUser = ShopUser::create([
-                'shop_id' => $shop->id,
-                'user_id' => $user->id,
+            // Affectation unique par couple (shop_id, user_id)
+            if ($shop->shopUsers()->whereKey($user->getKey())->exists()) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.duplicate"));
+            }
+
+            // Attache le personnel au pivot enrichi `shop_users`
+            $shop->shopUsers()->attach($user->getKey(), [
+                'uuid' => (string) Str::uuid(),
                 'position_id' => $positionId,
                 'is_manager' => $isManager,
             ]);
 
             // Un seul responsable par boutique
             if ($isManager) {
-                $this->unsetOtherManagers($shop, $shopUser);
+                $this->unsetOtherManagers($shop, $user->getKey());
             }
 
-            return $shopUser;
+            return $user;
         });
     }
 
     // ─────────────────────────────────────────────
     // UPDATE (modification d'une affectation)
     // ─────────────────────────────────────────────
-    public function backend_shop_users_update(ShopUser $shopUser, array $data): ShopUser
+    public function backend_shop_users_update(string $shopUserUuid, array $data): User
     {
-        return DB::transaction(function () use ($shopUser, $data) {
+        return DB::transaction(function () use ($shopUserUuid, $data) {
+
+            // Le pivot `shop_users` n'a plus de modèle : on résout la ligne par son uuid
+            $pivot = DB::table('shop_users')->where('uuid', $shopUserUuid)->firstOrFail();
+
+            $shop = Shop::findOrFail($pivot->shop_id);
+            $user = User::findOrFail($pivot->user_id);
 
             $updateData = [];
 
@@ -74,35 +84,45 @@ class ShopUserService
                 $updateData['is_manager'] = ($data['is_manager'] ?? null) === '1' || ($data['is_manager'] ?? false) === true;
             }
 
-            $shopUser->update($updateData);
-
-            if ($shopUser->is_manager) {
-                $this->unsetOtherManagers($shopUser->shop, $shopUser);
+            if (! empty($updateData)) {
+                $shop->shopUsers()->updateExistingPivot($user->getKey(), $updateData);
             }
 
-            return $shopUser;
+            if (($updateData['is_manager'] ?? false) === true) {
+                $this->unsetOtherManagers($shop, $user->getKey());
+            }
+
+            return $user;
         });
     }
 
     // ─────────────────────────────────────────────
     // DESTROY (retrait d'un membre du personnel)
     // ─────────────────────────────────────────────
-    public function backend_shop_users_destroy(ShopUser $shopUser): void
+    public function backend_shop_users_destroy(string $shopUserUuid): User
     {
-        DB::transaction(function () use ($shopUser) {
-            // Une affectation est un simple lien : suppression physique directe
-            // (pas de soft delete sur les pivots de personnel).
-            $shopUser->delete();
+        return DB::transaction(function () use ($shopUserUuid) {
+
+            $pivot = DB::table('shop_users')->where('uuid', $shopUserUuid)->firstOrFail();
+
+            $shop = Shop::findOrFail($pivot->shop_id);
+            $user = User::findOrFail($pivot->user_id);
+
+            // Une affectation est un simple lien : détachement physique du pivot
+            $shop->shopUsers()->detach($user->getKey());
+
+            return $user;
         });
     }
 
     // ─────────────────────────────────────────────
     // UNSET OTHER MANAGERS (privé) — un seul responsable par boutique
     // ─────────────────────────────────────────────
-    private function unsetOtherManagers(Shop $shop, ShopUser $current): void
+    private function unsetOtherManagers(Shop $shop, int $userId): void
     {
-        ShopUser::where('shop_id', $shop->id)
-            ->where('id', '!=', $current->id)
+        DB::table('shop_users')
+            ->where('shop_id', $shop->id)
+            ->where('user_id', '!=', $userId)
             ->where('is_manager', true)
             ->update(['is_manager' => false]);
     }

@@ -26,8 +26,9 @@ class ProductWarehouse extends Model
 
     // Relations enfants dont la présence bloque la suppression de cet entrepôt
     // (delete / force_delete) via BackendHelper::destroy_function / force_destroy_function.
-    // NB : la relation `users` (personnel via le pivot `warehouse_users`) bloque la suppression.
-    protected array $dependentRelations = ['stocks', 'movements', 'users'];
+    // NB : la relation `warehouseUsers` (personnel via le pivot `warehouse_users`)
+    // bloque la suppression.
+    protected array $dependentRelations = ['stocks', 'movements', 'warehouseUsers'];
 
     // NB : seules les données NON traduites vivent sur la table principale.
     // `code` reste unique et non traduit ; `name`, `address`, `city`, `phone` sont
@@ -117,11 +118,13 @@ class ProductWarehouse extends Model
     /**
      * Relation many-to-many vers le personnel affecté à l'entrepôt.
      *
-     * Le pivot `warehouse_users` est enrichi (colonne `uuid`, `position_id`, `is_manager`),
-     * comme les autres pivots du projet (ex : blog_post_tag). Il n'y a volontairement
-     * PAS de modèle WarehouseUser : on accède au pivot via `$user->pivot`.
+     * Le pivot `warehouse_users` est une table pivot enrichie (colonnes `uuid`,
+     * `position_id`, `is_manager`), au même titre que `blog_post_tag`. Il n'y a
+     * volontairement PLUS de modèle WarehouseUser : on manipule le pivot via les
+     * méthodes Eloquent (attach/updateExistingPivot/detach) et on lit les colonnes
+     * enrichies via `$user->pivot`.
      */
-    public function users(): BelongsToMany
+    public function warehouseUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'warehouse_users', 'warehouse_id', 'user_id')
             ->withPivot(['uuid', 'position_id', 'is_manager'])
