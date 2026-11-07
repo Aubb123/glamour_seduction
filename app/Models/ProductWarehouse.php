@@ -57,11 +57,37 @@ class ProductWarehouse extends Model
     }
 
     /**
+     * Accesseur : nom d'affichage de l'entrepôt.
+     *
+     * La colonne `name` a été retirée de la table `product_warehouses` (le nom vit
+     * désormais dans product_warehouse_translations, traduit par langue). Cet accesseur
+     * expose `$warehouse->name` pour toutes les vues/contrôleurs qui l'affichent encore,
+     * en résolvant le nom traduit actif et en repliant sur le code si aucune traduction
+     * n'existe. Il évite ainsi les « Undefined column 'name' » / vides à l'affichage.
+     *
+     * NB : il ne crée PAS d'attribut en base (pas de setter) — il est en lecture seule.
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->active_translation?->name ?? $this->code;
+    }
+
+    /**
      * Scope pour récupérer uniquement les entrepôts actifs.
      */
     public function scopeActive($query): Builder
     {
         return $query->where('status', ProductWarehouseStatus::Active);
+    }
+
+    /**
+     * Scope de tri par nom d'affichage (« code » étant la seule colonne triable en
+     * base, le nom traduit n'étant pas sur la table principale) :
+     * on trie sur le code, ce qui reste stable et non ambigu.
+     */
+    public function scopeOrderedByName($query): Builder
+    {
+        return $query->orderBy('code');
     }
 
     /**
