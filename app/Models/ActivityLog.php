@@ -71,6 +71,7 @@ class ActivityLog extends Model
         'subscribeHistory',
         'shop',
         'position',
+        'productWarehouse',
     ];
 
     // Un journal d'activité appartient à un utilisateur
@@ -162,6 +163,7 @@ class ActivityLog extends Model
         'version_uuid' => ['model' => PlatformVersion::class, 'route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug'], 'title' => 'active_translation.name'],
         'shop_uuid' => ['model' => Shop::class, 'route' => 'backend.shops.show', 'params' => ['shop', 'slug'], 'title' => 'active_translation.name'],
         'position_uuid' => ['model' => Position::class, 'route' => 'backend.positions.show', 'params' => ['position', 'slug'], 'title' => 'active_translation.name'],
+        'warehouse_uuid' => ['model' => ProductWarehouse::class, 'route' => 'backend.product-warehouses.show', 'params' => ['productWarehouse'], 'title' => 'code'],
     ];
 
     /**
@@ -318,6 +320,7 @@ class ActivityLog extends Model
                     'version_uuid' => __('Version'),
                     'shop_uuid' => __('Boutique'),
                     'position_uuid' => __('Poste'),
+                    'warehouse_uuid' => __('Entrepôt'),
                     default => __('Entité'),
                 };
 
@@ -379,6 +382,7 @@ class ActivityLog extends Model
             PlatformVersion::class => __('Version'),
             Shop::class => __('Boutique'),
             Position::class => __('Poste'),
+            ProductWarehouse::class => __('Entrepôt'),
             default => __('Entité'),
         };
     }
