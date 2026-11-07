@@ -8,30 +8,34 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * Table : product_warehouses — entrepôts produits.
+     *
+     * Ne conserve QUE les données non traduites (code, status) :
+     *  - name / address / city / phone sont portés par product_warehouse_translations
+     *    (migration 2026_11_06_000020_create_product_warehouse_translations_table) ;
+     *  - « entrepôt par défaut » n'est PAS une propriété globale de l'entrepôt : c'est
+     *    une notion PAR BOUTIQUE, portée par le pivot shop_warehouse.is_primary
+     *    (voir ShopService::syncWarehouses()).
+     *
+     * NB : les ex-migrations 2026_11_06_000021 (drop des colonnes traduisibles) et
+     * 2026_11_06_000022 (drop de is_default) ont été fusionnées ici : leurs colonnes
+     * n'existent plus dès la création, ce qui évite des colonnes créées puis aussitôt
+     * supprimées lors d'un migrate:fresh.
      */
     public function up(): void
     {
-        // Table: product_warehouses, enregistre les entrepôts de produits
-        // Un entrepôt peut contenir plusieurs produits (relation one-to-many)
-        // Exemple d'entrepôts : "Entrepôt de Paris", "Entrepôt de Lyon", "Entrepôt de Marseille"
         Schema::create('product_warehouses', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
             //
             $table->string('code')->unique(); // Code unique de l'entrepôt (ex : COT-01, PKO-01)
-            $table->string('name'); // Nom de l'entrepôt (donnée de gestion interne, non traduite)
-            //
-            $table->string('address')->nullable(); // Adresse physique de l'entrepôt
-            $table->string('city')->nullable(); // Ville de l'entrepôt
-            $table->string('phone')->nullable(); // Numéro de téléphone de l'entrepôt
-            //
             $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si l'entrepôt est utilisable
-            $table->boolean('is_default')->default(false); // Entrepôt de réservation par défaut
             //
             $table->timestamps();
             $table->softDeletes();
             // Index pour les filtres courants
-            $table->index(['status', 'deleted_at']); // Index pour les filtres courants
+            $table->index(['status', 'deleted_at']);
         });
     }
 
