@@ -67,6 +67,18 @@
                                     </div>
                                     <hr class="my-2">
                                     <div class="row mb-3 align-items-center">
+                                        <div class="col-4 text-muted fw-semibold">{{ __('Code couleur') }}</div>
+                                        <div class="col-8">
+                                            @if($value->hex_color)
+                                                <span class="d-inline-block rounded-circle border me-2 align-middle" style="width:18px;height:18px;background:{{ $value->hex_color }}"></span>
+                                                <code>{{ $value->hex_color }}</code>
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <hr class="my-2">
+                                    <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __("Ordre de tri") }}</div>
                                         <div class="col-8">{{ $value->sort_order }}</div>
                                     </div>
@@ -157,7 +169,7 @@
                                                             <form action="{{ route('backend.product-attribute-value-translations.destroy', ['uuid' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">
+                                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', '{{ __('Supprimer') }}', 'warning')">
                                                                     <i class="bx bx-trash me-1"></i> {{ __('Supprimer') }}
                                                                 </button>
                                                             </form>
