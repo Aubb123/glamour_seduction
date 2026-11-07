@@ -22,6 +22,16 @@ return [
             'warning' => 'Attempt to view a missing movement : :uuid',
             'error' => 'Error while viewing the stock movement : :uuid',
         ],
+        'audits' => [
+            'success' => 'Viewing audits of the stock movement',
+            'warning' => 'Attempt to view audits of a missing movement : :uuid',
+            'error' => 'Error while viewing audits of the stock movement : :uuid',
+        ],
+        'activity-logs' => [
+            'success' => 'Viewing activity logs of the stock movement',
+            'warning' => 'Attempt to view activity logs of a missing movement : :uuid',
+            'error' => 'Error while viewing activity logs of the stock movement : :uuid',
+        ],
         'destroy' => [
             'success' => 'Deleting the stock movement',
             'warning' => 'Attempt to delete a missing movement : :uuid',

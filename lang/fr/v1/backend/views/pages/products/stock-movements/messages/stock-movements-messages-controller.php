@@ -22,6 +22,16 @@ return [
             'warning' => 'Tentative de consultation d\'un mouvement inexistant : :uuid',
             'error' => 'Erreur lors de la consultation du mouvement de stock : :uuid',
         ],
+        'audits' => [
+            'success' => 'Consultation des audits du mouvement de stock',
+            'warning' => 'Tentative de consultation des audits d\'un mouvement inexistant : :uuid',
+            'error' => 'Erreur lors de la consultation des audits du mouvement de stock : :uuid',
+        ],
+        'activity-logs' => [
+            'success' => 'Consultation des journaux d\'activité du mouvement de stock',
+            'warning' => 'Tentative de consultation des journaux d\'activité d\'un mouvement inexistant : :uuid',
+            'error' => 'Erreur lors de la consultation des journaux d\'activité du mouvement de stock : :uuid',
+        ],
         'destroy' => [
             'success' => 'Suppression du mouvement de stock',
             'warning' => 'Tentative de suppression d\'un mouvement inexistant : :uuid',
