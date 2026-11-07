@@ -13,6 +13,9 @@ use function __;
  *
  * Valide les données entrantes pour la création d'un entrepôt (product_warehouses)
  * avec ses traductions associées (product_warehouse_translations).
+ *
+ * NB : « entrepôt par défaut » (is_default) n'est PAS géré ici : c'est une notion
+ * PAR BOUTIQUE, portée par le pivot `shop_warehouse.is_primary` (ShopService).
  */
 class StoreProductWarehouseRequest extends FormRequest
 {
@@ -38,9 +41,6 @@ class StoreProductWarehouseRequest extends FormRequest
 
             // Statut obligatoire (source unique de vérité : enum)
             'status' => ['required', Rule::in(ProductWarehouseStatus::values())],
-
-            // Entrepôt par défaut (optionnel)
-            'is_default' => ['sometimes', 'boolean'],
 
             // Le tableau de traductions lui-même
             'translations' => ['required', 'array'],
@@ -91,8 +91,6 @@ class StoreProductWarehouseRequest extends FormRequest
 
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
-
-            'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),
