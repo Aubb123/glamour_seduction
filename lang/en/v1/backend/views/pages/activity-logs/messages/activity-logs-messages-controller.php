@@ -3,6 +3,7 @@
 return [
     'activity_logs' => [
         'not_found' => 'Attempt to access a non-existent activity log (UUID: :uuid).',
+        'server_error' => 'Server error: :exception',
         'index' => [
             'success' => 'Viewing the activity logs list',
             'error' => 'Error viewing the activity logs list',
