@@ -7,10 +7,6 @@ return [
         ],
         'deactivate' => [
             'already_inactive' => 'This warehouse is already inactive.',
-            'default_forbidden' => 'Cannot deactivate the default warehouse. Set another default warehouse first.',
-        ],
-        'update' => [
-            'default_forbidden' => 'Cannot remove the "default" status from the last default warehouse. Set another default warehouse first.',
         ],
         'destroy' => [
             'active_forbidden' => 'Cannot delete an active warehouse. Please deactivate it first.',
