@@ -1,12 +1,12 @@
 @extends('v1.backend.layouts.app')
 
-@section('title') Corbeille — Stocks @endsection
+@section('title') {{ __('Stocks - Corbeille') }} @endsection
 
 @section('content')
 
-    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => 'Corbeille — Stocks'])
+    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('Stocks - Corbeille')])
 
-    @include('v1.backend.pages.products.stocks.partials._trashed-table', [
+    @include('v1.backend.pages.products.stocks.partials._index-table', [
         'stocks' => $stocks
     ])
 
