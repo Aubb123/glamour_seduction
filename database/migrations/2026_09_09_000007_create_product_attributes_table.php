@@ -20,6 +20,7 @@ return new class extends Migration
             //
             $table->integer('sort_order')->unique(); // Utile dans les selects/listes // Pour l'ordre d'affichage : 0 en premier
             $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si l'attribut est utilisable
+            $table->enum('type', ['text', 'color'])->default('text'); // Type de valeur de l'attribut : text (saisie libre) ou color (code HEX requis sur chaque valeur)
             //
             $table->timestamps();
             $table->softDeletes();
