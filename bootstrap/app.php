@@ -14,9 +14,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -87,6 +89,25 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return null;
+        });
+
+        // Journalise TOUTE exception serveur non gérée (5xx : erreurs de rendu Blade
+        // hors du try/catch des contrôleurs, erreurs PHP, etc.) dans activity_logs,
+        // afin qu'elle soit consultable depuis le dashboard (backend/activity-logs/index).
+        //
+        // Les exceptions « attendues » sont ignorées pour éviter le bruit :
+        //  - ValidationException (422) : erreurs de validation de formulaire ;
+        //  - HTTP < 500 (404/403/405/419...) : erreurs client, pas des bugs serveur.
+        $exceptions->reportable(function (\Throwable $e): void {
+            if ($e instanceof ValidationException) {
+                return;
+            }
+
+            if ($e instanceof HttpExceptionInterface && $e->getStatusCode() < 500) {
+                return;
+            }
+
+            app(ActivityLogger::class)->reportServerError($e);
         });
 
     })->create();

@@ -31,6 +31,17 @@ trait LogActivity
         // ── Base de données ─────────────────────────────────────────
         try {
 
+            // La colonne `message` est un VARCHAR(255) : un message d'exception long
+            // ferait échouer l'INSERT silencieusement (capturé par le catch ci-dessous),
+            // rendant l'erreur INVISIBLE dans le dashboard. On tronque donc le message
+            // stocké et on conserve l'original complet dans le contexte.
+            $storedMessage = $message;
+
+            if ($storedMessage !== null && mb_strlen($storedMessage) > 255) {
+                $context['full_message'] = $storedMessage;
+                $storedMessage = mb_substr($storedMessage, 0, 252).'...';
+            }
+
             // Utiliser le modèle Eloquent pour créer une entrée dans la table activity_logs
             ActivityLog::create([
                 'user_id' => auth()->id(),
@@ -38,7 +49,7 @@ trait LogActivity
                 'loggable_id' => $loggable?->getKey(),
                 'type' => $type,
                 'action' => $action,
-                'message' => $message,
+                'message' => $storedMessage,
                 'context' => $context,
                 'activity' => $activity,
                 'ip_address' => request()->ip(),

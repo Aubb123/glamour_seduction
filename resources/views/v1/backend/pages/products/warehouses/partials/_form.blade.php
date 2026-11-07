@@ -62,11 +62,6 @@
             </div>
         </div>
 
-        <div class="alert alert-info d-flex align-items-center mb-0" role="alert">
-            <i class="bx bx-info-circle me-2"></i>
-            <span>{{ __("L'entrepôt par défaut (principal) d'approvisionnement se définit par boutique, depuis la fiche de la boutique.") }}</span>
-        </div>
-
     </div>
 
     {{-- STEP 2 — Traductions (une par langue) --}}
