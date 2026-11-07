@@ -4,7 +4,7 @@
 
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <h5 class="card-title mb-0">
-                    {{ __('Entrepôt') }} — <code>{{ $warehouse->name }}</code>
+                    {{ __('Entrepôt') }} — <code>{{ $warehouse->active_translation?->name ?? $warehouse->code }}</code>
                 </h5>
 
                 <div class="hstack gap-2 flex-wrap">
