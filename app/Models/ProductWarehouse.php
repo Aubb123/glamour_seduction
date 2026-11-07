@@ -6,6 +6,7 @@ use App\Enums\Products\Warehouses\ProductWarehouseStatus;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductWarehouse extends Model
@@ -27,22 +28,24 @@ class ProductWarehouse extends Model
     // ou définitive (BackendHelper::force_destroy_function).
     // NB : chaque relation listée ici DOIT avoir une méthode de relation correspondante
     // sur le modèle, sinon destroy_function lève une BadMethodCallException.
+    // NB : les boutiques (pivot `shop_warehouse`) ne bloquent volontairement PAS :
+    // un simple détachement suffit.
     protected array $dependentRelations = ['stocks', 'movements', 'warehouseUsers'];
 
     // NB : seules les données NON traduites vivent sur la table principale.
     // `code` reste unique et non traduit (donnée de gestion interne) ;
-    // `name`, `address`, `city`, `phone` sont désormais portés par
-    // product_warehouse_translations (une ligne par langue).
+    // `name`, `address`, `city`, `phone` sont portés par product_warehouse_translations.
+    // NB : « entrepôt par défaut » est une notion PAR BOUTIQUE, portée par le pivot
+    // `shop_warehouse.is_primary` (voir la relation shops()) — il n'y a plus de
+    // colonne is_default globale.
     protected $fillable = [
         'code',
         'status',
-        'is_default',
     ];
 
     // Casts pour les attributs du modèle
     protected $casts = [
         'status' => ProductWarehouseStatus::class,
-        'is_default' => 'boolean',
     ];
 
     /**
@@ -62,11 +65,29 @@ class ProductWarehouse extends Model
     }
 
     /**
-     * Scope pour récupérer l'entrepôt par défaut (un seul par boutique).
+     * Relation many-to-many vers les boutiques approvisionnées par cet entrepôt
+     * (pivot `shop_warehouse`, attribut booléen `is_primary`).
+     *
+     * NB : `is_primary = true` désigne l'entrepôt PRINCIPAL (par défaut) d'une
+     * boutique donnée — un seul par boutique (garanti applicativement par
+     * ShopService::syncWarehouses()).
      */
-    public function scopeDefaultWarehouse($query): Builder
+    public function shops(): BelongsToMany
     {
-        return $query->where('is_default', true);
+        return $this->belongsToMany(Shop::class, 'shop_warehouse', 'warehouse_id', 'shop_id')
+            ->withPivot(['is_primary'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Indique si cet entrepôt est l'entrepôt principal (par défaut) de la boutique fournie.
+     */
+    public function isPrimaryFor(Shop $shop): bool
+    {
+        return $this->shops()
+            ->wherePivot('is_primary', true)
+            ->whereKey($shop->getKey())
+            ->exists();
     }
 
     /**
