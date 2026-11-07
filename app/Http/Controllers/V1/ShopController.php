@@ -9,6 +9,7 @@ use App\Http\Requests\V1\Shops\Shops\UpdateShopRequest;
 use App\Models\Position;
 use App\Models\ProductWarehouse;
 use App\Models\Shop;
+use App\Models\ShopTranslation;
 use App\Models\User;
 use App\Services\V1\Controllers\ShopService;
 use App\Traits\LogActivity;
@@ -127,8 +128,9 @@ class ShopController extends Controller
     {
         try {
 
-            // Charge les traductions (dont trashed pour l'onglet corbeille) et les entrepôts rattachés
-            $shop->load(['translations.lang', 'warehouses', 'shopUsers'])->loadCount(['audits', 'activityLogs']);
+            // Charge les traductions (avec lang), les entrepôts rattachés et le personnel (pivot),
+            // puis les compteurs (dont shopUsers pour le badge « Personnel » de la navigation).
+            $shop->load(['translations.lang', 'warehouses', 'shopUsers'])->loadCount(['audits', 'activityLogs', 'shopUsers']);
 
             // Vérifie la cohérence du slug avec la traduction active (redirection cohérente sinon)
             $expectedSlug = $shop->active_translation?->slug ?? 'null';
@@ -137,11 +139,17 @@ class ShopController extends Controller
                 return redirect()->route('backend.shops.show', ['shop' => $shop->uuid, 'slug' => $expectedSlug]);
             }
 
+            // Langues actives pour les onglets de traduction de la fiche
+            $langs = getActiveLangs()['langs'];
+
+            // Traductions supprimées (soft deleted) de cette boutique pour l'onglet « Corbeille »
+            $trashedTranslations = ShopTranslation::onlyTrashed()->where('shop_id', $shop->id)->get();
+
             // Log de l'accès au show
             $this->logActivity(type: 'info', action: 'backend.shops.show', context: ['shop_uuid' => $shop->uuid], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $shop->active_translation?->name ?? '']), is_success: true, loggable: $shop);
 
             // Affiche la vue de détail
-            return view('v1.backend.pages.shops.shops.show', compact('shop'));
+            return view('v1.backend.pages.shops.shops.show', compact('shop', 'langs', 'trashedTranslations'));
 
         } catch (\Exception $e) {
 
