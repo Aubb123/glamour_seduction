@@ -15,8 +15,8 @@ class ProductWarehouseFactory extends Factory
      * Define the model's default state.
      *
      * NB : les champs traduisibles (name, address, city, phone) sont portés par
-     * product_warehouse_translations. La factory ne renseigne donc que les données
-     * non traduites ; utilisez le state withTranslations() pour créer les traductions.
+     * product_warehouse_translations. « Entrepôt par défaut » est une notion PAR
+     * BOUTIQUE (pivot shop_warehouse.is_primary), gérée par ShopService.
      *
      * @return array<string, mixed>
      */
@@ -25,7 +25,6 @@ class ProductWarehouseFactory extends Factory
         return [
             'code' => 'WH-'.strtoupper($this->faker->unique()->bothify('??##')),
             'status' => ProductWarehouseStatus::Inactive,
-            'is_default' => false,
         ];
     }
 
@@ -35,13 +34,5 @@ class ProductWarehouseFactory extends Factory
     public function active(): static
     {
         return $this->state(fn () => ['status' => ProductWarehouseStatus::Active]);
-    }
-
-    /**
-     * État : entrepôt par défaut (réservations). Un seul par boutique.
-     */
-    public function default(): static
-    {
-        return $this->state(fn () => ['is_default' => true]);
     }
 }
