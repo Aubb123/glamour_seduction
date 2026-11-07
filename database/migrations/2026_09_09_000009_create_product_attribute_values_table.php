@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('attribute_id')->constrained('product_attributes')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers product_attributes (une valeur appartient à UN seul attribut)
             //
             $table->string('value'); // Clé machine de la valeur (ex : rouge, xl, medical-silicone), utilisée comme référence technique
+            $table->string('hex_color', 9)->nullable(); // Code couleur HEX (ex : #FF0000, #FFF, #FF0000AA), renseigné uniquement lorsque l'attribut parent est de type "color"
             $table->integer('sort_order')->default(0); // Ordre d'affichage de la valeur dans les selects/listes
             $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si la valeur est utilisable
             //

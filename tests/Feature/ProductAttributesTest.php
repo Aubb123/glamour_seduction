@@ -62,6 +62,7 @@ function productAttributePayload(array $overrides = []): array
     return array_merge([
         'sort_order' => random_int(1000, 99999),
         'status' => 'active',
+        'type' => 'text',
         'translations' => [
             ['lang_id' => $langFr->id, 'name' => 'Attribut FR '.$uid, 'description' => 'Description FR.'],
             ['lang_id' => $langEn->id, 'name' => 'Attribute EN '.$uid, 'description' => 'English description.'],
@@ -69,11 +70,15 @@ function productAttributePayload(array $overrides = []): array
     ], $overrides);
 }
 
-function createAttribute(): ProductAttribute
+function createAttribute(string $type = 'text'): ProductAttribute
 {
     $langFr = Lang::where('code', 'fr')->firstOrFail();
 
-    $attribute = ProductAttribute::create(['sort_order' => random_int(1000, 99999), 'status' => 'active']);
+    $attribute = ProductAttribute::create([
+        'sort_order' => random_int(1000, 99999),
+        'status' => 'active',
+        'type' => $type,
+    ]);
 
     ProductAttributeTranslation::create([
         'attribute_id' => $attribute->id,
@@ -115,6 +120,28 @@ it('crée un attribut avec ses traductions (slug auto-généré)', function () {
     expect(ProductAttribute::count())->toBe(1);
     expect(ProductAttribute::first()->translations()->count())->toBe(2);
     expect(ProductAttribute::first()->translations()->first()->slug)->not->toBeNull();
+});
+
+it('crée un attribut de type couleur', function () {
+    $admin = productAttributeAdmin();
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-attributes.store'), productAttributePayload(['type' => 'color']))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect(ProductAttribute::firstOrFail()->type->value)->toBe('color');
+});
+
+it('refuse un attribut dont le type est invalide', function () {
+    $admin = productAttributeAdmin();
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-attributes.store'), productAttributePayload(['type' => 'rainbow']))
+        ->assertRedirect()
+        ->assertSessionHasErrors(['type']);
+
+    expect(ProductAttribute::count())->toBe(0);
 });
 
 it('affiche le détail d\'un attribut (show avec slug)', function () {
@@ -275,4 +302,62 @@ it('refuse la création d\'une valeur sans attribut parent valide', function () 
         ->assertSessionHasErrors(['attribute_id']);
 
     expect(ProductAttributeValue::count())->toBe(0);
+});
+
+// ─────────────────────────────────────────────────────────────
+// Code couleur HEX (attributs de type « color »)
+// ─────────────────────────────────────────────────────────────
+
+it('exige un code HEX pour une valeur d\'attribut de type couleur', function () {
+    $admin = productAttributeAdmin();
+    $attribute = createAttribute('color');
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-attribute-values.store'), productAttributeValuePayload($attribute->id))
+        ->assertRedirect()
+        ->assertSessionHasErrors(['hex_color']);
+
+    expect(ProductAttributeValue::count())->toBe(0);
+});
+
+it('enregistre le code HEX d\'une valeur couleur en minuscules', function () {
+    $admin = productAttributeAdmin();
+    $attribute = createAttribute('color');
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-attribute-values.store'), productAttributeValuePayload($attribute->id, [
+            'hex_color' => '#FF0000',
+        ]))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect(ProductAttributeValue::firstOrFail()->hex_color)->toBe('#ff0000');
+});
+
+it('rejette un code HEX invalide', function () {
+    $admin = productAttributeAdmin();
+    $attribute = createAttribute('color');
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-attribute-values.store'), productAttributeValuePayload($attribute->id, [
+            'hex_color' => 'not-a-color',
+        ]))
+        ->assertRedirect()
+        ->assertSessionHasErrors(['hex_color']);
+
+    expect(ProductAttributeValue::count())->toBe(0);
+});
+
+it('ignore un code HEX fourni pour un attribut non couleur', function () {
+    $admin = productAttributeAdmin();
+    $attribute = createAttribute('text');
+
+    $this->actingAs($admin)
+        ->post(route('backend.product-attribute-values.store'), productAttributeValuePayload($attribute->id, [
+            'hex_color' => '#123456',
+        ]))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect(ProductAttributeValue::firstOrFail()->hex_color)->toBeNull();
 });

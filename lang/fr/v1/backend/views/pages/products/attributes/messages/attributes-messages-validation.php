@@ -12,6 +12,10 @@ return [
             'required' => 'Le statut est obligatoire.',
             'in' => 'Le statut sélectionné n\'est pas valide.',
         ],
+        'type' => [
+            'required' => 'Le type de valeur est obligatoire.',
+            'in' => 'Le type de valeur sélectionné n\'est pas valide.',
+        ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',
             'array' => 'Les traductions doivent être un tableau.',

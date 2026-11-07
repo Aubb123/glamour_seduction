@@ -22,6 +22,12 @@ return [
             'required' => 'Le statut est obligatoire.',
             'in' => 'Le statut sélectionné n\'est pas valide.',
         ],
+        'hex_color' => [
+            'required' => 'Le code couleur est obligatoire pour une valeur d\'attribut de type « Couleur ».',
+            'string' => 'Le code couleur doit être une chaîne de caractères.',
+            'max' => 'Le code couleur ne peut pas dépasser 9 caractères.',
+            'hex_color' => 'Le code couleur doit être une couleur hexadécimale valide (ex : #FF0000).',
+        ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',
             'array' => 'Les traductions doivent être un tableau.',

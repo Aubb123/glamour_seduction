@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\V1\Products\AttributeValues;
 
+use App\Enums\Products\Attributes\ProductAttributeType;
 use App\Enums\Products\Attributes\ProductAttributeValueStatus;
+use App\Models\ProductAttribute;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -66,6 +68,27 @@ class StoreProductAttributeValueRequest extends FormRequest
         ];
 
         // ────────────────────────────────────────────────────────────
+        // Code couleur HEX : requis UNIQUEMENT si l'attribut parent est
+        // de type "color". Sinon le champ est neutralisé (anti-rejeu).
+        // ────────────────────────────────────────────────────────────
+        $attributeId = $this->input('attribute_id');
+
+        $isColor = $attributeId && ProductAttribute::query()
+            ->whereKey($attributeId)
+            ->where('type', ProductAttributeType::Color)
+            ->exists();
+
+        if (! $isColor) {
+            // L'attribut n'est pas une couleur : on écrase toute valeur parasite
+            // pour qu'aucun HEX fantôme ne soit persisté.
+            $this->merge(['hex_color' => null]);
+        }
+
+        $rules['hex_color'] = $isColor
+            ? ['required', 'string', 'max:9', 'hex_color']
+            : ['nullable'];
+
+        // ────────────────────────────────────────────────────────────
         // Génération dynamique des règles "unique par langue",
         // basées sur les données réellement envoyées dans la requête
         // (accessible via $this->input()).
@@ -118,6 +141,11 @@ class StoreProductAttributeValueRequest extends FormRequest
 
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
+
+            'hex_color.required' => __("{$this->backendLangPath}.hex_color.required"),
+            'hex_color.string' => __("{$this->backendLangPath}.hex_color.string"),
+            'hex_color.max' => __("{$this->backendLangPath}.hex_color.max"),
+            'hex_color.hex_color' => __("{$this->backendLangPath}.hex_color.hex_color"),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

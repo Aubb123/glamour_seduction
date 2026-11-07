@@ -128,6 +128,7 @@
                                                     <input class="form-check-input" type="checkbox" name="attribute_value_ids[]" id="attr-value-{{ $value->id }}" value="{{ $value->id }}"
                                                         @if (in_array($value->id, $selectedValueIds)) checked @endif />
                                                     <label class="form-check-label" for="attr-value-{{ $value->id }}">
+                                                        @include('v1.backend.pages.products.variants.partials._color-swatch', ['hex' => $value->hex_color])
                                                         {{ $value->active_translation?->label ?? $value->value }}
                                                     </label>
                                                 </div>

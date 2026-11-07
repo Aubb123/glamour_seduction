@@ -3,6 +3,7 @@
 namespace App\Services\V1\Controllers;
 
 use App\Enums\Products\Attributes\ProductAttributeStatus;
+use App\Enums\Products\Attributes\ProductAttributeType;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeTranslation;
 use Illuminate\Support\Facades\DB;
@@ -33,6 +34,9 @@ class ProductAttributeService
                 'status' => ($data['status'] ?? null) === ProductAttributeStatus::Active->value
                     ? ProductAttributeStatus::Active
                     : ProductAttributeStatus::Inactive,
+                'type' => ($data['type'] ?? null) === ProductAttributeType::Color->value
+                    ? ProductAttributeType::Color
+                    : ProductAttributeType::Text,
             ]);
 
             // Synchronisation des traductions (création ou mise à jour)
@@ -62,6 +66,13 @@ class ProductAttributeService
             $updateData['status'] = ($data['status'] ?? null) === ProductAttributeStatus::Active->value
                 ? ProductAttributeStatus::Active
                 : ProductAttributeStatus::Inactive;
+
+            // Mise à jour du type (text | color) si fourni
+            if (isset($data['type'])) {
+                $updateData['type'] = $data['type'] === ProductAttributeType::Color->value
+                    ? ProductAttributeType::Color
+                    : ProductAttributeType::Text;
+            }
 
             $attribute->update($updateData);
 

@@ -77,6 +77,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">{{ __('Attribut') }}</th>
                                 <th scope="col">{{ __("Clé machine") }}</th>
+                                <th scope="col">{{ __('Couleur') }}</th>
                                 <th scope="col">{{ __('Libellé') }}</th>
                                 <th scope="col">{{ __('Ordre') }}</th>
                                 <th scope="col">{{ __('Statut') }}</th>
@@ -107,6 +108,15 @@
 
                                     <td>
                                         <code>{{ $value->value }}</code>
+                                    </td>
+
+                                    <td>
+                                        @if($value->hex_color)
+                                            <span class="d-inline-block rounded-circle border align-middle" style="width:16px;height:16px;background:{{ $value->hex_color }}" title="{{ $value->hex_color }}"></span>
+                                            <code class="ms-1">{{ $value->hex_color }}</code>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
                                     </td>
 
                                     <td class="fw-bold">
@@ -198,7 +208,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ request()->routeIs('backend.product-attribute-values.trashed') ? 12 : 11 }}" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.product-attribute-values.trashed') ? 13 : 12 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __("Aucune valeur d'attribut trouvée.") }}
                                     </td>

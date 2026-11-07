@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Products\Attributes\ProductAttributeType;
 use App\Enums\Products\Attributes\ProductAttributeValueStatus;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,6 +35,7 @@ class ProductAttributeValue extends Model
     protected $fillable = [
         'attribute_id',
         'value',
+        'hex_color',
         'sort_order',
         'status',
     ];
@@ -74,5 +76,14 @@ class ProductAttributeValue extends Model
     public function scopeActive($query): Builder
     {
         return $query->where('status', ProductAttributeValueStatus::Active);
+    }
+
+    /**
+     * Accesseur : indique si la valeur porte un code couleur HEX.
+     * (détermine si l'attribut parent est de type "color")
+     */
+    public function getIsColorAttribute(): bool
+    {
+        return $this->attribute?->type === ProductAttributeType::Color;
     }
 }

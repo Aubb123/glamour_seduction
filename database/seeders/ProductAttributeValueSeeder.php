@@ -15,21 +15,22 @@ class ProductAttributeValueSeeder extends Seeder
      */
     public function run(): void
     {
+        // Le code HEX n'est renseigné que pour les valeurs de l'attribut « Couleur » (type = color).
         $valuesByAttribute = [
             'Couleur' => [
-                ['value' => 'rouge', 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Rouge'], ['lang_code' => 'en', 'label' => 'Red']]],
-                ['value' => 'noir',  'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Noir'],  ['lang_code' => 'en', 'label' => 'Black']]],
-                ['value' => 'blanc', 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Blanc'], ['lang_code' => 'en', 'label' => 'White']]],
+                ['value' => 'rouge', 'hex_color' => '#FF0000', 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Rouge'], ['lang_code' => 'en', 'label' => 'Red']]],
+                ['value' => 'noir',  'hex_color' => '#000000', 'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Noir'],  ['lang_code' => 'en', 'label' => 'Black']]],
+                ['value' => 'blanc', 'hex_color' => '#FFFFFF', 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Blanc'], ['lang_code' => 'en', 'label' => 'White']]],
             ],
             'Taille' => [
-                ['value' => 's',  'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'S'],  ['lang_code' => 'en', 'label' => 'S']]],
-                ['value' => 'm',  'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'M'],  ['lang_code' => 'en', 'label' => 'M']]],
-                ['value' => 'xl', 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'XL'], ['lang_code' => 'en', 'label' => 'XL']]],
+                ['value' => 's',  'hex_color' => null, 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'S'],  ['lang_code' => 'en', 'label' => 'S']]],
+                ['value' => 'm',  'hex_color' => null, 'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'M'],  ['lang_code' => 'en', 'label' => 'M']]],
+                ['value' => 'xl', 'hex_color' => null, 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'XL'], ['lang_code' => 'en', 'label' => 'XL']]],
             ],
             'Matière' => [
-                ['value' => 'silicone-medical', 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Silicone médical'], ['lang_code' => 'en', 'label' => 'Medical silicone']]],
-                ['value' => 'cuir',             'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Cuir'],             ['lang_code' => 'en', 'label' => 'Leather']]],
-                ['value' => 'metal',            'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Métal'],            ['lang_code' => 'en', 'label' => 'Metal']]],
+                ['value' => 'silicone-medical', 'hex_color' => null, 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Silicone médical'], ['lang_code' => 'en', 'label' => 'Medical silicone']]],
+                ['value' => 'cuir',             'hex_color' => null, 'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Cuir'],             ['lang_code' => 'en', 'label' => 'Leather']]],
+                ['value' => 'metal',            'hex_color' => null, 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Métal'],            ['lang_code' => 'en', 'label' => 'Metal']]],
             ],
         ];
 
@@ -53,6 +54,7 @@ class ProductAttributeValueSeeder extends Seeder
                 $value = ProductAttributeValue::create([
                     'attribute_id' => $attribute->id,
                     'value' => $data['value'],
+                    'hex_color' => $data['hex_color'],
                     'sort_order' => $data['sort_order'],
                     'status' => $data['status'],
                 ]);
