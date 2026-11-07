@@ -128,11 +128,13 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            // Charge les traductions actives, le personnel et les compteurs
+            // Charge les traductions actives, le personnel et les compteurs.
+            // NB : `warehouseUsers` est un pivot : on ne charge plus `.user`/`.position`
+            // (ce sont les colonnes du pivot) ; les postes sont résolus via
+            // $availablePositions dans la vue.
             $warehouse = $productWarehouse;
-            $warehouse->load(['warehouseUsers.user', 'warehouseUsers.position.translations']);
+            $warehouse->load(['warehouseUsers', 'translations.lang']);
             $warehouse->loadCount(['audits', 'activityLogs', 'warehouseUsers', 'shops']);
-            $warehouse->load('translations.lang');
 
             // Log de la consultation du détail d'un entrepôt
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.show', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $warehouse->active_translation?->name ?? $warehouse->code]), is_success: true, loggable: $warehouse);
