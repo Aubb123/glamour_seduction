@@ -128,7 +128,7 @@ class ShopController extends Controller
         try {
 
             // Charge les traductions (dont trashed pour l'onglet corbeille) et les entrepôts rattachés
-            $shop->load(['translations.lang', 'warehouses'])->loadCount(['audits', 'activityLogs']);
+            $shop->load(['translations.lang', 'warehouses', 'shopUsers'])->loadCount(['audits', 'activityLogs']);
 
             // Vérifie la cohérence du slug avec la traduction active (redirection cohérente sinon)
             $expectedSlug = $shop->active_translation?->slug ?? 'null';
@@ -187,7 +187,10 @@ class ShopController extends Controller
             // Récupère les journaux d'activité de la boutique (les plus récents en premier)
             $logs = $shop->activityLogs()->with('user')->latest()->get();
 
-            $shop->load(['translations.lang', 'warehouses', 'shopUsers.user', 'shopUsers.position.translations'])->loadCount(['audits', 'activityLogs', 'shopUsers']);
+            // NB : `shopUsers` est un pivot : on ne charge plus `.user`/`.position`
+            // (ce sont désormais les colonnes du pivot). Les postes sont résolus via
+            // $availablePositions dans la vue.
+            $shop->load(['translations.lang', 'warehouses', 'shopUsers'])->loadCount(['audits', 'activityLogs', 'shopUsers']);
 
             $availableUsers = User::orderBy('first_name')->get();
 
