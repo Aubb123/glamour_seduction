@@ -121,12 +121,18 @@ it('reproduit les colonnes clés du contrat de schéma', function () {
     expect(Schema::hasColumn('warehouse_users', 'position_id'))->toBeTrue();
     expect(Schema::hasColumn('warehouse_users', 'is_manager'))->toBeTrue();
 
-    // Entrepôts : données non traduites sur la table principale ; nom/slug/adresse/ville/téléphone
-    // portés par product_warehouse_translations.
+    // Entrepôts : données non traduites uniquement sur la table principale
+    // (nom/slug/adresse/ville/téléphone portés par product_warehouse_translations).
+    // La colonne globale is_default a disparu : « entrepôt par défaut » est une
+    // notion PAR BOUTIQUE (pivot shop_warehouse.is_primary).
     expect(Schema::hasColumn('product_warehouses', 'uuid'))->toBeTrue();
     expect(Schema::hasColumn('product_warehouses', 'code'))->toBeTrue();
     expect(Schema::hasColumn('product_warehouses', 'status'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouses', 'is_default'))->toBeTrue();
+    expect(Schema::hasColumn('product_warehouses', 'is_default'))->toBeFalse();
+    expect(Schema::hasColumn('product_warehouses', 'name'))->toBeFalse();
+    expect(Schema::hasColumn('product_warehouses', 'address'))->toBeFalse();
+    expect(Schema::hasColumn('product_warehouses', 'city'))->toBeFalse();
+    expect(Schema::hasColumn('product_warehouses', 'phone'))->toBeFalse();
     expect(Schema::hasColumn('product_warehouses', 'deleted_at'))->toBeTrue();
 
     expect(Schema::hasColumn('product_warehouse_translations', 'warehouse_id'))->toBeTrue();
