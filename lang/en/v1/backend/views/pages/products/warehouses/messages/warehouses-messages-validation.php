@@ -12,9 +12,6 @@ return [
             'required' => 'The status is required.',
             'in' => 'The selected status is not valid.',
         ],
-        'is_default' => [
-            'boolean' => 'The "default warehouse" field must be a boolean.',
-        ],
         'translations' => [
             'required' => 'Translations are required.',
             'array' => 'Translations must be an array.',
