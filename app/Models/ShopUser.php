@@ -2,14 +2,37 @@
 
 namespace App\Models;
 
-use App\Traits\HasModelBehaviors;
+use App\Traits\HasActivityLogs;
+use App\Traits\HasAudit;
+use App\Traits\HasCloudFiles;
+use App\Traits\HasDatetime;
+use App\Traits\HasSlug;
+use App\Traits\HasTranslations;
+use App\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ShopUser extends Model
 {
-    // Traits pour les comportements communs (UUID, timestamps, etc.)
-    use HasModelBehaviors;
+    // Comportements communs, MAIS SANS SoftDeletes.
+    //
+    // La table `shop_users` ne possède PAS de colonne `deleted_at` : une
+    // affectation est un simple lien, supprimé PHYSIQUEMENT
+    // (cf. ShopUserService::backend_shop_users_destroy()).
+    //
+    // NB : utiliser HasModelBehaviors ici ajoutait le global scope SoftDeletes,
+    // ce qui faisait planter toute requête sur ce modèle — notamment la relation
+    // Shop::shopUsers chargée par la fiche boutique — avec :
+    // « Unknown column 'shop_users.deleted_at' in 'where clause' ».
+    use HasActivityLogs;
+    use HasAudit;
+    use HasCloudFiles;
+    use HasDatetime;
+    use HasFactory;
+    use HasSlug;
+    use HasTranslations;
+    use HasUuid;
 
     // Table pivot enrichie : personnel affecté aux boutiques
     protected $table = 'shop_users';
