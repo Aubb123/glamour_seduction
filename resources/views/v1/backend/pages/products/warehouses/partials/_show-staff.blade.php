@@ -1,12 +1,14 @@
 @php
     // Repli : si le contrôleur ne fournit pas ces collections, on les charge ici.
-    // (évite « Undefined variable $availableUsers » si la méthode show n'a pas été mise à jour)
     $availableUsers = $availableUsers ?? \App\Models\User::orderBy('first_name')->get();
     $availablePositions = $availablePositions ?? \App\Models\Position::withActiveTranslation()
         ->active()
         ->forContext(\App\Enums\Shops\Positions\PositionContext::Warehouse)
         ->orderBy('sort_order')
         ->get();
+
+    // Indexe les postes par ID pour résoudre le libellé depuis `pivot->position_id`
+    $positionsById = collect($availablePositions)->keyBy('id');
 @endphp
 
 <div class="col-12">
@@ -64,27 +66,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($warehouse->warehouseUsers as $warehouseUser)
+                        {{-- NB : le personnel est désormais un pivot `warehouse_users` : on
+                             itère les utilisateurs liés et on lit le pivot via ->pivot. --}}
+                        @forelse ($warehouse->warehouseUsers as $user)
+                            @php($pivot = $user->pivot)
+                            @php($position = $positionsById->get($pivot->position_id))
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
-                                    @if ($warehouseUser->user)
-                                        <a href="{{ route('backend.users.show', ['user' => $warehouseUser->user->uuid, 'slug' => $warehouseUser->user->slug]) }}" class="text-decoration-none fw-semibold">
-                                            {{ $warehouseUser->user->first_name }} {{ $warehouseUser->user->last_name }}
-                                        </a>
+                                    <a href="{{ route('backend.users.show', ['user' => $user->uuid, 'slug' => $user->slug]) }}" class="text-decoration-none fw-semibold">
+                                        {{ $user->first_name }} {{ $user->last_name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    @if ($position)
+                                        <span class="badge badge-soft-primary">{{ $position->active_translation?->name ?? $position->code }}</span>
                                     @else
                                         <span class="text-muted">—</span>
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($warehouseUser->position)
-                                        <span class="badge badge-soft-primary">{{ $warehouseUser->position->active_translation?->name ?? $warehouseUser->position->code }}</span>
-                                    @else
-                                        <span class="text-muted">—</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($warehouseUser->is_manager)
+                                    @if ($pivot->is_manager)
                                         <span class="badge badge-soft-success">{{ __('Responsable') }}</span>
                                     @else
                                         <span class="badge badge-soft-secondary">—</span>
@@ -92,32 +94,32 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="d-inline-flex gap-1">
-                                        <button class="btn btn-sm btn-soft-primary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-warehouse-user-{{ $warehouseUser->uuid }}" title="{{ __('Modifier') }}">
+                                        <button class="btn btn-sm btn-soft-primary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-warehouse-user-{{ $pivot->uuid }}" title="{{ __('Modifier') }}">
                                             <i class="bx bx-edit"></i>
                                         </button>
-                                        <form action="{{ route('backend.warehouse-users.destroy', ['warehouseUser' => $warehouseUser->uuid]) }}" method="POST" class="d-inline" id="delete-warehouse-user-{{ $warehouseUser->uuid }}">
+                                        <form action="{{ route('backend.warehouse-users.destroy', ['warehouseUser' => $pivot->uuid]) }}" method="POST" class="d-inline" id="delete-warehouse-user-{{ $pivot->uuid }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Retirer') }}" onclick="confirmAction('delete-warehouse-user-{{ $warehouseUser->uuid }}', '{{ __('Retirer ce membre du personnel ?') }}', '{{ __('Retirer') }}', 'warning')">
+                                            <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Retirer') }}" onclick="confirmAction('delete-warehouse-user-{{ $pivot->uuid }}', '{{ __('Retirer ce membre du personnel ?') }}', '{{ __('Retirer') }}', 'warning')">
                                                 <i class="bx bx-trash"></i>
                                             </button>
                                         </form>
                                     </div>
-                                    <div class="collapse mt-2" id="edit-warehouse-user-{{ $warehouseUser->uuid }}">
-                                        <form action="{{ route('backend.warehouse-users.update', ['warehouseUser' => $warehouseUser->uuid]) }}" method="POST" class="row g-2 align-items-end">
+                                    <div class="collapse mt-2" id="edit-warehouse-user-{{ $pivot->uuid }}">
+                                        <form action="{{ route('backend.warehouse-users.update', ['warehouseUser' => $pivot->uuid]) }}" method="POST" class="row g-2 align-items-end">
                                             @csrf
                                             @method('PUT')
                                             <div class="col-md-5">
                                                 <select name="position_uuid" class="form-select form-select-sm">
                                                     <option value="">— {{ __('Aucun') }} —</option>
                                                     @foreach ($availablePositions as $position)
-                                                        <option value="{{ $position->uuid }}" {{ $warehouseUser->position_id === $position->id ? 'selected' : '' }}>{{ $position->active_translation?->name ?? $position->code }}</option>
+                                                        <option value="{{ $position->uuid }}" {{ $pivot->position_id === $position->id ? 'selected' : '' }}>{{ $position->active_translation?->name ?? $position->code }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" name="is_manager" value="1" {{ $warehouseUser->is_manager ? 'checked' : '' }}>
+                                                    <input class="form-check-input" type="checkbox" name="is_manager" value="1" {{ $pivot->is_manager ? 'checked' : '' }}>
                                                     <label class="form-check-label">{{ __('Responsable') }}</label>
                                                 </div>
                                             </div>
