@@ -25,20 +25,14 @@ class ProductWarehouse extends Model
     protected string $translationModel = ProductWarehouseTranslation::class;
 
     // Relations enfants dont la présence bloque la suppression de cet entrepôt
-    // (delete / force_delete) lors d'une suppression temporaire (BackendHelper::destroy_function)
-    // ou définitive (BackendHelper::force_destroy_function).
-    // NB : chaque relation listée ici DOIT avoir une méthode de relation correspondante
-    // sur le modèle, sinon destroy_function lève une BadMethodCallException.
-    // NB : les boutiques (pivot `shop_warehouse`) ne bloquent volontairement PAS :
-    // un simple détachement suffit.
-    protected array $dependentRelations = ['stocks', 'movements', 'warehouseUsers'];
+    // (delete / force_delete) via BackendHelper::destroy_function / force_destroy_function.
+    // NB : la relation `users` (personnel via le pivot `warehouse_users`) bloque la suppression.
+    protected array $dependentRelations = ['stocks', 'movements', 'users'];
 
     // NB : seules les données NON traduites vivent sur la table principale.
-    // `code` reste unique et non traduit (donnée de gestion interne) ;
-    // `name`, `address`, `city`, `phone` sont portés par product_warehouse_translations.
-    // NB : « entrepôt par défaut » est une notion PAR BOUTIQUE, portée par le pivot
-    // `shop_warehouse.is_primary` (voir la relation shops()) — il n'y a plus de
-    // colonne is_default globale.
+    // `code` reste unique et non traduit ; `name`, `address`, `city`, `phone` sont
+    // portés par product_warehouse_translations. « Entrepôt par défaut » est une
+    // notion PAR BOUTIQUE, portée par le pivot `shop_warehouse.is_primary`.
     protected $fillable = [
         'code',
         'status',
@@ -67,15 +61,7 @@ class ProductWarehouse extends Model
     }
 
     /**
-     * Accesseur : nom d'affichage de l'entrepôt.
-     *
-     * La colonne `name` a été retirée de la table `product_warehouses` (le nom vit
-     * désormais dans product_warehouse_translations, traduit par langue). Cet accesseur
-     * expose `$warehouse->name` pour toutes les vues/contrôleurs qui l'affichent encore,
-     * en résolvant le nom traduit actif et en repliant sur le code si aucune traduction
-     * n'existe. Il évite ainsi les erreurs « Undefined column 'name' » et les vides.
-     *
-     * NB : lecture seule (pas de setter) — ne crée pas d'attribut en base.
+     * Accesseur : nom d'affichage de l'entrepôt (nom traduit actif, repli sur le code).
      */
     public function getNameAttribute(): string
     {
@@ -93,10 +79,6 @@ class ProductWarehouse extends Model
     /**
      * Relation many-to-many vers les boutiques approvisionnées par cet entrepôt
      * (pivot `shop_warehouse`, attribut booléen `is_primary`).
-     *
-     * NB : `is_primary = true` désigne l'entrepôt PRINCIPAL (par défaut) d'une
-     * boutique donnée — un seul par boutique (garanti applicativement par
-     * ShopService::syncWarehouses()).
      */
     public function shops(): BelongsToMany
     {
@@ -118,7 +100,6 @@ class ProductWarehouse extends Model
 
     /**
      * Relation : un entrepôt possède plusieurs lignes de stock (module 8).
-     * NB : bloque la suppression d'un entrepôt qui a encore des stocks associés.
      */
     public function stocks(): HasMany
     {
@@ -127,7 +108,6 @@ class ProductWarehouse extends Model
 
     /**
      * Relation : un entrepôt possède plusieurs mouvements de stock (module 9).
-     * NB : bloque la suppression d'un entrepôt qui a encore des mouvements associés.
      */
     public function movements(): HasMany
     {
@@ -135,11 +115,16 @@ class ProductWarehouse extends Model
     }
 
     /**
-     * Relation : personnel affecté à l'entrepôt (pivot enrichi `warehouse_users`).
-     * NB : bloque la suppression d'un entrepôt tant que du personnel y est affecté.
+     * Relation many-to-many vers le personnel affecté à l'entrepôt.
+     *
+     * Le pivot `warehouse_users` est enrichi (colonne `uuid`, `position_id`, `is_manager`),
+     * comme les autres pivots du projet (ex : blog_post_tag). Il n'y a volontairement
+     * PAS de modèle WarehouseUser : on accède au pivot via `$user->pivot`.
      */
-    public function warehouseUsers(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(WarehouseUser::class, 'warehouse_id');
+        return $this->belongsToMany(User::class, 'warehouse_users', 'warehouse_id', 'user_id')
+            ->withPivot(['uuid', 'position_id', 'is_manager'])
+            ->withTimestamps();
     }
 }

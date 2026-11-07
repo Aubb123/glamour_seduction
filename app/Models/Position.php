@@ -7,7 +7,7 @@ use App\Enums\Shops\Positions\PositionStatus;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Position extends Model
 {
@@ -25,8 +25,8 @@ class Position extends Model
 
     // Relations enfants dont la présence bloque la suppression de ce poste
     // (delete / force_delete) via BackendHelper::destroy_function / force_destroy_function.
-    // NB : on refuse de supprimer un poste encore affecté à du personnel
-    // (boutiques ou entrepôts), afin de ne pas laisser d'affectations orphelines.
+    // NB : on refuse de supprimer un poste encore affecté à du personnel (boutiques
+    // ou entrepôts), via les pivots `shop_users` / `warehouse_users`.
     protected array $dependentRelations = ['shopUsers', 'warehouseUsers'];
 
     // Attributs autorisés pour l'assignation de masse
@@ -53,19 +53,26 @@ class Position extends Model
     }
 
     /**
-     * Relation : un poste peut être affecté à plusieurs membres du personnel de boutique.
+     * Personnel de boutique rattaché à ce poste (via le pivot `shop_users`).
+     *
+     * Relation many-to-many vers User : la FK du pivot est `position_id` (côté poste)
+     * et `user_id` (côté utilisateur). Aucun modèle ShopUser n'est nécessaire.
      */
-    public function shopUsers(): HasMany
+    public function shopUsers(): BelongsToMany
     {
-        return $this->hasMany(ShopUser::class, 'position_id');
+        return $this->belongsToMany(User::class, 'shop_users', 'position_id', 'user_id')
+            ->withPivot(['uuid', 'shop_id', 'is_manager'])
+            ->withTimestamps();
     }
 
     /**
-     * Relation : un poste peut être affecté à plusieurs membres du personnel d'entrepôt.
+     * Personnel d'entrepôt rattaché à ce poste (via le pivot `warehouse_users`).
      */
-    public function warehouseUsers(): HasMany
+    public function warehouseUsers(): BelongsToMany
     {
-        return $this->hasMany(WarehouseUser::class, 'position_id');
+        return $this->belongsToMany(User::class, 'warehouse_users', 'position_id', 'user_id')
+            ->withPivot(['uuid', 'warehouse_id', 'is_manager'])
+            ->withTimestamps();
     }
 
     /**

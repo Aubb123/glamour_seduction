@@ -7,7 +7,6 @@ use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Shop extends Model
 {
@@ -25,11 +24,10 @@ class Shop extends Model
 
     // Relations enfants dont la présence bloque la suppression de cette boutique
     // (delete / force_delete) via BackendHelper::destroy_function / force_destroy_function.
-    // NB : la relation `shopUsers` (personnel) bloque la suppression : on refuse de supprimer
-    // une boutique tant que du personnel y est affecté (affectations orphelines interdites).
-    // Les entrepôts (pivot shop_warehouse) ne bloquent volontairement PAS : un simple
-    // détachement suffit.
-    protected array $dependentRelations = ['shopUsers'];
+    // NB : la relation `users` (personnel via le pivot `shop_users`) bloque la suppression :
+    // on refuse de supprimer une boutique tant que du personnel y est affecté.
+    // Les entrepôts (pivot shop_warehouse) ne bloquent volontairement PAS.
+    protected array $dependentRelations = ['users'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -79,11 +77,17 @@ class Shop extends Model
     }
 
     /**
-     * Relation : personnel affecté à la boutique (pivot enrichi `shop_users`).
+     * Relation many-to-many vers le personnel affecté à la boutique.
+     *
+     * Le pivot `shop_users` est enrichi (colonne `uuid`, `position_id`, `is_manager`),
+     * exactement comme les autres pivots du projet (ex : blog_post_tag). Il n'y a
+     * volontairement PAS de modèle ShopUser : on accède au pivot via `$user->pivot`.
      */
-    public function shopUsers(): HasMany
+    public function users(): BelongsToMany
     {
-        return $this->hasMany(ShopUser::class, 'shop_id');
+        return $this->belongsToMany(User::class, 'shop_users', 'shop_id', 'user_id')
+            ->withPivot(['uuid', 'position_id', 'is_manager'])
+            ->withTimestamps();
     }
 
     /**
