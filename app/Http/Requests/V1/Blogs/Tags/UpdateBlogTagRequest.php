@@ -12,9 +12,12 @@ use function __;
 /**
  * Requête de validation pour la mise à jour d'un tag de blog.
  *
- * Valide les données entrantes pour la modification d'un tag (blog_tags)
- * avec ses traductions associées (blog_tag_translations).
- * Gère l'unicité de sort_order en excluant le tag en cours de modification.
+ * Contrat d'unicité aligné sur StoreBlogTagRequest et sur l'index de base
+ * `unique(name, lang_id)` : l'unicité du nom par langue porte sur TOUTES les
+ * lignes de blog_tag_translations, y compris les lignes soft-deleted (l'index
+ * SQL ignore le soft delete). On ne filtre donc PAS sur `deleted_at` ici,
+ * sinon un nom libre au sens de la validation provoquerait une violation de
+ * contrainte au moment de l'insertion.
  */
 class UpdateBlogTagRequest extends FormRequest
 {
@@ -87,6 +90,10 @@ class UpdateBlogTagRequest extends FormRequest
         // Construite dynamiquement (le lang_id réel de chaque ligne est injecté
         // dans un closure) et en excluant les traductions du tag courant via
         // `->ignore()`.
+        //
+        // Contrat d'unicité identique à Store : on inclut les lignes
+        // soft-deleted (pas de ->whereNull('deleted_at')) pour rester cohérent
+        // avec l'index DB unique(['name','lang_id']).
         // ────────────────────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
@@ -99,7 +106,6 @@ class UpdateBlogTagRequest extends FormRequest
                 'max:255',
                 Rule::unique('blog_tag_translations', 'name')
                     ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->whereNull('deleted_at')
                     ->ignore($blogTagId, 'tag_id'),
             ];
         }
