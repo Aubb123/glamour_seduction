@@ -3,6 +3,7 @@
 return [
     'activity_logs' => [
         'not_found' => 'Tentative d\'accès à un journal d\'activité introuvable (UUID: :uuid).',
+        'server_error' => 'Erreur serveur : :exception',
         'index' => [
             'success' => 'Affichage de la liste des journaux d\'activité',
             'error' => 'Erreur lors de l\'affichage de la liste des journaux d\'activité',
