@@ -35,7 +35,7 @@ class ProductStockMovementController extends Controller
         try {
 
             // Requête de base : tous les mouvements avec leurs relations
-            $query = ProductStockMovement::with(['warehouse', 'variant.product', 'createdBy'])->orderBy('created_at', 'desc');
+            $query = ProductStockMovement::with(['warehouse', 'variant.product', 'createdBy'])->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc');
 
             // Filtre par type de mouvement (in/out/adjustment/…)
             if (filled($type = request('type')) && in_array($type, ProductStockMovementType::values(), true)) {
@@ -140,8 +140,8 @@ class ProductStockMovementController extends Controller
     {
         try {
 
-            // Charge les relations pour l'affichage
-            $productStockMovement->load(['warehouse', 'variant.product', 'createdBy']);
+            // Charge les relations pour l'affichage + compteurs (audits / logs)
+            $productStockMovement->load(['warehouse', 'variant.product', 'createdBy'])->loadCount(['audits', 'activityLogs']);
 
             // Log de la consultation du détail d'un mouvement
             $this->logActivity(type: 'info', action: 'backend.product-stock-movements.show', context: ['movement_uuid' => $productStockMovement->uuid], message: null, activity: __("{$this->backendLangPath}.show.success"), is_success: true, loggable: $productStockMovement);
@@ -157,6 +157,64 @@ class ProductStockMovementController extends Controller
             $this->logActivity(type: 'error', action: 'backend.product-stock-movements.show', context: ['movement_uuid' => $productStockMovement->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error"), is_success: false);
 
             abort(500); // Erreur serveur générique en cas de problème lors de la récupération du mouvement
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // AUDITS
+    // ─────────────────────────────────────────────
+    public function backend_product_stock_movements_audits(ProductStockMovement $productStockMovement): View
+    {
+        try {
+
+            // Charge les compteurs (withCount) pour l'en-tête et la navigation
+            $productStockMovement->loadCount(['audits', 'activityLogs']);
+
+            // Récupère les audits de ce mouvement
+            $audits = $productStockMovement->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+
+            // Log de la consultation des audits du mouvement
+            $this->logActivity(type: 'info', action: 'backend.product-stock-movements.audits', context: ['movement_uuid' => $productStockMovement->uuid], message: null, activity: __("{$this->backendLangPath}.audits.success"), is_success: true, loggable: $productStockMovement);
+
+            $movement = $productStockMovement;
+
+            return view('v1.backend.pages.products.stock-movements.others.audits', compact('movement', 'audits'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la consultation des audits du mouvement
+            $this->logActivity(type: 'error', action: 'backend.product-stock-movements.audits', context: ['movement_uuid' => $productStockMovement->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error"), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // ACTIVITY LOGS
+    // ─────────────────────────────────────────────
+    public function backend_product_stock_movements_activity_logs(ProductStockMovement $productStockMovement): View
+    {
+        try {
+
+            // Charge les compteurs (withCount) pour l'en-tête et la navigation
+            $productStockMovement->loadCount(['audits', 'activityLogs']);
+
+            // Récupère les journaux d'activité de ce mouvement
+            $logs = $productStockMovement->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
+
+            // Log de la consultation des journaux d'activité du mouvement
+            $this->logActivity(type: 'info', action: 'backend.product-stock-movements.activity-logs', context: ['movement_uuid' => $productStockMovement->uuid], message: null, activity: __("{$this->backendLangPath}.activity-logs.success"), is_success: true, loggable: $productStockMovement);
+
+            $movement = $productStockMovement;
+
+            return view('v1.backend.pages.products.stock-movements.others.activity-logs', compact('movement', 'logs'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la consultation des journaux d'activité du mouvement
+            $this->logActivity(type: 'error', action: 'backend.product-stock-movements.activity-logs', context: ['movement_uuid' => $productStockMovement->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error"), is_success: false);
+
+            abort(500);
         }
     }
 
@@ -200,7 +258,7 @@ class ProductStockMovementController extends Controller
     {
         try {
 
-            $movements = ProductStockMovement::onlyTrashed()->with(['warehouse', 'variant.product', 'createdBy'])->orderBy('deleted_at', 'desc')->get();
+            $movements = ProductStockMovement::onlyTrashed()->with(['warehouse', 'variant.product', 'createdBy'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-stock-movements.trashed', context: ['count' => $movements->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
