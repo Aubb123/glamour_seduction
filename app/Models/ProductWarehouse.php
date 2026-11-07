@@ -16,11 +16,11 @@ class ProductWarehouse extends Model
     // Table associée aux entrepôts de produits
     protected $table = 'product_warehouses';
 
-    // NB : les entrepôts ne sont PAS traduits (donnée de gestion interne).
-    // On désactive explicitement les traductions pour que la relation `translations()`
-    // (utilisée par BackendHelper::destroy_function) retourne une relation vide
-    // au lieu de chercher une classe ProductWarehouseTranslation inexistante.
-    protected bool $hasTranslations = false;
+    // Clé étrangère utilisée pour les traductions d'entrepôt (product_warehouse_translations.warehouse_id)
+    protected string $translationForeignKey = 'warehouse_id';
+
+    // Modèle de traduction lié à l'entrepôt
+    protected string $translationModel = ProductWarehouseTranslation::class;
 
     // Relations enfants dont la présence bloque la suppression de cet entrepôt
     // (delete / force_delete) lors d'une suppression temporaire (BackendHelper::destroy_function)
@@ -29,13 +29,12 @@ class ProductWarehouse extends Model
     // sur le modèle, sinon destroy_function lève une BadMethodCallException.
     protected array $dependentRelations = ['stocks', 'movements', 'warehouseUsers'];
 
-    // Attributs autorisés pour l'assignation de masse
+    // NB : seules les données NON traduites vivent sur la table principale.
+    // `code` reste unique et non traduit (donnée de gestion interne) ;
+    // `name`, `address`, `city`, `phone` sont désormais portés par
+    // product_warehouse_translations (une ligne par langue).
     protected $fillable = [
         'code',
-        'name',
-        'address',
-        'city',
-        'phone',
         'status',
         'is_default',
     ];

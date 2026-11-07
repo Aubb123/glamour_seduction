@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\GeoCountry;
+use App\Models\Lang;
 use App\Models\ProductWarehouse;
+use App\Models\ProductWarehouseTranslation;
 use App\Models\User;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
@@ -16,7 +18,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 /**
- * Module Produits — Entrepôts (`product-warehouses`).
+ * Module Produits — Entrepôts (`product-warehouses`) et leurs traductions
+ * (`product_warehouse_translations`).
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
@@ -50,17 +53,39 @@ function warehouseAdmin(): User
     return $admin;
 }
 
+/**
+ * Payload de création/mise à jour d'un entrepôt avec ses traductions.
+ * Le nom de traduction est unique par langue (contrainte DB), d'où le suffixe.
+ */
 function warehousePayload(array $overrides = []): array
 {
-    return array_merge([
-        'code' => 'WH-'.strtoupper(uniqid()),
-        'name' => 'Entrepôt de test',
-        'address' => 'Zone industrielle',
-        'city' => 'Cotonou',
-        'phone' => '+229 21 00 00 99',
+    $fr = Lang::where('code', 'fr')->firstOrFail();
+    $en = Lang::where('code', 'en')->firstOrFail();
+    $suffix = strtoupper(uniqid());
+
+    $defaults = [
+        'code' => 'WH-'.$suffix,
         'status' => 'inactive',
         'is_default' => false,
-    ], $overrides);
+        'translations' => [
+            [
+                'lang_id' => $fr->id,
+                'name' => 'Entrepôt de test '.$suffix,
+                'address' => 'Zone industrielle',
+                'city' => 'Cotonou',
+                'phone' => '+229 21 00 00 99',
+            ],
+            [
+                'lang_id' => $en->id,
+                'name' => 'Test warehouse '.$suffix,
+                'address' => 'Industrial zone',
+                'city' => 'Cotonou',
+                'phone' => '+229 21 00 00 99',
+            ],
+        ],
+    ];
+
+    return array_merge($defaults, $overrides);
 }
 
 it('liste les entrepôts avec DataTables', function () {
@@ -82,7 +107,7 @@ it('affiche la page de création d\'entrepôt', function () {
         ->assertOk();
 });
 
-it('crée un entrepôt (premier → is_default auto)', function () {
+it('crée un entrepôt (premier → is_default auto) avec ses traductions fr/en', function () {
     $admin = warehouseAdmin();
 
     $this->actingAs($admin)
@@ -95,6 +120,8 @@ it('crée un entrepôt (premier → is_default auto)', function () {
     expect(ProductWarehouse::count())->toBe(1);
     expect($warehouse->is_default)->toBeTrue();
     expect($warehouse->status->value)->toBe('inactive');
+    expect($warehouse->translations()->count())->toBe(2);
+    expect(ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->count())->toBe(2);
 });
 
 it('refuse un code dupliqué', function () {
@@ -124,33 +151,50 @@ it('gère un seul entrepôt par défaut (la nouvelle remplace)', function () {
     expect(ProductWarehouse::where('is_default', true)->count())->toBe(1);
 });
 
-it('affiche le détail d\'un entrepôt', function () {
+it('affiche le détail d\'un entrepôt (nom traduit)', function () {
     $admin = warehouseAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
     $warehouse = ProductWarehouse::firstOrFail();
 
-    $this->actingAs($admin)
+    $html = $this->actingAs($admin)
         ->get(route('backend.product-warehouses.show', ['productWarehouse' => $warehouse->uuid]))
-        ->assertOk();
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain($warehouse->code);
 });
 
-it('met à jour un entrepôt', function () {
+it('met à jour un entrepôt et ses traductions', function () {
     $admin = warehouseAdmin();
 
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
     $warehouse = ProductWarehouse::firstOrFail();
 
-    $payload = warehousePayload(['name' => 'Entrepôt renommé', 'city' => 'Porto-Novo']);
+    $fr = Lang::where('code', 'fr')->firstOrFail();
 
     $this->actingAs($admin)
-        ->put(route('backend.product-warehouses.update', ['productWarehouse' => $warehouse->uuid]), $payload)
+        ->put(route('backend.product-warehouses.update', ['productWarehouse' => $warehouse->uuid]), [
+            'code' => $warehouse->code,
+            'translations' => [
+                [
+                    'lang_id' => $fr->id,
+                    'name' => 'Entrepôt renommé '.strtoupper(uniqid()),
+                    'address' => 'Nouvelle adresse',
+                    'city' => 'Porto-Novo',
+                    'phone' => '+229 21 00 00 77',
+                ],
+            ],
+        ])
         ->assertRedirect()
         ->assertSessionHas('success');
 
-    $warehouse->refresh();
-    expect($warehouse->name)->toBe('Entrepôt renommé');
-    expect($warehouse->city)->toBe('Porto-Novo');
+    $translation = ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)
+        ->where('lang_id', $fr->id)
+        ->firstOrFail();
+
+    expect($translation->city)->toBe('Porto-Novo');
+    expect($translation->address)->toBe('Nouvelle adresse');
 });
 
 it('active et désactive un entrepôt', function () {
@@ -222,11 +266,72 @@ it('passe un entrepôt en corbeille puis le restaure', function () {
     expect(ProductWarehouse::find($warehouse->id))->not->toBeNull();
 });
 
+// ─────────────────────────────────────────────
+// Traductions (product_warehouse_translations)
+// ─────────────────────────────────────────────
+
+it('refuse de supprimer la dernière traduction d\'un entrepôt', function () {
+    $admin = warehouseAdmin();
+
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
+    $warehouse = ProductWarehouse::firstOrFail();
+
+    $translations = ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->get();
+
+    // 1re suppression autorisée (2 traductions restantes → 1)
+    $this->actingAs($admin)
+        ->delete(route('backend.product-warehouse-translations.destroy', ['uuid' => $translations[0]->uuid]))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    // 2e suppression refusée : c'est la dernière traduction
+    $this->actingAs($admin)
+        ->from(route('backend.product-warehouses.show', ['productWarehouse' => $warehouse->uuid]))
+        ->delete(route('backend.product-warehouse-translations.destroy', ['uuid' => $translations[1]->uuid]))
+        ->assertRedirect()
+        ->assertSessionHas('error');
+
+    expect(ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->count())->toBe(1);
+});
+
+it('restaure une traduction en corbeille', function () {
+    $admin = warehouseAdmin();
+
+    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
+    $warehouse = ProductWarehouse::firstOrFail();
+
+    $translation = ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->firstOrFail();
+
+    $this->actingAs($admin)
+        ->delete(route('backend.product-warehouse-translations.destroy', ['uuid' => $translation->uuid]))
+        ->assertRedirect();
+
+    expect(ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->count())->toBe(1);
+
+    $this->actingAs($admin)
+        ->get(route('backend.product-warehouse-translations.trashed', ['warehouse_uuid' => $warehouse->uuid]))
+        ->assertOk();
+
+    $this->actingAs($admin)
+        ->from(route('backend.product-warehouse-translations.trashed', ['warehouse_uuid' => $warehouse->uuid]))
+        ->patch(route('backend.product-warehouse-translations.restore', ['uuid' => $translation->uuid]))
+        ->assertRedirect();
+
+    expect(ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->count())->toBe(2);
+});
+
 it('déclare dependentRelations = [stocks, movements, warehouseUsers] pour ProductWarehouse', function () {
     $warehouse = new ProductWarehouse;
 
     $property = new ReflectionProperty($warehouse, 'dependentRelations');
     expect($property->getValue($warehouse))->toBe(['stocks', 'movements', 'warehouseUsers']);
+});
+
+it('active les traductions et la bonne clé étrangère pour ProductWarehouse', function () {
+    $warehouse = new ProductWarehouse;
+
+    expect($warehouse->getTranslationModelName())->toBe(ProductWarehouseTranslation::class);
+    expect($warehouse->getTranslationForeignKey())->toBe('warehouse_id');
 });
 
 // ─────────────────────────────────────────────
@@ -243,11 +348,10 @@ it('refuse de retirer le statut « par défaut » au dernier entrepôt par défa
 
     $this->actingAs($admin)
         ->from(route('backend.product-warehouses.edit', ['productWarehouse' => $warehouse->uuid]))
-        ->put(route('backend.product-warehouses.update', ['productWarehouse' => $warehouse->uuid]), warehousePayload([
+        ->put(route('backend.product-warehouses.update', ['productWarehouse' => $warehouse->uuid]), [
             'code' => $warehouse->code,
-            'name' => $warehouse->name,
             'is_default' => false,
-        ]))
+        ])
         ->assertRedirect()
         ->assertSessionHas('error');
 

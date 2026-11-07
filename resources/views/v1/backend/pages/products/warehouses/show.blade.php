@@ -1,14 +1,16 @@
 @extends('v1.backend.layouts.app')
 
 @section('title')
-    Détail de l'entrepôt — <code>{{ $warehouse->name }}</code>
+    {{ __('Détail de l\'entrepôt') }} — <code>{{ $warehouse->active_translation?->name ?? $warehouse->code }}</code>
 @endsection
 
 @section('content')
 
-    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => 'Détail de l\'entrepôt'])
+    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('Détail de l\'entrepôt')])
 
     @include('v1.backend.pages.products.warehouses.partials._show-start', ['warehouse' => $warehouse])
+
+        @php($translation = $warehouse->active_translation)
 
         <div class="row g-4">
 
@@ -16,33 +18,33 @@
                 <div class="card border h-100">
                     <div class="card-header bg-light py-2">
                         <h6 class="mb-0 fw-bold">
-                            <i class="bx bx-info-circle me-2 text-primary"></i>Détails
+                            <i class="bx bx-info-circle me-2 text-primary"></i>{{ __('Détails') }}
                         </h6>
                     </div>
                     <div class="card-body">
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4 text-muted fw-semibold">Nom</div>
-                            <div class="col-8">{{ $warehouse->name }}</div>
+                            <div class="col-4 text-muted fw-semibold">{{ __('Nom') }}</div>
+                            <div class="col-8">{{ $translation?->name ?? '—' }}</div>
                         </div>
                         <hr class="my-2">
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4 text-muted fw-semibold">Code</div>
+                            <div class="col-4 text-muted fw-semibold">{{ __('Code') }}</div>
                             <div class="col-8"><code>{{ $warehouse->code }}</code></div>
                         </div>
                         <hr class="my-2">
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4 text-muted fw-semibold">Adresse</div>
-                            <div class="col-8">{{ $warehouse->address ?? '—' }}</div>
+                            <div class="col-4 text-muted fw-semibold">{{ __('Adresse') }}</div>
+                            <div class="col-8">{{ $translation?->address ?? '—' }}</div>
                         </div>
                         <hr class="my-2">
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4 text-muted fw-semibold">Ville</div>
-                            <div class="col-8">{{ $warehouse->city ?? '—' }}</div>
+                            <div class="col-4 text-muted fw-semibold">{{ __('Ville') }}</div>
+                            <div class="col-8">{{ $translation?->city ?? '—' }}</div>
                         </div>
                         <hr class="my-2">
                         <div class="row mb-3 align-items-center">
-                            <div class="col-4 text-muted fw-semibold">Téléphone</div>
-                            <div class="col-8">{{ $warehouse->phone ?? '—' }}</div>
+                            <div class="col-4 text-muted fw-semibold">{{ __('Téléphone') }}</div>
+                            <div class="col-8">{{ $translation?->phone ?? '—' }}</div>
                         </div>
                         <hr class="my-2">
                         <div class="row align-items-center">
@@ -57,18 +59,18 @@
                 <div class="card border h-100">
                     <div class="card-header bg-light py-2">
                         <h6 class="mb-0 fw-bold">
-                            <i class="bx bx-pulse me-2 text-primary"></i>Statut
+                            <i class="bx bx-pulse me-2 text-primary"></i>{{ __('Statut') }}
                         </h6>
                     </div>
                     <div class="card-body text-center">
-                        <span class="badge {{ $warehouse->status->badgeClass() }} fs-14 px-3 py-2">
-                            {{ $warehouse->status->label() }}
+                        <span class="{{ $warehouse->status?->badgeClass() ?? 'badge badge-soft-secondary' }} fs-14 px-3 py-2">
+                            {{ $warehouse->status?->label() ?? '—' }}
                         </span>
                         <hr>
                         @if ($warehouse->is_default)
-                            <span class="badge badge-soft-success">Entrepôt par défaut</span>
+                            <span class="badge badge-soft-success">{{ __('Entrepôt par défaut') }}</span>
                         @else
-                            <span class="badge badge-soft-secondary">Entrepôt secondaire</span>
+                            <span class="badge badge-soft-secondary">{{ __('Entrepôt secondaire') }}</span>
                         @endif
                     </div>
                 </div>
