@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Enums\Products\Warehouses\ProductWarehouseStatus;
 use App\Models\GeoCountry;
 use App\Models\Lang;
 use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseTranslation;
+use App\Models\Shop;
 use App\Models\User;
+use App\Services\V1\Controllers\ShopService;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
@@ -317,13 +320,81 @@ it('active les traductions et la bonne clé étrangère pour ProductWarehouse', 
     expect($warehouse->getTranslationForeignKey())->toBe('warehouse_id');
 });
 
-it('expose la relation shops (is_default par boutique via le pivot shop_warehouse)', function () {
+// ─────────────────────────────────────────────
+// « Entrepôt par défaut » PAR BOUTIQUE (pivot shop_warehouse.is_primary)
+// ─────────────────────────────────────────────
+
+it('n\'a plus de colonne is_default globale sur les entrepôts', function () {
+    expect(\Illuminate\Support\Facades\Schema::hasColumn('product_warehouses', 'is_default'))->toBeFalse();
+});
+
+it('expose la relation shops avec le pivot is_primary', function () {
     $warehouse = new ProductWarehouse;
 
     $relation = $warehouse->shops();
 
     expect($relation->getTable())->toBe('shop_warehouse');
     expect($relation->getPivotColumns())->toContain('is_primary');
-    // Plus aucune colonne is_default globale sur les entrepôts
-    expect(\Illuminate\Support\Facades\Schema::hasColumn('product_warehouses', 'is_default'))->toBeFalse();
+});
+
+it('définit un entrepôt principal PAR BOUTIQUE via le pivot shop_warehouse', function () {
+    // Deux boutiques, deux entrepôts : un même entrepôt peut être principal
+    // pour une boutique et secondaire pour une autre.
+    $shopA = Shop::create(['code' => 'SHOP-A-'.strtoupper(uniqid()), 'status' => 'active', 'sort_order' => 1]);
+    $shopB = Shop::create(['code' => 'SHOP-B-'.strtoupper(uniqid()), 'status' => 'active', 'sort_order' => 2]);
+
+    $wh1 = ProductWarehouse::create(['code' => 'WH-A-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+    $wh2 = ProductWarehouse::create(['code' => 'WH-B-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+
+    // Boutique A : wh1 principal, wh2 secondaire
+    $shopA->warehouses()->sync([
+        $wh1->id => ['is_primary' => true],
+        $wh2->id => ['is_primary' => false],
+    ]);
+
+    // Boutique B : wh2 principal
+    $shopB->warehouses()->sync([
+        $wh2->id => ['is_primary' => true],
+    ]);
+
+    // Le statut « principal » est bien évalué PAR BOUTIQUE
+    expect($wh1->fresh()->isPrimaryFor($shopA))->toBeTrue();
+    expect($wh2->fresh()->isPrimaryFor($shopA))->toBeFalse();
+    expect($wh2->fresh()->isPrimaryFor($shopB))->toBeTrue();
+
+    // Une seule boutique principale par boutique
+    expect($shopA->primaryWarehouse()->first()->id)->toBe($wh1->id);
+    expect($shopB->primaryWarehouse()->first()->id)->toBe($wh2->id);
+    expect($shopA->warehouses()->wherePivot('is_primary', true)->count())->toBe(1);
+    expect($shopB->warehouses()->wherePivot('is_primary', true)->count())->toBe(1);
+
+    // wh2 n'est principal QUE pour la boutique B
+    expect($wh2->fresh()->shops()->wherePivot('is_primary', true)->pluck('shops.id')->all())->toBe([$shopB->id]);
+});
+
+it('assigne un seul entrepôt principal par boutique via ShopService', function () {
+    $fr = Lang::where('code', 'fr')->firstOrFail();
+
+    $wh1 = ProductWarehouse::create(['code' => 'WH-P1-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+    $wh2 = ProductWarehouse::create(['code' => 'WH-P2-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+
+    /** @var ShopService $service */
+    $service = app(ShopService::class);
+
+    // wh2 explicitement désigné comme entrepôt principal
+    $shop = $service->backend_shops_store([
+        'code' => 'SHOP-P-'.strtoupper(uniqid()),
+        'status' => 'active',
+        'sort_order' => 1,
+        'warehouses' => [$wh1->uuid, $wh2->uuid],
+        'primary_warehouse_uuid' => $wh2->uuid,
+        'translations' => [
+            ['lang_id' => $fr->id, 'name' => 'Boutique test '.strtoupper(uniqid())],
+        ],
+    ]);
+
+    expect($shop->warehouses()->count())->toBe(2);
+    expect($shop->warehouses()->wherePivot('is_primary', true)->count())->toBe(1);
+    expect($wh2->fresh()->isPrimaryFor($shop))->toBeTrue();
+    expect($wh1->fresh()->isPrimaryFor($shop))->toBeFalse();
 });
