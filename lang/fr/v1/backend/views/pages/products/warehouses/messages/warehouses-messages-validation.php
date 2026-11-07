@@ -12,9 +12,6 @@ return [
             'required' => 'Le statut est obligatoire.',
             'in' => 'Le statut sélectionné n\'est pas valide.',
         ],
-        'is_default' => [
-            'boolean' => 'Le champ "entrepôt par défaut" doit être un booléen.',
-        ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',
             'array' => 'Les traductions doivent être un tableau.',
