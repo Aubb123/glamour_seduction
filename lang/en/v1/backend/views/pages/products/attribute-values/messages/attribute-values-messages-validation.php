@@ -22,6 +22,12 @@ return [
             'required' => 'The status is required.',
             'in' => 'The selected status is not valid.',
         ],
+        'hex_color' => [
+            'required' => 'The color code is required for a value of a "Color" attribute.',
+            'string' => 'The color code must be a string.',
+            'max' => 'The color code may not be greater than 9 characters.',
+            'hex_color' => 'The color code must be a valid hexadecimal color (e.g. #FF0000).',
+        ],
         'translations' => [
             'required' => 'The translations are required.',
             'array' => 'The translations must be an array.',

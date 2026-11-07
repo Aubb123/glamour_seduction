@@ -12,6 +12,10 @@ return [
             'required' => 'The status is required.',
             'in' => 'The selected status is not valid.',
         ],
+        'type' => [
+            'required' => 'The value type is required.',
+            'in' => 'The selected value type is not valid.',
+        ],
         'translations' => [
             'required' => 'The translations are required.',
             'array' => 'The translations must be an array.',
