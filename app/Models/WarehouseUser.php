@@ -2,14 +2,38 @@
 
 namespace App\Models;
 
-use App\Traits\HasModelBehaviors;
+use App\Traits\HasActivityLogs;
+use App\Traits\HasAudit;
+use App\Traits\HasCloudFiles;
+use App\Traits\HasDatetime;
+use App\Traits\HasSlug;
+use App\Traits\HasTranslations;
+use App\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WarehouseUser extends Model
 {
-    // Traits pour les comportements communs (UUID, timestamps, etc.)
-    use HasModelBehaviors;
+    // Comportements communs, MAIS SANS SoftDeletes.
+    //
+    // La table `warehouse_users` ne possède PAS de colonne `deleted_at` : une
+    // affectation est un simple lien, supprimé PHYSIQUEMENT
+    // (cf. WarehouseUserService::backend_warehouse_users_destroy()).
+    //
+    // NB : utiliser HasModelBehaviors ici ajoutait le global scope SoftDeletes,
+    // ce qui faisait planter TOUTE requête sur ce modèle — notamment la relation
+    // ProductWarehouse::warehouseUsers chargée par la fiche entrepôt (show/edit) —
+    // avec : « Unknown column 'warehouse_users.deleted_at' in 'where clause' » (500).
+    // Le destroy (delete()) échouait de la même façon (UPDATE sur une colonne absente).
+    use HasActivityLogs;
+    use HasAudit;
+    use HasCloudFiles;
+    use HasDatetime;
+    use HasFactory;
+    use HasSlug;
+    use HasTranslations;
+    use HasUuid;
 
     // Table pivot enrichie : personnel affecté aux entrepôts
     protected $table = 'warehouse_users';
