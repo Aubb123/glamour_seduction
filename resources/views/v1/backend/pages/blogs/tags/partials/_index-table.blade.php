@@ -102,7 +102,7 @@
                                     <td>{{ $loop->iteration }}</td>
 
                                     <td class="fw-bold">
-                                        <code>{{ $tag->active_translation?->name ?? '-' }}</code>
+                                        {{ $tag->active_translation?->name ?? '-' }}
                                     </td>
 
                                     <td>
@@ -165,10 +165,10 @@
                                                     </button>
                                                 </form>
 
-                                                <form action="{{ route('backend.blog-tags.force_destroy', ['uuid' => $tag->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $tag->uuid }}">
+                                                <form action="{{ route('backend.blog-tags.force_destroy', ['uuid' => $tag->uuid]) }}" method="POST" style="display:inline-block" id="force-destroy-form-{{ $tag->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $tag->uuid }}', '{{ __('Supprimer définitivement ce tag ? Cette action est irréversible.') }}')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmAction('force-destroy-form-{{ $tag->uuid }}', '{{ __('Supprimer définitivement ce tag ? Cette action est irréversible.') }}', 'Supprimer définitivement', 'danger')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>
