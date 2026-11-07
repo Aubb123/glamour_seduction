@@ -16,10 +16,4 @@
             <span class="badge bg-primary ms-1">{{ $shop->activity_logs_count ?? 0 }}</span>
         </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('backend.shops.show', ['shop' => $shop->uuid, 'slug' => $shop->active_translation?->slug ?? 'null']) }}#personnel">
-            <i class="bx bx-group me-1"></i> {{ __('Personnel') }}
-            <span class="badge bg-primary ms-1">{{ $shop->shop_users_count ?? $shop->shopUsers->count() }}</span>
-        </a>
-    </li>
 </ul>
