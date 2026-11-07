@@ -5,21 +5,22 @@ declare(strict_types=1);
 use App\Models\GeoCountry;
 use App\Models\ProductWarehouse;
 use App\Models\User;
-use App\Models\WarehouseUser;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
 /**
- * Module Boutique — Personnel des entrepôts (`warehouse_users`).
+ * Module Boutique — Personnel des entrepôts (pivot `warehouse_users`).
+ *
+ * Le personnel est un PIVOT pur (comme `blog_post_tag`) : plus de modèle
+ * WarehouseUser, on lit/écrit la table `warehouse_users` directement.
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
@@ -75,31 +76,24 @@ function warehouseUserUser(string $email = 'wh-staff@site.com'): User
 
 function warehouseUserWarehouse(): ProductWarehouse
 {
-    // NB : la table product_warehouses ne porte plus que `code` + `status`
-    // (name/address/city/phone vivent dans product_warehouse_translations, et
-    // is_default est remplacé par le pivot shop_warehouse.is_primary).
+    // NB : la table product_warehouses ne porte plus que `code` + `status`.
     return ProductWarehouse::create([
         'code' => 'WH-'.strtoupper(uniqid()),
         'status' => 'active',
     ]);
 }
 
-it('n\'utilise pas SoftDeletes (la table warehouse_users n\'a pas de deleted_at)', function () {
-    // Garde anti-régression : si le modèle repassait par HasModelBehaviors
-    // (qui embarque SoftDeletes), toute requête planterait avec
-    // « Unknown column 'warehouse_users.deleted_at' in 'where clause' ».
-    expect(Schema::hasColumn('warehouse_users', 'deleted_at'))->toBeFalse();
-
-    $usedTraits = array_keys(class_uses_recursive(WarehouseUser::class));
-    expect(in_array(SoftDeletes::class, $usedTraits, true))->toBeFalse();
+it('n\'a plus de modèle WarehouseUser (pivot pur, à l\'image de blog_post_tag)', function () {
+    // Garde anti-régression : c'est la suppression du modèle qui élimine définitivement
+    // la LogicException « bootIfNotBooted … while it is being booted » (le modèle ne
+    // pouvait plus utiliser le hook `restored()` réservé à SoftDeletes).
+    expect(class_exists(\App\Models\WarehouseUser::class))->toBeFalse();
 });
 
 it('affiche la fiche entrepôt (show) sans erreur serveur', function () {
     $admin = warehouseUserAdmin();
     $warehouse = warehouseUserWarehouse();
 
-    // La relation ProductWarehouse::warehouseUsers est chargée par le show :
-    // c'est ce chargement qui levait un 500 avant la correction.
     $this->actingAs($admin)
         ->get(route('backend.product-warehouses.show', ['productWarehouse' => $warehouse->uuid]))
         ->assertOk();
@@ -114,7 +108,7 @@ it('affiche le formulaire d\'édition entrepôt (edit) sans erreur serveur', fun
         ->assertOk();
 });
 
-it('affecte un utilisateur à un entrepôt', function () {
+it('affecte un utilisateur à un entrepôt (pivot warehouse_users)', function () {
     $admin = warehouseUserAdmin();
     $warehouse = warehouseUserWarehouse();
     $user = warehouseUserUser();
@@ -127,10 +121,12 @@ it('affecte un utilisateur à un entrepôt', function () {
         ->assertRedirect()
         ->assertSessionHas('success');
 
-    expect(WarehouseUser::count())->toBe(1);
-    $warehouseUser = WarehouseUser::firstOrFail();
-    expect($warehouseUser->warehouse_id)->toBe($warehouse->id);
-    expect($warehouseUser->user_id)->toBe($user->id);
+    expect(DB::table('warehouse_users')->count())->toBe(1);
+
+    $pivot = DB::table('warehouse_users')->first();
+    expect($pivot->warehouse_id)->toBe($warehouse->id);
+    expect($pivot->user_id)->toBe($user->id);
+    expect($pivot->uuid)->not->toBeNull();
 });
 
 it('détache un utilisateur d\'un entrepôt', function () {
@@ -142,14 +138,14 @@ it('détache un utilisateur d\'un entrepôt', function () {
         'user_uuid' => $user->uuid,
     ]);
 
-    $warehouseUser = WarehouseUser::firstOrFail();
+    $pivot = DB::table('warehouse_users')->first();
 
     $this->actingAs($admin)
-        ->delete(route('backend.warehouse-users.destroy', ['warehouseUser' => $warehouseUser->uuid]))
+        ->delete(route('backend.warehouse-users.destroy', ['warehouseUser' => $pivot->uuid]))
         ->assertRedirect()
         ->assertSessionHas('success');
 
-    expect(WarehouseUser::count())->toBe(0);
+    expect(DB::table('warehouse_users')->count())->toBe(0);
 });
 
 it('refuse une affectation dupliquée (warehouse_id, user_id)', function () {
@@ -167,7 +163,7 @@ it('refuse une affectation dupliquée (warehouse_id, user_id)', function () {
         ])
         ->assertSessionHas('error');
 
-    expect(WarehouseUser::count())->toBe(1);
+    expect(DB::table('warehouse_users')->count())->toBe(1);
 });
 
 it('déclare warehouseUsers comme relation bloquante pour ProductWarehouse (dependentRelations)', function () {

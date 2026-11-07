@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Models\GeoCountry;
 use App\Models\Shop;
-use App\Models\ShopUser;
 use App\Models\User;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
@@ -13,11 +12,15 @@ use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
 /**
- * Module Boutique — Personnel des boutiques (`shop_users`).
+ * Module Boutique — Personnel des boutiques (pivot `shop_users`).
+ *
+ * Le personnel est un PIVOT pur (comme `blog_post_tag`) : plus de modèle
+ * ShopUser, on lit/écrit la table `shop_users` directement.
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
@@ -81,7 +84,11 @@ function shopUserShop(): Shop
     ]);
 }
 
-it('affecte un utilisateur à une boutique', function () {
+it('n\'a plus de modèle ShopUser (pivot pur, à l\'image de blog_post_tag)', function () {
+    expect(class_exists(\App\Models\ShopUser::class))->toBeFalse();
+});
+
+it('affecte un utilisateur à une boutique (pivot shop_users)', function () {
     $admin = shopUserAdmin();
     $shop = shopUserShop();
     $user = shopUserUser();
@@ -94,10 +101,12 @@ it('affecte un utilisateur à une boutique', function () {
         ->assertRedirect()
         ->assertSessionHas('success');
 
-    expect(ShopUser::count())->toBe(1);
-    $shopUser = ShopUser::firstOrFail();
-    expect($shopUser->shop_id)->toBe($shop->id);
-    expect($shopUser->user_id)->toBe($user->id);
+    expect(DB::table('shop_users')->count())->toBe(1);
+
+    $pivot = DB::table('shop_users')->first();
+    expect($pivot->shop_id)->toBe($shop->id);
+    expect($pivot->user_id)->toBe($user->id);
+    expect($pivot->uuid)->not->toBeNull();
 });
 
 it('détache un utilisateur d\'une boutique', function () {
@@ -109,14 +118,14 @@ it('détache un utilisateur d\'une boutique', function () {
         'user_uuid' => $user->uuid,
     ]);
 
-    $shopUser = ShopUser::firstOrFail();
+    $pivot = DB::table('shop_users')->first();
 
     $this->actingAs($admin)
-        ->delete(route('backend.shop-users.destroy', ['shopUser' => $shopUser->uuid]))
+        ->delete(route('backend.shop-users.destroy', ['shopUser' => $pivot->uuid]))
         ->assertRedirect()
         ->assertSessionHas('success');
 
-    expect(ShopUser::count())->toBe(0);
+    expect(DB::table('shop_users')->count())->toBe(0);
 });
 
 it('refuse une affectation dupliquée (shop_id, user_id)', function () {
@@ -128,14 +137,14 @@ it('refuse une affectation dupliquée (shop_id, user_id)', function () {
         'user_uuid' => $user->uuid,
     ]);
 
-    // Seconde affectation du même couple → erreur (contrainte d'unicité)
+    // Seconde affectation du même couple → erreur (règle métier explicite)
     $this->actingAs($admin)
         ->post(route('backend.shop-users.store', ['shop' => $shop->uuid]), [
             'user_uuid' => $user->uuid,
         ])
         ->assertSessionHas('error');
 
-    expect(ShopUser::count())->toBe(1);
+    expect(DB::table('shop_users')->count())->toBe(1);
 });
 
 it('déclare shopUsers comme relation bloquante pour Shop (dependentRelations)', function () {

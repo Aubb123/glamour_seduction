@@ -18,7 +18,6 @@ return [
         'force_destroy' => [
             'not_trashed_forbidden' => 'Seuls les entrepôts déjà supprimés ou en corbeille peuvent être supprimés définitivement.',
         ],
-        // Refus de modifier silencieusement une traduction placée en corbeille
         'trashedTranslationConflict' => 'Une traduction existe déjà dans la corbeille pour cette langue (lang_id : :lang_id). Restaurez-la ou supprimez-la définitivement avant d\'enregistrer.',
     ],
     'productWarehousesTranslations' => [
@@ -43,6 +42,7 @@ return [
             'success' => 'Affectation d\'un membre du personnel à l\'entrepôt : :name',
             'error' => 'Erreur lors de l\'affectation du membre du personnel',
             'not_found' => 'Utilisateur ou poste introuvable.',
+            'duplicate' => 'Cet utilisateur est déjà affecté à cet entrepôt.',
             'flash_success' => 'Membre du personnel (:name) affecté avec succès.',
             'flash_error' => 'Une erreur est survenue.',
         ],
@@ -50,12 +50,14 @@ return [
             'success' => 'Mise à jour de l\'affectation : :name',
             'warning_meta' => 'Erreur métier lors de la mise à jour de l\'affectation : :uuid',
             'error' => 'Erreur lors de la mise à jour de l\'affectation : :uuid',
+            'not_found' => 'Affectation introuvable.',
             'flash_success' => 'Affectation (:name) mise à jour avec succès.',
             'flash_error' => 'Une erreur est survenue.',
         ],
         'destroy' => [
             'success' => 'Retrait d\'un membre du personnel : :name',
             'error' => 'Erreur lors du retrait du membre du personnel : :uuid',
+            'not_found' => 'Affectation introuvable.',
             'flash_success' => 'Membre du personnel (:name) retiré avec succès.',
             'flash_error' => 'Une erreur est survenue.',
         ],
