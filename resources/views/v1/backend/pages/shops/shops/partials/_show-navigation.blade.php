@@ -22,9 +22,4 @@
             <span class="badge bg-primary ms-1">{{ $shop->shop_users_count ?? $shop->shopUsers->count() }}</span>
         </a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('backend.shop-translations.trashed', ['shop_uuid' => $shop->uuid]) }}">
-            <i class="bx bx-trash me-1"></i> {{ __('Corbeille des traductions') }}
-        </a>
-    </li>
 </ul>
