@@ -16,9 +16,6 @@
 
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 class="card-title mb-0">{{ __('Traductions supprimées') }}</h5>
-                <div class="dropdown">
-                    #
-                </div>
             </div>
 
             <div class="card-body">
@@ -70,15 +67,15 @@
                                             <form action="{{ route('backend.blog-tag-translations.restore', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $translation->uuid }}">
                                                 @csrf
                                                 @method('PATCH')
-                                                <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('Restaurer cette traduction ?') }}')" style="width: 32px; height: 32px; padding: 0; overflow: hidden;">
-                                                    <i class="bx bx-undo"></i> 
+                                                <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('Restaurer cette traduction ?') }}', '{{ __('Restaurer') }}', 'success')" style="width: 32px; height: 32px; padding: 0; overflow: hidden;">
+                                                    <i class="bx bx-undo"></i>
                                                 </button>
                                             </form>
 
                                             <form action="{{ route('backend.blog-tag-translations.force_destroy', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $translation->uuid }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', '{{ __('Supprimer définitivement cette traduction ? Cette action est irréversible.') }}')">
+                                                <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer définitivement cette traduction ? Cette action est irréversible.') }}', '{{ __('Supprimer définitivement') }}', 'danger')">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             </form>
