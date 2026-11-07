@@ -12,7 +12,9 @@ use Database\Seeders\LangSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 
 uses(RefreshDatabase::class);
 
@@ -73,13 +75,44 @@ function warehouseUserUser(string $email = 'wh-staff@site.com'): User
 
 function warehouseUserWarehouse(): ProductWarehouse
 {
+    // NB : la table product_warehouses ne porte plus que `code` + `status`
+    // (name/address/city/phone vivent dans product_warehouse_translations, et
+    // is_default est remplacé par le pivot shop_warehouse.is_primary).
     return ProductWarehouse::create([
         'code' => 'WH-'.strtoupper(uniqid()),
-        'name' => 'Entrepôt '.uniqid(),
         'status' => 'active',
-        'is_default' => false,
     ]);
 }
+
+it('n\'utilise pas SoftDeletes (la table warehouse_users n\'a pas de deleted_at)', function () {
+    // Garde anti-régression : si le modèle repassait par HasModelBehaviors
+    // (qui embarque SoftDeletes), toute requête planterait avec
+    // « Unknown column 'warehouse_users.deleted_at' in 'where clause' ».
+    expect(Schema::hasColumn('warehouse_users', 'deleted_at'))->toBeFalse();
+
+    $usedTraits = array_keys(class_uses_recursive(WarehouseUser::class));
+    expect(in_array(SoftDeletes::class, $usedTraits, true))->toBeFalse();
+});
+
+it('affiche la fiche entrepôt (show) sans erreur serveur', function () {
+    $admin = warehouseUserAdmin();
+    $warehouse = warehouseUserWarehouse();
+
+    // La relation ProductWarehouse::warehouseUsers est chargée par le show :
+    // c'est ce chargement qui levait un 500 avant la correction.
+    $this->actingAs($admin)
+        ->get(route('backend.product-warehouses.show', ['productWarehouse' => $warehouse->uuid]))
+        ->assertOk();
+});
+
+it('affiche le formulaire d\'édition entrepôt (edit) sans erreur serveur', function () {
+    $admin = warehouseUserAdmin();
+    $warehouse = warehouseUserWarehouse();
+
+    $this->actingAs($admin)
+        ->get(route('backend.product-warehouses.edit', ['productWarehouse' => $warehouse->uuid]))
+        ->assertOk();
+});
 
 it('affecte un utilisateur à un entrepôt', function () {
     $admin = warehouseUserAdmin();
