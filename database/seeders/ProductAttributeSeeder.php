@@ -19,40 +19,29 @@ class ProductAttributeSeeder extends Seeder
             [
                 'sort_order' => 1,
                 'status' => 'active',
+                'type' => 'color',
                 'translations' => [
                     ['lang_code' => 'fr', 'name' => 'Couleur', 'description' => 'Couleur du produit (ex : rouge, noir, blanc).'],
                     ['lang_code' => 'en', 'name' => 'Colour',  'description' => 'Product colour (e.g. red, black, white).'],
                 ],
-                'values' => [
-                    ['value' => 'rouge', 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Rouge'], ['lang_code' => 'en', 'label' => 'Red']]],
-                    ['value' => 'noir',  'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Noir'],  ['lang_code' => 'en', 'label' => 'Black']]],
-                    ['value' => 'blanc', 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Blanc'], ['lang_code' => 'en', 'label' => 'White']]],
-                ],
+                // Les valeurs de cet attribut (avec leur code HEX) sont seedées par ProductAttributeValueSeeder.
             ],
             [
                 'sort_order' => 2,
                 'status' => 'active',
+                'type' => 'text',
                 'translations' => [
                     ['lang_code' => 'fr', 'name' => 'Taille', 'description' => 'Taille du produit (ex : S, M, L, XL).'],
                     ['lang_code' => 'en', 'name' => 'Size',   'description' => 'Product size (e.g. S, M, L, XL).'],
-                ],
-                'values' => [
-                    ['value' => 's',  'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'S'],  ['lang_code' => 'en', 'label' => 'S']]],
-                    ['value' => 'm',  'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'M'],  ['lang_code' => 'en', 'label' => 'M']]],
-                    ['value' => 'xl', 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'XL'], ['lang_code' => 'en', 'label' => 'XL']]],
                 ],
             ],
             [
                 'sort_order' => 3,
                 'status' => 'active',
+                'type' => 'text',
                 'translations' => [
                     ['lang_code' => 'fr', 'name' => 'Matière',  'description' => 'Matière de fabrication du produit (ex : silicone médical, cuir, métal).'],
                     ['lang_code' => 'en', 'name' => 'Material', 'description' => 'Product manufacturing material (e.g. medical silicone, leather, metal).'],
-                ],
-                'values' => [
-                    ['value' => 'silicone-medical', 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Silicone médical'], ['lang_code' => 'en', 'label' => 'Medical silicone']]],
-                    ['value' => 'cuir',             'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Cuir'],             ['lang_code' => 'en', 'label' => 'Leather']]],
-                    ['value' => 'metal',            'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Métal'],            ['lang_code' => 'en', 'label' => 'Metal']]],
                 ],
             ],
         ];
@@ -66,6 +55,7 @@ class ProductAttributeSeeder extends Seeder
             $attribute = ProductAttribute::create([
                 'sort_order' => $data['sort_order'],
                 'status' => $data['status'],
+                'type' => $data['type'],
             ]);
 
             // Créer les traductions de l'attribut
