@@ -45,13 +45,23 @@
                         <div class="step-content" data-step-content="1">
 
                             <div class="row">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
                                     <label for="sort_order" class="form-label">{{ __('Ordre de tri') }} <span class="text-danger">*</span></label>
                                     <input type="number" name="sort_order" id="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $attribute->sort_order) }}" min="0" required />
                                     @error('sort_order') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
 
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-4 mb-3">
+                                    <label for="type" class="form-label">{{ __('Type de valeur') }} <span class="text-danger">*</span></label>
+                                    <select name="type" id="type" class="form-select @error('type') is-invalid @enderror" required>
+                                        <option value="text" {{ old('type', $attribute->type?->value ?? 'text') === 'text' ? 'selected' : '' }}>{{ __('Texte') }}</option>
+                                        <option value="color" {{ old('type', $attribute->type?->value ?? 'text') === 'color' ? 'selected' : '' }}>{{ __('Couleur') }}</option>
+                                    </select>
+                                    @error('type') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                    <small class="text-muted">{{ __('« Couleur » impose un code HEX sur chaque valeur.') }}</small>
+                                </div>
+
+                                <div class="col-md-4 mb-3">
                                     <label for="status" class="form-label">{{ __('Statut') }}</label>
                                     <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
                                         <option value="active" {{ old('status', $attribute->status?->value ?? 'inactive') === 'active' ? 'selected' : '' }}>{{ __('Actif') }}</option>
