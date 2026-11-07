@@ -2,7 +2,9 @@
 
 namespace App\Services\V1\Controllers;
 
+use App\Enums\Products\Attributes\ProductAttributeType;
 use App\Enums\Products\Attributes\ProductAttributeValueStatus;
+use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductAttributeValueTranslation;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +31,7 @@ class ProductAttributeValueService
             $value = ProductAttributeValue::create([
                 'attribute_id' => $data['attribute_id'],
                 'value' => $data['value'],
+                'hex_color' => $this->normalizeHexColor($data['attribute_id'], $data['hex_color'] ?? null),
                 'sort_order' => $data['sort_order'],
                 'status' => ($data['status'] ?? null) === ProductAttributeValueStatus::Active->value ? ProductAttributeValueStatus::Active : ProductAttributeValueStatus::Inactive,
             ]);
@@ -56,6 +59,11 @@ class ProductAttributeValueService
             if (isset($data['value'])) {
                 $updateData['value'] = $data['value'];
             }
+
+            // Code couleur HEX : normalisé et gardé uniquement si l'attribut cible est de type "color".
+            // L'attribut de référence est celui soumis (recalcul après un éventuel changement d'attribut).
+            $targetAttributeId = $data['attribute_id'] ?? $value->attribute_id;
+            $updateData['hex_color'] = $this->normalizeHexColor($targetAttributeId, $data['hex_color'] ?? null);
 
             if (isset($data['sort_order'])) {
                 $updateData['sort_order'] = $data['sort_order'];
@@ -171,6 +179,35 @@ class ProductAttributeValueService
             }
 
         });
+    }
+
+    // ─────────────────────────────────────────────
+    // NORMALIZE HEX COLOR (privé)
+    // ─────────────────────────────────────────────
+    /**
+     * Normalise et sécurise le code couleur HEX d'une valeur d'attribut.
+     *
+     * Règles :
+     *  - le champ n'est conservé QUE si l'attribut parent est de type "color" ;
+     *  - le code est trim + lowercased ;
+     *  - un champ vide/absent renvoie null (couleur non renseignée).
+     *
+     * La validité stricte du format (règle Laravel `hex_color`) est assurée
+     * en amont par les Form Requests ; ce garde-fou garantit seulement la
+     * cohérence en base si la méthode est appelée hors requête HTTP.
+     */
+    private function normalizeHexColor(int $attributeId, ?string $hexColor): ?string
+    {
+        $isColor = ProductAttribute::query()
+            ->whereKey($attributeId)
+            ->where('type', ProductAttributeType::Color)
+            ->exists();
+
+        if (! $isColor || $hexColor === null || trim($hexColor) === '') {
+            return null;
+        }
+
+        return strtolower(trim($hexColor));
     }
 
     // ─────────────────────────────────────────────
