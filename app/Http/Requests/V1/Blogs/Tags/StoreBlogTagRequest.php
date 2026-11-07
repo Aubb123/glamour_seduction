@@ -11,8 +11,12 @@ use function __;
 /**
  * Requête de validation pour la création d'un tag de blog.
  *
- * Valide les données entrantes pour la création d'un tag (blog_tags)
- * avec ses traductions associées (blog_tag_translations).
+ * Contrat d'unicité aligné sur UpdateBlogTagRequest et sur l'index de base
+ * `unique(name, lang_id)` : l'unicité du nom par langue porte sur TOUTES les
+ * lignes de blog_tag_translations, y compris les lignes soft-deleted (l'index
+ * SQL ignore le soft delete). On ne filtre donc PAS sur `deleted_at`, sinon un
+ * nom libre au sens de la validation provoquerait une violation de contrainte
+ * au moment de l'insertion.
  */
 class StoreBlogTagRequest extends FormRequest
 {
@@ -50,14 +54,18 @@ class StoreBlogTagRequest extends FormRequest
         // Construite dynamiquement car Laravel ne sait pas interpréter une
         // référence `{translations.*.lang_id}` en syntaxe statique (elle est
         // traitée comme une chaîne littérale).
+        //
+        // Contrat d'unicité identique à Update : on inclut les lignes
+        // soft-deleted (pas de ->whereNull('deleted_at')) pour rester cohérent
+        // avec l'index DB unique(['name','lang_id']).
         // ────────────────────────────────────────────────────────────
         $translations = $this->input('translations', []);
 
         foreach ($translations as $index => $translation) {
             $langId = $translation['lang_id'] ?? null;
 
-            // Règle d'unicité sur le champ 'name' pour chaque traduction, filtrée par lang_id
-            // et en incluant les enregistrements soft-deleted (deleted_at IS NULL)
+            // Règle d'unicité sur le champ 'name' pour chaque traduction, filtrée par lang_id.
+            // Les lignes soft-deleted sont incluses (l'index SQL unique(name, lang_id) ne les ignore pas).
             $rules["translations.{$index}.name"] = [
                 'required',
                 'string',
