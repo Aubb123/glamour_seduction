@@ -10,7 +10,7 @@
 
     @include('v1.backend.pages.shops.shops.partials._show-start', ['shop' => $shop])
 
-        {{-- Onglets internes (identiques à blog_tags/show) --}}
+        {{-- Onglets internes (design blog_tags) --}}
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
                 <a class="nav-link active" data-bs-toggle="tab" href="#tab_general">
@@ -20,6 +20,16 @@
             <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_translations">
                     <i class="bx bx-globe me-1"></i> Traductions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_warehouse">
+                    <i class="bx bx-building-house me-1"></i> Entrepôt
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_personnel">
+                    <i class="bx bx-group me-1"></i> Personnel
                 </a>
             </li>
             <li class="nav-item">
@@ -126,56 +136,6 @@
                         </div>
                     </div>
 
-                    <div class="col-12">
-                        <div class="card border">
-                            <div class="card-header bg-light py-2">
-                                <h6 class="mb-0 fw-bold">
-                                    <i class="bx bx-building-house me-2 text-primary"></i>Entrepôts rattachés
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-centered align-middle mb-0">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Code</th>
-                                                <th>Nom</th>
-                                                <th>Approvisionnement</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($shop->warehouses as $warehouse)
-                                                <tr>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td><code>{{ $warehouse->code }}</code></td>
-                                                    <td>{{ $warehouse->name }}</td>
-                                                    <td>
-                                                        @if ($warehouse->pivot->is_primary)
-                                                            <span class="badge badge-soft-primary">Principal</span>
-                                                        @else
-                                                            <span class="badge badge-soft-secondary">Secondaire</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="4" class="text-center text-muted py-3">
-                                                        Aucun entrepôt rattaché.
-                                                    </td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12" id="personnel">
-                        @include('v1.backend.pages.shops.shops.partials._show-staff', ['shop' => $shop])
-                    </div>
-
                 </div>
             </div>
 
@@ -271,6 +231,66 @@
 
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Entrepôt --}}
+            <div class="tab-pane fade" id="tab_warehouse">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="card border">
+                            <div class="card-header bg-light py-2">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="bx bx-building-house me-2 text-primary"></i>Entrepôts rattachés
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-centered align-middle mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Code</th>
+                                                <th>Nom</th>
+                                                <th>Approvisionnement</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse ($shop->warehouses as $warehouse)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td><code>{{ $warehouse->code }}</code></td>
+                                                    <td>{{ $warehouse->name }}</td>
+                                                    <td>
+                                                        @if ($warehouse->pivot->is_primary)
+                                                            <span class="badge badge-soft-primary">Principal</span>
+                                                        @else
+                                                            <span class="badge badge-soft-secondary">Secondaire</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted py-3">
+                                                        Aucun entrepôt rattaché.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Personnel --}}
+            <div class="tab-pane fade" id="tab_personnel">
+                <div class="row g-4">
+                    <div class="col-12">
+                        @include('v1.backend.pages.shops.shops.partials._show-staff', ['shop' => $shop])
                     </div>
                 </div>
             </div>
