@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Products\Attributes;
 
 use App\Enums\Products\Attributes\ProductAttributeStatus;
+use App\Enums\Products\Attributes\ProductAttributeType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -51,6 +52,9 @@ class StoreProductAttributeRequest extends FormRequest
             'sort_order' => ['required', 'integer', 'min:0', 'unique:product_attributes,sort_order'],
 
             'status' => ['required', Rule::in(ProductAttributeStatus::values())],
+
+            // Type de valeur de l'attribut : text (saisie libre) ou color (HEX requis)
+            'type' => ['required', Rule::in(ProductAttributeType::values())],
 
             // Le tableau de traductions lui-même
             'translations' => ['required', 'array'],
@@ -107,6 +111,9 @@ class StoreProductAttributeRequest extends FormRequest
 
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
+
+            'type.required' => __("{$this->backendLangPath}.type.required"),
+            'type.in' => __("{$this->backendLangPath}.type.in"),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),
