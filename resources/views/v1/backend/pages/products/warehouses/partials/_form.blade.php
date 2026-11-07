@@ -11,7 +11,11 @@
     $formId = $isEdit ? 'edit-warehouse-form' : 'create-warehouse-form';
 
     // Retourne la valeur à afficher pour un champ de traduction (old() prioritaire).
-    $translationValue = function (string $field, $lang) use ($isEdit) {
+    //
+    // NB : la closure DOIT capturer $warehouse (et $isEdit) : une closure PHP
+    // n'hérite pas de la portée du parent. Sans `use (..., $warehouse)`, le mode
+    // édition levait « Undefined variable $warehouse » au rendu du formulaire.
+    $translationValue = function (string $field, $lang) use ($isEdit, $warehouse) {
         $old = old("translations.{$lang->code}.{$field}");
 
         if ($old !== null) {
