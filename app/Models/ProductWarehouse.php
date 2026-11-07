@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Products\Warehouses\ProductWarehouseStatus;
+use App\Models\Builders\ProductWarehouseBuilder;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -49,11 +50,36 @@ class ProductWarehouse extends Model
     ];
 
     /**
+     * Builder Eloquent dédié : redirige `orderBy('name')` vers `code`
+     * (la colonne `name` n'existe plus sur la table principale).
+     */
+    public function newEloquentBuilder($query): ProductWarehouseBuilder
+    {
+        return new ProductWarehouseBuilder($query);
+    }
+
+    /**
      * Clé de liaison utilisée par le model binding implicite (routes {productWarehouse}).
      */
     public function getRouteKeyName(): string
     {
         return 'uuid';
+    }
+
+    /**
+     * Accesseur : nom d'affichage de l'entrepôt.
+     *
+     * La colonne `name` a été retirée de la table `product_warehouses` (le nom vit
+     * désormais dans product_warehouse_translations, traduit par langue). Cet accesseur
+     * expose `$warehouse->name` pour toutes les vues/contrôleurs qui l'affichent encore,
+     * en résolvant le nom traduit actif et en repliant sur le code si aucune traduction
+     * n'existe. Il évite ainsi les erreurs « Undefined column 'name' » et les vides.
+     *
+     * NB : lecture seule (pas de setter) — ne crée pas d'attribut en base.
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->active_translation?->name ?? $this->code;
     }
 
     /**
