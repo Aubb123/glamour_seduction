@@ -18,8 +18,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 /**
- * Module Boutique — Boutiques / points de vente (`shops` + `shop_translations`
- * + pivot `shop_warehouse`).
+ * Module Boutique — Boutiques (`shops` + `shop_translations` + pivot `shop_warehouse`).
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
@@ -55,11 +54,12 @@ function shopAdmin(): User
 
 function shopWarehouse(array $overrides = []): ProductWarehouse
 {
+    // NB : la table product_warehouses ne porte plus que `code` + `status`
+    // (name/address/city/phone vivent dans product_warehouse_translations ;
+    // is_default est remplacé par le pivot shop_warehouse.is_primary).
     return ProductWarehouse::create(array_merge([
         'code' => 'WH-'.strtoupper(uniqid()),
-        'name' => 'Entrepôt '.uniqid(),
         'status' => 'active',
-        'is_default' => false,
     ], $overrides));
 }
 
@@ -197,6 +197,19 @@ it('rattache les entrepôts via le pivot shop_warehouse (au moins un, un seul pr
 
     expect($shop->warehouses()->count())->toBe(2);
     expect($shop->primaryWarehouse()->first()?->id)->toBe($w2->id);
+});
+
+it('affiche la fiche boutique (show) sans erreur serveur', function () {
+    $admin = shopAdmin();
+
+    $this->actingAs($admin)->post(route('backend.shops.store'), shopPayload());
+    $shop = Shop::firstOrFail();
+
+    // La relation shopUsers (pivot) est chargée par le show : c'est ce chargement
+    // qui levait un 500 avant la conversion du personnel en pivot.
+    $this->actingAs($admin)
+        ->get(route('backend.shops.show', ['shop' => $shop->uuid, 'slug' => $shop->active_translation?->slug ?? 'null']))
+        ->assertOk();
 });
 
 it('déclare shopUsers comme relation bloquante pour Shop (dependentRelations)', function () {
