@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Products\Attributes\ProductAttributeStatus;
+use App\Enums\Products\Attributes\ProductAttributeType;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -32,11 +33,13 @@ class ProductAttribute extends Model
     protected $fillable = [
         'sort_order',
         'status',
+        'type',
     ];
 
     // Casts pour les attributs du modèle
     protected $casts = [
         'status' => ProductAttributeStatus::class,
+        'type' => ProductAttributeType::class,
     ];
 
     /**
@@ -61,5 +64,13 @@ class ProductAttribute extends Model
     public function scopeActive($query): Builder
     {
         return $query->where('status', ProductAttributeStatus::Active);
+    }
+
+    /**
+     * Indique si cet attribut est de type "couleur" et impose donc un code HEX par valeur.
+     */
+    public function isColor(): bool
+    {
+        return $this->type === ProductAttributeType::Color;
     }
 }
