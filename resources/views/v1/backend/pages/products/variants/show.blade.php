@@ -125,6 +125,7 @@
                         <div class="d-flex flex-wrap gap-2">
                             @forelse ($variant->attributeValues as $value)
                                 <span class="badge badge-soft-primary fs-14 px-3 py-2">
+                                    @include('v1.backend.pages.products.variants.partials._color-swatch', ['hex' => $value->hex_color])
                                     {{ $value->attribute?->active_translation?->name ?? '?' }} : {{ $value->active_translation?->label ?? $value->value }}
                                 </span>
                             @empty

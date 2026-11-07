@@ -105,7 +105,10 @@
                                     <td>{{ $variant->product?->active_translation?->name ?? ('#'.$variant->product_id) }}</td>
                                     <td>
                                         @forelse ($variant->attributeValues as $value)
-                                            <span class="badge badge-soft-primary me-1">{{ $value->active_translation?->label ?? $value->value }}</span>
+                                            <span class="badge badge-soft-primary me-1">
+                                                @include('v1.backend.pages.products.variants.partials._color-swatch', ['hex' => $value->hex_color])
+                                                {{ $value->active_translation?->label ?? $value->value }}
+                                            </span>
                                         @empty
                                             <span class="text-muted">—</span>
                                         @endforelse
