@@ -66,6 +66,7 @@ class Audit extends Model
         'subscribeHistory',
         'shop',
         'position',
+        'productWarehouse',
     ];
 
     // Mapping des types auditable vers les routes show et leurs paramètres
@@ -93,6 +94,7 @@ class Audit extends Model
         'App\Models\PlatformVersion' => ['route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug']],
         'App\Models\Shop' => ['route' => 'backend.shops.show', 'params' => ['shop', 'slug']],
         'App\Models\Position' => ['route' => 'backend.positions.show', 'params' => ['position', 'slug']],
+        'App\Models\ProductWarehouse' => ['route' => 'backend.product-warehouses.show', 'params' => ['productWarehouse']],
     ];
 
     public function getEntityUrlAttribute(): ?string
@@ -156,6 +158,7 @@ class Audit extends Model
             'App\Models\PlatformVersion' => $this->auditable->active_translation?->name,
             'App\Models\Shop' => $this->auditable->active_translation?->name,
             'App\Models\Position' => $this->auditable->active_translation?->name,
+            'App\Models\ProductWarehouse' => $this->auditable->active_translation?->name ?? $this->auditable->code,
             default => null,
         } ?: null;
     }
@@ -186,6 +189,7 @@ class Audit extends Model
             'App\Models\PlatformVersion' => __('Version'),
             'App\Models\Shop' => __('Boutique'),
             'App\Models\Position' => __('Poste'),
+            'App\Models\ProductWarehouse' => __('Entrepôt'),
             default => __('Entité'),
         };
 
