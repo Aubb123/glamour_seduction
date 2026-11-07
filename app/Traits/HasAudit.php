@@ -29,23 +29,30 @@ trait HasAudit
             $model->logAudit(AuditAction::Updated);
         });
 
-        // Lors d'un soft delete uniquement (pas lors d'un forceDelete)
+        // Lors d'une suppression DÉFINITIVE (forceDelete) : on log AVANT la suppression.
+        //
+        // NB : `isForceDeleting()` n'existe QUE si le modèle utilise SoftDeletes.
+        // Les modèles sans soft delete (ex : WarehouseUser, ShopUser) font une
+        // suppression physique : `isForceDeleting()` est alors absent → on ne
+        // journalise pas ici, l'événement `deleted` s'en charge ci-dessous.
+        static::deleting(function ($model) {
+            if (method_exists($model, 'isForceDeleting') && $model->isForceDeleting()) {
+                $model->logAudit(AuditAction::ForceDeleted);
+            }
+        });
+
+        // Suppression : `deleted` est déclenché pour un soft delete ET pour une
+        // suppression physique. On ignore le cas forceDelete (déjà loggué dans
+        // `deleting`) pour éviter un doublon.
         static::deleted(function ($model) {
-            if ($model->isForceDeleting()) {
-                return;
-            } // ← on ignore les forceDelete ici
+            if (method_exists($model, 'isForceDeleting') && $model->isForceDeleting()) {
+                return; // ← déjà journalisé côté `deleting`
+            }
+
             $model->logAudit(AuditAction::Deleted);
         });
 
-        // Lors d'une suppression définitive, on log séparément AVANT la suppression
-        static::deleting(function ($model) {
-            if (! $model->isForceDeleting()) {
-                return;
-            } // ← uniquement pour les forceDelete
-            $model->logAudit(AuditAction::ForceDeleted);
-        });
-
-        // Lors d'une restauration de soft-delete
+        // Lors d'une restauration de soft-delete (événement absent sans SoftDeletes)
         static::restored(function ($model) {
             $model->logAudit(AuditAction::Restored);
         });
