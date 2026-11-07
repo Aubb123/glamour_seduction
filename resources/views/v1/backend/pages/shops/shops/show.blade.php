@@ -10,12 +10,6 @@
 
     @include('v1.backend.pages.shops.shops.partials._show-start', ['shop' => $shop])
 
-        @php
-            // Repli : mêmes données que blog_tags (langues actives + traductions en corbeille)
-            $langs = $langs ?? getActiveLangs()['langs'];
-            $trashedTranslations = $trashedTranslations ?? \App\Models\ShopTranslation::onlyTrashed()->where('shop_id', $shop->id)->get();
-        @endphp
-
         {{-- Onglets internes (identiques à blog_tags/show) --}}
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
