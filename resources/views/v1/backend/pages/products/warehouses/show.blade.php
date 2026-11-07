@@ -27,6 +27,12 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#tab_products">
+                    <i class="bx bx-package me-1"></i> {{ __('Produits') }}
+                    <span class="badge bg-primary ms-1">{{ $warehouse->stocks()->count() }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" href="#tab_staff">
                     <i class="bx bx-group me-1"></i> {{ __('Personnel') }}
                     @if($warehouse->warehouseUsers->isNotEmpty())
@@ -159,6 +165,13 @@
                             <div class="alert alert-warning mb-0">{{ __('Aucune traduction trouvée.') }}</div>
                         </div>
                     @endforelse
+                </div>
+            </div>
+
+            <!-- Produits en stock -->
+            <div class="tab-pane fade" id="tab_products">
+                <div class="row g-4">
+                    @include('v1.backend.pages.products.warehouses.partials._show-products', ['warehouse' => $warehouse])
                 </div>
             </div>
 
