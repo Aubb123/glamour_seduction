@@ -14,6 +14,7 @@ use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 
 uses(RefreshDatabase::class);
 
@@ -87,8 +88,10 @@ it('n\'utilise pas SoftDeletes (la table warehouse_users n\'a pas de deleted_at)
     // Garde anti-régression : si le modèle repassait par HasModelBehaviors
     // (qui embarque SoftDeletes), toute requête planterait avec
     // « Unknown column 'warehouse_users.deleted_at' in 'where clause' ».
-    expect(in_array(SoftDeletes::class, class_uses_recipes_safe(WarehouseUser::class), true))->toBeFalse();
-    expect((new WarehouseUser)->getDeletedAtColumn())->toBe('deleted_at');
+    expect(Schema::hasColumn('warehouse_users', 'deleted_at'))->toBeFalse();
+
+    $usedTraits = array_keys(class_uses_recursive(WarehouseUser::class));
+    expect(in_array(SoftDeletes::class, $usedTraits, true))->toBeFalse();
 });
 
 it('affiche la fiche entrepôt (show) sans erreur serveur', function () {
