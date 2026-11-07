@@ -1,12 +1,12 @@
 @extends('v1.backend.layouts.app')
 
 @section('title')
-    Détail de l'entrepôt — {{ $warehouse->name }} - Audits
+    {{ __('Détail de l\'entrepôt') }} — <code>{{ $warehouse->active_translation?->name ?? $warehouse->code }}</code> - {{ __('Audits') }}
 @endsection
 
 @section('content')
 
-    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => 'Audits'])
+    @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('Audits')])
 
     @include('v1.backend.pages.products.warehouses.partials._show-start', ['warehouse' => $warehouse])
 
