@@ -13,6 +13,16 @@
                         <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
                     </a>
 
+                    <a href="{{ route('backend.product-stock-movements.audits', ['productStockMovement' => $movement->uuid]) }}" class="btn btn-soft-primary btn-sm">
+                        <i class="bx bx-file me-1"></i> {{ __('Audits') }}
+                        <span class="badge bg-primary ms-1">{{ $movement->audits_count ?? 0 }}</span>
+                    </a>
+
+                    <a href="{{ route('backend.product-stock-movements.activity-logs', ['productStockMovement' => $movement->uuid]) }}" class="btn btn-soft-info btn-sm">
+                        <i class="bx bx-pulse me-1"></i> {{ __("Logs d'activité") }}
+                        <span class="badge bg-primary ms-1">{{ $movement->activity_logs_count ?? 0 }}</span>
+                    </a>
+
                     <div class="dropdown">
                         <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bx bx-cog me-1"></i> {{ __('Actions') }}
@@ -45,3 +55,5 @@
             </div>
 
             <div class="card-body">
+
+                @include('v1.backend.pages.products.stock-movements.partials._show-navigation', ['movement' => $movement])

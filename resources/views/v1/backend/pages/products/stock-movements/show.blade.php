@@ -10,8 +10,6 @@
 
     @include('v1.backend.pages.products.stock-movements.partials._show-start', ['movement' => $movement])
 
-        @include('v1.backend.pages.products.stock-movements.partials._show-navigation', ['movement' => $movement])
-
         <div class="tab-content">
 
             {{-- Informations générales --}}

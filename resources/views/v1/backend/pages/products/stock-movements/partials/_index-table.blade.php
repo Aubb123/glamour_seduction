@@ -32,15 +32,15 @@
             'color' => 'danger',
         ],
         [
-            'label' => __('Quantité totale entrée'),
-            'value' => $movements->filter(fn ($m) => ! $m->type->decreasesStock())->sum('quantity'),
-            'icon'  => 'bx bx-plus-circle',
+            'label' => __('Audits'),
+            'value' => $movements->sum('audits_count'),
+            'icon'  => 'bx bx-file',
             'color' => 'info',
         ],
         [
-            'label' => __('Quantité totale sortie'),
-            'value' => $movements->filter(fn ($m) => $m->type->decreasesStock())->sum('quantity'),
-            'icon'  => 'bx bx-minus-circle',
+            'label' => __("Logs d'activité"),
+            'value' => $movements->sum('activity_logs_count'),
+            'icon'  => 'bx bx-pulse',
             'color' => 'warning',
         ],
     ],
@@ -83,6 +83,8 @@
                                 <th scope="col">{{ __('Quantité') }}</th>
                                 <th scope="col">{{ __('Note') }}</th>
                                 <th scope="col">{{ __('Par') }}</th>
+                                <th scope="col">{{ __('Audits') }}</th>
+                                <th scope="col">{{ __('Logs') }}</th>
                                 @if(request()->routeIs('backend.product-stock-movements.trashed'))
                                     <th scope="col">{{ __('Supprimé le') }}</th>
                                 @endif
@@ -134,6 +136,22 @@
                                         {{ $reporter ? $reporter->first_name.' '.$reporter->last_name : '—' }}
                                     </td>
 
+                                    <td>
+                                        <a href="{{ route('backend.product-stock-movements.audits', ['productStockMovement' => $movement->uuid]) }}" class="text-decoration-none">
+                                            <span class="badge badge-soft-primary">
+                                                <i class="bx bx-file me-1"></i> {{ $movement->audits_count ?? 0 }}
+                                            </span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ route('backend.product-stock-movements.activity-logs', ['productStockMovement' => $movement->uuid]) }}" class="text-decoration-none">
+                                            <span class="badge badge-soft-info">
+                                                <i class="bx bx-pulse me-1"></i> {{ $movement->activity_logs_count ?? 0 }}
+                                            </span>
+                                        </a>
+                                    </td>
+
                                     @if(request()->routeIs('backend.product-stock-movements.trashed'))
                                         <td class="text-muted">
                                             @formatDate($movement->deleted_at, 'D MMMM YYYY - HH:mm:ss')
@@ -181,7 +199,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ request()->routeIs('backend.product-stock-movements.trashed') ? 11 : 10 }}" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.product-stock-movements.trashed') ? 13 : 12 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-transfer fs-3 d-block mb-2"></i>
                                         {{ __('Aucun mouvement de stock trouvé.') }}
                                     </td>
