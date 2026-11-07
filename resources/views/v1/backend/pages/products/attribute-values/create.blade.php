@@ -45,7 +45,7 @@
                                     <select name="attribute_id" id="attribute_id" class="form-select @error('attribute_id') is-invalid @enderror" required>
                                         <option value="">{{ __('Sélectionner un attribut') }}</option>
                                         @foreach ($attributes as $attribute)
-                                            <option value="{{ $attribute->id }}" {{ old('attribute_id') == $attribute->id ? 'selected' : '' }}>
+                                            <option value="{{ $attribute->id }}" data-type="{{ $attribute->type?->value ?? 'text' }}" {{ old('attribute_id') == $attribute->id ? 'selected' : '' }}>
                                                 {{ $attribute->active_translation?->name ?? '#' . $attribute->id }}
                                             </option>
                                         @endforeach
@@ -59,6 +59,9 @@
                                     @error('value') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     <small class="text-muted">{{ __('Minuscules, sans espaces (ex : rouge, xl).') }}</small>
                                 </div>
+
+                                {{-- Code couleur HEX (affiché uniquement si l'attribut parent est de type "color") --}}
+                                @include('v1.backend.pages.products.attribute-values.partials._hex-color-field')
 
                                 <div class="col-md-6 mb-3">
                                     <label for="sort_order" class="form-label">{{ __("Ordre de tri") }} <span class="text-danger">*</span></label>
@@ -109,6 +112,7 @@
 
 @push('scripts')
     @include('v1.backend.layouts.partials._stepper-script', ['formId' => 'create-value-form'])
+    @include('v1.backend.pages.products.attribute-values.partials._hex-color-script')
 @endpush
 
 @push('styles')
