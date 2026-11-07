@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductVariant extends Model
 {
@@ -24,8 +25,11 @@ class ProductVariant extends Model
     protected bool $hasTranslations = false;
 
     // Relations enfants dont la présence bloque la suppression de cette variante.
-    // NB : 'stocks' (module 8) et 'movements' (module 9) seront ajoutés plus tard.
-    protected array $dependentRelations = ['stocks', 'movements']; // Destroy refusé si stocks/mouvements existent (modules 8-9)
+    // NB : 'stocks' (module 8) et 'movements' (module 9) existent désormais et bloquent
+    // la suppression tant qu'un stock ou un mouvement référence la variante.
+    // Chaque relation listée DOIT avoir une méthode correspondante sur le modèle,
+    // sinon destroy_function lève une BadMethodCallException.
+    protected array $dependentRelations = ['stocks', 'movements'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -66,6 +70,24 @@ class ProductVariant extends Model
     public function attributeValues(): BelongsToMany
     {
         return $this->belongsToMany(ProductAttributeValue::class, 'product_variant_attribute_value', 'product_variant_id', 'attribute_value_id');
+    }
+
+    /**
+     * Relation : une variante possède plusieurs lignes de stock (module 8).
+     * NB : bloque la suppression d'une variante qui a encore des stocks associés.
+     */
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseStock::class, 'product_variant_id');
+    }
+
+    /**
+     * Relation : une variante possède plusieurs mouvements de stock (module 9).
+     * NB : bloque la suppression d'une variante qui a encore des mouvements associés.
+     */
+    public function movements(): HasMany
+    {
+        return $this->hasMany(ProductStockMovement::class, 'product_variant_id');
     }
 
     /**
