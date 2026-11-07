@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Products\Warehouses\ProductWarehouseStatus;
+use App\Models\Builders\ProductWarehouseBuilder;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -49,6 +50,15 @@ class ProductWarehouse extends Model
     ];
 
     /**
+     * Builder Eloquent dédié : redirige `orderBy('name')` vers `code`
+     * (la colonne `name` n'existe plus sur la table principale).
+     */
+    public function newEloquentBuilder($query): ProductWarehouseBuilder
+    {
+        return new ProductWarehouseBuilder($query);
+    }
+
+    /**
      * Clé de liaison utilisée par le model binding implicite (routes {productWarehouse}).
      */
     public function getRouteKeyName(): string
@@ -63,9 +73,9 @@ class ProductWarehouse extends Model
      * désormais dans product_warehouse_translations, traduit par langue). Cet accesseur
      * expose `$warehouse->name` pour toutes les vues/contrôleurs qui l'affichent encore,
      * en résolvant le nom traduit actif et en repliant sur le code si aucune traduction
-     * n'existe. Il évite ainsi les « Undefined column 'name' » / vides à l'affichage.
+     * n'existe. Il évite ainsi les erreurs « Undefined column 'name' » et les vides.
      *
-     * NB : il ne crée PAS d'attribut en base (pas de setter) — il est en lecture seule.
+     * NB : lecture seule (pas de setter) — ne crée pas d'attribut en base.
      */
     public function getNameAttribute(): string
     {
@@ -78,16 +88,6 @@ class ProductWarehouse extends Model
     public function scopeActive($query): Builder
     {
         return $query->where('status', ProductWarehouseStatus::Active);
-    }
-
-    /**
-     * Scope de tri par nom d'affichage (« code » étant la seule colonne triable en
-     * base, le nom traduit n'étant pas sur la table principale) :
-     * on trie sur le code, ce qui reste stable et non ambigu.
-     */
-    public function scopeOrderedByName($query): Builder
-    {
-        return $query->orderBy('code');
     }
 
     /**
