@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Enums\Products\Warehouses\ProductWarehouseStatus;
 use App\Models\GeoCountry;
 use App\Models\Lang;
 use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseTranslation;
+use App\Models\Shop;
 use App\Models\User;
+use App\Services\V1\Controllers\ShopService;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
@@ -18,8 +21,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 /**
- * Module Produits — Entrepôts (`product-warehouses`) et leurs traductions
+ * Module Produits — Entrepôts (`product_warehouses`) et leurs traductions
  * (`product_warehouse_translations`).
+ *
+ * NB : « entrepôt par défaut » n'est plus une colonne globale : c'est une notion
+ * PAR BOUTIQUE, portée par le pivot `shop_warehouse.is_primary` (ShopService).
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
@@ -66,7 +72,6 @@ function warehousePayload(array $overrides = []): array
     $defaults = [
         'code' => 'WH-'.$suffix,
         'status' => 'inactive',
-        'is_default' => false,
         'translations' => [
             [
                 'lang_id' => $fr->id,
@@ -107,7 +112,7 @@ it('affiche la page de création d\'entrepôt', function () {
         ->assertOk();
 });
 
-it('crée un entrepôt (premier → is_default auto) avec ses traductions fr/en', function () {
+it('crée un entrepôt avec ses traductions fr/en', function () {
     $admin = warehouseAdmin();
 
     $this->actingAs($admin)
@@ -118,7 +123,6 @@ it('crée un entrepôt (premier → is_default auto) avec ses traductions fr/en'
     $warehouse = ProductWarehouse::firstOrFail();
 
     expect(ProductWarehouse::count())->toBe(1);
-    expect($warehouse->is_default)->toBeTrue();
     expect($warehouse->status->value)->toBe('inactive');
     expect($warehouse->translations()->count())->toBe(2);
     expect(ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->count())->toBe(2);
@@ -136,19 +140,6 @@ it('refuse un code dupliqué', function () {
         ->assertSessionHasErrors(['code']);
 
     expect(ProductWarehouse::count())->toBe(1);
-});
-
-it('gère un seul entrepôt par défaut (la nouvelle remplace)', function () {
-    $admin = warehouseAdmin();
-
-    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $first = ProductWarehouse::firstOrFail();
-
-    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
-
-    expect(ProductWarehouse::count())->toBe(2);
-    expect($first->fresh()->is_default)->toBeFalse();
-    expect(ProductWarehouse::where('is_default', true)->count())->toBe(1);
 });
 
 it('affiche le détail d\'un entrepôt (nom traduit)', function () {
@@ -200,11 +191,8 @@ it('met à jour un entrepôt et ses traductions', function () {
 it('active et désactive un entrepôt', function () {
     $admin = warehouseAdmin();
 
-    // Second entrepôt (non défaut) : on garde un entrepôt par défaut distinct pour
-    // pouvoir désactiver celui-ci sans déclencher la garde « dernier par défaut ».
-    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
+    $warehouse = ProductWarehouse::firstOrFail();
 
     $this->actingAs($admin)
         ->patch(route('backend.product-warehouses.activate', ['productWarehouse' => $warehouse->uuid]))
@@ -222,9 +210,8 @@ it('active et désactive un entrepôt', function () {
 it('refuse la suppression d\'un entrepôt actif puis autorise après désactivation', function () {
     $admin = warehouseAdmin();
 
-    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['status' => 'active']));
-    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
+    $warehouse = ProductWarehouse::firstOrFail();
 
     expect($warehouse->status->value)->toBe('active');
 
@@ -248,9 +235,8 @@ it('refuse la suppression d\'un entrepôt actif puis autorise après désactivat
 it('passe un entrepôt en corbeille puis le restaure', function () {
     $admin = warehouseAdmin();
 
-    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['is_default' => true]));
     $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $warehouse = ProductWarehouse::where('is_default', false)->firstOrFail();
+    $warehouse = ProductWarehouse::firstOrFail();
 
     $this->actingAs($admin)
         ->delete(route('backend.product-warehouses.destroy', ['productWarehouse' => $warehouse->uuid]))
@@ -335,45 +321,80 @@ it('active les traductions et la bonne clé étrangère pour ProductWarehouse', 
 });
 
 // ─────────────────────────────────────────────
-// Garde métier : dernier entrepôt par défaut
+// « Entrepôt par défaut » PAR BOUTIQUE (pivot shop_warehouse.is_primary)
 // ─────────────────────────────────────────────
 
-it('refuse de retirer le statut « par défaut » au dernier entrepôt par défaut (update)', function () {
-    $admin = warehouseAdmin();
-
-    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload());
-    $warehouse = ProductWarehouse::firstOrFail();
-
-    expect($warehouse->is_default)->toBeTrue();
-
-    $this->actingAs($admin)
-        ->from(route('backend.product-warehouses.edit', ['productWarehouse' => $warehouse->uuid]))
-        ->put(route('backend.product-warehouses.update', ['productWarehouse' => $warehouse->uuid]), [
-            'code' => $warehouse->code,
-            'is_default' => false,
-        ])
-        ->assertRedirect()
-        ->assertSessionHas('error');
-
-    expect($warehouse->fresh()->is_default)->toBeTrue();
-    expect(ProductWarehouse::where('is_default', true)->count())->toBe(1);
+it('n\'a plus de colonne is_default globale sur les entrepôts', function () {
+    expect(\Illuminate\Support\Facades\Schema::hasColumn('product_warehouses', 'is_default'))->toBeFalse();
 });
 
-it('refuse de désactiver le dernier entrepôt par défaut', function () {
-    $admin = warehouseAdmin();
+it('expose la relation shops avec le pivot is_primary', function () {
+    $warehouse = new ProductWarehouse;
 
-    $this->actingAs($admin)->post(route('backend.product-warehouses.store'), warehousePayload(['status' => 'active']));
-    $warehouse = ProductWarehouse::firstOrFail();
+    $relation = $warehouse->shops();
 
-    expect($warehouse->is_default)->toBeTrue();
-    expect($warehouse->status->value)->toBe('active');
+    expect($relation->getTable())->toBe('shop_warehouse');
+    expect($relation->getPivotColumns())->toContain('is_primary');
+});
 
-    $this->actingAs($admin)
-        ->from(route('backend.product-warehouses.index'))
-        ->patch(route('backend.product-warehouses.deactivate', ['productWarehouse' => $warehouse->uuid]))
-        ->assertRedirect()
-        ->assertSessionHas('error');
+it('définit un entrepôt principal PAR BOUTIQUE via le pivot shop_warehouse', function () {
+    // Deux boutiques, deux entrepôts : un même entrepôt peut être principal
+    // pour une boutique et secondaire pour une autre.
+    $shopA = Shop::create(['code' => 'SHOP-A-'.strtoupper(uniqid()), 'status' => 'active', 'sort_order' => 1]);
+    $shopB = Shop::create(['code' => 'SHOP-B-'.strtoupper(uniqid()), 'status' => 'active', 'sort_order' => 2]);
 
-    expect($warehouse->fresh()->status->value)->toBe('active');
-    expect($warehouse->fresh()->is_default)->toBeTrue();
+    $wh1 = ProductWarehouse::create(['code' => 'WH-A-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+    $wh2 = ProductWarehouse::create(['code' => 'WH-B-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+
+    // Boutique A : wh1 principal, wh2 secondaire
+    $shopA->warehouses()->sync([
+        $wh1->id => ['is_primary' => true],
+        $wh2->id => ['is_primary' => false],
+    ]);
+
+    // Boutique B : wh2 principal
+    $shopB->warehouses()->sync([
+        $wh2->id => ['is_primary' => true],
+    ]);
+
+    // Le statut « principal » est bien évalué PAR BOUTIQUE
+    expect($wh1->fresh()->isPrimaryFor($shopA))->toBeTrue();
+    expect($wh2->fresh()->isPrimaryFor($shopA))->toBeFalse();
+    expect($wh2->fresh()->isPrimaryFor($shopB))->toBeTrue();
+
+    // Une seule boutique principale par boutique
+    expect($shopA->primaryWarehouse()->first()->id)->toBe($wh1->id);
+    expect($shopB->primaryWarehouse()->first()->id)->toBe($wh2->id);
+    expect($shopA->warehouses()->wherePivot('is_primary', true)->count())->toBe(1);
+    expect($shopB->warehouses()->wherePivot('is_primary', true)->count())->toBe(1);
+
+    // wh2 n'est principal QUE pour la boutique B
+    expect($wh2->fresh()->shops()->wherePivot('is_primary', true)->pluck('shops.id')->all())->toBe([$shopB->id]);
+});
+
+it('assigne un seul entrepôt principal par boutique via ShopService', function () {
+    $fr = Lang::where('code', 'fr')->firstOrFail();
+
+    $wh1 = ProductWarehouse::create(['code' => 'WH-P1-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+    $wh2 = ProductWarehouse::create(['code' => 'WH-P2-'.strtoupper(uniqid()), 'status' => ProductWarehouseStatus::Active]);
+
+    /** @var ShopService $service */
+    $service = app(ShopService::class);
+
+    // wh2 explicitement désigné comme entrepôt principal
+    $shop = $service->backend_shops_store([
+        'code' => 'SHOP-P-'.strtoupper(uniqid()),
+        'status' => 'active',
+        'sort_order' => 1,
+        'warehouses' => [$wh1->uuid, $wh2->uuid],
+        'primary_warehouse_uuid' => $wh2->uuid,
+        'translations' => [
+            ['lang_id' => $fr->id, 'name' => 'Boutique test '.strtoupper(uniqid())],
+        ],
+    ]);
+
+    expect($shop->warehouses()->count())->toBe(2);
+    expect($shop->warehouses()->wherePivot('is_primary', true)->count())->toBe(1);
+    expect($wh2->fresh()->isPrimaryFor($shop))->toBeTrue();
+    expect($wh1->fresh()->isPrimaryFor($shop))->toBeFalse();
 });

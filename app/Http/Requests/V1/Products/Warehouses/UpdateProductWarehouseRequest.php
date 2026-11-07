@@ -13,6 +13,9 @@ use function __;
  *
  * Valide les données entrantes pour la mise à jour d'un entrepôt (product_warehouses)
  * avec ses traductions associées (product_warehouse_translations).
+ *
+ * NB : « entrepôt par défaut » (is_default) n'est PAS géré ici : c'est une notion
+ * PAR BOUTIQUE, portée par le pivot `shop_warehouse.is_primary` (ShopService).
  */
 class UpdateProductWarehouseRequest extends FormRequest
 {
@@ -37,8 +40,6 @@ class UpdateProductWarehouseRequest extends FormRequest
             'code' => ['sometimes', 'required', 'string', 'max:20', Rule::unique('product_warehouses', 'code')->ignore($this->route('productWarehouse'))],
 
             'status' => ['sometimes', 'required', Rule::in(ProductWarehouseStatus::values())],
-
-            'is_default' => ['sometimes', 'boolean'],
 
             // Le tableau de traductions lui-même
             'translations' => ['sometimes', 'required', 'array'],
@@ -87,8 +88,6 @@ class UpdateProductWarehouseRequest extends FormRequest
 
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
-
-            'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

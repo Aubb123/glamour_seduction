@@ -7,10 +7,6 @@ return [
         ],
         'deactivate' => [
             'already_inactive' => 'Cet entrepôt est déjà inactif.',
-            'default_forbidden' => 'Impossible de désactiver l\'entrepôt par défaut. Désignez d\'abord un autre entrepôt par défaut.',
-        ],
-        'update' => [
-            'default_forbidden' => 'Impossible de retirer le statut « par défaut » à ce dernier entrepôt par défaut. Désignez d\'abord un autre entrepôt par défaut.',
         ],
         'destroy' => [
             'active_forbidden' => 'Impossible de supprimer un entrepôt actif. Veuillez le désactiver d\'abord.',

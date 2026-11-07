@@ -60,14 +60,11 @@
                 </select>
                 @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
             </div>
+        </div>
 
-            <div class="col-md-6 mb-3">
-                <div class="form-check form-switch mt-4">
-                    <input class="form-check-input" type="checkbox" name="is_default" id="is_default" value="1" {{ old('is_default', $isEdit ? $warehouse->is_default : false) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="is_default">{{ __('Entrepôt par défaut') }}</label>
-                </div>
-                <small class="text-muted">{{ __('Un seul entrepôt par défaut (réservations).') }}</small>
-            </div>
+        <div class="alert alert-info d-flex align-items-center mb-0" role="alert">
+            <i class="bx bx-info-circle me-2"></i>
+            <span>{{ __("L'entrepôt par défaut (principal) d'approvisionnement se définit par boutique, depuis la fiche de la boutique.") }}</span>
         </div>
 
     </div>

@@ -67,11 +67,9 @@
                             {{ $warehouse->status?->label() ?? '—' }}
                         </span>
                         <hr>
-                        @if ($warehouse->is_default)
-                            <span class="badge badge-soft-success">{{ __('Entrepôt par défaut') }}</span>
-                        @else
-                            <span class="badge badge-soft-secondary">{{ __('Entrepôt secondaire') }}</span>
-                        @endif
+                        <span class="badge badge-soft-info">
+                            <i class="bx bx-store me-1"></i>{{ $warehouse->shops_count ?? 0 }} {{ __('boutique(s) approvisionnée(s)') }}
+                        </span>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,10 @@ return new class extends Migration
      *
      * Les champs traduisibles (name, address, city, phone) sont désormais portés par
      * la table product_warehouse_translations. On les retire de la table principale,
-     * qui ne conserve que les données non traduites (code, status, is_default).
+     * qui ne conserve que les données non traduites (code, status).
+     *
+     * NB : la colonne globale is_default est retirée par la migration 000022
+     * (« entrepôt par défaut » est une notion PAR BOUTIQUE → pivot shop_warehouse.is_primary).
      */
     public function up(): void
     {

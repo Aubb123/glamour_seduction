@@ -32,9 +32,9 @@
             'color' => 'danger',
         ],
         [
-            'label' => __('Par défaut'),
-            'value' => $warehouses->where('is_default', true)->count(),
-            'icon'  => 'bx bx-star',
+            'label' => __('Villes'),
+            'value' => $warehouses->map(fn ($w) => $w->active_translation?->city)->filter()->unique()->count(),
+            'icon'  => 'bx bx-map',
             'color' => 'info',
         ],
         [
@@ -88,7 +88,7 @@
                                 <th scope="col">{{ __('Ville') }}</th>
                                 <th scope="col">{{ __('Téléphone') }}</th>
                                 <th scope="col">{{ __('Statut') }}</th>
-                                <th scope="col">{{ __('Par défaut') }}</th>
+                                <th scope="col">{{ __('Boutiques') }}</th>
                                 <th scope="col">{{ __('Créé le') }}</th>
                                 @if(request()->routeIs('backend.product-warehouses.trashed'))
                                     <th scope="col">{{ __('Supprimé le') }}</th>
@@ -111,11 +111,9 @@
                                         </span>
                                     </td>
                                     <td>
-                                        @if ($warehouse->is_default)
-                                            <span class="badge badge-soft-success">{{ __('Par défaut') }}</span>
-                                        @else
-                                            <span class="badge badge-soft-secondary">—</span>
-                                        @endif
+                                        <span class="badge badge-soft-info">
+                                            <i class="bx bx-store me-1"></i>{{ $warehouse->shops_count ?? 0 }}
+                                        </span>
                                     </td>
                                     <td class="text-muted">
                                         @formatDate($warehouse->created_at, 'D MMMM YYYY - HH:mm:ss')

@@ -66,6 +66,7 @@ class DatabaseSeeder extends Seeder
             ProductTranslationSeeder::class,
             ProductVariantSeeder::class,
             ProductWarehouseSeeder::class,
+            ProductWarehouseTranslationSeeder::class,
             ProductWarehouseStockSeeder::class,
             ProductStockMovementSeeder::class,
 

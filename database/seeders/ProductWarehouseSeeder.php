@@ -15,6 +15,9 @@ class ProductWarehouseSeeder extends Seeder
      *
      * Chaque entrepôt est créé avec ses traductions (fr + en) : le nom, l'adresse,
      * la ville et le téléphone vivent désormais dans product_warehouse_translations.
+     *
+     * NB : « entrepôt par défaut » (is_default) n'est plus géré ici : c'est une notion
+     * PAR BOUTIQUE, portée par le pivot shop_warehouse.is_primary (ShopSeeder).
      */
     public function run(): void
     {
@@ -26,7 +29,6 @@ class ProductWarehouseSeeder extends Seeder
             [
                 'code' => 'COT-01',
                 'status' => ProductWarehouseStatus::Active,
-                'is_default' => true,
                 'translations' => [
                     'fr' => [
                         'name' => 'Cotonou — Entrepôt principal',
@@ -45,7 +47,6 @@ class ProductWarehouseSeeder extends Seeder
             [
                 'code' => 'PKO-01',
                 'status' => ProductWarehouseStatus::Active,
-                'is_default' => false,
                 'translations' => [
                     'fr' => [
                         'name' => 'Porto-Novo — Entrepôt secondaire',
@@ -64,7 +65,6 @@ class ProductWarehouseSeeder extends Seeder
             [
                 'code' => 'PKU-01',
                 'status' => ProductWarehouseStatus::Inactive,
-                'is_default' => false,
                 'translations' => [
                     'fr' => [
                         'name' => 'Parakou — Entrepôt régional',
@@ -88,7 +88,6 @@ class ProductWarehouseSeeder extends Seeder
                 ['code' => $data['code']],
                 [
                     'status' => $data['status'],
-                    'is_default' => $data['is_default'],
                 ],
             );
 
