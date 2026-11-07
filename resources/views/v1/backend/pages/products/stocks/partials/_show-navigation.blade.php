@@ -1,5 +1,5 @@
-{!– Navigation de la fiche stock : Détails / Audits / Journal d'activité.
-     Reprend le design de attribute-values/partials/_show-navigation. –!}
+{{-- Navigation de la fiche stock : Détails / Audits / Journal d'activité.
+     Reprend le design de attribute-values/partials/_show-navigation. --}}
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
         <a class="nav-link @if(request()->routeIs('backend.product-warehouse-stocks.show')) active @endif" href="{{ route('backend.product-warehouse-stocks.show', ['productWarehouseStock' => $stock->uuid]) }}">

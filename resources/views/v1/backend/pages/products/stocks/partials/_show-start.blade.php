@@ -1,5 +1,5 @@
-{!– En-tête de la fiche stock : titre + actions (retour, audits, logs, menu déroulant).
-     Reprend le design de attribute-values/partials/_show-start. –!}
+{{-- En-tête de la fiche stock : titre + actions (retour, audits, logs, menu déroulant).
+     Reprend le design de attribute-values/partials/_show-start. --}}
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
