@@ -101,6 +101,33 @@ class ActivityLogger
         );
     }
 
+    /**
+     * Journalise une exception serveur non gérée comme log d'activité « error »,
+     * afin qu'elle soit consultable depuis le dashboard (backend/activity-logs/index).
+     *
+     * Appelé depuis le reportable() global (bootstrap/app.php) : couvre notamment les
+     * erreurs de rendu Blade, qui s'exécutent APRÈS le `return view(...)` des
+     * contrôleurs et échappent donc à leurs try/catch → jusqu'ici jamais journalisées.
+     */
+    public function reportServerError(\Throwable $e): void
+    {
+        $routeName = request()->route()?->getName();
+
+        $this->log(
+            type: 'error',
+            action: $routeName !== null ? $routeName : 'app.exception',
+            context: [
+                'exception' => get_class($e),
+                'file' => $e->getFile().':'.$e->getLine(),
+                'url' => request()->fullUrl(),
+                'method' => request()->method(),
+            ],
+            message: $e->getMessage(),
+            activity: 'v1/backend/views/pages/activity-logs/messages/activity-logs-messages-controller.activity_logs.server_error',
+            isSuccess: false,
+        );
+    }
+
     public static function modelMap(): array
     {
         return [
