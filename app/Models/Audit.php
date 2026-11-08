@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Audits\AuditAction;
+use App\Models\User;
 use App\Traits\HasAuditModelBehaviors;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

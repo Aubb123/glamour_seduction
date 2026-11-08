@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Subscribes\SubscribeStatus;
+use App\Models\SubscribeHistory;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

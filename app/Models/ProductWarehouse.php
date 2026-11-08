@@ -4,6 +4,11 @@ namespace App\Models;
 
 use App\Enums\Products\Warehouses\ProductWarehouseStatus;
 use App\Models\Builders\ProductWarehouseBuilder;
+use App\Models\ProductStockMovement;
+use App\Models\ProductWarehouseStock;
+use App\Models\ProductWarehouseTranslation;
+use App\Models\Shop;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

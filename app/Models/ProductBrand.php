@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Products\Brands\ProductBrandStatus;
+use App\Models\Product;
+use App\Models\ProductBrandTranslation;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

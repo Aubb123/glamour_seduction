@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Enums\Shops\Shops\ShopStatus;
+use App\Models\ProductWarehouse;
+use App\Models\ShopTranslation;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

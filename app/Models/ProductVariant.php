@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use App\Enums\Products\Variants\ProductVariantStatus;
+use App\Models\Product;
+use App\Models\ProductAttributeValue;
+use App\Models\ProductStockMovement;
+use App\Models\ProductWarehouseStock;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

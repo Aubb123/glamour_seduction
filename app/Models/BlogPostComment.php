@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\BlogPost;
+use App\Models\BlogPostCommentReply;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Enums\Products\StockMovements\ProductStockMovementType;
+use App\Models\ProductVariant;
+use App\Models\ProductWarehouse;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

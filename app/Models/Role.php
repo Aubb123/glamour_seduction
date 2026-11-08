@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Roles\RoleStatus;
+use App\Models\Permission;
+use App\Models\RoleTranslation;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

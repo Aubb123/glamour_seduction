@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Permissions\PermissionStatus;
+use App\Models\Role;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Permission\Models\Permission as SpatiePermission;

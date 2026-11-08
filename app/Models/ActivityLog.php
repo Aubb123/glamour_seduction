@@ -2,6 +2,30 @@
 
 namespace App\Models;
 
+use App\Models\ActivityLog;
+use App\Models\Audit;
+use App\Models\BlogCategory;
+use App\Models\BlogPost;
+use App\Models\BlogPostComment;
+use App\Models\BlogPostCommentReply;
+use App\Models\BlogTag;
+use App\Models\CloudFile;
+use App\Models\CloudFolder;
+use App\Models\CloudPlatform;
+use App\Models\Contact;
+use App\Models\Faq;
+use App\Models\Gallery;
+use App\Models\GeoContinent;
+use App\Models\GeoCountry;
+use App\Models\Permission;
+use App\Models\PlatformVersion;
+use App\Models\Position;
+use App\Models\ProductWarehouse;
+use App\Models\Role;
+use App\Models\Shop;
+use App\Models\Subscribe;
+use App\Models\SubscribeHistory;
+use App\Models\User;
 use App\Traits\HasAuditModelBehaviors;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

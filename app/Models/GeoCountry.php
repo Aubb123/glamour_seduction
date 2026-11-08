@@ -4,6 +4,11 @@ namespace App\Models;
 
 use App\Enums\Countries\CountryType;
 use App\Enums\Geos\Countries\GeoCountryStatus;
+use App\Models\Currency;
+use App\Models\GeoContinent;
+use App\Models\GeoCountry;
+use App\Models\GeoCountryTranslation;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

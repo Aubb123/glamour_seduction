@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Currencies\CurrencyStatus;
+use App\Models\CurrencyTranslation;
+use App\Models\GeoCountry;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

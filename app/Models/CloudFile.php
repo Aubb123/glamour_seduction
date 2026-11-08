@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Clouds\Files\CloudFileStatus;
 use App\Enums\Clouds\Files\CloudFileType;
+use App\Models\CloudFolder;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

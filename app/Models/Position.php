@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Enums\Shops\Positions\PositionContext;
 use App\Enums\Shops\Positions\PositionStatus;
+use App\Models\PositionTranslation;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

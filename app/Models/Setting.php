@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SettingTranslation;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Model;
 

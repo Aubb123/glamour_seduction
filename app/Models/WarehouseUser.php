@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Position;
+use App\Models\ProductWarehouse;
+use App\Models\User;
 use App\Traits\HasActivityLogs;
 use App\Traits\HasAudit;
 use App\Traits\HasCloudFiles;

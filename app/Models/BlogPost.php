@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use App\Enums\Blogs\Posts\BlogPostStatus;
+use App\Models\BlogCategory;
+use App\Models\BlogPostComment;
+use App\Models\BlogTag;
+use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\ProductVariant;
+use App\Models\ProductWarehouse;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

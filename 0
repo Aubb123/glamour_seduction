@@ -1,0 +1,42 @@
+Analyse moi le systeme de gestion des product_attributes implémenté dans le projet glamour_seduction
+
+Jette un oeil à tout ce qui a été fait (Model, Controller, Resquest, Vues/Views, Routes, Routes Web, Seeders, 
+Middleware, les fichiers de traduction (lang/en et lang/fr /v1/backend/views/pages/PRODUCTS/attributes/*.php) etc... 
+liée au CRUD des product_attributes)
+
+Et au passage fait moi une liste des fichiers qui sont liés au CRUD des product_attributes dans le projet glamour_seduction.
+
+        Schema::create('product_attributes', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique();
+            //
+            $table->integer('sort_order')->unique(); // Utile dans les selects/listes // Pour l'ordre d'affichage : 0 en premier
+            $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si l'attribut est utilisable
+            $table->enum('type', ['text', 'color'])->default('text'); // Type de valeur de l'attribut : text (saisie libre) ou color (code HEX requis sur chaque valeur)
+            //
+            $table->timestamps();
+            $table->softDeletes();
+            // Index pour les filtres courants
+            $table->index(['status', 'sort_order', 'deleted_at']); // Index pour les filtres courants
+        });
+
+         Schema::create('product_attribute_translations', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('uuid')->unique();
+            //
+            $table->foreignId('attribute_id')->constrained('product_attributes')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers product_attributes
+            $table->foreignId('lang_id')->constrained('langs')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table langs fr, en, ar, es, pt, zh, de
+            //
+            $table->string('name'); // Nom de l'attribut dans la langue de tradution (ex : Couleur, Taille)
+            $table->string('slug'); // Slug SEO-friendly
+            $table->text('description'); // Description de l'attribut dans la langue de traduction
+            //
+            $table->timestamps();
+            $table->softDeletes();
+            // Contraintes d'unicité
+            $table->unique(['attribute_id', 'lang_id']); // Une seule traduction par attribut et par langue
+            $table->unique(['name', 'lang_id']); // Nom unique par langue ✅
+            $table->unique(['slug', 'lang_id']); // Slug unique par langue ✅
+            // Index pour les filtres courants
+            $table->index(['deleted_at']); // Index pour les filtres courants
+        });

@@ -4,6 +4,9 @@ namespace App\Models;
 
 use App\Enums\Products\Attributes\ProductAttributeType;
 use App\Enums\Products\Attributes\ProductAttributeValueStatus;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeValueTranslation;
+use App\Models\ProductVariant;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -67,6 +70,7 @@ class ProductAttributeValue extends Model
      */
     public function variants(): BelongsToMany
     {
+        // Relation many-to-many vers les variantes de produits utilisant cette valeur
         return $this->belongsToMany(ProductVariant::class, 'product_variant_attribute_value', 'attribute_value_id', 'product_variant_id');
     }
 
@@ -84,6 +88,7 @@ class ProductAttributeValue extends Model
      */
     public function getIsColorAttribute(): bool
     {
-        return $this->attribute?->type === ProductAttributeType::Color;
+        // Vérifie si l'attribut parent est de type "color" pour déterminer si la valeur doit porter un code couleur HEX.
+        return $this->attribute?->type === ProductAttributeType::Color; // NB : l'attribut parent peut être null si la valeur est orpheline (attribut supprimé)
     }
 }

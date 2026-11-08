@@ -4,6 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Users\UserStatus;
+use App\Models\Audit;
+use App\Models\BlogPost;
+use App\Models\BlogPostComment;
+use App\Models\BlogPostCommentReply;
+use App\Models\Contact;
+use App\Models\Currency;
+use App\Models\Faq;
+use App\Models\Gallery;
+use App\Models\GeoCountry;
+use App\Models\Subscribe;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;

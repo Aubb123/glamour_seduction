@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Products\Tags\ProductTagStatus;
+use App\Models\Product;
+use App\Models\ProductTagTranslation;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
