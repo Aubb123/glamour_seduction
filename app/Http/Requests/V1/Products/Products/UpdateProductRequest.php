@@ -71,7 +71,6 @@ class UpdateProductRequest extends FormRequest
                 'max:255',
                 Rule::unique('product_translations', 'name')
                     ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->whereNull('deleted_at')
                     ->ignore($translationId),
             ];
         }

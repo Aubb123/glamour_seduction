@@ -95,6 +95,24 @@ class UpdateCurrencyRequest extends FormRequest
             // Description de la devise dans la langue concernée — optionnelle
             'translations.*.description' => ['nullable', 'string'],
         ];
+
+        // Règle d'unicité dynamique par langue sur le nom
+        $translations = $this->input('translations', []);
+
+        foreach ($translations as $index => $translation) {
+            $langId = $translation['lang_id'] ?? null;
+
+            $rules["translations.{$index}.name"] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('currency_translations', 'name')
+                    ->where(fn ($query) => $query->where('lang_id', $langId))
+                    ->ignore($this->currencyId, 'currency_id'),
+            ];
+        }
+
+        return $rules;
     }
 
     /**
@@ -158,6 +176,7 @@ class UpdateCurrencyRequest extends FormRequest
             'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
             'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
+            'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
 
             // Description de la traduction
             'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),

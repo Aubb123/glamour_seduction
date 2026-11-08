@@ -70,8 +70,7 @@ class StoreProductWarehouseRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('product_warehouse_translations', 'name')
-                    ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->whereNull('deleted_at'),
+                    ->where(fn ($query) => $query->where('lang_id', $langId)),
             ];
         }
 

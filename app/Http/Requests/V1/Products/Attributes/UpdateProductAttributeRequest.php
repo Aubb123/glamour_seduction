@@ -107,11 +107,7 @@ class UpdateProductAttributeRequest extends FormRequest
                 'max:255',
                 Rule::unique('product_attribute_translations', 'name')
                     ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->ignore($productAttributeId, 'attribute_id')
-                    // Ignore aussi les lignes soft-deleted (cohérent avec le
-                    // SoftDeletes de la table) : un nom "libéré" par une
-                    // suppression logique ne doit pas bloquer la sauvegarde.
-                    ->whereNull('deleted_at'),
+                    ->ignore($productAttributeId, 'attribute_id'),
             ];
 
         }

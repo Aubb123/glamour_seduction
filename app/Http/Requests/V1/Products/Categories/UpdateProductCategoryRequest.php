@@ -116,11 +116,7 @@ class UpdateProductCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('product_category_translations', 'name')
                     ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->ignore($productCategoryId, 'category_id')
-                    // Ignore aussi les lignes soft-deleted (cohérent avec le
-                    // SoftDeletes de la table) : un nom "libéré" par une
-                    // suppression logique ne doit pas bloquer la sauvegarde.
-                    ->whereNull('deleted_at'),
+                    ->ignore($productCategoryId, 'category_id'),
             ];
 
         }

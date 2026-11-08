@@ -45,8 +45,7 @@ class UpdatePositionRequest extends FormRequest
                 'max:255',
                 Rule::unique('position_translations', 'name')
                     ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->where('position_id', '!=', $positionId)
-                    ->whereNull('deleted_at'),
+                    ->where('position_id', '!=', $positionId),
             ];
         }
 

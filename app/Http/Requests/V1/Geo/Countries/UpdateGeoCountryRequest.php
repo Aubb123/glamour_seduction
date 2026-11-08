@@ -15,7 +15,7 @@ class UpdateGeoCountryRequest extends FormRequest
     // Chemin de base pour les traductions (centralisé)
     protected string $backendLangPath = 'v1/backend/views/pages/geos/countries/messages/countries-messages-validation';
 
-    /**
+    /** 
      * ID résolu du pays à partir de l'UUID de la route.
      * Utilisé pour exclure le pays courant des règles d'unicité.
      */
@@ -99,8 +99,25 @@ class UpdateGeoCountryRequest extends FormRequest
 
             // Description du pays dans la langue concernée — optionnelle
             'translations.*.description' => ['required', 'string'],
-
         ];
+
+        // Règle d'unicité dynamique par langue sur le nom
+        $translations = $this->input('translations', []);
+
+        foreach ($translations as $index => $translation) {
+            $langId = $translation['lang_id'] ?? null;
+
+            $rules["translations.{$index}.name"] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('geo_country_translations', 'name')
+                    ->where(fn ($query) => $query->where('lang_id', $langId))
+                    ->ignore($this->countryId, 'country_id'),
+            ];
+        }
+
+        return $rules;
     }
 
     /**

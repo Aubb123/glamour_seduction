@@ -111,8 +111,7 @@ class StoreProductAttributeValueRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('product_attribute_value_translations', 'label')
-                    ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->whereNull('deleted_at'),
+                    ->where(fn ($query) => $query->where('lang_id', $langId)),
             ];
 
         }

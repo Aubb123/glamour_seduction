@@ -17,7 +17,7 @@ class UpdateRoleRequest extends FormRequest
     {
         return true;
     }
-
+ 
     public function rules(): array
     {
         return [
@@ -36,6 +36,23 @@ class UpdateRoleRequest extends FormRequest
             // Description
             'translations.*.description' => ['required', 'string'],
         ];
+
+        // Règle d'unicité dynamique par langue sur le libellé
+        $translations = $this->input('translations', []);
+
+        foreach ($translations as $index => $translation) {
+            $langId = $translation['lang_id'] ?? null;
+
+            $rules["translations.{$index}.label"] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('role_translations', 'label')
+                    ->where(fn ($query) => $query->where('lang_id', $langId)),
+            ];
+        }
+
+        return $rules;
     }
 
     public function messages(): array
@@ -58,6 +75,7 @@ class UpdateRoleRequest extends FormRequest
             'translations.*.label.required' => __("{$this->backendLangPath}.translations.label.required"),
             'translations.*.label.string' => __("{$this->backendLangPath}.translations.label.string"),
             'translations.*.label.max' => __("{$this->backendLangPath}.translations.label.max"),
+            'translations.*.label.unique' => __("{$this->backendLangPath}.translations.label.unique"),
 
             // Description
             'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),

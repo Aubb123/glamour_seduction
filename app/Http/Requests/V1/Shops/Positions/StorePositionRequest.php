@@ -42,8 +42,7 @@ class StorePositionRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('position_translations', 'name')
-                    ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->whereNull('deleted_at'),
+                    ->where(fn ($query) => $query->where('lang_id', $langId)),
             ];
         }
 

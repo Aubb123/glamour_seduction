@@ -71,8 +71,7 @@ class UpdateShopRequest extends FormRequest
                 'max:255',
                 Rule::unique('shop_translations', 'name')
                     ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->where('shop_id', '!=', $shopId)
-                    ->whereNull('deleted_at'),
+                    ->where('shop_id', '!=', $shopId),
             ];
         }
 

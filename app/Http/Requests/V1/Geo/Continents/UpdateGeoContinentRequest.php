@@ -52,6 +52,24 @@ class UpdateGeoContinentRequest extends FormRequest
             'translations.*.name' => ['required', 'string', 'max:255'],
             'translations.*.description' => ['required', 'string'],
         ];
+
+        // Règle d'unicité dynamique par langue sur le nom
+        $translations = $this->input('translations', []);
+
+        foreach ($translations as $index => $translation) {
+            $langId = $translation['lang_id'] ?? null;
+
+            $rules["translations.{$index}.name"] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('geo_continent_translations', 'name')
+                    ->where(fn ($query) => $query->where('lang_id', $langId))
+                    ->ignore($geoContinent->id, 'continent_id'),
+            ];
+        }
+
+        return $rules;
     }
 
     /**

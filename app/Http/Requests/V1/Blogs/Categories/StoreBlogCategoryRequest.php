@@ -90,11 +90,7 @@ class StoreBlogCategoryRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('blog_category_translations', 'name')
-                    ->where(fn ($query) => $query->where('lang_id', $langId))
-                    // Ignore les lignes soft-deleted : un nom "libéré" par une
-                    // suppression logique ne doit pas bloquer une recréation.
-                    // (cohérent avec le SoftDeletes utilisé sur cette table)
-                    ->whereNull('deleted_at'),
+                    ->where(fn ($query) => $query->where('lang_id', $langId)),
             ];
 
         }

@@ -59,6 +59,23 @@ class StorePlatformVersionRequest extends FormRequest
             'translations.*.name' => ['required', 'string', 'max:255'],
             'translations.*.description' => ['required', 'string'],
         ];
+
+        // Règle d'unicité dynamique par langue sur le nom
+        $translations = $this->input('translations', []);
+
+        foreach ($translations as $index => $translation) {
+            $langId = $translation['lang_id'] ?? null;
+
+            $rules["translations.{$index}.name"] = [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('platform_version_translations', 'name')
+                    ->where(fn ($query) => $query->where('lang_id', $langId)),
+            ];
+        }
+
+        return $rules;
     }
 
     /**
