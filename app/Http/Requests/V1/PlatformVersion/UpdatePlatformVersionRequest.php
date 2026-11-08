@@ -69,6 +69,34 @@ class UpdatePlatformVersionRequest extends FormRequest
             'translations.*.name' => ['required', 'string', 'max:255'],
             'translations.*.description' => ['required', 'string'],
         ];
+
+        // Règle d'unicité dynamique par langue sur le nom.
+        // Inclut les lignes soft-deleted (pas de ->whereNull('deleted_at')) :
+        // une valeur déjà présente avec le même lang_id doit bloquer,
+        // que deleted_at soit null ou renseigné.
+        // Exclut seulement la ligne de traduction courante via son ID si fourni.
+        $translations = $this->input('translations', []);
+
+        foreach ($translations as $index => $translation) {
+            $langId = $translation['lang_id'] ?? null;
+            $translationId = $translation['id'] ?? null;
+
+            $uniqueRule = Rule::unique('platform_version_translations', 'name')
+                ->where(fn ($query) => $query->where('lang_id', $langId));
+
+            if ($translationId) {
+                $uniqueRule->ignore($translationId, 'id');
+            }
+
+            $rules["translations.{$index}.name"] = [
+                'required',
+                'string',
+                'max:255',
+                $uniqueRule,
+            ];
+        }
+
+        return $rules;
     }
 
     /**
@@ -105,6 +133,7 @@ class UpdatePlatformVersionRequest extends FormRequest
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),
             'translations.min' => __("{$this->backendLangPath}.translations.min"),
+            'translations.lang_id.duplicate' => __("{$this->backendLangPath}.translations.lang_id.duplicate"),
 
             'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
             'translations.*.lang_id.integer' => __("{$this->backendLangPath}.translations.lang_id.integer"),
@@ -113,6 +142,7 @@ class UpdatePlatformVersionRequest extends FormRequest
             'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
             'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
+            'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
 
             'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
             'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),

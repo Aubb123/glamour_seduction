@@ -113,6 +113,7 @@ class StorePlatformVersionRequest extends FormRequest
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),
             'translations.min' => __("{$this->backendLangPath}.translations.min"),
+            'translations.lang_id.duplicate' => __("{$this->backendLangPath}.translations.lang_id.duplicate"),
 
             'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
             'translations.*.lang_id.integer' => __("{$this->backendLangPath}.translations.lang_id.integer"),
