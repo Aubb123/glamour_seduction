@@ -92,19 +92,22 @@ class UpdateProductAttributeValueRequest extends FormRequest
         // Code couleur HEX : requis UNIQUEMENT si l'attribut parent (celui
         // soumis, potentiellement changé) est de type "color".
         // ────────────────────────────────────────────────────────────
-        $attributeId = $this->input('attribute_id');
+        $attributeId = $this->input('attribute_id'); // $attributeId est l'ID de l'attribut parent soumis dans la requête (potentiellement modifié par rapport à la valeur existante).
 
+        // $isColor permet de savoir si l'attribut parent soumis est de type "color"
         $isColor = $attributeId && ProductAttribute::query()
-            ->whereKey($attributeId)
+            ->whereKey($attributeId) // Filtre sur l'ID de l'attribut parent soumis
             ->where('type', ProductAttributeType::Color)
             ->exists();
 
+        // Si  $isColor est faux, on neutralise toute valeur parasite pour éviter de persister un HEX fantôme.
         if (! $isColor) {
             // L'attribut n'est pas une couleur : on écrase toute valeur parasite
             // pour qu'aucun HEX fantôme ne soit persisté.
             $this->merge(['hex_color' => null]);
         }
 
+        // Regle de validation pour le champ hex_color : requis si l'attribut parent est de type "color", sinon nullable.
         $rules['hex_color'] = $isColor
             ? ['required', 'string', 'max:9', 'hex_color']
             : ['nullable'];

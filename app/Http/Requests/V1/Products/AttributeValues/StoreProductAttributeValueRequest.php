@@ -73,17 +73,20 @@ class StoreProductAttributeValueRequest extends FormRequest
         // ────────────────────────────────────────────────────────────
         $attributeId = $this->input('attribute_id');
 
+        // $isColor est un booléen indiquant si l'attribut parent est de type "color"
         $isColor = $attributeId && ProductAttribute::query()
-            ->whereKey($attributeId)
+            ->whereKey($attributeId) // Filtre sur l'ID de l'attribut parent soumis
             ->where('type', ProductAttributeType::Color)
             ->exists();
 
+        // Si l'attribut parent n'est pas de type "color", on neutralise toute valeur parasite pour éviter de persister un HEX fantôme.
         if (! $isColor) {
             // L'attribut n'est pas une couleur : on écrase toute valeur parasite
             // pour qu'aucun HEX fantôme ne soit persisté.
             $this->merge(['hex_color' => null]);
         }
 
+        // Règle de validation pour le champ hex_color : requis si l'attribut parent est de type "color", sinon nullable.
         $rules['hex_color'] = $isColor
             ? ['required', 'string', 'max:9', 'hex_color']
             : ['nullable'];
