@@ -43,7 +43,7 @@ trait ValidatesTranslatedFields
                     continue;
                 }
 
-                $fingerprint = mb_strtolower((string) $langId."\0".(string) $value);
+                $fingerprint = serialize([(string) $langId, (string) $value]);
 
                 if (isset($seen[$fingerprint])) {
                     $validator->errors()->add(
