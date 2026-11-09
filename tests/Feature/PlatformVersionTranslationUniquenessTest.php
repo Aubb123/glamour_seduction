@@ -2,255 +2,134 @@
 
 declare(strict_types=1);
 
+use App\Http\Requests\Concerns\ValidatesTranslatedFields;
 use App\Models\Lang;
 use App\Models\PlatformVersion;
 use App\Models\PlatformVersionTranslation;
-use App\Models\User;
-use Database\Seeders\GeoContinentSeeder;
-use Database\Seeders\GeoCountrySeeder;
-use Database\Seeders\LangSeeder;
-use Database\Seeders\PermissionSeeder;
-use Database\Seeders\PlatformVersionSeeder;
-use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    $this->seed(GeoContinentSeeder::class);
-    $this->seed(GeoCountrySeeder::class);
-    $this->seed(LangSeeder::class);
-    $this->seed(PlatformVersionSeeder::class);
-    $this->seed(RoleSeeder::class);
-    $this->seed(PermissionSeeder::class);
-    bootV1WebRoutes();
+beforeEach(function (): void {
+    $this->seed(\Database\Seeders\LangSeeder::class);
 });
 
-function platformVersionAdmin(): User
+function translatedFieldValidator(array $payload, ?int $parentId = null): array
 {
-    $country = \App\Models\GeoCountry::where('code', 'BEN')->firstOrFail();
+    $request = new class extends FormRequest
+    {
+        use ValidatesTranslatedFields;
 
-    $admin = \App\Models\User::create([
-        'first_name' => 'Alice',
-        'last_name' => 'Martin',
-        'email' => 'admin-platform-uniqueness@site.com',
-        'gender' => 'female',
-        'phone' => '+22901111111',
-        'password' => 'password',
-        'status' => 'active',
-        'country_id' => $country->id,
-    ]);
+        public function check(array $payload, ?int $parentId): array
+        {
+            $this->replace($payload);
+            $validator = Validator::make($payload, ['translations' => ['required', 'array']]);
+            $this->validateTranslatedFields(
+                $validator,
+                'platform_version_translations',
+                'platform_version_id',
+                $parentId,
+                ['name', 'description'],
+            );
 
-    $admin->forceFill([
-        'email_verified_at' => now(),
-        'phone_verified_at' => now(),
-    ])->save();
+            return $validator->errors()->toArray();
+        }
+    };
 
-    $admin->assignRole('administrator');
-
-    return $admin;
+    return $request->check($payload, $parentId);
 }
 
-function validVersionData(array $overrides = []): array
+function translatedFieldVersion(string $code): PlatformVersion
 {
-    $langFr = Lang::where('code', 'fr')->firstOrFail();
-    $langEn = Lang::where('code', 'en')->firstOrFail();
-
-    return array_merge([
-        'code' => 'ver-' . strtolower(uniqid()),
-        'status' => 'active',
+    return PlatformVersion::create([
+        'code' => $code,
+        'status' => 'inactive',
         'is_published' => false,
         'is_default' => false,
         'released_at' => null,
+    ]);
+}
+
+function translatedFieldRow(PlatformVersion $version, int $langId, string $name, string $description): PlatformVersionTranslation
+{
+    return PlatformVersionTranslation::create([
+        'platform_version_id' => $version->id,
+        'lang_id' => $langId,
+        'name' => $name,
+        'description' => $description,
+    ]);
+}
+
+it('rejects values already present on active or soft-deleted translations', function (): void {
+    $langId = Lang::where('code', 'fr')->value('id');
+    $activeVersion = translatedFieldVersion('active-check');
+    translatedFieldRow($activeVersion, $langId, 'Active name', 'Active description');
+
+    $deletedVersion = translatedFieldVersion('deleted-check');
+    $deleted = translatedFieldRow($deletedVersion, $langId, 'Deleted name', 'Deleted description');
+    $deleted->delete();
+
+    $errors = translatedFieldValidator([
         'translations' => [
-            [
-                'lang_id' => $langFr->id,
-                'name' => 'Version Française ' . uniqid(),
-                'description' => 'Description fr',
-            ],
-            [
-                'lang_id' => $langEn->id,
-                'name' => 'Version English ' . uniqid(),
-                'description' => 'Description en',
-            ],
+            ['lang_id' => $langId, 'name' => 'Active name', 'description' => 'New description'],
+            ['lang_id' => $langId, 'name' => 'Deleted name', 'description' => 'Another description'],
+            ['lang_id' => $langId, 'name' => 'Another name', 'description' => 'Deleted description'],
         ],
-    ], $overrides);
-}
-
-function buildStoreRules(array $translations): array
-{
-    $rules = [
-        'code' => ['required', 'string', 'max:10', 'regex:/^[a-z0-9\\-]+$/', 'unique:platform_versions,code'],
-        'status' => ['required', Rule::in(\App\Enums\PlatformVersions\PlatformVersionStatus::values())],
-        'is_published' => ['boolean'],
-        'released_at' => ['nullable', 'date', 'after_or_equal:today'],
-        'translations' => ['required', 'array', 'min:1'],
-        'translations.*.lang_id' => ['required', 'integer', 'exists:langs,id'],
-        'translations.*.name' => ['required', 'string', 'max:255'],
-        'translations.*.description' => ['required', 'string'],
-    ];
-
-    foreach ($translations as $index => $translation) {
-        $langId = $translation['lang_id'] ?? null;
-
-        $rules["translations.{$index}.name"] = [
-            'required',
-            'string',
-            'max:255',
-            Rule::unique('platform_version_translations', 'name')
-                ->where(fn ($query) => $query->where('lang_id', $langId)),
-        ];
-    }
-
-    return $rules;
-}
-
-function buildUpdateRules(array $translations): array
-{
-    $rules = [
-        'code' => ['sometimes', 'required', 'string', 'max:10', 'regex:/^[a-z0-9\\-]+$/', 'unique:platform_versions,code'],
-        'status' => ['sometimes', 'required', Rule::in(\App\Enums\PlatformVersions\PlatformVersionStatus::values())],
-        'is_published' => ['boolean'],
-        'released_at' => ['nullable', 'date'],
-        'translations' => ['sometimes', 'required', 'array', 'min:1'],
-        'translations.*.lang_id' => ['required', 'integer', 'exists:langs,id'],
-        'translations.*.name' => ['required', 'string', 'max:255'],
-        'translations.*.description' => ['required', 'string'],
-    ];
-
-    foreach ($translations as $index => $translation) {
-        $langId = $translation['lang_id'] ?? null;
-        $translationId = $translation['id'] ?? null;
-
-        $uniqueRule = Rule::unique('platform_version_translations', 'name')
-            ->where(fn ($query) => $query->where('lang_id', $langId));
-
-        if ($translationId) {
-            $uniqueRule->ignore($translationId, 'id');
-        }
-
-        $rules["translations.{$index}.name"] = [
-            'required',
-            'string',
-            'max:255',
-            $uniqueRule,
-        ];
-    }
-
-    return $rules;
-}
-
-it('refuse un doublon de nom de traduction en base active (même lang_id)', function () {
-    $langFr = Lang::where('code', 'fr')->firstOrFail();
-
-    // Créer une première version avec une traduction "Version Alpha" en fr
-    $v1 = PlatformVersion::create([
-        'code' => 'ver-001',
-        'status' => 'active',
-        'is_published' => false,
-    ]);
-    PlatformVersionTranslation::create([
-        'platform_version_id' => $v1->id,
-        'lang_id' => $langFr->id,
-        'name' => 'Version Alpha',
-        'description' => 'Desc fr',
     ]);
 
-    // Construire les règles comme dans StorePlatformVersionRequest
-    $translations = [
-        ['lang_id' => $langFr->id, 'name' => 'Version Alpha', 'description' => 'Desc fr v2'],
-    ];
-
-    $rules = buildStoreRules($translations);
-
-    $data = [
-        'code' => 'ver-002',
-        'status' => 'active',
-        'is_published' => false,
-        'released_at' => null,
-        'translations' => $translations,
-    ];
-
-    $validator = Validator::make($data, $rules);
-
-    expect($validator->fails())->toBeTrue();
-    expect($validator->errors()->has('translations.0.name'))->toBeTrue();
+    expect($errors)->toHaveKeys([
+        'translations.0.name',
+        'translations.1.name',
+        'translations.2.description',
+    ]);
 });
 
-it('refuse un doublon de nom de traduction contre une ligne soft-deleted', function () {
-    $langFr = Lang::where('code', 'fr')->firstOrFail();
+it('allows the same translated values in different languages', function (): void {
+    $fr = Lang::where('code', 'fr')->value('id');
+    $en = Lang::where('code', 'en')->value('id');
 
-    // Créer une version avec une traduction "Version Beta" en fr, puis la soft-deleter
-    $v1 = PlatformVersion::create([
-        'code' => 'ver-003',
-        'status' => 'active',
-        'is_published' => false,
+    $errors = translatedFieldValidator([
+        'translations' => [
+            ['lang_id' => $fr, 'name' => 'Same name', 'description' => 'Same description'],
+            ['lang_id' => $en, 'name' => 'Same name', 'description' => 'Same description'],
+        ],
     ]);
-    $translation = PlatformVersionTranslation::create([
-        'platform_version_id' => $v1->id,
-        'lang_id' => $langFr->id,
-        'name' => 'Version Beta',
-        'description' => 'Desc fr',
-    ]);
-    $translation->delete(); // soft delete
 
-    // Construire les règles comme dans StorePlatformVersionRequest
-    $translations = [
-        ['lang_id' => $langFr->id, 'name' => 'Version Beta', 'description' => 'Desc fr v2'],
-    ];
-
-    $rules = buildStoreRules($translations);
-
-    $data = [
-        'code' => 'ver-004',
-        'status' => 'active',
-        'is_published' => false,
-        'released_at' => null,
-        'translations' => $translations,
-    ];
-
-    $validator = Validator::make($data, $rules);
-
-    expect($validator->fails())->toBeTrue();
-    expect($validator->errors()->has('translations.0.name'))->toBeTrue();
+    expect($errors)->toBeEmpty();
 });
 
-it('accepte le même nom de traduction dans deux langues différentes', function () {
-    $langFr = Lang::where('code', 'fr')->firstOrFail();
-    $langEn = Lang::where('code', 'en')->firstOrFail();
+it('rejects duplicates submitted in the same payload for the same language', function (): void {
+    $langId = Lang::where('code', 'fr')->value('id');
 
-    // Créer une première version avec "Version Gamma" en fr
-    $v1 = PlatformVersion::create([
-        'code' => 'ver-005',
-        'status' => 'active',
-        'is_published' => false,
-    ]);
-    PlatformVersionTranslation::create([
-        'platform_version_id' => $v1->id,
-        'lang_id' => $langFr->id,
-        'name' => 'Version Gamma',
-        'description' => 'Desc fr',
+    $errors = translatedFieldValidator([
+        'translations' => [
+            ['lang_id' => $langId, 'name' => 'Repeated', 'description' => 'Repeated text'],
+            ['lang_id' => $langId, 'name' => 'Repeated', 'description' => 'Repeated text'],
+        ],
     ]);
 
-    // Créer une deuxième version avec le même nom "Version Gamma" mais en en (langue différente)
-    $translations = [
-        ['lang_id' => $langEn->id, 'name' => 'Version Gamma', 'description' => 'Desc en'],
-    ];
-
-    $rules = buildStoreRules($translations);
-
-    $data = [
-        'code' => 'ver-006',
-        'status' => 'active',
-        'is_published' => false,
-        'released_at' => null,
-        'translations' => $translations,
-    ];
-
-    $validator = Validator::make($data, $rules);
-
-    expect($validator->fails())->toBeFalse();
+    expect($errors)->toHaveKeys([
+        'translations.1.name',
+        'translations.1.description',
+    ]);
 });
 
+it('preserves the current parent translation but still checks other parents', function (): void {
+    $langId = Lang::where('code', 'fr')->value('id');
+    $currentVersion = translatedFieldVersion('current-check');
+    translatedFieldRow($currentVersion, $langId, 'Current name', 'Shared description');
+
+    $otherVersion = translatedFieldVersion('other-check');
+    translatedFieldRow($otherVersion, $langId, 'Other name', 'Shared description');
+
+    $errors = translatedFieldValidator([
+        'translations' => [
+            ['lang_id' => $langId, 'name' => 'Current name', 'description' => 'Shared description'],
+        ],
+    ], $currentVersion->id);
+
+    expect($errors)->toHaveKey('translations.0.description')
+        ->and($errors)->not->toHaveKey('translations.0.name');
+});
