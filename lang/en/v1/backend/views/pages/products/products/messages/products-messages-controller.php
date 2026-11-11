@@ -87,6 +87,12 @@ return [
             'flash_error' => 'An error occurred.',
             'unknown' => 'Unknown product',
         ],
+        'destroy_file' => [
+            'success' => 'Removing product image.',
+            'error' => 'Error while removing product image: :uuid',
+            'flash_success' => 'Image removed successfully.',
+            'flash_error' => 'An error occurred while removing the image.',
+        ],
         'trashed' => [
             'success' => 'Displaying the deleted products list',
             'error' => 'Error while displaying the deleted products list',
