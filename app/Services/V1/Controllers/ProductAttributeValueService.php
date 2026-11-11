@@ -173,6 +173,10 @@ class ProductAttributeValueService
 
             // Suppression définitive (forceDelete)
             if ($value->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($value->status === ProductAttributeValueStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($value); // ← suppression définitive de la valeur et de ses traductions associées
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
@@ -207,6 +211,7 @@ class ProductAttributeValueService
             return null;
         }
 
+        // Retourne le code couleur HEX normalisé (trim + lowercase)
         return strtolower(trim($hexColor));
     }
 

@@ -154,6 +154,10 @@ class PositionService
         DB::transaction(function () use ($position) {
 
             if ($position->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($position->status === PositionStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($position);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

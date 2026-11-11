@@ -157,13 +157,10 @@ class PermissionService
     // ─────────────────────────────────────────────
     // RESTORE
     // ─────────────────────────────────────────────
-    public function backend_permissions_restore(string $uuid): Permission
+    public function backend_permissions_restore(Permission $permission): Permission
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        return DB::transaction(function () use ($uuid) {
-
-            // Récupération de la permission (y compris les supprimées) via son uuid
-            $permission = Permission::withTrashed()->where('uuid', $uuid)->firstOrFail();
+        return DB::transaction(function () use ($permission) {
 
             // Vérification que la permission est bien supprimée
             if (! $permission->trashed()) {
@@ -171,11 +168,7 @@ class PermissionService
             }
 
             // Restauration simple (restore)
-            if ($permission->trashed()) {
-                restore_function($permission); // ← restauration de la permission
-            } else {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
-            }
+            restore_function($permission); // ← restauration de la permission
 
             return $permission; // ← retourne la permission restaurée
         });
@@ -202,13 +195,10 @@ class PermissionService
     // ─────────────────────────────────────────────
     // FORCE DESTROY
     // ─────────────────────────────────────────────
-    public function backend_permissions_force_destroy(string $uuid): void
+    public function backend_permissions_force_destroy(Permission $permission): void
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($uuid) {
-
-            // Récupération de la permission (y compris les supprimées) via son uuid
-            $permission = Permission::withTrashed()->where('uuid', $uuid)->firstOrFail();
+        DB::transaction(function () use ($permission) {
 
             // NB : les rattachements aux rôles/utilisateurs passent par des tables pivots
             // (role_has_permissions / model_has_permissions) : par règle métier, les liens
@@ -217,6 +207,10 @@ class PermissionService
 
             // Suppression définitive (forceDelete)
             if ($permission->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($permission->status === PermissionStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($permission); // ← suppression définitive de la permission et nettoyage des fichiers associés si besoin
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

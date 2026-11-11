@@ -69,11 +69,6 @@ class ContactService
     {
         DB::transaction(function () use ($contact) {
 
-            // Seule les messages déjà lus peuvent être supprimés définitivement
-            if (! $contact->is_read) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.flash_warning"));
-            }
-
             if ($contact->trashed()) {
                 force_destroy_function($contact);
             } else {

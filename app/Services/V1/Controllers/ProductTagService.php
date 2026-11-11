@@ -156,6 +156,10 @@ class ProductTagService
 
             // Suppression définitive (forceDelete)
             if ($tag->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($tag->status === ProductTagStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($tag); // ← suppression définitive du tag et de ses traductions associées
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

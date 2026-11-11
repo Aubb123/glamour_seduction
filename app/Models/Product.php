@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Products\Products\ProductStatus;
+use App\Models\Currency;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
 use App\Models\ProductTag;
@@ -40,6 +41,7 @@ class Product extends Model
     protected $fillable = [
         'category_id',
         'brand_id',
+        'currency_id',
         'status',
         'is_featured',
         'views_count',
@@ -80,6 +82,12 @@ class Product extends Model
     public function brand(): BelongsTo
     {
         return $this->belongsTo(ProductBrand::class, 'brand_id');
+    }
+
+    /** Relation : un produit est associé à une devise (par défaut celle de la plateforme). */
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
     }
 
     /**

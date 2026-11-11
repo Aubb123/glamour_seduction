@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Products\Products\StoreProductRequest;
 use App\Http\Requests\V1\Products\Products\UpdateProductRequest;
+use App\Models\CloudFile;
 use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
@@ -38,12 +39,12 @@ class ProductController extends Controller
         try {
 
             // ✅ Récupère tous les produits avec leurs traductions, catégorie, marque et tags, triés par date de création décroissante
-            $products = Product::withActiveTranslation()->with(['category', 'brand', 'tags'])->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $products = Product::withActiveTranslation()->with(['category', 'brand', 'currency', 'tags'])->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des produits
             $this->logActivity(type: 'info', action: 'backend.products.index', context: ['count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
-            // Affiche la vue avec les produits récupérés
+            // Affiche la vue avec les produits
             return view('v1.backend.pages.products.products.index', compact('products'));
 
         } catch (\Exception $e) {
@@ -231,6 +232,33 @@ class ProductController extends Controller
     }
 
     // ─────────────────────────────────────────────
+    // EDIT
+    // ─────────────────────────────────────────────
+    public function backend_products_edit(Product $product): View
+    {
+        try {
+
+            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
+
+            // Données pour les selects du formulaire
+            $categories = ProductCategory::withActiveTranslation()->orderBy('sort_order', 'desc')->get();
+            $brands = ProductBrand::withActiveTranslation()->orderBy('sort_order', 'desc')->get();
+            $tags = ProductTag::withActiveTranslation()->orderBy('sort_order', 'desc')->get();
+
+            // Log de l'accès à la page de modification d'un produit
+            $this->logActivity(type: 'info', action: 'backend.products.edit', context: ['product_uuid' => $product->uuid, 'product_name' => $product->active_translation?->name], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $product->active_translation?->name ?? '']), is_success: true, loggable: $product);
+
+            return view('v1.backend.pages.products.products.edit', compact('product', 'langs', 'categories', 'brands', 'tags'));
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.products.edit', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $product->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
     public function backend_products_update(UpdateProductRequest $request, Product $product): RedirectResponse
@@ -244,12 +272,6 @@ class ProductController extends Controller
             $this->logActivity(type: 'info', action: 'backend.products.update', context: ['product_uuid' => $product->uuid, 'product_name' => $productName], message: null, activity: __("{$this->backendLangPath}.update.success", ['name' => $productName]), is_success: true, loggable: $product);
 
             return redirect()->route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null'])->with('success', __("{$this->backendLangPath}.update.flash_success", ['name' => $productName]));
-
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.products.update', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.warning", ['uuid' => $product->uuid]), is_success: false);
-
-            abort(404);
 
         } catch (\InvalidArgumentException $e) {
 
@@ -291,33 +313,6 @@ class ProductController extends Controller
             $this->logActivity(type: 'error', action: 'backend.products.publish', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.publish.error", ['uuid' => $product->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.publish.flash_error"));
-        }
-    }
-
-    // ─────────────────────────────────────────────
-    // EDIT
-    // ─────────────────────────────────────────────
-    public function backend_products_edit(Product $product): View
-    {
-        try {
-
-            $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
-
-            // Données pour les selects du formulaire
-            $categories = ProductCategory::withActiveTranslation()->orderBy('sort_order', 'desc')->get();
-            $brands = ProductBrand::withActiveTranslation()->orderBy('sort_order', 'desc')->get();
-            $tags = ProductTag::withActiveTranslation()->orderBy('sort_order', 'desc')->get();
-
-            // Log de l'accès à la page de modification d'un produit
-            $this->logActivity(type: 'info', action: 'backend.products.edit', context: ['product_uuid' => $product->uuid, 'product_name' => $product->active_translation?->name], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $product->active_translation?->name ?? '']), is_success: true, loggable: $product);
-
-            return view('v1.backend.pages.products.products.edit', compact('product', 'langs', 'categories', 'brands', 'tags'));
-
-        } catch (\Exception $e) {
-
-            $this->logActivity(type: 'error', action: 'backend.products.edit', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $product->uuid]), is_success: false);
-
-            abort(500);
         }
     }
 
@@ -395,13 +390,7 @@ class ProductController extends Controller
 
             return redirect()->route('backend.products.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['name' => $productName]));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.products.destroy', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning", ['uuid' => $product->uuid]), is_success: false);
-
-            abort(404);
-
-        } catch (\InvalidArgumentException $e) {
+        }  catch (\InvalidArgumentException $e) {
 
             $this->logActivity(type: 'warning', action: 'backend.products.destroy', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $product->uuid]), is_success: false);
 
@@ -413,7 +402,39 @@ class ProductController extends Controller
 
             return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
+
     }
+    // ─────────────────────────────────────────────
+    // DESTROY FILE (retrait d'une image individuelle depuis la fiche show)
+    // ─────────────────────────────────────────────
+    public function backend_products_destroy_file(Product $product, CloudFile $cloudFile): RedirectResponse
+    {
+        try {
+
+            // Vérifie que le fichier cloud appartient bien à CE produit
+            if ($cloudFile->fileable_type !== $product->getMorphClass() || $cloudFile->fileable_id !== $product->id) {
+                abort(404);
+            }
+
+            // Suppression du fichier via le service
+            $this->productService->backend_products_destroy_file($product, $cloudFile);
+
+            $this->logActivity(type: 'info', action: 'backend.products.destroy_file', context: ['product_uuid' => $product->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: null, activity: __("{$this->backendLangPath}.destroy_file.success"), is_success: true, loggable: $product);
+
+            return back()->with('success', __("{$this->backendLangPath}.destroy_file.flash_success"));
+
+        } catch (\InvalidArgumentException $e) {
+
+            $this->logActivity(type: 'warning', action: 'backend.products.destroy_file', context: ['product_uuid' => $product->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy_file.warning_meta"), is_success: false);
+
+            return back()->with('error', $e->getMessage())->withInput();
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.products.destroy_file', context: ['product_uuid' => $product->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy_file.error"), is_success: false);
+        }
+    }
+
 
     // ─────────────────────────────────────────────
     // TRASHED

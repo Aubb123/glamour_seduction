@@ -281,6 +281,10 @@ class ShopService
         DB::transaction(function () use ($shop) {
 
             if ($shop->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($shop->status === ShopStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($shop);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

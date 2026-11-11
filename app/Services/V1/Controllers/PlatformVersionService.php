@@ -251,6 +251,10 @@ class PlatformVersionService
 
             // Suppression définitive (forceDelete)
             if ($version->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($version->status === PlatformVersionStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($version); // <- suppression définitive de la version sélectionnée et de ses traductions associées + gestion de suppression des fichiers associés si besoin
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

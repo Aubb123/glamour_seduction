@@ -217,6 +217,10 @@ class BlogPostService
     {
         DB::transaction(function () use ($post) {
             if ($post->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($post->status === BlogPostStatus::Published) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($post);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

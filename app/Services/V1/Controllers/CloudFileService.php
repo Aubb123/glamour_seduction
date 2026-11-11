@@ -12,6 +12,7 @@ use App\Services\Cloud\CloudStorageService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 use function __;
 
@@ -251,5 +252,72 @@ class CloudFileService
 
         // Upload local + enregistrement en base (statut "pending") — la migration vers B2 est asynchrone
         return $cloudFile;
+    }
+
+    // ─────────────────────────────────────────────
+    // UPLOAD ENTITY FILES (multiple images — jusqu'à 4, pattern woononvi driver_documents)
+    // ─────────────────────────────────────────────
+    /**
+     * Upload plusieurs images pour une entité et les associe en base (CloudFile).
+     * Chaque fichier devient une ligne cloud_files avec metadata['page'] = numéro séquentiel.
+     *
+     * @param  array<int, UploadedFile>  $files  Les fichiers images uploadés
+     * @param  string  $cloudPlatformUuid  UUID de la plateforme cloud (choisi manuellement par l'utilisateur)
+     * @param  Model  $entity  L'entité à laquelle associer les images (Product, etc.)
+     * @param  string  $entityTable  Nom de la table de l'entité (ex: products)
+     * @param  string  $backendLangPath  Chemin de langue pour les messages d'erreur
+     *
+     * @return array<int, CloudFile> Une ligne CloudFile par image, dans l'ordre du dépôt
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function uploadEntityFiles(array $files, string $cloudPlatformUuid, Model $entity, string $entityTable, string $backendLangPath): array
+    {
+        // Récupère la plateforme cloud par UUID (choisie manuellement, pas d'auto-sélection)
+        $cloudPlatform = CloudPlatform::where('uuid', $cloudPlatformUuid)->firstOrFail();
+
+        if ($cloudPlatform->status !== CloudPlatformStatus::Active) {
+            throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_inactive"));
+        }
+
+        if ($cloudPlatform->name !== 'backblaze_b2') {
+            throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_not_supported"));
+        }
+
+        $table = $entityTable;
+
+        // Première page = plus grand numéro déjà utilisé + 1 : en modification, les
+        // nouvelles pages s'ajoutent après les existantes sans reprendre un numéro déjà attribué.
+        $firstPage = ((int) $entity->cloudFiles()->get()->max(fn (CloudFile $cloudFile) => (int) ($cloudFile->metadata['page'] ?? 0))) + 1;
+
+        // Tableau de retour : une ligne CloudFile par image, dans l'ordre du dépôt
+        $cloudFiles = [];
+
+        foreach (array_values($files) as $offset => $file) {
+            $page = $firstPage + $offset; // Numéro de page : première page + offset (0..N-1)
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            // Un dossier par type de contenu : une page peut être une image quand une autre est un PDF
+            $cloudFolder = CloudFolder::query()
+                ->where('cloud_platform_id', $cloudPlatform->id)
+                ->where('entity_table', $table)
+                ->where('status', CloudFolderStatus::Active->value)
+                ->whereJsonContains('content_type', $extension)
+                ->first();
+
+            if (! $cloudFolder) {
+                throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_folder_not_found"));
+            }
+
+            // Suffixe aléatoire : putFileAs écrase silencieusement un chemin déjà présent
+            $data = $this->cloudStorage->uploadEntityFile($file, $cloudPlatform, $entity, $cloudFolder, Str::random(8));
+
+            // Ordre de l'image parmi les images du produit (cast array du modèle)
+            $data['metadata']['page'] = $page;
+
+            $cloudFiles[] = $this->backend_cloud_files_store($data);
+        }
+
+        return $cloudFiles;
     }
 }

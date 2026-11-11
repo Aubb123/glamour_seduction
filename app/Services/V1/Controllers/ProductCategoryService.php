@@ -207,6 +207,10 @@ class ProductCategoryService
 
             // Suppression définitive (forceDelete)
             if ($category->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($category->status === ProductCategoryStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($category); // ← suppression définitive de la catégorie et de ses traductions associées
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

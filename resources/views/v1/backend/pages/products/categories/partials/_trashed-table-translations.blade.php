@@ -32,9 +32,7 @@
                                 <th scope="col">Description</th>
                                 <th scope="col">Créé le</th>
                                 <th scope="col">Modifié le</th>
-                                @if(request()->routeIs('backend.product-category-translations.trashed'))
-                                    <th scope="col">Supprimé le</th>
-                                @endif
+                                <th scope="col">Supprimé le</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -67,11 +65,9 @@
                                         @formatDate($translation->updated_at, 'D MMMM YYYY - HH:mm:ss')
                                     </td>
 
-                                    @if(request()->routeIs('backend.product-category-translations.trashed'))
                                         <td class="text-muted">
                                             @formatDate($translation->deleted_at, 'D MMMM YYYY - HH:mm:ss')
                                         </td>
-                                    @endif
 
                                     <td>
                                         @if($translation->trashed())
@@ -99,7 +95,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
+                                    <td colspan="8" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         Aucune traduction trouvée.
                                     </td>

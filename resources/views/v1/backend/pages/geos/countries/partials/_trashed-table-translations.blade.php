@@ -33,9 +33,7 @@
                                 <th scope="col">{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.description') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.creeLe') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.modifieLe') }}</th>
-                                @if(request()->routeIs('backend.geocountries.translation.trashed'))
-                                    <th scope="col">{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.supprimeLe') }}</th>
-                                @endif
+                                <th scope="col">{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.supprimeLe') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.actions') }}</th>
                             </tr>
                         </thead>
@@ -73,11 +71,9 @@
                                         @formatDate($translation->updated_at, 'D MMMM YYYY - HH:mm:ss')
                                     </td>
 
-                                    @if(request()->routeIs('backend.geocountries.translation.trashed'))
                                         <td class="text-muted">
                                             @formatDate($translation->deleted_at, 'D MMMM YYYY - HH:mm:ss')
                                         </td>
-                                    @endif
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
@@ -104,7 +100,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center text-muted py-5">
+                                    <td colspan="9" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('v1/backend/views/pages/geos/countries/partials/_trashed-table-translations.aucuneTraductionTrouvee') }}
                                     </td>

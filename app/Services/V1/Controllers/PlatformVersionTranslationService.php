@@ -25,30 +25,20 @@ class PlatformVersionTranslationService
         DB::transaction(function () use ($platformVersionTranslation) {
 
             // Récupération de la version associée à la traduction (même si elle est soft-deleted)
-            $version = $platformVersionTranslation->platformVersion()->withTrashed()->first();
+            $version = $platformVersionTranslation->platformVersion()->withTrashed()->lockForUpdate()->first();
 
-            // Empêche la suppression de la traduction si c'est la dernière traduction restante de la version (même si la version est soft-deleted)
-            if ($version) {
+            // Vérification : empêcher la suppression d'une traduction déjà dans la corbeille
+            if ($platformVersionTranslation->trashed()) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
+            }
 
-                // Compte le nombre de traductions associées à la version, y compris les traductions soft-deleted
-                // $translationsCount = $version->translations()->withTrashed()->count();
-
-                // Compte le nombre de traductions associées à la version, en excluant les traductions soft-deleted
-                $translationsCount = $version->translations()->count();
-
-                if ($translationsCount <= 1) {
-                    // Empêche la suppression de la traduction si c'est la dernière traduction restante de la version
-                    // (même si la version est soft-deleted)
-                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
-                }
-            } else {
-                // Empêche la suppression de la traduction si la version associée n'existe pas (même si elle est soft-deleted)
+            if (! $version) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.version_not_found"));
             }
 
-            // Suppression simple (deleted_at)
-            if ($platformVersionTranslation->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
+            $translationsCount = $version->translations()->count();
+            if ($translationsCount <= 1) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.last_translation_forbidden"));
             }
 
             destroy_function($platformVersionTranslation); // ← suppression de la traduction et de ses dépendances associées + gestion de suppression des fichiers associés si besoin
@@ -63,6 +53,11 @@ class PlatformVersionTranslationService
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
         DB::transaction(function () use ($platformVersionTranslation) {
+            // Vérification : empêcher la restauration si la version n'existe pas
+            $version = $platformVersionTranslation->platformVersion()->withTrashed()->lockForUpdate()->first();
+            if (! $version) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.version_not_found"));
+            }
 
             // Restauration simple (restore)
             if ($platformVersionTranslation->trashed()) {
@@ -77,18 +72,6 @@ class PlatformVersionTranslationService
                     'name',
                     'slug'
                 );
-
-                // Check métier : aucune autre traduction active ne doit exister pour ce
-                // couple (version, langue), sinon la restauration violerait la contrainte unique.
-                $langConflict = PlatformVersionTranslation::where('platform_version_id', $platformVersionTranslation->platform_version_id)
-                    ->where('lang_id', $platformVersionTranslation->lang_id)
-                    ->whereNull('deleted_at')
-                    ->where('id', '!=', $platformVersionTranslation->id)
-                    ->exists();
-
-                if ($langConflict) {
-                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.lang_conflict"));
-                }
 
                 restore_function($platformVersionTranslation);
             } else {
@@ -107,7 +90,7 @@ class PlatformVersionTranslationService
         DB::transaction(function () use ($platformVersionTranslation) {
 
             // Empêche la suppression définitive de la traduction si la traduction est la dernière traduction restante de la version (même si la version est soft-deleted)
-            $version = $platformVersionTranslation->platformVersion()->withTrashed()->first();
+            $version = $platformVersionTranslation->platformVersion()->withTrashed()->lockForUpdate()->first();
 
             if ($version) {
 

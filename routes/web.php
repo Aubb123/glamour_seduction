@@ -418,6 +418,10 @@ if ($version && $version->code === 'v1') {
             Route::patch('/backend/products/unpublish/{product}', 'backend_products_unpublish')->middleware(['permission:products.unpublish'])->name('backend.products.unpublish');
             Route::patch('/backend/products/archive/{product}', 'backend_products_archive')->middleware(['permission:products.archive'])->name('backend.products.archive');
             Route::delete('/backend/products/destroy/{product}', 'backend_products_destroy')->middleware(['permission:products.destroy'])->name('backend.products.destroy');
+
+            // Retrait d'UNE image d'un produit (depuis la fiche show)
+            Route::delete('/backend/products/destroy-file/{product}/{cloudFile}', 'backend_products_destroy_file')->middleware(['permission:products.destroy'])->name('backend.products.destroy_file');
+
             Route::get('/backend/products/trashed', 'backend_products_trashed')->middleware(['permission:products.trashed'])->name('backend.products.trashed');
             Route::patch('/backend/products/restore/{uuid}', 'backend_products_restore')->middleware(['permission:products.restore'])->name('backend.products.restore');
             Route::delete('/backend/products/force-destroy/{uuid}', 'backend_products_force_destroy')->middleware(['permission:products.force_destroy'])->name('backend.products.force_destroy');

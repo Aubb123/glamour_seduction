@@ -192,6 +192,10 @@ class ProductVariantService
         DB::transaction(function () use ($variant) {
 
             if ($variant->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($variant->status === ProductVariantStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($variant);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

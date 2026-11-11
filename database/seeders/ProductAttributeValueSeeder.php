@@ -36,10 +36,12 @@ class ProductAttributeValueSeeder extends Seeder
 
         foreach ($valuesByAttribute as $attributeName => $values) {
 
+            // Récupérer l'attribut correspondant au nom
             $attribute = ProductAttribute::whereHas('translations', function ($q) use ($attributeName) {
                 $q->where('name', $attributeName);
             })->first();
 
+            // Si l'attribut n'existe pas, afficher un message d'erreur et passer à l'attribut suivant
             if (! $attribute) {
                 $this->command->error("Attribut non trouvé pour le nom : {$attributeName}");
 

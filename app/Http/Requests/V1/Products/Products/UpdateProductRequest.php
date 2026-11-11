@@ -45,14 +45,15 @@ class UpdateProductRequest extends FormRequest
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['integer', 'exists:product_tags,id'],
 
-            // Image principale du produit (pattern blog_posts : optionnelle à la mise à jour)
-            'cloud_platform_uuid' => ['nullable', 'required_with:image', 'exists:cloud_platforms,uuid'],
-            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:2048'],
+            // Images principales du produit (jusqu'à 4 images, pattern woononvi driver_documents)
+            'cloud_platform_uuid' => ['nullable', 'required_with:files', 'exists:cloud_platforms,uuid'],
+            'files' => ['nullable', 'array', 'max:4'],
+            'files.*' => ['required', 'file', 'mimes:jpg,png,webp', 'max:2048'],
 
             'translations' => ['sometimes', 'required', 'array'],
-            'translations.*.lang_id' => ['required', 'exists:langs,id'],
-            'translations.*.short_description' => ['required', 'string', 'max:500'],
-            'translations.*.description' => ['required', 'string'],
+            'translations.*.lang_id' => ['sometimes', 'required', 'exists:langs,id'],
+            'translations.*.short_description' => ['sometimes', 'required', 'string', 'max:500'],
+            'translations.*.description' => ['sometimes', 'required', 'string'],
         ];
 
         // ────────────────────────────────────────────
@@ -100,9 +101,12 @@ class UpdateProductRequest extends FormRequest
             'cloud_platform_uuid.required_with' => __("{$this->backendLangPath}.cloud_platform_uuid.required_with"),
             'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
 
-            'image.image' => __("{$this->backendLangPath}.image.image"),
-            'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'files.array' => __("{$this->backendLangPath}.files.array"),
+            'files.max' => __("{$this->backendLangPath}.files.max"),
+            'files.*.required' => __("{$this->backendLangPath}.files.required_file"),
+            'files.*.file' => __("{$this->backendLangPath}.files.file"),
+            'files.*.mimes' => __("{$this->backendLangPath}.files.mimes"),
+            'files.*.max' => __("{$this->backendLangPath}.files.max_file"),
 
             'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
             'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),

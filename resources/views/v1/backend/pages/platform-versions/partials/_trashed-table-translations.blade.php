@@ -32,9 +32,7 @@
                                 <th scope="col">{{ __('Description') }}</th>
                                 <th scope="col">{{ __('Créé le') }}</th>
                                 <th scope="col">{{ __('Modifié le') }}</th>
-                                @if(request()->routeIs('backend.versions.trashed'))
-                                    <th scope="col">{{ __('Supprimé le') }}</th>
-                                @endif
+                                <th scope="col">{{ __('Supprimé le') }}</th>
                                 <th scope="col">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
@@ -67,11 +65,9 @@
                                         @formatDate($translation->updated_at, 'D MMMM YYYY - HH:mm:ss')
                                     </td>
 
-                                    @if(request()->routeIs('backend.versions.trashed'))
                                         <td class="text-muted">
                                             @formatDate($translation->deleted_at, 'D MMMM YYYY - HH:mm:ss')
                                         </td>
-                                    @endif
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
@@ -98,7 +94,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-5">
+                                    <td colspan="8" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('Aucune traduction trouvée.') }}
                                     </td>

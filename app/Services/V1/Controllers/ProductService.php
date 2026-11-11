@@ -3,6 +3,8 @@
 namespace App\Services\V1\Controllers;
 
 use App\Enums\Products\Products\ProductStatus;
+use App\Models\CloudFile;
+use App\Models\Currency;
 use App\Models\Product;
 use App\Models\ProductTranslation;
 use Illuminate\Support\Facades\DB;
@@ -25,12 +27,14 @@ class ProductService
     public function backend_products_store(array $data): Product
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        return DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data) {
 
             // Création du produit (sauf les traductions et les tags)
+            // La devise est automatiquement associée : la devise par défaut de la plateforme
             $product = Product::create([
                 'category_id' => $data['category_id'],
                 'brand_id' => $data['brand_id'] ?? null,
+                'currency_id' => Currency::defaultCurrency()->first()?->id,
                 'status' => ($data['status'] ?? null) === ProductStatus::Published->value ? ProductStatus::Published : ProductStatus::Draft,
                 'is_featured' => ($data['is_featured'] ?? null) === '1' || ($data['is_featured'] ?? false) === true,
                 'weight' => $data['weight'] ?? null,
@@ -44,17 +48,10 @@ class ProductService
             // Synchronisation des tags (pivot product_tag)
             $this->syncTags($product, $data['tags'] ?? []);
 
-            // Image principale du produit (pattern blog_posts : obligatoire au store,
-            // la validation StoreProductRequest garantit sa présence)
-            $this->cloudFileService->uploadEntityImage(
-                $data['image'],
-                $data['cloud_platform_uuid'],
-                $product,
-                $product->getTable(),
-                $this->backendLangPath,
-            );
+            // Images principales du produit (jusqu'à 4, pattern woononvi driver_documents)
+            $this->attachFiles($product, $data['files'], $data['cloud_platform_uuid']);
 
-            return $product; // ← retourne le produit créé avec ses traductions et ses tags
+            return $product; // ← retourne le produit créé avec ses traductions, ses tags et ses images
         });
     }
 
@@ -63,7 +60,7 @@ class ProductService
     // ─────────────────────────────────────────────
     public function backend_products_update(Product $product, array $data): Product
     {
-        return DB::transaction(function () use ($product, $data) {
+        DB::transaction(function () use ($product, $data) {
 
             $updateData = [];
 
@@ -88,6 +85,7 @@ class ProductService
             }
 
             if (array_key_exists('is_featured', $data)) {
+                // Convertit la valeur en booléen pour le champ is_featured
                 $updateData['is_featured'] = ($data['is_featured'] ?? null) === '1' || ($data['is_featured'] ?? false) === true;
             }
 
@@ -105,21 +103,19 @@ class ProductService
                 $this->syncTags($product, $data['tags'] ?? []);
             }
 
-            // Image principale du produit (pattern blog_posts : optionnelle à l'update)
-            if (isset($data['image'])) {
+            // Images principales du produit (jusqu'à 4, pattern woononvi driver_documents)
+            // Logique purement additive : les nouvelles images s'ajoutent aux existantes.
+            if (isset($data['files'])) {
 
-                // Si une image est fournie sans plateforme cloud, on refuse explicitement
+                // Si des images sont fournies sans plateforme cloud, on refuse explicitement
                 if (! isset($data['cloud_platform_uuid'])) {
                     throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.cloud_platform_uuid_required"));
                 }
 
-                $this->cloudFileService->uploadEntityImage(
-                    $data['image'],
-                    $data['cloud_platform_uuid'],
-                    $product,
-                    $product->getTable(),
-                    $this->backendLangPath,
-                );
+                $this->attachFiles($product, $data['files'], $data['cloud_platform_uuid']);
+
+                // Rétablit la numérotation 1..N après ajout
+                $this->renumberPages($product);
             }
 
             return $product;
@@ -216,6 +212,10 @@ class ProductService
         DB::transaction(function () use ($product) {
 
             if ($product->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($product->status === ProductStatus::Published) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($product);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
@@ -308,5 +308,65 @@ class ProductService
             }
 
         }
+    }
+
+    // ─────────────────────────────────────────────
+    // ATTACH FILES (ajout d'images — pattern woononvi driver_documents)
+    // ─────────────────────────────────────────────
+    /**
+     * Attache plusieurs images au produit via CloudFileService.
+     *
+     * @param  array<int, UploadedFile>  $uploadedFiles  Les fichiers images uploadés
+     */
+    private function attachFiles(Product $product, array $uploadedFiles, string $cloudPlatformUuid): void
+    {
+        $this->cloudFileService->uploadEntityFiles(
+            $uploadedFiles,
+            $cloudPlatformUuid,
+            $product,
+            $product->getTable(),
+            $this->backendLangPath,
+        );
+    }
+
+    // ─────────────────────────────────────────────
+    // RENUMBER PAGES (rétablit l'ordre 1..N des images du produit)
+    // ─────────────────────────────────────────────
+    private function renumberPages(Product $product): void
+    {
+        $images = $product->cloudFiles()
+            ->where('file_type', 'image')
+            ->orderBy('metadata->page', 'asc')
+            ->get();
+
+        foreach ($images as $index => $image) {
+            $image->update([
+                'metadata' => array_merge($image->metadata ?? [], ['page' => $index + 1]),
+            ]);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // DESTROY FILE (retrait d'une image individuelle — pattern woononvi driver_documents)
+    // ─────────────────────────────────────────────
+    public function backend_products_destroy_file(Product $product, CloudFile $cloudFile): void
+    {
+        DB::transaction(function () use ($product, $cloudFile) {
+
+            // Vérifie que le fichier cloud appartient bien à CE produit
+            if ($cloudFile->fileable_type !== $product->getMorphClass() || $cloudFile->fileable_id !== $product->id) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy_file.not_found"));
+            }
+
+            // Empêche de supprimer la dernière image : au moins une image doit rester
+            if ($product->cloudFiles()->where('file_type', 'image')->count() <= 1) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy_file.last_image_forbidden"));
+            }
+
+            destroy_function($cloudFile);
+
+            // Rétablit la numérotation 1..N après retrait
+            $this->renumberPages($product);
+        });
     }
 }

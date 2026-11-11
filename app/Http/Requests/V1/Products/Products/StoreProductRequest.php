@@ -45,9 +45,10 @@ class StoreProductRequest extends FormRequest
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['integer', 'exists:product_tags,id'],
 
-            // Image principale du produit (pattern blog_posts : obligatoire à la création)
+            // Images principales du produit (jusqu'à 4 images, pattern woononvi driver_documents)
             'cloud_platform_uuid' => ['required', 'exists:cloud_platforms,uuid'],
-            'image' => ['required', 'image', 'mimes:jpg,png,webp', 'max:2048'],
+            'files' => ['required', 'array', 'min:1', 'max:4'],
+            'files.*' => ['required', 'file', 'mimes:jpg,png,webp', 'max:2048'],
 
             'translations' => ['required', 'array'],
             'translations.*.lang_id' => ['required', 'exists:langs,id'],
@@ -114,10 +115,14 @@ class StoreProductRequest extends FormRequest
             'cloud_platform_uuid.required' => __("{$this->backendLangPath}.cloud_platform_uuid.required"),
             'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
 
-            'image.required' => __("{$this->backendLangPath}.image.required"),
-            'image.image' => __("{$this->backendLangPath}.image.image"),
-            'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'files.required' => __("{$this->backendLangPath}.files.required"),
+            'files.array' => __("{$this->backendLangPath}.files.array"),
+            'files.min' => __("{$this->backendLangPath}.files.min"),
+            'files.max' => __("{$this->backendLangPath}.files.max"),
+            'files.*.required' => __("{$this->backendLangPath}.files.required_file"),
+            'files.*.file' => __("{$this->backendLangPath}.files.file"),
+            'files.*.mimes' => __("{$this->backendLangPath}.files.mimes"),
+            'files.*.max' => __("{$this->backendLangPath}.files.max_file"),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

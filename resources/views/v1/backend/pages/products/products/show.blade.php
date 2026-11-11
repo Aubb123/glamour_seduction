@@ -46,7 +46,6 @@
                 <!-- Informations générales -->
                 <div class="tab-pane fade show active" id="tab_general">
                     <div class="row g-4">
-                        @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
 
                         <div class="col-md-8">
                             <div class="card border h-100">
@@ -92,9 +91,9 @@
                                     <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __('Prix de base') }}</div>
                                         <div class="col-8 fw-bold">
-                                            {{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}
-                                            @if ($defaultCurrency)
-                                                <span class="text-muted fw-normal small ms-1">({{ __('devise par défaut') }} : {{ $defaultCurrency->active_translation?->name ?? $defaultCurrency->code }})</span>
+                                            {{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}
+                                            @if ($product->currency)
+                                                <span class="text-muted fw-normal small ms-1">({{ __('devise par défaut') }} : {{ $product->currency->active_translation?->name ?? $product->currency->code }})</span>
                                             @endif
                                         </div>
                                     </div>
@@ -103,7 +102,7 @@
                                         <div class="col-4 text-muted fw-semibold">{{ __('Prix barré') }}</div>
                                         <div class="col-8">
                                             @if ($product->compare_at_price)
-                                                <del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</del>
+                                                <del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}</del>
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif

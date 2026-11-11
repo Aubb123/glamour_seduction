@@ -43,11 +43,15 @@ return [
             'required_with' => 'La plateforme cloud est obligatoire lorsqu\'une image est fournie.',
             'exists' => 'La plateforme cloud sélectionnée n\'existe pas.',
         ],
-        'image' => [
-            'required' => 'L\'image principale du produit est obligatoire.',
-            'image' => 'Le fichier doit être une image.',
-            'mimes' => 'Formats acceptés : JPG, PNG, WEBP.',
-            'max' => 'L\'image ne peut pas dépasser 2 Mo.',
+        'files' => [
+            'required' => 'Au moins une image est obligatoire pour le produit.',
+            'array' => 'Les images doivent être un tableau.',
+            'min' => 'Vous devez joindre au moins une image.',
+            'max' => 'Vous pouvez joindre au maximum 4 images.',
+            'required_file' => 'Chaque image jointe est obligatoire.',
+            'file' => 'Chaque image doit être un fichier valide.',
+            'mimes' => 'Chaque image doit être au format JPG, PNG ou WEBP.',
+            'max_file' => 'Chaque image ne peut pas dépasser 2 Mo.',
         ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',

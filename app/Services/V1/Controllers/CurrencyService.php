@@ -130,6 +130,11 @@ class CurrencyService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.default_currency_forbidden"));
             }
 
+            // Une devise active ne peut pas être supprimée
+            if ($currency->status === CurrencyStatus::Active) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
+            }
+
             // Empêche la suppression si la devise est déjà en corbeille
             if ($currency->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
@@ -172,6 +177,10 @@ class CurrencyService
 
             // Suppression définitive (forceDelete)
             if ($currency->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($currency->status === CurrencyStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($currency);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

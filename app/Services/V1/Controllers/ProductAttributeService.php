@@ -135,10 +135,14 @@ class ProductAttributeService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
 
+            // Un attribut actif ne peut pas être supprimé
+            if ($attribute->status === ProductAttributeStatus::Active) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
+            }
+
             // Vérifie les relations dépendantes (ex: valeurs d'attributs liées)
-            // Si l'attribut a des valeurs, la suppression est bloquée par BackendHelper::destroy_function
-            // via le contrôleur (vérification de $dependentRelations).
-            $attribute->delete();
+            // La suppression est bloquée par destroy_function via $dependentRelations si nécessaire.
+            destroy_function($attribute);
         });
     }
 
@@ -154,8 +158,8 @@ class ProductAttributeService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }
 
-            // Restauration de l'attribut (supprime le deleted_at)
-            $attribute->restore();
+            // Restauration de l'attribut, ses traductions et ses fichiers cloud associés
+            restore_function($attribute);
         });
     }
 
@@ -169,6 +173,10 @@ class ProductAttributeService
             // Suppression définitive uniquement si l'attribut est en corbeille
             if ($attribute->trashed()) {
                 // force_destroy_function supprime l'entité, ses traductions et ses fichiers associés
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($attribute->status === ProductAttributeStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($attribute);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

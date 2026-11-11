@@ -24,6 +24,15 @@ return [
         'update' => [
             'cloud_platform_uuid_required' => 'Impossible de téléverser l\'image : la plateforme cloud n\'a pas été sélectionnée.',
         ],
+        'destroy_file' => [
+            'success' => 'Image retirée du produit.',
+            'not_found' => 'Cette image n\'appartient pas à ce produit.',
+            'last_image_forbidden' => 'Impossible de retirer cette image : le produit doit conserver au moins une image.',
+            'warning_meta' => 'Erreur métier lors du retrait de l\'image du produit.',
+            'error' => 'Erreur lors du retrait de l\'image du produit.',
+            'flash_success' => 'Image retirée avec succès.',
+            'flash_error' => 'Une erreur est survenue lors du retrait de l\'image.',
+        ],
 
         // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
         'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du produit (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',

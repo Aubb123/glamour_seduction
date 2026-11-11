@@ -8,8 +8,43 @@
             align-items: center !important;
             justify-content: center !important;
         }
-    </style>
+    </style> 
 @endpush
+
+@include('v1.backend.layouts.partials._statistics', [
+    'statistics' => [
+        [
+            'label' => __('Total produits'),
+            'value' => $products->count(),
+            'icon'  => 'bx bx-package',
+            'color' => 'primary',
+        ],
+        [
+            'label' => __('Publiés'),
+            'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Published)->count(),
+            'icon'  => 'bx bx-check',
+            'color' => 'success',
+        ],
+        [
+            'label' => __('Brouillons'),
+            'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Draft)->count(),
+            'icon'  => 'bx bx-edit',
+            'color' => 'warning',
+        ],
+        [
+            'label' => __('Archivés'),
+            'value' => $products->where('status', \App\Enums\Products\Products\ProductStatus::Archived)->count(),
+            'icon'  => 'bx bx-trash',
+            'color' => 'danger',
+        ],
+        [
+            'label' => __('Mis en avant'),
+            'value' => $products->where('is_featured', true)->count(),
+            'icon'  => 'bx bx-star',
+            'color' => 'info',
+        ],
+    ],
+])
 
 <div class="row">
     <div class="col-sm-12">
@@ -37,7 +72,7 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle w-100" id="products-table">
+                    <table class="table table-centered text-nowrap" id="products-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -46,6 +81,8 @@
                                 <th>{{ __('Marque') }}</th>
                                 <th>{{ __('Statut') }}</th>
                                 <th>{{ __('Prix') }}</th>
+                                <th>{{ __('Prix barré') }}</th>
+                                <th>{{ __('Devise') }}</th>
                                 <th>{{ __('Audits') }}</th>
                                 <th>{{ __('Logs') }}</th>
                                 <th>{{ __('Mis en avant') }}</th>
@@ -54,7 +91,6 @@
                         </thead>
                         <tbody>
                             @forelse ($products as $product)
-                                @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
                                 @php($image = $product->getFirstImage())
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
@@ -77,10 +113,19 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="fw-bold">{{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
+                                        <span class="fw-bold">{{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}</span>
+                                    </td>
+                                    <td data-compare-price="{{ $product->compare_at_price ?? 'null' }}">
                                         @if ($product->compare_at_price)
-                                            <del class="text-muted ms-1">{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</del>
+                                            <span class="text-muted"><del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}</del></span>
+                                        @else
+                                            <span class="text-muted">—</span>
                                         @endif
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border fs-12 px-2 py-1">
+                                            {{ $product->currency?->active_translation?->name ?? $product->currency?->code ?? '—' }} <small>{{ $product->currency?->symbol ?? '' }}</small>
+                                        </span>
                                     </td>
                                     <td>
                                         <a href="{{ route('backend.products.audits', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}"

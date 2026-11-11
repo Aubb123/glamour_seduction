@@ -95,7 +95,7 @@ function productPayload(array $setup, array $overrides = []): array
         'compare_at_price' => 29990,
         'tags' => [$setup['tag']->id],
         'cloud_platform_uuid' => $platform->uuid,
-        'image' => UploadedFile::fake()->create('product.jpg', 100, 'image/jpeg'),
+        'files' => [UploadedFile::fake()->create('product.jpg', 100, 'image/jpeg')],
         'translations' => [
             ['lang_id' => $setup['fr']->id, 'name' => 'Produit FR '.$uid, 'short_description' => 'Short FR.', 'description' => '<p>Desc FR longue.</p>'],
             ['lang_id' => $setup['en']->id, 'name' => 'Product EN '.$uid, 'short_description' => 'Short EN.', 'description' => '<p>Long EN description.</p>'],
@@ -144,20 +144,65 @@ it('crée un produit avec traductions, tags et image (pivot + cloud file)', func
     expect($product->cloudFiles()->count())->toBe(1);
 });
 
-it('refuse la création d\'un produit sans image (pattern blog strict)', function () {
+it('refuse la création d\'un produit sans images', function () {
     $admin = productAdmin();
     $setup = productSetup();
 
     $payload = productPayload($setup);
-    unset($payload['image']);
+    unset($payload['files']);
     unset($payload['cloud_platform_uuid']);
 
     $this->actingAs($admin)
         ->post(route('backend.products.store'), $payload)
         ->assertRedirect()
-        ->assertSessionHasErrors(['image', 'cloud_platform_uuid']);
+        ->assertSessionHasErrors(['files', 'cloud_platform_uuid']);
 
     expect(Product::count())->toBe(0);
+});
+
+it('crée un produit avec 4 images (max autorisé)', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $payload = productPayload($setup, [
+        'files' => [
+            UploadedFile::fake()->create('product1.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('product2.png', 100, 'image/png'),
+            UploadedFile::fake()->create('product3.webp', 100, 'image/webp'),
+            UploadedFile::fake()->create('product4.jpg', 100, 'image/jpeg'),
+        ],
+    ]);
+
+    $this->actingAs($admin)
+        ->post(route('backend.products.store'), $payload)
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    $product = Product::firstOrFail();
+    expect($product->cloudFiles()->where('file_type', 'image')->count())->toBe(4);
+});
+
+it('refuse la création d\'un produit avec plus de 4 images', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $payload = productPayload($setup, [
+        'files' => [
+            UploadedFile::fake()->create('p1.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('p2.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('p3.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('p4.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('p5.jpg', 100, 'image/jpeg'),
+        ],
+    ]);
+
+    $this->actingAs($admin)
+        ->post(route('backend.products.store'), $payload)
+        ->assertRedirect()
+        ->assertSessionHasErrors(['files.max']);
+
+    expect(Product::count())->toBe(0);
+});
 });
 
 it('refuse un produit sans base_price', function () {

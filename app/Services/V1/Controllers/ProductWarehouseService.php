@@ -146,6 +146,10 @@ class ProductWarehouseService
         DB::transaction(function () use ($warehouse) {
 
             if ($warehouse->trashed()) {
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($warehouse->status === ProductWarehouseStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($warehouse);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));

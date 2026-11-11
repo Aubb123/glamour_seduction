@@ -43,11 +43,15 @@ return [
             'required_with' => 'The cloud platform is required when an image is provided.',
             'exists' => 'The selected cloud platform does not exist.',
         ],
-        'image' => [
-            'required' => 'The product main image is required.',
-            'image' => 'The file must be an image.',
-            'mimes' => 'Accepted formats: JPG, PNG, WEBP.',
-            'max' => 'The image may not exceed 2 MB.',
+        'files' => [
+            'required' => 'At least one image is required for the product.',
+            'array' => 'The images must be an array.',
+            'min' => 'You must attach at least one image.',
+            'max' => 'You can attach up to 4 images.',
+            'required_file' => 'Each attached image is required.',
+            'file' => 'Each image must be a valid file.',
+            'mimes' => 'Each image must be in JPG, PNG or WEBP format.',
+            'max_file' => 'Each image may not exceed 2 MB.',
         ],
         'translations' => [
             'required' => 'The translations are required.',

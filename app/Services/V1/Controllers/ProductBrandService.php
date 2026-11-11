@@ -202,6 +202,10 @@ class ProductBrandService
             // Suppression définitive (forceDelete)
             if ($brand->trashed()) {
                 // ← suppression définitive de la marque et de ses traductions associées
+                // Une entité active ne peut pas être supprimée définitivement
+                if ($brand->status === ProductBrandStatus::Active) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+                }
                 force_destroy_function($brand);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
