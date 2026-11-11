@@ -60,15 +60,15 @@ class ProductService
     // ─────────────────────────────────────────────
     public function backend_products_update(Product $product, array $data): Product
     {
-        return DB::transaction(function () use ($product, $data) {
-
-            // La limite s'applique au nombre total d'images conservées après l'ajout.
-            if (! empty($data['files'])) {
-                $existingImageCount = $product->cloudFiles()->where('file_type', 'image')->count();
-                if ($existingImageCount + count($data['files']) > 4) {
-                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.image_limit_exceeded"));
-                }
+        // Vérifie la limite totale avant la transaction et toute mise à jour
+        if (! empty($data['files'])) {
+            $existingImageCount = $product->cloudFiles()->where('file_type', 'image')->count();
+            if ($existingImageCount + count($data['files']) > 4) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.image_limit_exceeded"));
             }
+        }
+
+        return DB::transaction(function () use ($product, $data) {
 
             $updateData = [];
 
