@@ -10,6 +10,7 @@ use App\Models\ProductBrand;
 use App\Models\ProductCategory;
 use App\Models\ProductTag;
 use App\Models\User;
+use App\Services\V1\Controllers\ProductService;
 use Database\Seeders\CloudFolderSeeder;
 use Database\Seeders\CloudPlatformSeeder;
 use Database\Seeders\GeoContinentSeeder;
@@ -203,7 +204,6 @@ it('refuse la création d\'un produit avec plus de 4 images', function () {
 
     expect(Product::count())->toBe(0);
 });
-});
 
 it('refuse un produit sans base_price', function () {
     $admin = productAdmin();
@@ -248,7 +248,6 @@ it('met à jour un produit et synchronise ses tags (sans nouvelle image)', funct
     $admin = productAdmin();
     $setup = productSetup();
 
-    // Second tag pour le test de synchronisation
     $secondTag = ProductTag::create(['sort_order' => random_int(1000, 9999), 'status' => 'active']);
     $secondTag->translations()->create(['lang_id' => $setup['fr']->id, 'name' => 'Tag FR 2 '.uniqid(), 'description' => 'Desc FR.']);
 
@@ -267,33 +266,47 @@ it('met à jour un produit et synchronise ses tags (sans nouvelle image)', funct
     expect($product->tags()->count())->toBe(1);
     expect($product->tags()->first()->id)->toBe($secondTag->id);
     expect($product->is_featured)->toBeFalse();
-    // Une seule image conservée (celle de la création, pas de nouvelle image)
     expect($product->cloudFiles()->count())->toBe(1);
 });
 
-it('publie, dépublic et archive un produit', function () {
+it('refuse un ajout qui dépasserait quatre images au total lors de la mise à jour', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $this->actingAs($admin)
+        ->post(route('backend.products.store'), productPayload($setup))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    $product = Product::firstOrFail();
+    expect($product->cloudFiles()->where('file_type', 'image')->count())->toBe(1);
+
+    expect(fn () => app(ProductService::class)->backend_products_update($product, [
+        'files' => [
+            UploadedFile::fake()->create('extra1.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('extra2.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('extra3.jpg', 100, 'image/jpeg'),
+            UploadedFile::fake()->create('extra4.jpg', 100, 'image/jpeg'),
+        ],
+    ]))->toThrow(InvalidArgumentException::class);
+
+    expect($product->cloudFiles()->where('file_type', 'image')->count())->toBe(1);
+});
+
+it('publie, dépublie et archive un produit', function () {
     $admin = productAdmin();
     $setup = productSetup();
 
     $this->actingAs($admin)->post(route('backend.products.store'), productPayload($setup, ['status' => 'draft']));
     $product = Product::firstOrFail();
 
-    // Publish
-    $this->actingAs($admin)
-        ->patch(route('backend.products.publish', ['product' => $product->uuid]))
-        ->assertRedirect();
+    $this->actingAs($admin)->patch(route('backend.products.publish', ['product' => $product->uuid]))->assertRedirect();
     expect($product->fresh()->status->value)->toBe('published');
 
-    // Unpublish
-    $this->actingAs($admin)
-        ->patch(route('backend.products.unpublish', ['product' => $product->uuid]))
-        ->assertRedirect();
+    $this->actingAs($admin)->patch(route('backend.products.unpublish', ['product' => $product->uuid]))->assertRedirect();
     expect($product->fresh()->status->value)->toBe('draft');
 
-    // Archive
-    $this->actingAs($admin)
-        ->patch(route('backend.products.archive', ['product' => $product->uuid]))
-        ->assertRedirect();
+    $this->actingAs($admin)->patch(route('backend.products.archive', ['product' => $product->uuid]))->assertRedirect();
     expect($product->fresh()->status->value)->toBe('archived');
 });
 
@@ -304,7 +317,6 @@ it('refuse la suppression d\'un produit publié puis autorise après dépublicat
     $this->actingAs($admin)->post(route('backend.products.store'), productPayload($setup, ['status' => 'published']));
     $product = Product::firstOrFail();
 
-    // Publié → suppression refusée
     $this->actingAs($admin)
         ->from(route('backend.products.index'))
         ->delete(route('backend.products.destroy', ['product' => $product->uuid]))
@@ -313,7 +325,6 @@ it('refuse la suppression d\'un produit publié puis autorise après dépublicat
 
     expect(Product::find($product->id))->not->toBeNull();
 
-    // Dépublié → suppression autorisée
     $product->update(['status' => 'draft']);
     $this->actingAs($admin)
         ->delete(route('backend.products.destroy', ['product' => $product->uuid]))
@@ -343,7 +354,7 @@ it('passe un produit en corbeille puis le restaure', function () {
     expect(Product::find($product->id))->not->toBeNull();
 });
 
-it('refuse la suppression d\'une catégorie possédant des produits (dependentRelations)', function () {
+it('refuse la suppression d\'une catégorie possédant des produits', function () {
     $admin = productAdmin();
     $setup = productSetup();
 
@@ -360,7 +371,7 @@ it('refuse la suppression d\'une catégorie possédant des produits (dependentRe
     expect(ProductCategory::find($setup['category']->id))->not->toBeNull();
 });
 
-it('refuse la suppression d\'une marque possédant des produits (dependentRelations)', function () {
+it('refuse la suppression d\'une marque possédant des produits', function () {
     $admin = productAdmin();
     $setup = productSetup();
 
@@ -377,9 +388,8 @@ it('refuse la suppression d\'une marque possédant des produits (dependentRelati
     expect(ProductBrand::find($setup['brand']->id))->not->toBeNull();
 });
 
-it('déclare variants comme relation bloquante pour Product (dependentRelations, module 6)', function () {
+it('déclare variants comme relation bloquante pour Product', function () {
     $product = new Product;
-
     $property = new ReflectionProperty($product, 'dependentRelations');
     expect($property->getValue($product))->toBe(['variants']);
 });

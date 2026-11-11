@@ -27,7 +27,7 @@ class ProductService
     public function backend_products_store(array $data): Product
     {
         // Utilisation d'une transaction pour garantir l'intégrité des données
-        DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
 
             // Création du produit (sauf les traductions et les tags)
             // La devise est automatiquement associée : la devise par défaut de la plateforme
@@ -60,7 +60,15 @@ class ProductService
     // ─────────────────────────────────────────────
     public function backend_products_update(Product $product, array $data): Product
     {
-        DB::transaction(function () use ($product, $data) {
+        // Vérifie la limite totale avant la transaction et toute mise à jour
+        if (! empty($data['files'])) {
+            $existingImageCount = $product->cloudFiles()->where('file_type', 'image')->count();
+            if ($existingImageCount + count($data['files']) > 4) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.image_limit_exceeded"));
+            }
+        }
+
+        return DB::transaction(function () use ($product, $data) {
 
             $updateData = [];
 

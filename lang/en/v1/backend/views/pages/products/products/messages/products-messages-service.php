@@ -23,6 +23,7 @@ return [
         ],
         'update' => [
             'cloud_platform_uuid_required' => 'Cannot upload the image: the cloud platform was not selected.',
+            'image_limit_exceeded' => 'A product cannot have more than 4 images in total.',
         ],
         'destroy_file' => [
             'success' => 'Image removed from product.',
@@ -33,11 +34,8 @@ return [
             'flash_success' => 'Image removed successfully.',
             'flash_error' => 'An error occurred while removing the image.',
         ],
-
-        // Refusal to update a translation sitting in the trash (syncTranslations guard)
         'trashedTranslationConflict' => 'Cannot update this product translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
     ],
-
     'productsTranslations' => [
         'destroy' => [
             'product_not_found' => 'Cannot delete this translation: the product it is linked to cannot be found.',
