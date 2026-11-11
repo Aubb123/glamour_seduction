@@ -23,6 +23,7 @@ return [
         ],
         'update' => [
             'cloud_platform_uuid_required' => 'Impossible de téléverser l\'image : la plateforme cloud n\'a pas été sélectionnée.',
+            'image_limit_exceeded' => 'Un produit ne peut pas comporter plus de 4 images au total.',
         ],
         'destroy_file' => [
             'success' => 'Image retirée du produit.',
@@ -33,11 +34,8 @@ return [
             'flash_success' => 'Image retirée avec succès.',
             'flash_error' => 'Une erreur est survenue lors du retrait de l\'image.',
         ],
-
-        // Refus de mise à jour d'une traduction se trouvant en corbeille (garde syncTranslations)
         'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du produit (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
     ],
-
     'productsTranslations' => [
         'destroy' => [
             'product_not_found' => 'Impossible de supprimer cette traduction : le produit auquel elle est liée est introuvable.',
