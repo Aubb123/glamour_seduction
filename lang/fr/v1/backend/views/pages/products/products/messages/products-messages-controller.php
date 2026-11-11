@@ -87,6 +87,12 @@ return [
             'flash_error' => 'Une erreur est survenue.',
             'unknown' => 'Produit inconnu',
         ],
+        'destroy_file' => [
+            'success' => 'Retrait de l\'image du produit.',
+            'error' => 'Erreur lors du retrait de l\'image du produit : :uuid',
+            'flash_success' => 'Image retirée avec succès.',
+            'flash_error' => 'Une erreur est survenue lors du retrait de l\'image.',
+        ],
         'trashed' => [
             'success' => 'Affichage de la liste des produits supprimés',
             'error' => 'Erreur lors de l\'affichage de la liste des produits supprimés',
