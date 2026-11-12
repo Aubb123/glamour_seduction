@@ -15,7 +15,7 @@ class UpdateProductRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true; // L'accès est contrôlé par les middlewares de route.
+        return true;
     }
 
     public function rules(): array
@@ -43,12 +43,8 @@ class UpdateProductRequest extends FormRequest
             $langId = $translation['lang_id'] ?? null;
             $translationId = $translation['id'] ?? null;
             $rules["translations.{$index}.name"] = [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('product_translations', 'name')
-                    ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->ignore($translationId),
+                'required', 'string', 'max:255',
+                Rule::unique('product_translations', 'name')->where(fn ($query) => $query->where('lang_id', $langId))->ignore($translationId),
             ];
         }
 
@@ -89,6 +85,7 @@ class UpdateProductRequest extends FormRequest
             'files.*.file' => $message('files.file'),
             'files.*.mimes' => $message('files.mimes'),
             'files.*.max' => $message('files.max_file'),
+            'translations.required' => $message('translations.required'),
             'translations.array' => $message('translations.array'),
             'translations.*.lang_id.required' => $message('translations.lang_id.required'),
             'translations.*.lang_id.exists' => $message('translations.lang_id.exists'),
