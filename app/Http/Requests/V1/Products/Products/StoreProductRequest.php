@@ -15,7 +15,7 @@ class StoreProductRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true; // L'accès est contrôlé par les middlewares de route.
+        return true;
     }
 
     public function rules(): array
@@ -42,9 +42,7 @@ class StoreProductRequest extends FormRequest
         foreach ($this->input('translations', []) as $index => $translation) {
             $langId = $translation['lang_id'] ?? null;
             $rules["translations.{$index}.name"] = [
-                'required',
-                'string',
-                'max:255',
+                'required', 'string', 'max:255',
                 Rule::unique('product_translations', 'name')->where(fn ($query) => $query->where('lang_id', $langId)),
             ];
         }
