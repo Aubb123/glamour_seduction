@@ -18,14 +18,10 @@ it('returns localized product validation messages in French and English', functi
     expect($updateRequest->messages()['files.max'])->toBe('You can attach up to 4 images.');
 });
 
-it('does not return untranslated product validation keys for uploaded files', function () {
-    foreach (['fr', 'en'] as $locale) {
-        app()->setLocale($locale);
+it('maps uploaded-file errors to localized product messages', function () {
+    $store = (new StoreProductRequest)->messages();
+    $update = (new UpdateProductRequest)->messages();
 
-        foreach ([new StoreProductRequest, new UpdateProductRequest] as $request) {
-            foreach ($request->messages() as $message) {
-                expect($message)->not->toContain('products-messages-validation');
-            }
-        }
-    }
+    expect($store['files.*.uploaded'])->toBe(__('v1/backend/views/pages/products/products/messages/products-messages-validation.products.files.uploaded'));
+    expect($update['files.*.uploaded'])->toBe(__('v1/backend/views/pages/products/products/messages/products-messages-validation.products.files.uploaded'));
 });
