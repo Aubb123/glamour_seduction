@@ -83,6 +83,7 @@ class UpdateProductRequest extends FormRequest
             'files.max' => $message('files.max'),
             'files.*.required' => $message('files.required_file'),
             'files.*.file' => $message('files.file'),
+            'files.*.uploaded' => $message('files.uploaded'),
             'files.*.mimes' => $message('files.mimes'),
             'files.*.max' => $message('files.max_file'),
             'translations.required' => $message('translations.required'),
