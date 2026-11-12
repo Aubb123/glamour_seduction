@@ -8,30 +8,16 @@ use Illuminate\Validation\Rule;
 
 use function __;
 
-/**
- * Requête de validation pour la mise à jour d'un produit.
- *
- * Valide les données entrantes pour la modification d'un produit (products)
- * avec ses traductions associées (product_translations).
- */
+/** Validation de la modification d'un produit et de ses traductions. */
 class UpdateProductRequest extends FormRequest
 {
-    /**
-     * Chemin de base pour les traductions des messages de validation.
-     */
     protected string $backendLangPath = 'v1/backend/views/pages/products/products/messages/products-messages-validation.products';
 
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true; // ← géré par middleware
+        return true;
     }
 
-    /**
-     * Règles de validation.
-     */
     public function rules(): array
     {
         $rules = [
@@ -44,74 +30,75 @@ class UpdateProductRequest extends FormRequest
             'compare_at_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['integer', 'exists:product_tags,id'],
-
-            // Images principales du produit (jusqu'à 4 images, pattern woononvi driver_documents)
             'cloud_platform_uuid' => ['nullable', 'required_with:files', 'exists:cloud_platforms,uuid'],
             'files' => ['nullable', 'array', 'max:4'],
             'files.*' => ['required', 'file', 'mimes:jpg,png,webp', 'max:2048'],
-
             'translations' => ['sometimes', 'required', 'array'],
             'translations.*.lang_id' => ['sometimes', 'required', 'exists:langs,id'],
             'translations.*.short_description' => ['sometimes', 'required', 'string', 'max:500'],
             'translations.*.description' => ['sometimes', 'required', 'string'],
         ];
 
-        // ────────────────────────────────────────────
-        // Génération dynamique des règles "unique par langue"
-        // pour "name", en ignorant la propre traduction.
-        // ────────────────────────────────────────────
-        $translations = $this->input('translations', []);
-
-        foreach ($translations as $index => $translation) {
+        foreach ($this->input('translations', []) as $index => $translation) {
             $langId = $translation['lang_id'] ?? null;
             $translationId = $translation['id'] ?? null;
-
             $rules["translations.{$index}.name"] = [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('product_translations', 'name')
-                    ->where(fn ($query) => $query->where('lang_id', $langId))
-                    ->ignore($translationId),
+                'required', 'string', 'max:255',
+                Rule::unique('product_translations', 'name')->where(fn ($query) => $query->where('lang_id', $langId))->ignore($translationId),
             ];
         }
 
         return $rules;
     }
 
-    /**
-     * Messages de validation personnalisés.
-     */
     public function messages(): array
     {
+        $message = fn (string $key): string => __("{$this->backendLangPath}.{$key}");
+
         return [
-            'category_id.required' => __("{$this->backendLangPath}.category_id.required"),
-            'category_id.exists' => __("{$this->backendLangPath}.category_id.exists"),
-            'brand_id.exists' => __("{$this->backendLangPath}.brand_id.exists"),
-            'status.required' => __("{$this->backendLangPath}.status.required"),
-            'status.in' => __("{$this->backendLangPath}.status.in"),
-            'is_featured.boolean' => __("{$this->backendLangPath}.is_featured.boolean"),
-            'weight.numeric' => __("{$this->backendLangPath}.weight.numeric"),
-            'base_price.required' => __("{$this->backendLangPath}.base_price.required"),
-            'base_price.numeric' => __("{$this->backendLangPath}.base_price.numeric"),
-            'base_price.min' => __("{$this->backendLangPath}.base_price.min"),
-            'compare_at_price.numeric' => __("{$this->backendLangPath}.compare_at_price.numeric"),
-            'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
-
-            'cloud_platform_uuid.required_with' => __("{$this->backendLangPath}.cloud_platform_uuid.required_with"),
-            'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
-
-            'files.array' => __("{$this->backendLangPath}.files.array"),
-            'files.max' => __("{$this->backendLangPath}.files.max"),
-            'files.*.required' => __("{$this->backendLangPath}.files.required_file"),
-            'files.*.file' => __("{$this->backendLangPath}.files.file"),
-            'files.*.mimes' => __("{$this->backendLangPath}.files.mimes"),
-            'files.*.max' => __("{$this->backendLangPath}.files.max_file"),
-
-            'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
-            'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
-            'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
-            'translations.*.short_description.max' => __("{$this->backendLangPath}.translations.short_description.max"),
+            'category_id.required' => $message('category_id.required'),
+            'category_id.integer' => $message('category_id.integer'),
+            'category_id.exists' => $message('category_id.exists'),
+            'brand_id.integer' => $message('brand_id.integer'),
+            'brand_id.exists' => $message('brand_id.exists'),
+            'status.required' => $message('status.required'),
+            'status.in' => $message('status.in'),
+            'is_featured.boolean' => $message('is_featured.boolean'),
+            'weight.numeric' => $message('weight.numeric'),
+            'weight.min' => $message('weight.min'),
+            'weight.max' => $message('weight.max'),
+            'base_price.required' => $message('base_price.required'),
+            'base_price.numeric' => $message('base_price.numeric'),
+            'base_price.min' => $message('base_price.min'),
+            'base_price.max' => $message('base_price.max'),
+            'compare_at_price.numeric' => $message('compare_at_price.numeric'),
+            'compare_at_price.min' => $message('compare_at_price.min'),
+            'compare_at_price.max' => $message('compare_at_price.max'),
+            'tags.array' => $message('tags.array'),
+            'tags.*.integer' => $message('tags.integer'),
+            'tags.*.exists' => $message('tags.exists'),
+            'cloud_platform_uuid.required_with' => $message('cloud_platform_uuid.required_with'),
+            'cloud_platform_uuid.exists' => $message('cloud_platform_uuid.exists'),
+            'files.array' => $message('files.array'),
+            'files.max' => $message('files.max'),
+            'files.*.required' => $message('files.required_file'),
+            'files.*.file' => $message('files.file'),
+            'files.*.uploaded' => $message('files.uploaded'),
+            'files.*.mimes' => $message('files.mimes'),
+            'files.*.max' => $message('files.max_file'),
+            'translations.required' => $message('translations.required'),
+            'translations.array' => $message('translations.array'),
+            'translations.*.lang_id.required' => $message('translations.lang_id.required'),
+            'translations.*.lang_id.exists' => $message('translations.lang_id.exists'),
+            'translations.*.name.required' => $message('translations.name.required'),
+            'translations.*.name.string' => $message('translations.name.string'),
+            'translations.*.name.max' => $message('translations.name.max'),
+            'translations.*.name.unique' => $message('translations.name.unique'),
+            'translations.*.short_description.required' => $message('translations.short_description.required'),
+            'translations.*.short_description.string' => $message('translations.short_description.string'),
+            'translations.*.short_description.max' => $message('translations.short_description.max'),
+            'translations.*.description.required' => $message('translations.description.required'),
+            'translations.*.description.string' => $message('translations.description.string'),
         ];
     }
 }
