@@ -2,6 +2,8 @@
 
 return [
     'products' => [
+        'validation_title' => 'Erreur de validation',
+        'validation_confirm' => 'Corriger',
         'category_id' => [
             'required' => 'La catégorie est obligatoire.',
             'integer' => 'La catégorie doit être un identifiant valide.',
@@ -15,9 +17,7 @@ return [
             'required' => 'Le statut est obligatoire.',
             'in' => 'Le statut sélectionné n\'est pas valide.',
         ],
-        'is_featured' => [
-            'boolean' => 'Le champ "mis en avant" doit être un booléen.',
-        ],
+        'is_featured' => ['boolean' => 'Le champ « mis en avant » doit être un booléen.'],
         'weight' => [
             'numeric' => 'Le poids doit être un nombre.',
             'min' => 'Le poids doit être au minimum 0.',
@@ -36,6 +36,7 @@ return [
         ],
         'tags' => [
             'array' => 'Les tags doivent être un tableau.',
+            'integer' => 'Chaque tag doit être un identifiant valide.',
             'exists' => 'Un des tags sélectionnés n\'existe pas.',
         ],
         'cloud_platform_uuid' => [
