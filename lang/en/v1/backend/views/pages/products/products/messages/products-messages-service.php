@@ -20,19 +20,15 @@ return [
         ],
         'force_destroy' => [
             'not_trashed_forbidden' => 'Only products already deleted or in the trash can be permanently deleted.',
+            'active_forbidden' => 'A published product cannot be permanently deleted.',
         ],
         'update' => [
             'cloud_platform_uuid_required' => 'Cannot upload the image: the cloud platform was not selected.',
             'image_limit_exceeded' => 'A product cannot have more than 4 images in total.',
         ],
         'destroy_file' => [
-            'success' => 'Image removed from product.',
             'not_found' => 'This image does not belong to this product.',
             'last_image_forbidden' => 'Cannot remove this image: the product must keep at least one image.',
-            'warning_meta' => 'Business error while removing product image.',
-            'error' => 'Error while removing product image.',
-            'flash_success' => 'Image removed successfully.',
-            'flash_error' => 'An error occurred while removing the image.',
         ],
         'trashedTranslationConflict' => 'Cannot update this product translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
     ],

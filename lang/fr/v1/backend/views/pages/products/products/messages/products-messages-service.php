@@ -20,19 +20,15 @@ return [
         ],
         'force_destroy' => [
             'not_trashed_forbidden' => 'Seuls les produits déjà supprimés ou en corbeille peuvent être supprimés définitivement.',
+            'active_forbidden' => 'Impossible de supprimer définitivement un produit publié.',
         ],
         'update' => [
             'cloud_platform_uuid_required' => 'Impossible de téléverser l\'image : la plateforme cloud n\'a pas été sélectionnée.',
             'image_limit_exceeded' => 'Un produit ne peut pas comporter plus de 4 images au total.',
         ],
         'destroy_file' => [
-            'success' => 'Image retirée du produit.',
             'not_found' => 'Cette image n\'appartient pas à ce produit.',
             'last_image_forbidden' => 'Impossible de retirer cette image : le produit doit conserver au moins une image.',
-            'warning_meta' => 'Erreur métier lors du retrait de l\'image du produit.',
-            'error' => 'Erreur lors du retrait de l\'image du produit.',
-            'flash_success' => 'Image retirée avec succès.',
-            'flash_error' => 'Une erreur est survenue lors du retrait de l\'image.',
         ],
         'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du produit (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
     ],
