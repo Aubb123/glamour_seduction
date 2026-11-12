@@ -3,22 +3,23 @@
     function confirmDelete(token, confirmationText) {
         const form = document.getElementById('delete-form-' + token);
         if (!form) return;
+        const locale = @js(app()->getLocale());
 
         Swal.fire({
-            title: @js(app()->getLocale() === 'fr' ? 'Confirmation de suppression' : 'Delete confirmation'),
+            title: locale === 'fr' ? 'Confirmation de suppression' : 'Delete confirmation',
             text: confirmationText,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: @js(app()->getLocale() === 'fr' ? 'Oui, supprimer' : 'Yes, delete'),
-            cancelButtonText: @js(app()->getLocale() === 'fr' ? 'Annuler' : 'Cancel'),
+            confirmButtonText: locale === 'fr' ? 'Oui, supprimer' : 'Yes, delete',
+            cancelButtonText: locale === 'fr' ? 'Annuler' : 'Cancel',
         }).then((result) => {
             if (!result.isConfirmed) return;
             const button = form.querySelector('button');
             if (button) {
                 button.disabled = true;
-                button.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${@js(app()->getLocale() === 'fr' ? 'Suppression…' : 'Deleting…')}`;
+                button.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${locale === 'fr' ? 'Suppression…' : 'Deleting…'}`;
             }
             form.submit();
         });
@@ -27,22 +28,23 @@
     function confirmAction(formId, confirmationText, confirmButtonText = 'Confirmer', icon = 'warning') {
         const form = document.getElementById(formId);
         if (!form) return;
+        const locale = @js(app()->getLocale());
 
         Swal.fire({
-            title: @js(app()->getLocale() === 'fr' ? 'Confirmation' : 'Confirmation'),
+            title: locale === 'fr' ? 'Confirmation' : 'Confirmation',
             text: confirmationText,
             icon,
             showCancelButton: true,
             confirmButtonColor: icon === 'danger' || icon === 'warning' ? '#d33' : '#198754',
             cancelButtonColor: '#3085d6',
             confirmButtonText,
-            cancelButtonText: @js(app()->getLocale() === 'fr' ? 'Annuler' : 'Cancel'),
+            cancelButtonText: locale === 'fr' ? 'Annuler' : 'Cancel',
         }).then((result) => {
             if (!result.isConfirmed) return;
             const button = form.querySelector('button');
             if (button) {
                 button.disabled = true;
-                button.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${@js(app()->getLocale() === 'fr' ? 'Traitement…' : 'Processing…')}`;
+                button.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${locale === 'fr' ? 'Traitement…' : 'Processing…'}`;
             }
             form.submit();
         });
@@ -60,8 +62,8 @@
     <script>
         (() => {
             const messages = @json($errors->all());
-            const title = @js(app()->getLocale() === 'fr' ? 'Erreur de validation' : 'Validation error');
-            const confirmText = @js(app()->getLocale() === 'fr' ? 'Corriger' : 'Fix errors');
+            const title = @js(__('v1/backend/views/pages/products/products/messages/products-messages-validation.products.validation_title'));
+            const confirmText = @js(__('v1/backend/views/pages/products/products/messages/products-messages-validation.products.validation_confirm'));
             Swal.fire({
                 title,
                 html: messages.length > 1 ? '• ' + messages.join('<br>• ') : messages[0],
@@ -99,14 +101,7 @@
 @if ($message = Session::get('success_auth'))
     <script>
         (() => {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                showCloseButton: true,
-                timer: 20000,
-                timerProgressBar: true,
-            });
+            const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, showCloseButton: true, timer: 20000, timerProgressBar: true });
             Toast.fire({ icon: 'success', title: @js($message) });
         })();
     </script>
