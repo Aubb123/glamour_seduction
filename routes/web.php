@@ -65,8 +65,9 @@ use App\Services\V1\VersionService;
 use Illuminate\Support\Facades\Route;
 
 $version = app(VersionService::class)->getActive();
-// Routes pour V1 et V2 demeurent versionnées et les définitions de modules existantes ne sont pas écrasées.
+
 if ($version && $version->code === 'v1') {
+    // Keep V1 application route declarations in this branch.
     Route::controller(V1AuthController::class)->group(function () {
         Route::get('/', 'frontend_index')->name('frontend.index');
         Route::post('/frontend/currencies/switch', 'frontend_currencies_switch')->name('frontend.currencies.switch');
@@ -74,10 +75,24 @@ if ($version && $version->code === 'v1') {
         Route::post('/login', 'authenticate')->name('authenticate');
         Route::post('/logout', 'logout')->name('logout');
     });
+
     Route::controller(V1ProductVariantController::class)->group(function () {
+        Route::get('/backend/product-variants/index', 'backend_product_variants_index')->middleware(['permission:product-variants.index'])->name('backend.product-variants.index');
+        Route::get('/backend/product-variants/create', 'backend_product_variants_create')->middleware(['permission:product-variants.create'])->name('backend.product-variants.create');
+        Route::post('/backend/product-variants/store', 'backend_product_variants_store')->middleware(['permission:product-variants.store'])->name('backend.product-variants.store');
+        Route::get('/backend/product-variants/show/{productVariant}', 'backend_product_variants_show')->middleware(['permission:product-variants.show'])->name('backend.product-variants.show');
+        Route::get('/backend/product-variants/edit/{productVariant}', 'backend_product_variants_edit')->middleware(['permission:product-variants.edit'])->name('backend.product-variants.edit');
+        Route::put('/backend/product-variants/update/{productVariant}', 'backend_product_variants_update')->middleware(['permission:product-variants.update'])->name('backend.product-variants.update');
         Route::delete('/backend/product-variants/{productVariant}/images/{cloudFile}', 'backend_product_variants_destroy_file')->middleware(['permission:product-variants.update'])->name('backend.product-variants.destroy_file');
+        Route::patch('/backend/product-variants/activate/{productVariant}', 'backend_product_variants_activate')->middleware(['permission:product-variants.activate'])->name('backend.product-variants.activate');
+        Route::patch('/backend/product-variants/deactivate/{productVariant}', 'backend_product_variants_deactivate')->middleware(['permission:product-variants.deactivate'])->name('backend.product-variants.deactivate');
+        Route::delete('/backend/product-variants/destroy/{productVariant}', 'backend_product_variants_destroy')->middleware(['permission:product-variants.destroy'])->name('backend.product-variants.destroy');
+        Route::get('/backend/product-variants/trashed', 'backend_product_variants_trashed')->middleware(['permission:product-variants.trashed'])->name('backend.product-variants.trashed');
+        Route::patch('/backend/product-variants/restore/{uuid}', 'backend_product_variants_restore')->middleware(['permission:product-variants.restore'])->name('backend.product-variants.restore');
+        Route::delete('/backend/product-variants/force-destroy/{uuid}', 'backend_product_variants_force_destroy')->middleware(['permission:product-variants.force_destroy'])->name('backend.product-variants.force_destroy');
     });
 }
+
 if ($version && $version->code === 'v2') {
     Route::controller(V2FrontendController::class)->group(function () {
         Route::get('/', 'frontend_index')->name('frontend.index');
