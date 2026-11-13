@@ -40,13 +40,14 @@
         <label class="form-label small fw-medium">{{ __('Images actuelles (:count)', ['count' => $images->count()]) }}</label>
         <div class="image-gallery-wrapper">
             @foreach ($images as $image)
-                <label class="image-gallery-item p-1" for="remove-image-{{ $image->uuid }}">
+                <div class="image-gallery-item p-1">
                     <img src="{{ route('cloud-file.show', ['uuid' => $image->uuid]) }}" alt="{{ __('Image :number', ['number' => $loop->iteration]) }}">
-                    <span class="form-check d-flex gap-1 align-items-center mt-1">
-                        <input class="form-check-input mt-0" type="checkbox" id="remove-image-{{ $image->uuid }}" name="remove_cloud_file_uuids[]" value="{{ $image->uuid }}" {{ in_array($image->uuid, $removeSelected, true) ? 'checked' : '' }}>
-                        <span class="small">{{ __('Retirer') }}</span>
-                    </span>
-                </label>
+                    <form action="{{ route('backend.product-variants.destroy_file', ['productVariant' => $entity->uuid, 'cloudFile' => $image->uuid]) }}" method="POST" class="text-center mt-1">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-outline-danger py-0" onclick="return confirm('{{ __('Retirer cette image de la variante ?') }}')">{{ __('Retirer') }}</button>
+                    </form>
+                </div>
             @endforeach
         </div>
     </div>
