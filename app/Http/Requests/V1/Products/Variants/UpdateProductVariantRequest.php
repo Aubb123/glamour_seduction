@@ -30,6 +30,8 @@ class UpdateProductVariantRequest extends FormRequest
             'cloud_platform_uuid' => ['nullable', 'required_with:files', 'exists:cloud_platforms,uuid'],
             'files' => ['nullable', 'array', 'max:4'],
             'files.*' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+            'remove_cloud_file_uuids' => ['sometimes', 'array', 'max:4'],
+            'remove_cloud_file_uuids.*' => ['required', 'uuid', 'distinct'],
         ];
     }
 
@@ -56,6 +58,10 @@ class UpdateProductVariantRequest extends FormRequest
             'files.max' => __('Une variante ne peut pas avoir plus de 4 images.'),
             'files.*.mimes' => __('Formats acceptés : JPG, JPEG, PNG, WEBP et GIF.'),
             'files.*.max' => __('Chaque image ne doit pas dépasser 2 Mo.'),
+            'remove_cloud_file_uuids.array' => __('La liste des images à retirer est invalide.'),
+            'remove_cloud_file_uuids.max' => __('Vous ne pouvez retirer que les images de cette variante.'),
+            'remove_cloud_file_uuids.*.uuid' => __('Une référence d’image est invalide.'),
+            'remove_cloud_file_uuids.*.distinct' => __('Une même image ne peut être sélectionnée deux fois.'),
         ];
     }
 }
