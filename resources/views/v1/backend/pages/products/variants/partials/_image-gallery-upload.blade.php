@@ -2,20 +2,21 @@
     $inputId = $inputId ?? 'variant-files-' . uniqid();
     $images = isset($entity) ? $entity->cloudFiles->where('file_type', 'image')->sortBy(fn ($file) => $file->metadata['page'] ?? 0) : collect();
     $selectedCloudPlatform = old('cloud_platform_uuid', $images->first()?->cloudFolder?->platform?->uuid ?? '');
+    $removeSelected = old('remove_cloud_file_uuids', []);
 @endphp
 
 @push('styles')
 <style>
     .image-gallery-wrapper { display: flex; flex-wrap: wrap; gap: 8px; }
-    .image-gallery-item { position: relative; width: 100px; height: 100px; overflow: hidden; border: 1px solid #dee2e6; border-radius: 8px; background: #f8f9fa; }
-    .image-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .image-gallery-item { position: relative; width: 120px; overflow: hidden; border: 1px solid #dee2e6; border-radius: 8px; background: #f8f9fa; }
+    .image-gallery-item img { width: 100%; height: 100px; object-fit: cover; display: block; }
 </style>
 @endpush
 
 <div class="row">
     <div class="col-md-6 mb-3">
         <label class="form-label">{{ __('Plateforme cloud') }}</label>
-        <select name="cloud_platform_uuid" class="form-select @error('cloud_platform_uuid') is-invalid @enderror" {{ $images->isEmpty() ? '' : '' }}>
+        <select name="cloud_platform_uuid" class="form-select @error('cloud_platform_uuid') is-invalid @enderror">
             <option value="">{{ __('Sélectionnez une plateforme cloud') }}</option>
             @foreach(getActiveCloudPlatforms() as $platform)
                 <option value="{{ $platform->uuid }}" {{ $selectedCloudPlatform === $platform->uuid ? 'selected' : '' }}>{{ $platform->label }}</option>
@@ -39,11 +40,14 @@
         <label class="form-label small fw-medium">{{ __('Images actuelles (:count)', ['count' => $images->count()]) }}</label>
         <div class="image-gallery-wrapper">
             @foreach ($images as $image)
-                <div class="image-gallery-item">
+                <label class="image-gallery-item p-1" for="remove-image-{{ $image->uuid }}">
                     <img src="{{ route('cloud-file.show', ['uuid' => $image->uuid]) }}" alt="{{ __('Image :number', ['number' => $loop->iteration]) }}">
-                </div>
+                    <span class="form-check d-flex gap-1 align-items-center mt-1">
+                        <input class="form-check-input mt-0" type="checkbox" id="remove-image-{{ $image->uuid }}" name="remove_cloud_file_uuids[]" value="{{ $image->uuid }}" {{ in_array($image->uuid, $removeSelected, true) ? 'checked' : '' }}>
+                        <span class="small">{{ __('Retirer') }}</span>
+                    </span>
+                </label>
             @endforeach
         </div>
-        <small class="text-muted d-block mt-1">{{ __('Les images existantes sont conservées. Pour en retirer une, utilisez la fiche de la variante.') }}</small>
     </div>
 @endif
