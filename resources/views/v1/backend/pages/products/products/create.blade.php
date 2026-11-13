@@ -202,7 +202,7 @@
                         {{-- Étape 5 : Multimédias --}}
                         <div class="step-content d-none" data-step-content="5">
 
-                            @include('v1.backend.layouts.partials._image-gallery-preview', [
+                            @include('v1.backend.layouts.partials._multi-image-upload-preview', [
                                 'form_label' => __('Images principales du produit'),
                                 'format_accept' => __('Formats acceptés : JPG, PNG, WEBP. Taille max : 2 Mo. Jusqu\'à 4 images.'),
                                 'entity' => null,
