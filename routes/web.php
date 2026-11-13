@@ -65,9 +65,6 @@ use App\Services\V1\VersionService;
 use Illuminate\Support\Facades\Route;
 
 $version = app(VersionService::class)->getActive();
-
-// NB : la version « courante » est résolue par VersionService::getActive().
-// Les routes métier restent déclarées dans le bloc correspondant à leur version.
 if ($version && $version->code === 'v1') {
     Route::controller(V1AuthController::class)->group(function () {
         Route::get('/', 'frontend_index')->name('frontend.index');
@@ -76,14 +73,10 @@ if ($version && $version->code === 'v1') {
         Route::post('/login', 'authenticate')->name('authenticate');
         Route::post('/logout', 'logout')->name('logout');
     });
-
     Route::controller(V1ProductVariantController::class)->group(function () {
-        Route::delete('/backend/product-variants/{productVariant}/images/{cloudFile}', 'backend_product_variants_destroy_file')
-            ->middleware(['permission:product-variants.update'])
-            ->name('backend.product-variants.destroy_file');
+        Route::delete('/backend/product-variants/{productVariant}/images/{cloudFile}', 'backend_product_variants_destroy_file')->middleware(['permission:product-variants.update'])->name('backend.product-variants.destroy_file');
     });
 }
-
 if ($version && $version->code === 'v2') {
     Route::controller(V2FrontendController::class)->group(function () {
         Route::get('/', 'frontend_index')->name('frontend.index');
