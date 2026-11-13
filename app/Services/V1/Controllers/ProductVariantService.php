@@ -3,6 +3,7 @@
 namespace App\Services\V1\Controllers;
 
 use App\Enums\Products\Variants\ProductVariantStatus;
+use App\Models\CloudFile;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
@@ -31,10 +32,7 @@ class ProductVariantService
                 'is_default' => $isDefault,
             ]);
 
-            if ($isDefault) {
-                $this->unsetOtherDefaults($variant);
-            }
-
+            if ($isDefault) $this->unsetOtherDefaults($variant);
             $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
             $this->attachImages($variant, $data);
 
@@ -44,13 +42,19 @@ class ProductVariantService
 
     public function backend_product_variants_update(ProductVariant $variant, array $data): ProductVariant
     {
-        $newImages = $data['files'] ?? [];
-        $existingImageCount = $variant->cloudFiles()->where('file_type', 'image')->count();
-        if ($existingImageCount + count($newImages) > 4) {
-            throw new \InvalidArgumentException(__('Une variante ne peut pas avoir plus de 4 images. Supprimez une image avant d’en ajouter.'));
+        $removeUuids = collect($data['remove_cloud_file_uuids'] ?? [])->filter()->unique()->values();
+        $imagesToRemove = $variant->cloudFiles()->where('file_type', 'image')->whereIn('uuid', $removeUuids)->get();
+        if ($imagesToRemove->count() !== $removeUuids->count()) {
+            throw new \InvalidArgumentException(__('Une ou plusieurs images sélectionnées ne sont pas associées à cette variante.'));
         }
 
-        return DB::transaction(function () use ($variant, $data) {
+        $newImages = array_values(array_filter($data['files'] ?? []));
+        $existingCount = $variant->cloudFiles()->where('file_type', 'image')->count();
+        if ($existingCount - $imagesToRemove->count() + count($newImages) > 4) {
+            throw new \InvalidArgumentException(__('Une variante ne peut pas avoir plus de 4 images. Retirez une image avant d’en ajouter.'));
+        }
+
+        return DB::transaction(function () use ($variant, $data, $imagesToRemove) {
             $updateData = [];
             if (isset($data['sku'])) $updateData['sku'] = $data['sku'];
             if (array_key_exists('barcode', $data)) $updateData['barcode'] = $data['barcode'] ?: null;
@@ -65,6 +69,11 @@ class ProductVariantService
             $variant->update($updateData);
             if ($variant->is_default) $this->unsetOtherDefaults($variant);
             if (array_key_exists('attribute_value_ids', $data)) $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
+
+            foreach ($imagesToRemove as $image) {
+                if ($image->trashed()) continue;
+                destroy_function($image);
+            }
             $this->attachImages($variant, $data);
 
             return $variant;
@@ -81,27 +90,12 @@ class ProductVariantService
         if (! $platformUuid) {
             throw new \InvalidArgumentException(__('Sélectionnez une plateforme cloud pour téléverser les images.'));
         }
-
-        $currentCount = $variant->cloudFiles()->where('file_type', 'image')->count();
-        if ($currentCount + count($files) > 4) {
-            throw new \InvalidArgumentException(__('Une variante ne peut pas avoir plus de 4 images.'));
-        }
-
-        $this->cloudFileService->uploadEntityFiles(
-            $files,
-            $platformUuid,
-            $variant,
-            'product_variants',
-            $this->backendLangPath,
-        );
+        $this->cloudFileService->uploadEntityFiles($files, $platformUuid, $variant, 'product_variants', $this->backendLangPath);
     }
 
     private function unsetOtherDefaults(ProductVariant $variant): void
     {
-        ProductVariant::where('product_id', $variant->product_id)
-            ->where('id', '!=', $variant->id)
-            ->where('is_default', true)
-            ->update(['is_default' => false]);
+        ProductVariant::where('product_id', $variant->product_id)->where('id', '!=', $variant->id)->where('is_default', true)->update(['is_default' => false]);
     }
 
     private function syncAttributeValues(ProductVariant $variant, array $attributeValueIds): void
@@ -113,9 +107,7 @@ class ProductVariantService
     public function backend_product_variants_activate(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-            if ($variant->status === ProductVariantStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
-            }
+            if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             $variant->update(['status' => ProductVariantStatus::Active]);
         });
     }
@@ -123,9 +115,7 @@ class ProductVariantService
     public function backend_product_variants_deactivate(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-            if ($variant->status === ProductVariantStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
-            }
+            if ($variant->status === ProductVariantStatus::Inactive) throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             $variant->update(['status' => ProductVariantStatus::Inactive]);
         });
     }
@@ -133,12 +123,8 @@ class ProductVariantService
     public function backend_product_variants_destroy(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-            if ($variant->status === ProductVariantStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
-            }
-            if ($variant->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
-            }
+            if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
+            if ($variant->trashed()) throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             destroy_function($variant);
         });
     }
@@ -155,9 +141,7 @@ class ProductVariantService
     {
         DB::transaction(function () use ($variant) {
             if ($variant->trashed()) {
-                if ($variant->status === ProductVariantStatus::Active) {
-                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
-                }
+                if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
                 force_destroy_function($variant);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
