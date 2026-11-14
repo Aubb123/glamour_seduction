@@ -140,7 +140,7 @@ return [
         'store' => [
             'success' => 'Assigning a staff member to the warehouse: :name',
             'error' => 'Error while assigning the staff member',
-            'not_found' => 'User or position not found.',
+            'not_found' => 'User not found.',
             'duplicate' => 'This user is already assigned to this warehouse.',
             'flash_success' => 'Staff member (:name) successfully assigned.',
             'flash_error' => 'An error occurred.',
