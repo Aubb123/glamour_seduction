@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Enums\Shops\Positions\PositionContext;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Products\Warehouses\StoreProductWarehouseRequest;
 use App\Http\Requests\V1\Products\Warehouses\UpdateProductWarehouseRequest;
-use App\Models\Position;
 use App\Models\ProductWarehouse;
 use App\Models\User;
 use App\Services\V1\Controllers\ProductWarehouseService;
@@ -142,13 +140,8 @@ class ProductWarehouseController extends Controller
             // Données pour le panneau « Personnel » de la fiche entrepôt
             $availableUsers = User::orderBy('first_name')->get();
 
-            $availablePositions = Position::withActiveTranslation()
-                ->active()
-                ->forContext(PositionContext::Warehouse)
-                ->orderBy('sort_order')->get();
-
             // Retourne la vue de l'entrepôt avec les données nécessaires
-            return view('v1.backend.pages.products.warehouses.show', compact('warehouse', 'availableUsers', 'availablePositions'));
+            return view('v1.backend.pages.products.warehouses.show', compact('warehouse', 'availableUsers'));
 
         } catch (\Exception $e) {
 

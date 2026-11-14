@@ -564,7 +564,6 @@ class BackendHelper
                             ['label' => 'Stocks', 'route' => 'backend.product-warehouse-stocks.index', 'patterns' => ['backend.product-warehouse-stocks.*']],
                             ['label' => 'Mouvements de stock', 'route' => 'backend.product-stock-movements.index', 'patterns' => ['backend.product-stock-movements.*']],
                             ['label' => 'Boutiques', 'route' => 'backend.shops.index', 'patterns' => ['backend.shops.*', 'backend.shop-translations.*']],
-                            ['label' => 'Postes', 'route' => 'backend.positions.index', 'patterns' => ['backend.positions.*', 'backend.position-translations.*']],
                         ],
                     ],
                     [

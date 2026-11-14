@@ -62,8 +62,6 @@ class PermissionSeeder extends Seeder
         'product-stock-movements' => [], // Mouvements de stock (audit & traçabilité) (module Boutique)
         'shops' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Boutiques / points de vente (module Boutique)
         'shop-translations' => [], // Traductions des boutiques
-        'positions' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Postes du personnel (module Boutique)
-        'position-translations' => [], // Traductions des postes
         'shop-users' => [], // Personnel affecté aux boutiques (module Boutique)
         'warehouse-users' => [], // Personnel affecté aux entrepôts (module Boutique)
         'faqs' => ['toggle_active', 'audits', 'activity_logs'], // FAQs
