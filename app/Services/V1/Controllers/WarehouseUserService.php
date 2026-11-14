@@ -22,14 +22,6 @@ class WarehouseUserService
             // Résout l'utilisateur par UUID
             $user = User::where('uuid', $data['user_uuid'])->firstOrFail();
 
-            // Résout le poste (optionnel)
-            $positionId = null;
-
-            if (! empty($data['position_uuid'])) {
-                $position = \App\Models\Position::where('uuid', $data['position_uuid'])->firstOrFail();
-                $positionId = $position->id;
-            }
-
             $isManager = ($data['is_manager'] ?? null) === '1' || ($data['is_manager'] ?? false) === true;
 
             // Affectation unique par couple (warehouse_id, user_id)
@@ -39,7 +31,6 @@ class WarehouseUserService
 
             $warehouse->warehouseUsers()->attach($user->getKey(), [
                 'uuid' => (string) Str::uuid(),
-                'position_id' => $positionId,
                 'is_manager' => $isManager,
             ]);
 
@@ -64,16 +55,6 @@ class WarehouseUserService
             $user = User::findOrFail($pivot->user_id);
 
             $updateData = [];
-
-            if (array_key_exists('position_uuid', $data)) {
-
-                if (empty($data['position_uuid'])) {
-                    $updateData['position_id'] = null;
-                } else {
-                    $position = \App\Models\Position::where('uuid', $data['position_uuid'])->firstOrFail();
-                    $updateData['position_id'] = $position->id;
-                }
-            }
 
             if (array_key_exists('is_manager', $data)) {
                 $updateData['is_manager'] = ($data['is_manager'] ?? null) === '1' || ($data['is_manager'] ?? false) === true;
