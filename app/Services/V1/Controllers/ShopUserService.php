@@ -2,8 +2,6 @@
 
 namespace App\Services\V1\Controllers;
 
-use App\Enums\Shops\Positions\PositionContext;
-use App\Models\Position;
 use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -24,14 +22,6 @@ class ShopUserService
             // Résout l'utilisateur par UUID (jamais par ID direct)
             $user = User::where('uuid', $data['user_uuid'])->firstOrFail();
 
-            // Vérifie le poste fourni (optionnel) : il doit exister et être compatible
-            $positionId = null;
-
-            if (! empty($data['position_uuid'])) {
-                $position = Position::where('uuid', $data['position_uuid'])->firstOrFail();
-                $positionId = $position->id;
-            }
-
             $isManager = ($data['is_manager'] ?? null) === '1' || ($data['is_manager'] ?? false) === true;
 
             // Affectation unique par couple (shop_id, user_id)
@@ -42,7 +32,6 @@ class ShopUserService
             // Attache le personnel au pivot enrichi `shop_users`
             $shop->shopUsers()->attach($user->getKey(), [
                 'uuid' => (string) Str::uuid(),
-                'position_id' => $positionId,
                 'is_manager' => $isManager,
             ]);
 
@@ -69,16 +58,6 @@ class ShopUserService
             $user = User::findOrFail($pivot->user_id);
 
             $updateData = [];
-
-            if (array_key_exists('position_uuid', $data)) {
-
-                if (empty($data['position_uuid'])) {
-                    $updateData['position_id'] = null;
-                } else {
-                    $position = Position::where('uuid', $data['position_uuid'])->firstOrFail();
-                    $updateData['position_id'] = $position->id;
-                }
-            }
 
             if (array_key_exists('is_manager', $data)) {
                 $updateData['is_manager'] = ($data['is_manager'] ?? null) === '1' || ($data['is_manager'] ?? false) === true;
