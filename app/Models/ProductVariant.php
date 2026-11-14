@@ -56,24 +56,25 @@ class ProductVariant extends Model
         return $this->hasMany(ProductStockMovement::class, 'product_variant_id');
     }
 
-    /**
-     * Images to display for this variant. When the variant has no own images,
-     * the product gallery is returned as a fallback for storefront selectors.
-     */
+    /** Images shown for this variant, falling back to the parent product gallery. */
     public function displayImages(): Collection
     {
-        $variantImages = $this->cloudFiles->where('file_type', 'image')
+        $ownImages = $this->cloudFiles->where('file_type', 'image')
             ->sortBy(fn ($file) => $file->metadata['page'] ?? 0)
             ->values();
 
-        if ($variantImages->isNotEmpty()) {
-            return $variantImages;
+        if ($ownImages->isNotEmpty()) {
+            return $ownImages;
         }
 
-        return $this->product?->cloudFiles
-            ?->where('file_type', 'image')
+        $product = $this->product;
+        if (! $product) {
+            return collect();
+        }
+
+        return $product->cloudFiles->where('file_type', 'image')
             ->sortBy(fn ($file) => $file->metadata['page'] ?? 0)
-            ->values() ?? collect();
+            ->values();
     }
 
     public function effectivePrice(): string
