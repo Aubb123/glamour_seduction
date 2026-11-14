@@ -61,7 +61,6 @@ return Application::configure(basePath: dirname(__DIR__))
             }
             return null;
         });
-
         $exceptions->reportable(function (\Throwable $e): void {
             if ($e instanceof ValidationException) return;
             if ($e instanceof HttpExceptionInterface && $e->getStatusCode() < 500) return;
