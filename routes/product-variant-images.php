@@ -4,7 +4,6 @@ use App\Http\Controllers\V1\ProductVariantController as V1ProductVariantControll
 use App\Services\V1\VersionService;
 use Illuminate\Support\Facades\Route;
 
-/* Optional V1 endpoint for removing one image from a variant gallery. */
 $version = app(VersionService::class)->getActive();
 
 if ($version && $version->code === 'v1') {
@@ -18,8 +17,10 @@ if ($version && $version->code === 'v1') {
         'v1.web.check.active.role',
         'v1.web.check.cloud.files.sync',
     ])->group(function () {
-        Route::delete('/backend/product-variants/{productVariant}/images/{cloudFile}', [V1ProductVariantController::class, 'backend_product_variants_destroy_file'])
-            ->middleware(['permission:product-variants.update'])
+        Route::delete(
+            '/backend/product-variants/{productVariant}/images/{cloudFile}',
+            [V1ProductVariantController::class, 'backend_product_variants_destroy_file']
+        )->middleware(['permission:product-variants.update'])
             ->name('backend.product-variants.destroy_file');
     });
 }
