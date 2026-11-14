@@ -19,9 +19,8 @@ class StoreShopUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // L'utilisateur et le poste sont résolus par UUID (jamais par ID)
+            // L'utilisateur est résolu par UUID (jamais par ID)
             'user_uuid' => ['required', 'exists:users,uuid'],
-            'position_uuid' => ['nullable', 'exists:positions,uuid'],
             'is_manager' => ['sometimes', 'boolean'],
         ];
     }
@@ -31,7 +30,6 @@ class StoreShopUserRequest extends FormRequest
         return [
             'user_uuid.required' => __("{$this->backendLangPath}.user_uuid.required"),
             'user_uuid.exists' => __("{$this->backendLangPath}.user_uuid.exists"),
-            'position_uuid.exists' => __("{$this->backendLangPath}.position_uuid.exists"),
             'is_manager.boolean' => __("{$this->backendLangPath}.is_manager.boolean"),
         ];
     }

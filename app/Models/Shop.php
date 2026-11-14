@@ -83,7 +83,7 @@ class Shop extends Model
      * Relation many-to-many vers le personnel affecté à la boutique.
      *
      * Le pivot `shop_users` est une table pivot enrichie (colonnes `uuid`,
-     * `position_id`, `is_manager`), au même titre que `blog_post_tag`. Il n'y a
+     * `is_manager`), au même titre que `blog_post_tag`. Il n'y a
      * volontairement PLUS de modèle ShopUser : on manipule le pivot via les
      * méthodes Eloquent (attach/updateExistingPivot/detach) et on lit les colonnes
      * enrichies via `$user->pivot`.
@@ -91,7 +91,7 @@ class Shop extends Model
     public function shopUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'shop_users', 'shop_id', 'user_id')
-            ->withPivot(['uuid', 'position_id', 'is_manager'])
+            ->withPivot(['uuid', 'is_manager'])
             ->withTimestamps();
     }
 

@@ -1,14 +1,6 @@
 @php
     // Repli : si le contrôleur ne fournit pas ces collections, on les charge ici.
     $availableUsers = $availableUsers ?? \App\Models\User::orderBy('first_name')->get();
-    $availablePositions = $availablePositions ?? \App\Models\Position::withActiveTranslation()
-        ->active()
-        ->forContext(\App\Enums\Shops\Positions\PositionContext::Shop)
-        ->orderBy('sort_order')
-        ->get();
-
-    // Indexe les postes par ID pour résoudre le libellé depuis `pivot->position_id`
-    $positionsById = collect($availablePositions)->keyBy('id');
 @endphp
 
 <div class="col-12">
@@ -24,7 +16,7 @@
             <div class="collapse mb-3" id="add-shop-staff">
                 <form action="{{ route('backend.shop-users.store', ['shop' => $shop->uuid]) }}" method="POST" class="row g-2 align-items-end border rounded p-3 bg-light">
                     @csrf
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label for="user_uuid" class="form-label">{{ __('Utilisateur') }} <span class="text-danger">*</span></label>
                         <select name="user_uuid" id="user_uuid" class="form-select form-select-sm" required>
                             <option value="">— {{ __('Sélectionner') }} —</option>
@@ -34,15 +26,6 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="position_uuid" class="form-label">{{ __('Poste') }}</label>
-                        <select name="position_uuid" id="position_uuid" class="form-select form-select-sm">
-                            <option value="">— {{ __('Aucun') }} —</option>
-                            @foreach ($availablePositions as $position)
-                                <option value="{{ $position->uuid }}">{{ $position->active_translation?->name ?? $position->code }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-2">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" name="is_manager" id="is_manager" value="1">
                             <label class="form-check-label" for="is_manager">{{ __('Responsable') }}</label>
@@ -60,30 +43,21 @@
                         <tr>
                             <th>#</th>
                             <th>{{ __('Utilisateur') }}</th>
-                            <th>{{ __('Poste') }}</th>
                             <th>{{ __('Responsable') }}</th>
                             <th class="text-center">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- NB : le personnel est désormais un pivot `shop_users` : on itère
+                        {{-- NB : le personnel est un pivot `shop_users` : on itère
                              les utilisateurs liés et on lit les colonnes enrichies via ->pivot. --}}
                         @forelse ($shop->shopUsers as $user)
                             @php($pivot = $user->pivot)
-                            @php($position = $positionsById->get($pivot->position_id))
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>
                                     <a href="{{ route('backend.users.show', ['user' => $user->uuid, 'slug' => $user->slug]) }}" class="text-decoration-none fw-semibold">
                                         {{ $user->first_name }} {{ $user->last_name }}
                                     </a>
-                                </td>
-                                <td>
-                                    @if ($position)
-                                        <span class="badge badge-soft-primary">{{ $position->active_translation?->name ?? $position->code }}</span>
-                                    @else
-                                        <span class="text-muted">—</span>
-                                    @endif
                                 </td>
                                 <td>
                                     @if ($pivot->is_manager)
@@ -109,21 +83,13 @@
                                         <form action="{{ route('backend.shop-users.update', ['shopUser' => $pivot->uuid]) }}" method="POST" class="row g-2 align-items-end">
                                             @csrf
                                             @method('PUT')
-                                            <div class="col-md-5">
-                                                <select name="position_uuid" class="form-select form-select-sm">
-                                                    <option value="">— {{ __('Aucun') }} —</option>
-                                                    @foreach ($availablePositions as $position)
-                                                        <option value="{{ $position->uuid }}" {{ $pivot->position_id === $position->id ? 'selected' : '' }}>{{ $position->active_translation?->name ?? $position->code }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-8">
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" type="checkbox" name="is_manager" value="1" {{ $pivot->is_manager ? 'checked' : '' }}>
                                                     <label class="form-check-label">{{ __('Responsable') }}</label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <button type="submit" class="btn btn-sm btn-success w-100">{{ __('Enregistrer') }}</button>
                                             </div>
                                         </form>
@@ -132,7 +98,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-3">{{ __('Aucun membre du personnel affecté.') }}</td>
+                                <td colspan="4" class="text-center text-muted py-3">{{ __('Aucun membre du personnel affecté.') }}</td>
                             </tr>
                         @endforelse
                     </tbody>

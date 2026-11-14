@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Position;
 use App\Models\Shop;
 use App\Models\User;
 use App\Traits\HasActivityLogs;
@@ -50,7 +49,6 @@ class ShopUser extends Model
     protected $fillable = [
         'shop_id',
         'user_id',
-        'position_id',
         'is_manager',
     ];
 
@@ -81,13 +79,5 @@ class ShopUser extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    /**
-     * Relation : l'affectation porte un poste (optionnel).
-     */
-    public function position(): BelongsTo
-    {
-        return $this->belongsTo(Position::class, 'position_id');
     }
 }

@@ -13,15 +13,13 @@ return new class extends Migration
     {
         // Table: shop_users, affecte le personnel (utilisateurs) aux boutiques.
         // Un utilisateur peut être affecté à plusieurs boutiques (relation many-to-many
-        // matérialisée par cette table pivot enrichie : poste + rôle de responsable).
-        // `position_id` référence un poste partagé (context shop|warehouse|both).
+        // matérialisée par cette table pivot enrichie : rôle de responsable).
         Schema::create('shop_users', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
             //
             $table->foreignId('shop_id')->constrained('shops')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('position_id')->nullable()->constrained('positions')->cascadeOnUpdate()->nullOnDelete();
             //
             $table->boolean('is_manager')->default(false); // Responsable de la boutique
             //
