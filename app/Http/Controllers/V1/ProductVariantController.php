@@ -128,32 +128,20 @@ class ProductVariantController extends Controller
 
     public function backend_product_variants_activate(ProductVariant $productVariant): RedirectResponse
     {
-        try {
-            $this->productVariantService->backend_product_variants_activate($productVariant);
-            return back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['sku' => $productVariant->sku]));
-        } catch (\InvalidArgumentException $e) {
-            return back()->with('error', $e->getMessage());
-        }
+        try { $this->productVariantService->backend_product_variants_activate($productVariant); return back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['sku' => $productVariant->sku])); }
+        catch (\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
     }
 
     public function backend_product_variants_deactivate(ProductVariant $productVariant): RedirectResponse
     {
-        try {
-            $this->productVariantService->backend_product_variants_deactivate($productVariant);
-            return back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['sku' => $productVariant->sku]));
-        } catch (\InvalidArgumentException $e) {
-            return back()->with('error', $e->getMessage());
-        }
+        try { $this->productVariantService->backend_product_variants_deactivate($productVariant); return back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['sku' => $productVariant->sku])); }
+        catch (\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
     }
 
     public function backend_product_variants_destroy(ProductVariant $productVariant): RedirectResponse
     {
-        try {
-            $this->productVariantService->backend_product_variants_destroy($productVariant);
-            return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['sku' => $productVariant->sku]));
-        } catch (\InvalidArgumentException $e) {
-            return back()->with('error', $e->getMessage());
-        }
+        try { $this->productVariantService->backend_product_variants_destroy($productVariant); return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['sku' => $productVariant->sku])); }
+        catch (\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
     }
 
     public function backend_product_variants_restore(string $uuid): RedirectResponse
