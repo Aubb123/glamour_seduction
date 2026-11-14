@@ -20,10 +20,6 @@ function something()
     // ..
 }
 
-/**
- * Reload the V1 routes after minimal version seeds are in place. Supplemental
- * route files are required explicitly because this helper resets the collection.
- */
 function bootV1WebRoutes(): void
 {
     $router = Route::getFacadeRoot();
