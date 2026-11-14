@@ -83,7 +83,7 @@ class ProductVariantController extends Controller
         try {
             $audits = $productVariant->audits()->orderByDesc('created_at')->get();
             $this->logActivity(type: 'info', action: 'backend.product-variants.audits', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.audits.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
-            return view('v1.backend.pages.products.variants.others.audits', compact('variant', 'audits'));
+            return view('v1.backend.pages.products.variants.others.audits', ['variant' => $productVariant, 'audits' => $audits]);
         } catch (\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.audits', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $productVariant->uuid]), is_success: false);
             abort(500);
@@ -95,7 +95,7 @@ class ProductVariantController extends Controller
         try {
             $logs = $productVariant->activityLogs()->orderByDesc('created_at')->get();
             $this->logActivity(type: 'info', action: 'backend.product-variants.activity-logs', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
-            return view('v1.backend.pages.products.variants.others.activity-logs', compact('variant', 'logs'));
+            return view('v1.backend.pages.products.variants.others.activity-logs', ['variant' => $productVariant, 'logs' => $logs]);
         } catch (\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.activity-logs', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productVariant->uuid]), is_success: false);
             abort(500);
@@ -138,32 +138,33 @@ class ProductVariantController extends Controller
                 throw new \\InvalidArgumentException(__("{$this->backendLangPath}.destroy_file.not_found"));
             }
             destroy_function($cloudFile);
-            $this->logActivity(type: 'info', action: 'backend.product-variants.destroy_file', context: ['variant_uuid' => $productVariant->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: null, activity: __('Variant image removed.'), is_success: true, loggable: $productVariant);
-            return back()->with('success', __('Variant image removed.'));
+            $this->logActivity(type: 'info', action: 'backend.product-variants.destroy_file', context: ['variant_uuid' => $productVariant->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: null, activity: __("{$this->backendLangPath}.destroy_file.success", ['uuid' => $cloudFile->uuid]), is_success: true, loggable: $productVariant);
+            return back()->with('success', __("{$this->backendLangPath}.destroy_file.flash_success"));
         } catch (\\InvalidArgumentException $e) {
+            $this->logActivity(type: 'warning', action: 'backend.product-variants.destroy_file', context: ['variant_uuid' => $productVariant->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy_file.warning", ['uuid' => $cloudFile->uuid]), is_success: false);
             return back()->with('error', $e->getMessage());
         } catch (\\Exception $e) {
-            $this->logActivity(type: 'error', action: 'backend.product-variants.destroy_file', context: ['variant_uuid' => $productVariant->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy_file.error"), is_success: false);
-            return back()->with('error', __("{$this->backendLangPath}.destroy_file.error"));
+            $this->logActivity(type: 'error', action: 'backend.product-variants.destroy_file', context: ['variant_uuid' => $productVariant->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy_file.error", ['uuid' => $cloudFile->uuid]), is_success: false);
+            return back()->with('error', __("{$this->backendLangPath}.destroy_file.flash_error"));
         }
     }
 
     public function backend_product_variants_activate(ProductVariant $productVariant): RedirectResponse
     {
         try { $this->productVariantService->backend_product_variants_activate($productVariant); return back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['sku' => $productVariant->sku])); }
-        catch (\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
+        catch (\\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
     }
 
     public function backend_product_variants_deactivate(ProductVariant $productVariant): RedirectResponse
     {
         try { $this->productVariantService->backend_product_variants_deactivate($productVariant); return back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['sku' => $productVariant->sku])); }
-        catch (\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
+        catch (\\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
     }
 
     public function backend_product_variants_destroy(ProductVariant $productVariant): RedirectResponse
     {
         try { $this->productVariantService->backend_product_variants_destroy($productVariant); return redirect()->route('backend.product-variants.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['sku' => $productVariant->sku])); }
-        catch (\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
+        catch (\\InvalidArgumentException $e) { return back()->with('error', $e->getMessage()); }
     }
 
     public function backend_product_variants_restore(string $uuid): RedirectResponse
@@ -174,13 +175,13 @@ class ProductVariantController extends Controller
             $this->productVariantService->backend_product_variants_restore($variant);
             $this->logActivity(type: 'info', action: 'backend.product-variants.restore', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $sku], message: null, activity: __("{$this->backendLangPath}.restore.success", ['sku' => $sku]), is_success: true, loggable: $variant);
             return back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['sku' => $sku]));
-        } catch (ModelNotFoundException $e) {
+        } catch (\\Illuminate\\Database\\Eloquent\\ModelNotFoundException $e) {
             $this->logActivity(type: 'warning', action: 'backend.product-variants.restore', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
             abort(404);
-        } catch (\InvalidArgumentException $e) {
+        } catch (\\InvalidArgumentException $e) {
             $this->logActivity(type: 'warning', action: 'backend.product-variants.restore', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning_meta", ['uuid' => $uuid]), is_success: false);
             return back()->with('error', $e->getMessage());
-        } catch (\Exception $e) {
+        } catch (\\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.restore', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.error", ['uuid' => $uuid]), is_success: false);
             return back()->with('error', __("{$this->backendLangPath}.restore.flash_error"));
         }
@@ -194,13 +195,13 @@ class ProductVariantController extends Controller
             $this->productVariantService->backend_product_variants_force_destroy($variant);
             $this->logActivity(type: 'info', action: 'backend.product-variants.force_destroy', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $sku], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['sku' => $sku]), is_success: true, loggable: $variant);
             return redirect()->route('backend.product-variants.trashed')->with('success', __("{$this->backendLangPath}.force_destroy.flash_success"));
-        } catch (ModelNotFoundException $e) {
+        } catch (\\Illuminate\\Database\\Eloquent\\ModelNotFoundException $e) {
             $this->logActivity(type: 'warning', action: 'backend.product-variants.force_destroy', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
             abort(404);
-        } catch (\InvalidArgumentException $e) {
+        } catch (\\InvalidArgumentException $e) {
             $this->logActivity(type: 'warning', action: 'backend.product-variants.force_destroy', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
             return back()->with('error', $e->getMessage());
-        } catch (\Exception $e) {
+        } catch (\\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.force_destroy', context: ['uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.error", ['uuid' => $uuid]), is_success: false);
             return back()->with('error', __("{$this->backendLangPath}.force_destroy.flash_error"));
         }
@@ -212,7 +213,7 @@ class ProductVariantController extends Controller
             $variants = ProductVariant::onlyTrashed()->with(['product', 'attributeValues'])->withCount(['audits', 'activityLogs'])->orderByDesc('deleted_at')->get();
             $this->logActivity(type: 'info', action: 'backend.product-variants.trashed', context: ['count' => $variants->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
             return view('v1.backend.pages.products.variants.trashed', compact('variants'));
-        } catch (\Exception $e) {
+        } catch (\\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.trashed', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error"), is_success: false);
             abort(500);
         }
