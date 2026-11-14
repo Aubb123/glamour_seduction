@@ -19,7 +19,6 @@ class UpdateWarehouseUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'position_uuid' => ['nullable', 'exists:positions,uuid'],
             'is_manager' => ['sometimes', 'boolean'],
         ];
     }
@@ -27,7 +26,6 @@ class UpdateWarehouseUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'position_uuid.exists' => __("{$this->backendLangPath}.position_uuid.exists"),
             'is_manager.boolean' => __("{$this->backendLangPath}.is_manager.boolean"),
         ];
     }
