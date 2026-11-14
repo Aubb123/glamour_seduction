@@ -15,11 +15,9 @@ class CloudFolderSeeder extends Seeder
     {
         $cloudPlatform = CloudPlatform::where('status', CloudPlatformStatus::Active->value)->first();
 
-        // Aucune plateforme active : on n'essaie pas de créer l'architecture
-        // (évite un crash sur ->status d'une instance nulle).
+        // If no cloud provider is configured yet, keep seeding safe and non-fatal.
         if (! $cloudPlatform) {
-            $this->command?->warn('Aucune plateforme cloud active trouvée : architecture non créée.');
-
+            $this->command?->warn('No active cloud platform found; cloud folder architecture was not created.');
             return;
         }
 
