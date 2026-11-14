@@ -19,7 +19,6 @@ return [
         'productAttributeValue' => 'product attribute value',
         'product' => 'product',
         'shop' => 'shop',
-        'position' => 'position',
         'warehouse' => 'warehouse',
         'role' => 'role',
         'version' => 'version',

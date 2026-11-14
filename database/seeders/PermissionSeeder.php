@@ -224,17 +224,6 @@ class PermissionSeeder extends Seeder
             'shops.deactivate',
             // shop-translations (index, create, store, show, edit, update)
 
-            // positions
-            'positions.index',
-            'positions.show',
-            'positions.create',
-            'positions.store',
-            'positions.edit',
-            'positions.update',
-            'positions.activate',
-            'positions.deactivate',
-            // position-translations (index, create, store, show, edit, update)
-
             // shop-users
             'shop-users.index',
             'shop-users.show',
