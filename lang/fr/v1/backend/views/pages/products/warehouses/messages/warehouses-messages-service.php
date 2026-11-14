@@ -41,7 +41,7 @@ return [
         'store' => [
             'success' => 'Affectation d\'un membre du personnel à l\'entrepôt : :name',
             'error' => 'Erreur lors de l\'affectation du membre du personnel',
-            'not_found' => 'Utilisateur ou poste introuvable.',
+            'not_found' => 'Utilisateur introuvable.',
             'duplicate' => 'Cet utilisateur est déjà affecté à cet entrepôt.',
             'flash_success' => 'Membre du personnel (:name) affecté avec succès.',
             'flash_error' => 'Une erreur est survenue.',

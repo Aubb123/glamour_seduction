@@ -133,13 +133,6 @@ return [
                 'participle' => 'linked',
                 'object' => 'it',
             ],
-            'Position' => [
-                'label' => 'position',
-                'demonstrative' => 'this',
-                'pronoun' => 'it',
-                'participle' => 'linked',
-                'object' => 'it',
-            ],
         ],
 
         // Plural labels of the children (key = Eloquent relation name).
