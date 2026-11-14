@@ -96,5 +96,12 @@ return [
             'flash_warning' => 'Variante introuvable.',
             'flash_error' => 'Une erreur est survenue.',
         ],
+        'destroy_file' => [
+            'not_found' => 'Image introuvable pour cette variante.',
+            'success' => 'Suppression d\'une image de variante : :uuid',
+            'error' => 'Erreur lors de la suppression d\'une image de variante : :uuid',
+            'flash_success' => 'Image de la variante supprimée.',
+            'flash_error' => 'Impossible de supprimer cette image.',
+        ],
     ],
 ];

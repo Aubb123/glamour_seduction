@@ -96,5 +96,12 @@ return [
             'flash_warning' => 'Variant not found.',
             'flash_error' => 'An error occurred.',
         ],
+        'destroy_file' => [
+            'not_found' => 'Image not found for this variant.',
+            'success' => 'Removing a variant image: :uuid',
+            'error' => 'Error while removing a variant image: :uuid',
+            'flash_success' => 'Variant image removed.',
+            'flash_error' => 'Unable to remove this image.',
+        ],
     ],
 ];
