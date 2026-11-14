@@ -4,9 +4,7 @@ use App\Http\Controllers\V1\ProductVariantController as V1ProductVariantControll
 use App\Services\V1\VersionService;
 use Illuminate\Support\Facades\Route;
 
-/* Optional V1 endpoint for removing one image from a variant gallery. */
 $version = app(VersionService::class)->getActive();
-
 if ($version && $version->code === 'v1') {
     Route::middleware([
         'web',
