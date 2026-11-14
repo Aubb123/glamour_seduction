@@ -3,6 +3,7 @@
 namespace App\Services\V1\Controllers;
 
 use App\Enums\Products\Variants\ProductVariantStatus;
+use App\Models\CloudFile;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
@@ -11,24 +12,17 @@ use function __;
 
 class ProductVariantService
 {
-    // Chemin de base pour les traductions (centralisé)
     protected string $backendLangPath = 'v1/backend/views/pages/products/variants/messages/variants-messages-service.productVariants';
 
-    // ─────────────────────────────────────────────
-    // STORE
-    // ─────────────────────────────────────────────
+    public function __construct(protected CloudFileService $cloudFileService) {}
+
     public function backend_product_variants_store(array $data): ProductVariant
     {
-        // Utilisation d'une transaction pour garantir l'intégrité des données
         return DB::transaction(function () use ($data) {
-
             $product = Product::findOrFail($data['product_id']);
-
-            // La première variante créée pour un produit sans variantes devient automatiquement la variante par défaut
             $hasVariants = $product->variants()->exists();
             $isDefault = ! $hasVariants || ($data['is_default'] ?? null) === '1' || ($data['is_default'] ?? false) === true;
 
-            // Création de la variante
             $variant = ProductVariant::create([
                 'product_id' => $product->id,
                 'sku' => $data['sku'],
@@ -38,65 +32,73 @@ class ProductVariantService
                 'is_default' => $isDefault,
             ]);
 
-            // Gère l'unicité de la variante par défaut (une seule is_default par produit)
-            if ($isDefault) {
-                $this->unsetOtherDefaults($variant);
-            }
-
-            // Synchronisation des valeurs d'attributs (pivot product_variant_attribute_value)
+            if ($isDefault) $this->unsetOtherDefaults($variant);
             $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
+            $this->attachImages($variant, $data);
 
             return $variant;
         });
     }
 
-    // ─────────────────────────────────────────────
-    // UPDATE
-    // ─────────────────────────────────────────────
     public function backend_product_variants_update(ProductVariant $variant, array $data): ProductVariant
     {
-        return DB::transaction(function () use ($variant, $data) {
+        $removeUuids = collect($data['remove_cloud_file_uuids'] ?? [])->filter()->unique()->values();
+        $imagesToRemove = $variant->cloudFiles()->where('file_type', 'image')->whereIn('uuid', $removeUuids)->get();
+        if ($imagesToRemove->count() !== $removeUuids->count()) {
+            throw new \InvalidArgumentException(__('One or more selected images do not belong to this variant.'));
+        }
 
+        $newFiles = array_values(array_filter($data['files'] ?? []));
+        $existingImageCount = $variant->cloudFiles()->where('file_type', 'image')->count();
+        if ($existingImageCount - $imagesToRemove->count() + count($newFiles) > 4) {
+            throw new \InvalidArgumentException(__('A variant can have at most four images. Remove an image before adding another.'));
+        }
+
+        return DB::transaction(function () use ($variant, $data, $imagesToRemove) {
             $updateData = [];
-
-            if (isset($data['sku'])) {
-                $updateData['sku'] = $data['sku'];
-            }
-
-            if (array_key_exists('barcode', $data)) {
-                $updateData['barcode'] = $data['barcode'] ?: null;
-            }
-
-            if (array_key_exists('price', $data)) {
-                $updateData['price'] = $data['price'] ?: null;
-            }
-
+            if (isset($data['sku'])) $updateData['sku'] = $data['sku'];
+            if (array_key_exists('barcode', $data)) $updateData['barcode'] = $data['barcode'] ?: null;
+            if (array_key_exists('price', $data)) $updateData['price'] = $data['price'] ?: null;
             if (isset($data['status'])) {
                 $updateData['status'] = ($data['status'] ?? null) === ProductVariantStatus::Inactive->value ? ProductVariantStatus::Inactive : ProductVariantStatus::Active;
             }
-
             if (array_key_exists('is_default', $data)) {
                 $updateData['is_default'] = ($data['is_default'] ?? null) === '1' || ($data['is_default'] ?? false) === true;
             }
 
             $variant->update($updateData);
+            if ($variant->is_default) $this->unsetOtherDefaults($variant);
+            if (array_key_exists('attribute_value_ids', $data)) $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
 
-            // Gère l'unicité de la variante par défaut (une seule is_default par produit)
-            if ($variant->is_default) {
-                $this->unsetOtherDefaults($variant);
+            foreach ($imagesToRemove as $image) {
+                if (! $image->trashed()) destroy_function($image);
             }
 
-            if (array_key_exists('attribute_value_ids', $data)) {
-                $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
-            }
-
+            $this->attachImages($variant, $data);
             return $variant;
         });
     }
 
-    // ─────────────────────────────────────────────
-    // UNSET OTHER DEFAULTS (privé) — un seul is_default par produit
-    // ─────────────────────────────────────────────
+    /** Upload an optional image batch, preserving the existing gallery. */
+    private function attachImages(ProductVariant $variant, array $data): void
+    {
+        $files = array_values(array_filter($data['files'] ?? []));
+        if ($files === []) return;
+
+        $platformUuid = $data['cloud_platform_uuid'] ?? null;
+        if (! $platformUuid) {
+            throw new \InvalidArgumentException(__('Select a cloud platform to upload variant images.'));
+        }
+
+        $this->cloudFileService->uploadEntityFiles(
+            $files,
+            $platformUuid,
+            $variant,
+            'product_variants',
+            $this->backendLangPath,
+        );
+    }
+
     private function unsetOtherDefaults(ProductVariant $variant): void
     {
         ProductVariant::where('product_id', $variant->product_id)
@@ -105,97 +107,50 @@ class ProductVariantService
             ->update(['is_default' => false]);
     }
 
-    // ─────────────────────────────────────────────
-    // SYNC ATTRIBUTE VALUES (privé) — pivot product_variant_attribute_value
-    // ─────────────────────────────────────────────
     private function syncAttributeValues(ProductVariant $variant, array $attributeValueIds): void
     {
-        // Filtre les IDs vides puis attache/détache
         $attributeValueIds = collect($attributeValueIds)->filter()->unique()->values()->toArray();
-
         $variant->attributeValues()->sync($attributeValueIds);
     }
 
-    // ─────────────────────────────────────────────
-    // ACTIVATE
-    // ─────────────────────────────────────────────
     public function backend_product_variants_activate(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-
-            if ($variant->status === ProductVariantStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
-            }
-
+            if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.activate.already_active"));
             $variant->update(['status' => ProductVariantStatus::Active]);
         });
     }
 
-    // ─────────────────────────────────────────────
-    // DEACTIVATE
-    // ─────────────────────────────────────────────
     public function backend_product_variants_deactivate(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-
-            if ($variant->status === ProductVariantStatus::Inactive) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
-            }
-
+            if ($variant->status === ProductVariantStatus::Inactive) throw new \InvalidArgumentException(__("{$this->backendLangPath}.deactivate.already_inactive"));
             $variant->update(['status' => ProductVariantStatus::Inactive]);
         });
     }
 
-    // ─────────────────────────────────────────────
-    // DESTROY
-    // ─────────────────────────────────────────────
     public function backend_product_variants_destroy(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-
-            // Empêche la suppression d'une variante active (règle métier : la désactiver d'abord)
-            if ($variant->status === ProductVariantStatus::Active) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
-            }
-
-            // NB : destroy refusé si stocks/mouvements (relations ajoutées aux modules 8/9)
-
-            // Empêche la suppression double (soft delete)
-            if ($variant->trashed()) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
-            }
-
+            if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
+            if ($variant->trashed()) throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             destroy_function($variant);
         });
     }
 
-    // ─────────────────────────────────────────────
-    // RESTORE
-    // ─────────────────────────────────────────────
     public function backend_product_variants_restore(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-
-            if ($variant->trashed()) {
-                restore_function($variant);
-            } else {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
-            }
+            if ($variant->trashed()) restore_function($variant);
+            else throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
         });
     }
 
-    // ─────────────────────────────────────────────
-    // FORCE DESTROY
-    // ─────────────────────────────────────────────
     public function backend_product_variants_force_destroy(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-
             if ($variant->trashed()) {
-                // Une entité active ne peut pas être supprimée définitivement
-                if ($variant->status === ProductVariantStatus::Active) {
-                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
-                }
+                if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
                 force_destroy_function($variant);
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
