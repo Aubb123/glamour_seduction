@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
+use App\Enums\Products\Products\ProductStatus;
 use App\Http\Requests\V1\Products\Variants\StoreProductVariantRequest;
 use App\Models\CloudFile;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(RefreshDatabase::class);
-
-it('uses the parent product gallery when a variant has no own images', function () {
+it('uses the parent gallery when a variant has no own images', function () {
     $parentImage = new CloudFile(['file_type' => 'image', 'metadata' => ['page' => 1]]);
     $product = new Product;
     $product->setRelation('cloudFiles', collect([$parentImage]));
@@ -24,7 +22,7 @@ it('uses the parent product gallery when a variant has no own images', function 
         ->and($variant->displayImages()->first())->toBe($parentImage);
 });
 
-it('uses the variant gallery when variant images exist', function () {
+it('prefers variant-owned gallery when images exist', function () {
     $parentImage = new CloudFile(['file_type' => 'image', 'metadata' => ['page' => 1]]);
     $variantImage = new CloudFile(['file_type' => 'image', 'metadata' => ['page' => 1]]);
     $product = new Product;
@@ -37,19 +35,19 @@ it('uses the variant gallery when variant images exist', function () {
         ->and($variant->displayImages()->first())->toBe($variantImage);
 });
 
-it('allows a variant without images and rejects a fifth image', function () {
+it('allows zero images but rejects more than four files on variant creation', function () {
     $rules = app(StoreProductVariantRequest::class)->rules();
-    expect(Validator::make(['sku' => 'SKU-OPTIONAL', 'status' => 'active'], $rules)->passes())->toBeTrue();
+    expect(Validator::make(['sku' => 'SKU-NO-IMAGE', 'status' => 'active'], $rules)->passes())->toBeTrue();
 
     $validator = Validator::make([
-        'sku' => 'SKU-FIVE',
+        'sku' => 'SKU-FIVE-IMAGES',
         'status' => 'active',
         'files' => [
-            UploadedFile::fake()->create('a.jpg', 20, 'image/jpeg'),
-            UploadedFile::fake()->create('b.jpg', 20, 'image/jpeg'),
-            UploadedFile::fake()->create('c.jpg', 20, 'image/jpeg'),
-            UploadedFile::fake()->create('d.jpg', 20, 'image/jpeg'),
-            UploadedFile::fake()->create('e.jpg', 20, 'image/jpeg'),
+            UploadedFile::fake()->create('one.jpg', 20, 'image/jpeg'),
+            UploadedFile::fake()->create('two.jpg', 20, 'image/jpeg'),
+            UploadedFile::fake()->create('three.jpg', 20, 'image/jpeg'),
+            UploadedFile::fake()->create('four.jpg', 20, 'image/jpeg'),
+            UploadedFile::fake()->create('five.jpg', 20, 'image/jpeg'),
         ],
     ], $rules);
 
