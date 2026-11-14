@@ -35,7 +35,6 @@ class ProductVariantService
             if ($isDefault) $this->unsetOtherDefaults($variant);
             $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
             $this->attachImages($variant, $data);
-
             return $variant;
         });
     }
@@ -69,48 +68,32 @@ class ProductVariantService
             $variant->update($updateData);
             if ($variant->is_default) $this->unsetOtherDefaults($variant);
             if (array_key_exists('attribute_value_ids', $data)) $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
-
             foreach ($imagesToRemove as $image) {
                 if (! $image->trashed()) destroy_function($image);
             }
-
             $this->attachImages($variant, $data);
             return $variant;
         });
     }
 
-    /** Upload an optional image batch, preserving the existing gallery. */
+    /** Upload an optional image batch and preserve the rest of the variant gallery. */
     private function attachImages(ProductVariant $variant, array $data): void
     {
         $files = array_values(array_filter($data['files'] ?? []));
         if ($files === []) return;
-
         $platformUuid = $data['cloud_platform_uuid'] ?? null;
-        if (! $platformUuid) {
-            throw new \InvalidArgumentException(__('Select a cloud platform to upload variant images.'));
-        }
-
-        $this->cloudFileService->uploadEntityFiles(
-            $files,
-            $platformUuid,
-            $variant,
-            'product_variants',
-            $this->backendLangPath,
-        );
+        if (! $platformUuid) throw new \InvalidArgumentException(__('Select a cloud platform to upload variant images.'));
+        $this->cloudFileService->uploadEntityFiles($files, $platformUuid, $variant, 'product_variants', $this->backendLangPath);
     }
 
     private function unsetOtherDefaults(ProductVariant $variant): void
     {
-        ProductVariant::where('product_id', $variant->product_id)
-            ->where('id', '!=', $variant->id)
-            ->where('is_default', true)
-            ->update(['is_default' => false]);
+        ProductVariant::where('product_id', $variant->product_id)->where('id', '!=', $variant->id)->where('is_default', true)->update(['is_default' => false]);
     }
 
     private function syncAttributeValues(ProductVariant $variant, array $attributeValueIds): void
     {
-        $attributeValueIds = collect($attributeValueIds)->filter()->unique()->values()->toArray();
-        $variant->attributeValues()->sync($attributeValueIds);
+        $variant->attributeValues()->sync(collect($attributeValueIds)->filter()->unique()->values()->toArray());
     }
 
     public function backend_product_variants_activate(ProductVariant $variant): void
@@ -149,12 +132,9 @@ class ProductVariantService
     public function backend_product_variants_force_destroy(ProductVariant $variant): void
     {
         DB::transaction(function () use ($variant) {
-            if ($variant->trashed()) {
-                if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
-                force_destroy_function($variant);
-            } else {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
-            }
+            if (! $variant->trashed()) throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
+            if ($variant->status === ProductVariantStatus::Active) throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.active_forbidden"));
+            force_destroy_function($variant);
         });
     }
 }
