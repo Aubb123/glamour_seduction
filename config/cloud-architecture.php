@@ -5,13 +5,7 @@
 | Architecture Cloud (dossiers)
 |--------------------------------------------------------------------------
 |
-| Définit la hiérarchie des dossiers à créer sur le cloud, ainsi que le
-| marquage des dossiers "spécifiques" (entity_table, content_type).
-|
-|   - 'architecture' : groupes de chemins hiérarchiques (séparés par "/").
-|   - 'folders'      : liste des dossiers à marquer avec un type de contenu
-|                      attendu. La clé `entity_table` correspond à la table
-|                      (ou module) de l'entité qui stockera ses fichiers ici.
+| Defines cloud folder hierarchy and the content-specific folder metadata.
 |
 */
 
@@ -41,7 +35,6 @@ return [
             'glamour_seduction/others/all/products/variants/images',
         ],
     ],
-
     'folders' => [
         ['folder_name' => 'avatars', 'path' => 'glamour_seduction/others/all/users/images', 'entity_table' => 'users', 'content_type' => ['png', 'jpg', 'webp', 'jpeg', 'gif']],
         ['folder_name' => 'videos', 'path' => 'glamour_seduction/others/all/users', 'entity_table' => 'users', 'content_type' => ['mp4', 'mov', 'webm']],
