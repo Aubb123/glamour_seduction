@@ -46,7 +46,7 @@ return [
         'store' => [
             'success' => 'Assigning a staff member to the shop: :name',
             'error' => 'Error while assigning the staff member',
-            'not_found' => 'User or position not found.',
+            'not_found' => 'User not found.',
             'flash_success' => 'Staff member (:name) successfully assigned.',
             'flash_error' => 'An error occurred.',
         ],
