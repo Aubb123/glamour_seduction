@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\V1;
 
-use App\Enums\Shops\Positions\PositionContext;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Shops\Shops\StoreShopRequest;
 use App\Http\Requests\V1\Shops\Shops\UpdateShopRequest;
-use App\Models\Position;
 use App\Models\ProductWarehouse;
 use App\Models\Shop;
 use App\Models\ShopTranslation;
@@ -196,21 +194,15 @@ class ShopController extends Controller
             $logs = $shop->activityLogs()->with('user')->latest()->get();
 
             // NB : `shopUsers` est un pivot : on ne charge plus `.user`/`.position`
-            // (ce sont désormais les colonnes du pivot). Les postes sont résolus via
-            // $availablePositions dans la vue.
+            // (ce sont désormais les colonnes du pivot).
             $shop->load(['translations.lang', 'warehouses', 'shopUsers'])->loadCount(['audits', 'activityLogs', 'shopUsers']);
 
             $availableUsers = User::orderBy('first_name')->get();
 
-            $availablePositions = Position::withActiveTranslation()
-                ->active()
-                ->forContext(PositionContext::Shop)
-                ->orderBy('sort_order')->get();
-
             // Log de l'accès aux journaux d'activité
             $this->logActivity(type: 'info', action: 'backend.shops.activity-logs', context: ['shop_uuid' => $shop->uuid], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['name' => $shop->active_translation?->name ?? '']), is_success: true, loggable: $shop);
 
-            return view('v1.backend.pages.shops.shops.others.activity-logs', compact('shop', 'logs', 'availableUsers', 'availablePositions'));
+            return view('v1.backend.pages.shops.shops.others.activity-logs', compact('shop', 'logs', 'availableUsers'));
 
         } catch (\Exception $e) {
 

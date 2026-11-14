@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Position;
 use App\Models\ProductWarehouse;
 use App\Models\User;
 use App\Traits\HasActivityLogs;
@@ -51,7 +50,6 @@ class WarehouseUser extends Model
     protected $fillable = [
         'warehouse_id',
         'user_id',
-        'position_id',
         'is_manager',
     ];
 
@@ -82,13 +80,5 @@ class WarehouseUser extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    /**
-     * Relation : l'affectation porte un poste (optionnel).
-     */
-    public function position(): BelongsTo
-    {
-        return $this->belongsTo(Position::class, 'position_id');
     }
 }

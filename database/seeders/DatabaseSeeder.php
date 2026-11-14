@@ -72,8 +72,6 @@ class DatabaseSeeder extends Seeder
 
             ShopSeeder::class,
             ShopTranslationSeeder::class,
-
-            PositionSeeder::class,
         ]);
 
     }

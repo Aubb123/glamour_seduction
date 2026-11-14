@@ -124,7 +124,7 @@ class ProductWarehouse extends Model
      * Relation many-to-many vers le personnel affecté à l'entrepôt.
      *
      * Le pivot `warehouse_users` est une table pivot enrichie (colonnes `uuid`,
-     * `position_id`, `is_manager`), au même titre que `blog_post_tag`. Il n'y a
+     * `is_manager`), au même titre que `blog_post_tag`. Il n'y a
      * volontairement PLUS de modèle WarehouseUser : on manipule le pivot via les
      * méthodes Eloquent (attach/updateExistingPivot/detach) et on lit les colonnes
      * enrichies via `$user->pivot`.
@@ -132,7 +132,7 @@ class ProductWarehouse extends Model
     public function warehouseUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'warehouse_users', 'warehouse_id', 'user_id')
-            ->withPivot(['uuid', 'position_id', 'is_manager'])
+            ->withPivot(['uuid', 'is_manager'])
             ->withTimestamps();
     }
 }

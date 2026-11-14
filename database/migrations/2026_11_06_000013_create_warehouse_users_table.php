@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         // Table: warehouse_users, affecte le personnel (utilisateurs) aux entrepôts.
-        // Même logique que shop_users : pivot enrichi (poste + responsable).
+        // Même logique que shop_users : pivot enrichi (responsable).
         Schema::create('warehouse_users', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
             //
             $table->foreignId('warehouse_id')->constrained('product_warehouses')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('position_id')->nullable()->constrained('positions')->cascadeOnUpdate()->nullOnDelete();
             //
             $table->boolean('is_manager')->default(false); // Responsable de l'entrepôt
             //

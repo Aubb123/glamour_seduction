@@ -20,7 +20,6 @@ class StoreWarehouseUserRequest extends FormRequest
     {
         return [
             'user_uuid' => ['required', 'exists:users,uuid'],
-            'position_uuid' => ['nullable', 'exists:positions,uuid'],
             'is_manager' => ['sometimes', 'boolean'],
         ];
     }
@@ -30,7 +29,6 @@ class StoreWarehouseUserRequest extends FormRequest
         return [
             'user_uuid.required' => __("{$this->backendLangPath}.user_uuid.required"),
             'user_uuid.exists' => __("{$this->backendLangPath}.user_uuid.exists"),
-            'position_uuid.exists' => __("{$this->backendLangPath}.position_uuid.exists"),
             'is_manager.boolean' => __("{$this->backendLangPath}.is_manager.boolean"),
         ];
     }
