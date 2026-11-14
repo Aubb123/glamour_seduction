@@ -5,8 +5,9 @@ use App\Services\V1\VersionService;
 use Illuminate\Support\Facades\Route;
 
 /*
-| Dedicated, version-aware route for deleting an image attached to a variant.
-| The full routes/web.php surface is kept intact on this branch.
+| Variant gallery removal route. Kept separate so the existing, full web.php
+| route registry remains unchanged. Loaded under the same authenticated backend
+| middleware as other V1 administrative routes.
 */
 $version = app(VersionService::class)->getActive();
 
