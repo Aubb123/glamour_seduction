@@ -4,11 +4,7 @@ use App\Http\Controllers\V1\ProductVariantController as V1ProductVariantControll
 use App\Services\V1\VersionService;
 use Illuminate\Support\Facades\Route;
 
-/*
-| Variant gallery removal route. Kept separate so the existing, full web.php
-| route registry remains unchanged. Loaded under the same authenticated backend
-| middleware as other V1 administrative routes.
-*/
+/* Variant image removal endpoint. The main routes/web.php stays untouched. */
 $version = app(VersionService::class)->getActive();
 
 if ($version && $version->code === 'v1') {
@@ -21,9 +17,7 @@ if ($version && $version->code === 'v1') {
         'role:administrator|developer|moderator|support',
         'v1.web.check.active.role',
         'v1.web.check.cloud.files.sync',
-    ])->group(function () {
-        Route::delete('/backend/product-variants/{productVariant}/images/{cloudFile}', [V1ProductVariantController::class, 'backend_product_variants_destroy_file'])
-            ->middleware(['permission:product-variants.update'])
-            ->name('backend.product-variants.destroy_file');
-    });
+        'permission:product-variants.update',
+    ])->delete('/backend/product-variants/{productVariant}/images/{cloudFile}', [V1ProductVariantController::class, 'backend_product_variants_destroy_file'])
+        ->name('backend.product-variants.destroy_file');
 }

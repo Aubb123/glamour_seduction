@@ -20,6 +20,7 @@ function something()
     // ..
 }
 
+/** Reload V1 routes and the isolated route files after seeding platform versions. */
 function bootV1WebRoutes(): void
 {
     $router = Route::getFacadeRoot();
