@@ -112,11 +112,11 @@ class ProductVariantController extends Controller
     {
         try {
             // Charge les informations affichées sur la fiche et les compteurs d'historique.
-            $productVariant->load(['product', 'attributeValues', 'cloudFiles'])->loadCount(['audits', 'activityLogs']);
+            $variant = $productVariant->load(['product', 'attributeValues', 'cloudFiles'])->loadCount(['audits', 'activityLogs']);
 
-            $this->logActivity(type: 'info', action: 'backend.product-variants.show', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.show.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.show', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->backendLangPath}.show.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            return view('v1.backend.pages.products.variants.show', compact('productVariant'));
+            return view('v1.backend.pages.products.variants.show', compact('variant'));
         } catch (\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.show', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $productVariant->uuid]), is_success: false);
 
@@ -130,12 +130,12 @@ class ProductVariantController extends Controller
     public function backend_product_variants_audits(ProductVariant $productVariant): View
     {
         try {
-            $productVariant->loadCount(['audits', 'activityLogs']);
-            $audits = $productVariant->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $variant = $productVariant->loadCount(['audits', 'activityLogs']);
+            $audits = $variant->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.product-variants.audits', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.audits.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.audits', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->backendLangPath}.audits.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            return view('v1.backend.pages.products.variants.others.audits', compact('productVariant', 'audits'));
+            return view('v1.backend.pages.products.variants.others.audits', compact('variant', 'audits'));
         } catch (\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.audits', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $productVariant->uuid]), is_success: false);
 
@@ -149,12 +149,12 @@ class ProductVariantController extends Controller
     public function backend_product_variants_activity_logs(ProductVariant $productVariant): View
     {
         try {
-            $productVariant->loadCount(['audits', 'activityLogs']);
-            $logs = $productVariant->activityLogs()->with('user')->orderBy('created_at', 'desc')->get();
+            $variant = $productVariant->loadCount(['audits', 'activityLogs']);
+            $logs = $variant->activityLogs()->with('user')->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.product-variants.activity-logs', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.activity-logs', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            return view('v1.backend.pages.products.variants.others.activity-logs', compact('productVariant', 'logs'));
+            return view('v1.backend.pages.products.variants.others.activity-logs', compact('variant', 'logs'));
         } catch (\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.activity-logs', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productVariant->uuid]), is_success: false);
 
@@ -169,15 +169,15 @@ class ProductVariantController extends Controller
     {
         try {
             // Précharge le produit, les attributs sélectionnés et la galerie conservée à l'édition.
-            $productVariant->load(['product', 'attributeValues', 'cloudFiles']);
+            $variant = $productVariant->load(['product', 'attributeValues', 'cloudFiles']);
             $attributes = ProductAttribute::withActiveTranslation()
                 ->orderBy('sort_order', 'desc')
                 ->with(['values' => fn ($query) => $query->withActiveTranslation()])
                 ->get();
 
-            $this->logActivity(type: 'info', action: 'backend.product-variants.edit', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.edit.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.edit', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->backendLangPath}.edit.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            return view('v1.backend.pages.products.variants.edit', compact('productVariant', 'attributes'));
+            return view('v1.backend.pages.products.variants.edit', compact('variant', 'attributes'));
         } catch (\Exception $e) {
             $this->logActivity(type: 'error', action: 'backend.product-variants.edit', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $productVariant->uuid]), is_success: false);
 
@@ -194,12 +194,12 @@ class ProductVariantController extends Controller
             // Le service applique les champs transmis, les attributs et les changements d'images.
             $this->productVariantService->backend_product_variants_update($productVariant, $request->validated());
             $changes = $productVariant->getChanges();
-            $productVariant->refresh()->load(['product', 'attributeValues', 'cloudFiles']);
+            $variant = $productVariant->refresh()->load(['product', 'attributeValues', 'cloudFiles']);
 
-            $this->logActivity(type: 'info', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku, 'changes' => $changes], message: null, activity: __("{$this->backendLangPath}.update.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.update', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku, 'changes' => $changes], message: null, activity: __("{$this->backendLangPath}.update.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            return redirect()->route('backend.product-variants.show', ['productVariant' => $productVariant->uuid])
-                ->with('success', __("{$this->backendLangPath}.update.flash_success", ['sku' => $productVariant->sku]));
+            return redirect()->route('backend.product-variants.show', ['productVariant' => $variant->uuid])
+                ->with('success', __("{$this->backendLangPath}.update.flash_success", ['sku' => $variant->sku]));
         } catch (\InvalidArgumentException $e) {
             $this->logActivity(type: 'warning', action: 'backend.product-variants.update', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.warning_meta", ['uuid' => $productVariant->uuid]), is_success: false);
 
@@ -218,11 +218,11 @@ class ProductVariantController extends Controller
     {
         try {
             $this->productVariantService->backend_product_variants_activate($productVariant);
-            $productVariant->refresh();
+            $variant = $productVariant->refresh();
 
-            $this->logActivity(type: 'info', action: 'backend.product-variants.activate', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.activate.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.activate', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->backendLangPath}.activate.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            return redirect()->back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['sku' => $productVariant->sku]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.activate.flash_success", ['sku' => $variant->sku]));
         } catch (\InvalidArgumentException $e) {
             $this->logActivity(type: 'warning', action: 'backend.product-variants.activate', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activate.warning_meta", ['uuid' => $productVariant->uuid]), is_success: false);
 
@@ -241,11 +241,11 @@ class ProductVariantController extends Controller
     {
         try {
             $this->productVariantService->backend_product_variants_deactivate($productVariant);
-            $productVariant->refresh();
+            $variant = $productVariant->refresh();
 
-            $this->logActivity(type: 'info', action: 'backend.product-variants.deactivate', context: ['variant_uuid' => $productVariant->uuid, 'variant_sku' => $productVariant->sku], message: null, activity: __("{$this->backendLangPath}.deactivate.success", ['sku' => $productVariant->sku]), is_success: true, loggable: $productVariant);
+            $this->logActivity(type: 'info', action: 'backend.product-variants.deactivate', context: ['variant_uuid' => $variant->uuid, 'variant_sku' => $variant->sku], message: null, activity: __("{$this->backendLangPath}.deactivate.success", ['sku' => $variant->sku]), is_success: true, loggable: $variant);
 
-            return redirect()->back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['sku' => $productVariant->sku]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.deactivate.flash_success", ['sku' => $variant->sku]));
         } catch (\InvalidArgumentException $e) {
             $this->logActivity(type: 'warning', action: 'backend.product-variants.deactivate', context: ['variant_uuid' => $productVariant->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.deactivate.warning_meta", ['uuid' => $productVariant->uuid]), is_success: false);
 
