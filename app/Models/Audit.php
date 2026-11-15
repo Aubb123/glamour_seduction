@@ -65,7 +65,6 @@ class Audit extends Model
         'geoCountry',
         'platformVersion',
         'subscribeHistory',
-        'productWarehouse',
     ];
 
     // Mapping des types auditable vers les routes show et leurs paramètres
@@ -91,7 +90,6 @@ class Audit extends Model
         'App\Models\GeoContinent' => ['route' => 'backend.geocontinents.show', 'params' => ['geoContinent', 'slug']],
         'App\Models\GeoCountry' => ['route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug']],
         'App\Models\PlatformVersion' => ['route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug']],
-        'App\Models\ProductWarehouse' => ['route' => 'backend.product-warehouses.show', 'params' => ['productWarehouse']],
     ];
 
     public function getEntityUrlAttribute(): ?string
@@ -153,7 +151,6 @@ class Audit extends Model
             'App\Models\GeoContinent' => $this->auditable->active_translation?->name,
             'App\Models\GeoCountry' => $this->auditable->active_translation?->name,
             'App\Models\PlatformVersion' => $this->auditable->active_translation?->name,
-            'App\Models\ProductWarehouse' => $this->auditable->active_translation?->name ?? $this->auditable->code,
             default => null,
         } ?: null;
     }
@@ -182,7 +179,6 @@ class Audit extends Model
             'App\Models\GeoContinent' => __('Continent'),
             'App\Models\GeoCountry' => __('Pays'),
             'App\Models\PlatformVersion' => __('Version'),
-            'App\Models\ProductWarehouse' => __('Entrepôt'),
             default => __('Entité'),
         };
 

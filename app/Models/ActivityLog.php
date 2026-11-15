@@ -19,7 +19,6 @@ use App\Models\GeoContinent;
 use App\Models\GeoCountry;
 use App\Models\Permission;
 use App\Models\PlatformVersion;
-use App\Models\ProductWarehouse;
 use App\Models\Role;
 use App\Models\Subscribe;
 use App\Models\SubscribeHistory;
@@ -91,7 +90,6 @@ class ActivityLog extends Model
         'geoCountry',
         'platformVersion',
         'subscribeHistory',
-        'productWarehouse',
     ];
 
     // Un journal d'activité appartient à un utilisateur
@@ -181,7 +179,6 @@ class ActivityLog extends Model
         'continent_uuid' => ['model' => GeoContinent::class, 'route' => 'backend.geocontinents.show', 'params' => ['geoContinent', 'slug'], 'title' => 'active_translation.name'],
         'country_uuid' => ['model' => GeoCountry::class, 'route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug'], 'title' => 'active_translation.name'],
         'version_uuid' => ['model' => PlatformVersion::class, 'route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug'], 'title' => 'active_translation.name'],
-        'warehouse_uuid' => ['model' => ProductWarehouse::class, 'route' => 'backend.product-warehouses.show', 'params' => ['productWarehouse'], 'title' => 'code'],
 ];
 
     /**
@@ -397,7 +394,6 @@ class ActivityLog extends Model
             GeoContinent::class => __('Continent'),
             GeoCountry::class => __('Pays'),
             PlatformVersion::class => __('Version'),
-            ProductWarehouse::class => __('Entrepôt'),
             default => __('Entité'),
         };
     }

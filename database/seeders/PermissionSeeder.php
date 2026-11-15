@@ -56,11 +56,8 @@ class PermissionSeeder extends Seeder
         'products' => ['publish', 'unpublish', 'archive', 'audits', 'activity_logs'], // Produits (module Boutique)
         'product-translations' => [], // Traductions des produits
         'product-variants' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Variantes de produits (module Boutique)
-        'product-warehouses' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Entrepôts de produits (module Boutique)
-        'product-warehouse-translations' => [], // Traductions des entrepôts de produits (module Boutique)
         'product-warehouse-stocks' => ['audits', 'activity_logs'], // Stocks (entrepôt × variante) (module Boutique)
         'product-stock-movements' => [], // Mouvements de stock (audit & traçabilité) (module Boutique)
-        'warehouse-users' => [], // Personnel affecté aux entrepôts (module Entrepôts)
         'faqs' => ['toggle_active', 'audits', 'activity_logs'], // FAQs
         'faq-translations' => [], // Traductions des FAQs
         'subscribes' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Abonnés newsletter
@@ -182,17 +179,6 @@ class PermissionSeeder extends Seeder
             'product-variants.deactivate',
             // product-variant-attribute-values (index, create, store, show, edit, update)
 
-            // product-warehouses
-            'product-warehouses.index',
-            'product-warehouses.show',
-            'product-warehouses.create',
-            'product-warehouses.store',
-            'product-warehouses.edit',
-            'product-warehouses.update',
-            'product-warehouses.activate',
-            'product-warehouses.deactivate',
-            // product-warehouse-translations (index, create, store, show, edit, update)
-
             // product-warehouse-stocks
             'product-warehouse-stocks.index',
             'product-warehouse-stocks.show',
@@ -209,13 +195,6 @@ class PermissionSeeder extends Seeder
             'product-stock-movements.trashed',
             'product-stock-movements.restore',
             'product-stock-movements.force_destroy',
-
-            // warehouse-users
-            'warehouse-users.index',
-            'warehouse-users.show',
-            'warehouse-users.store',
-            'warehouse-users.update',
-            'warehouse-users.destroy',
 
             // roles
             'roles.index',
