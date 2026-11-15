@@ -19,7 +19,6 @@ return [
         'productAttributeValue' => "valeur d'attribut de produits",
         'product' => 'produit',
         'shop' => 'boutique',
-        'warehouse' => 'entrepôt',
         'role' => 'rôle',
         'version' => 'version',
     ],
@@ -118,13 +117,6 @@ return [
                 'pronoun' => 'elle',
                 'participle' => 'liée',
                 'object' => 'la',
-            ],
-            'ProductWarehouse' => [
-                'label' => 'entrepôt',
-                'demonstrative' => 'ce',
-                'pronoun' => 'il',
-                'participle' => 'lié',
-                'object' => 'le',
             ],
             'Shop' => [
                 'label' => 'boutique',
