@@ -38,7 +38,7 @@ class ProductWarehouseController extends Controller
             // triés par date de création décroissante.
             // NB : `shops` (pivot shop_warehouse) donne le nombre de boutiques approvisionnées.
             $warehouses = ProductWarehouse::withActiveTranslation()
-                ->withCount(['audits', 'activityLogs', 'shops'])
+                ->withCount(['audits', 'activityLogs'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -129,7 +129,7 @@ class ProductWarehouseController extends Controller
             // Charge les traductions actives, le personnel et les compteurs.
             $warehouse = $productWarehouse;
             $warehouse->load(['warehouseUsers', 'translations.lang']);
-            $warehouse->loadCount(['audits', 'activityLogs', 'warehouseUsers', 'shops']);
+            $warehouse->loadCount(['audits', 'activityLogs', 'warehouseUsers']);
 
             // Log de la consultation du détail d'un entrepôt
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.show', context: ['warehouse_uuid' => $warehouse->uuid, 'warehouse_code' => $warehouse->code], message: null, activity: __("{$this->backendLangPath}.show.success", ['name' => $warehouse->active_translation?->name ?? $warehouse->code]), is_success: true, loggable: $warehouse);
@@ -363,7 +363,7 @@ class ProductWarehouseController extends Controller
 
             $warehouses = ProductWarehouse::onlyTrashed()
                 ->withActiveTranslation()
-                ->withCount(['audits', 'activityLogs', 'shops'])
+                ->withCount(['audits', 'activityLogs'])
                 ->orderBy('deleted_at', 'desc')
                 ->get();
 

@@ -65,7 +65,6 @@ class Audit extends Model
         'geoCountry',
         'platformVersion',
         'subscribeHistory',
-        'shop',
         'productWarehouse',
     ];
 
@@ -92,7 +91,6 @@ class Audit extends Model
         'App\Models\GeoContinent' => ['route' => 'backend.geocontinents.show', 'params' => ['geoContinent', 'slug']],
         'App\Models\GeoCountry' => ['route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug']],
         'App\Models\PlatformVersion' => ['route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug']],
-        'App\Models\Shop' => ['route' => 'backend.shops.show', 'params' => ['shop', 'slug']],
         'App\Models\ProductWarehouse' => ['route' => 'backend.product-warehouses.show', 'params' => ['productWarehouse']],
     ];
 
@@ -155,7 +153,6 @@ class Audit extends Model
             'App\Models\GeoContinent' => $this->auditable->active_translation?->name,
             'App\Models\GeoCountry' => $this->auditable->active_translation?->name,
             'App\Models\PlatformVersion' => $this->auditable->active_translation?->name,
-            'App\Models\Shop' => $this->auditable->active_translation?->name,
             'App\Models\ProductWarehouse' => $this->auditable->active_translation?->name ?? $this->auditable->code,
             default => null,
         } ?: null;
@@ -185,7 +182,6 @@ class Audit extends Model
             'App\Models\GeoContinent' => __('Continent'),
             'App\Models\GeoCountry' => __('Pays'),
             'App\Models\PlatformVersion' => __('Version'),
-            'App\Models\Shop' => __('Boutique'),
             'App\Models\ProductWarehouse' => __('Entrepôt'),
             default => __('Entité'),
         };
