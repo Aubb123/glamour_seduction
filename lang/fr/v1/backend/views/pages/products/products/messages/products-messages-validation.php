@@ -69,12 +69,6 @@ return [
                 'max' => 'Le nom ne peut pas dépasser 255 caractères.',
                 'unique' => 'Le nom doit être unique pour chaque langue.',
             ],
-            'slug' => [
-                'required' => 'Le slug est requis pour chaque traduction.',
-                'string' => 'Le slug doit être une chaîne de caractères.',
-                'max' => 'Le slug ne peut pas dépasser 255 caractères.',
-                'unique' => 'Le slug doit être unique pour chaque langue.',
-            ],
             'short_description' => [
                 'required' => 'La description courte est requise pour chaque traduction.',
                 'string' => 'La description courte doit être une chaîne de caractères.',

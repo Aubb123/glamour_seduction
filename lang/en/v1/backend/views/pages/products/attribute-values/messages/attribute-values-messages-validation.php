@@ -41,12 +41,6 @@ return [
                 'max' => 'The label may not be greater than 255 characters.',
                 'unique' => 'The label must be unique for each language.',
             ],
-            'slug' => [
-                'required' => 'The slug is required for each translation.',
-                'string' => 'The slug must be a string.',
-                'max' => 'The slug may not be greater than 255 characters.',
-                'unique' => 'The slug must be unique for each language.',
-            ],
         ],
         'not_found' => 'The product attribute value was not found.',
     ],

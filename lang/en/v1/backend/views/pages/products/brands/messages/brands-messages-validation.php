@@ -35,12 +35,6 @@ return [
                 'max' => 'The name may not be greater than 255 characters.',
                 'unique' => 'The name must be unique for each language.',
             ],
-            'slug' => [
-                'required' => 'The slug is required for each translation.',
-                'string' => 'The slug must be a string.',
-                'max' => 'The slug may not be greater than 255 characters.',
-                'unique' => 'The slug must be unique for each language.',
-            ],
             'description' => [
                 'required' => 'The description is required for each translation.',
                 'string' => 'The description must be a string.',

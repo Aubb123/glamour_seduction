@@ -41,12 +41,6 @@ return [
                 'max' => 'Le libellé ne peut pas dépasser 255 caractères.',
                 'unique' => 'Le libellé doit être unique pour chaque langue.',
             ],
-            'slug' => [
-                'required' => 'Le slug est requis pour chaque traduction.',
-                'string' => 'Le slug doit être une chaîne de caractères.',
-                'max' => 'Le slug ne peut pas dépasser 255 caractères.',
-                'unique' => 'Le slug doit être unique pour chaque langue.',
-            ],
         ],
         'not_found' => 'La valeur d\'attribut de produits n\'a pas été trouvée.',
     ],
