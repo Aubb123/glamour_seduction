@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;

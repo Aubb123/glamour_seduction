@@ -1,1 +1,0 @@
-AshnaAI write capability check.
