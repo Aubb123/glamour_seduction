@@ -18,7 +18,7 @@ it('contient les 56 seeders attendus', function () {
         ->values()
         ->all();
 
-    expect($seeders)->toHaveCount(54);
+    expect($seeders)->toHaveCount(52);
 
     $expected = [
         'ActivityLogSeeder', 'AuditSeeder',
@@ -44,7 +44,6 @@ it('contient les 56 seeders attendus', function () {
         'ProductTagSeeder', 'ProductTagTranslationSeeder',
         'ProductTranslationSeeder', 'ProductSeeder',
         'ProductVariantSeeder',
-        'ProductWarehouseStockSeeder', 'ProductStockMovementSeeder',
         'RoleSeeder', 'RoleTranslationSeeder',
         'SettingSeeder', 'SettingTranslationSeeder',
         'SubscribeHistorySeeder', 'SubscribeSeeder',

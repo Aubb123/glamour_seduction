@@ -5,8 +5,6 @@ namespace App\Models;
 use App\Enums\Products\Variants\ProductVariantStatus;
 use App\Models\Product;
 use App\Models\ProductAttributeValue;
-use App\Models\ProductStockMovement;
-use App\Models\ProductWarehouseStock;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -21,7 +19,7 @@ class ProductVariant extends Model
 
     protected $table = 'product_variants';
     protected bool $hasTranslations = false;
-    protected array $dependentRelations = ['stocks', 'movements'];
+    protected array $dependentRelations = [];
 
     protected $fillable = ['product_id', 'sku', 'barcode', 'price', 'status', 'is_default'];
 
@@ -44,16 +42,6 @@ class ProductVariant extends Model
     public function attributeValues(): BelongsToMany
     {
         return $this->belongsToMany(ProductAttributeValue::class, 'product_variant_attribute_value', 'product_variant_id', 'attribute_value_id');
-    }
-
-    public function stocks(): HasMany
-    {
-        return $this->hasMany(ProductWarehouseStock::class, 'product_variant_id');
-    }
-
-    public function movements(): HasMany
-    {
-        return $this->hasMany(ProductStockMovement::class, 'product_variant_id');
     }
 
     /** Images shown for this variant, falling back to the parent product gallery. */

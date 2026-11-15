@@ -32,7 +32,7 @@ trait HasAudit
         // Lors d'une suppression DÉFINITIVE (forceDelete) : on log AVANT la suppression.
         //
         // NB : `isForceDeleting()` n'existe QUE si le modèle utilise SoftDeletes.
-        // Les modèles sans soft delete (ex : WarehouseUser, ShopUser) font une
+        // Les modèles sans soft delete (ex : ShopUser) font une
         // suppression physique : `isForceDeleting()` est alors absent → on ne
         // journalise pas ici, l'événement `deleted` s'en charge ci-dessous.
         static::deleting(function ($model) {
