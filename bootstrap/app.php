@@ -28,7 +28,6 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
         then: function (): void {
             require __DIR__.'/../routes/product-warehouse-translations.php';
-            require __DIR__.'/../routes/product-stock-movements-audits-logs.php';
             require __DIR__.'/../routes/product-variant-images.php';
         },
     )
