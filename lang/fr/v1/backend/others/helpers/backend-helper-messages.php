@@ -149,9 +149,7 @@ return [
             'files' => 'fichiers',
             'children' => 'sous-dossiers',
             'histories' => 'historiques',
-            'warehouses' => 'entrepôts',
             'shopUsers' => 'personnel',
-            'warehouseUsers' => 'personnel',
 
             'ProductCategory' => [
                 'products' => 'produits',

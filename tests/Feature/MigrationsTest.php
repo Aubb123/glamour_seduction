@@ -39,8 +39,6 @@ it('crée toutes les tables du schéma de base', function () {
         'product_attribute_values', 'product_attribute_value_translations',
         'products', 'product_translations', 'product_tag',
         'product_variants', 'product_variant_attribute_value',
-        'product_warehouses', 'product_warehouse_translations',
-        'warehouse_users',
     ];
 
     $actualTables = Schema::getTableListing(null, false);
@@ -85,30 +83,6 @@ it('reproduit les colonnes clés du contrat de schéma', function () {
 
     expect(Schema::hasColumn('activity_logs', 'loggable_type'))->toBeTrue();
     expect(Schema::hasColumn('activity_logs', 'is_success'))->toBeTrue();
-
-    expect(Schema::hasColumn('warehouse_users', 'warehouse_id'))->toBeTrue();
-    expect(Schema::hasColumn('warehouse_users', 'user_id'))->toBeTrue();
-    expect(Schema::hasColumn('warehouse_users', 'is_manager'))->toBeTrue();
-
-    // Entrepôts : données non traduites uniquement sur la table principale
-    // (nom/slug/adresse/ville/téléphone portés par product_warehouse_translations).
-    expect(Schema::hasColumn('product_warehouses', 'uuid'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouses', 'code'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouses', 'status'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouses', 'is_default'))->toBeFalse();
-    expect(Schema::hasColumn('product_warehouses', 'name'))->toBeFalse();
-    expect(Schema::hasColumn('product_warehouses', 'address'))->toBeFalse();
-    expect(Schema::hasColumn('product_warehouses', 'city'))->toBeFalse();
-    expect(Schema::hasColumn('product_warehouses', 'phone'))->toBeFalse();
-    expect(Schema::hasColumn('product_warehouses', 'deleted_at'))->toBeTrue();
-
-    expect(Schema::hasColumn('product_warehouse_translations', 'warehouse_id'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouse_translations', 'lang_id'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouse_translations', 'name'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouse_translations', 'slug'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouse_translations', 'address'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouse_translations', 'city'))->toBeTrue();
-    expect(Schema::hasColumn('product_warehouse_translations', 'phone'))->toBeTrue();
 
     // Contraintes uniques de traduction : un seul (name/lang_id) par langue
     $indexes = Schema::getIndexes('role_translations');

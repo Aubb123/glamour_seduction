@@ -149,9 +149,7 @@ return [
             'files' => 'files',
             'children' => 'subfolders',
             'histories' => 'histories',
-            'warehouses' => 'warehouses',
             'shopUsers' => 'staff',
-            'warehouseUsers' => 'staff',
 
             'ProductCategory' => [
                 'products' => 'products',
