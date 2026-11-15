@@ -50,9 +50,6 @@ use App\Http\Controllers\V1\ProductWarehouseStockController as V1ProductWarehous
 use App\Http\Controllers\V1\RoleController as V1RoleController;
 use App\Http\Controllers\V1\RoleTranslationController as V1RoleTranslationController;
 use App\Http\Controllers\V1\SettingController as V1SettingController;
-use App\Http\Controllers\V1\ShopController as V1ShopController;
-use App\Http\Controllers\V1\ShopTranslationController as V1ShopTranslationController;
-use App\Http\Controllers\V1\ShopUserController as V1ShopUserController;
 use App\Http\Controllers\V1\SubscribeController as V1SubscribeController;
 use App\Http\Controllers\V1\SubscribeHistoryController as V1SubscribeHistoryController;
 use App\Http\Controllers\V1\UserController as V1UserController;
@@ -493,38 +490,6 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-warehouses/trashed', 'backend_product_warehouses_trashed')->middleware(['permission:product-warehouses.trashed'])->name('backend.product-warehouses.trashed');
             Route::patch('/backend/product-warehouses/restore/{uuid}', 'backend_product_warehouses_restore')->middleware(['permission:product-warehouses.restore'])->name('backend.product-warehouses.restore');
             Route::delete('/backend/product-warehouses/force-destroy/{uuid}', 'backend_product_warehouses_force_destroy')->middleware(['permission:product-warehouses.force_destroy'])->name('backend.product-warehouses.force_destroy');
-        });
-
-        // Routes pour : Gestion des Boutiques (module Boutique)
-        Route::controller(V1ShopController::class)->group(function () {
-            Route::get('/backend/shops/index', 'backend_shops_index')->middleware(['permission:shops.index'])->name('backend.shops.index');
-            Route::get('/backend/shops/create', 'backend_shops_create')->middleware(['permission:shops.create'])->name('backend.shops.create');
-            Route::post('/backend/shops/store', 'backend_shops_store')->middleware(['permission:shops.store'])->name('backend.shops.store');
-            Route::get('/backend/shops/show/{shop}/{slug}', 'backend_shops_show')->middleware(['permission:shops.show'])->name('backend.shops.show');
-            Route::get('/backend/shops/audits/{shop}/{slug}', 'backend_shops_audits')->middleware(['permission:shops.audits'])->name('backend.shops.audits');
-            Route::get('/backend/shops/activity-logs/{shop}/{slug}', 'backend_shops_activity_logs')->middleware(['permission:shops.activity_logs'])->name('backend.shops.activity-logs');
-            Route::get('/backend/shops/edit/{shop}', 'backend_shops_edit')->middleware(['permission:shops.edit'])->name('backend.shops.edit');
-            Route::put('/backend/shops/update/{shop}', 'backend_shops_update')->middleware(['permission:shops.update'])->name('backend.shops.update');
-            Route::patch('/backend/shops/activate/{shop}', 'backend_shops_activate')->middleware(['permission:shops.activate'])->name('backend.shops.activate');
-            Route::patch('/backend/shops/deactivate/{shop}', 'backend_shops_deactivate')->middleware(['permission:shops.deactivate'])->name('backend.shops.deactivate');
-            Route::delete('/backend/shops/destroy/{shop}', 'backend_shops_destroy')->middleware(['permission:shops.destroy'])->name('backend.shops.destroy');
-            Route::get('/backend/shops/trashed', 'backend_shops_trashed')->middleware(['permission:shops.trashed'])->name('backend.shops.trashed');
-            Route::patch('/backend/shops/restore/{uuid}', 'backend_shops_restore')->middleware(['permission:shops.restore'])->name('backend.shops.restore');
-            Route::delete('/backend/shops/force-destroy/{uuid}', 'backend_shops_force_destroy')->middleware(['permission:shops.force_destroy'])->name('backend.shops.force_destroy');
-        });
-
-        Route::controller(V1ShopTranslationController::class)->group(function () {
-            Route::delete('/backend/shop-translations/destroy/{uuid}', 'backend_shop_translations_destroy')->middleware(['permission:shop-translations.destroy'])->name('backend.shop-translations.destroy');
-            Route::get('/backend/shop-translations/trashed/{shop_uuid}', 'backend_shop_translations_trashed')->middleware(['permission:shop-translations.trashed'])->name('backend.shop-translations.trashed');
-            Route::patch('/backend/shop-translations/restore/{uuid}', 'backend_shop_translations_restore')->middleware(['permission:shop-translations.restore'])->name('backend.shop-translations.restore');
-            Route::delete('/backend/shop-translations/force-destroy/{uuid}', 'backend_shop_translations_force_destroy')->middleware(['permission:shop-translations.force_destroy'])->name('backend.shop-translations.force_destroy');
-        });
-
-        // Routes pour : Personnel des boutiques
-        Route::controller(V1ShopUserController::class)->group(function () {
-            Route::post('/backend/shops/{shop}/users/store', 'backend_shop_users_store')->middleware(['permission:shop-users.store'])->name('backend.shop-users.store');
-            Route::put('/backend/shop-users/update/{shopUser}', 'backend_shop_users_update')->middleware(['permission:shop-users.update'])->name('backend.shop-users.update');
-            Route::delete('/backend/shop-users/destroy/{shopUser}', 'backend_shop_users_destroy')->middleware(['permission:shop-users.destroy'])->name('backend.shop-users.destroy');
         });
 
         // Routes pour : Personnel des entrepôts

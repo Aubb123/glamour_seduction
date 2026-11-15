@@ -7,7 +7,6 @@ use App\Models\Builders\ProductWarehouseBuilder;
 use App\Models\ProductStockMovement;
 use App\Models\ProductWarehouseStock;
 use App\Models\ProductWarehouseTranslation;
-use App\Models\Shop;
 use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
@@ -38,7 +37,7 @@ class ProductWarehouse extends Model
     // NB : seules les données NON traduites vivent sur la table principale.
     // `code` reste unique et non traduit ; `name`, `address`, `city`, `phone` sont
     // portés par product_warehouse_translations. « Entrepôt par défaut » est une
-    // notion PAR BOUTIQUE, portée par le pivot `shop_warehouse.is_primary`.
+    // notion supprimée avec le module Boutiques.
     protected $fillable = [
         'code',
         'status',
@@ -80,28 +79,6 @@ class ProductWarehouse extends Model
     public function scopeActive($query): Builder
     {
         return $query->where('status', ProductWarehouseStatus::Active);
-    }
-
-    /**
-     * Relation many-to-many vers les boutiques approvisionnées par cet entrepôt
-     * (pivot `shop_warehouse`, attribut booléen `is_primary`).
-     */
-    public function shops(): BelongsToMany
-    {
-        return $this->belongsToMany(Shop::class, 'shop_warehouse', 'warehouse_id', 'shop_id')
-            ->withPivot(['is_primary'])
-            ->withTimestamps();
-    }
-
-    /**
-     * Indique si cet entrepôt est l'entrepôt principal (par défaut) de la boutique fournie.
-     */
-    public function isPrimaryFor(Shop $shop): bool
-    {
-        return $this->shops()
-            ->wherePivot('is_primary', true)
-            ->whereKey($shop->getKey())
-            ->exists();
     }
 
     /**

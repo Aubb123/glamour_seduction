@@ -48,7 +48,6 @@ it('contient les 56 seeders attendus', function () {
         'ProductWarehouseStockSeeder', 'ProductStockMovementSeeder',
         'RoleSeeder', 'RoleTranslationSeeder',
         'SettingSeeder', 'SettingTranslationSeeder',
-        'ShopSeeder', 'ShopTranslationSeeder',
         'SubscribeHistorySeeder', 'SubscribeSeeder',
         'UserSeeder',
     ];
