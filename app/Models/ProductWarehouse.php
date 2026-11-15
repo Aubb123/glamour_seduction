@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Enums\Products\Warehouses\ProductWarehouseStatus;
 use App\Models\Builders\ProductWarehouseBuilder;
-use App\Models\ProductStockMovement;
-use App\Models\ProductWarehouseStock;
 use App\Models\ProductWarehouseTranslation;
 use App\Models\User;
 use App\Traits\HasModelBehaviors;
@@ -32,7 +30,7 @@ class ProductWarehouse extends Model
     // (delete / force_delete) via BackendHelper::destroy_function / force_destroy_function.
     // NB : la relation `warehouseUsers` (personnel via le pivot `warehouse_users`)
     // bloque la suppression.
-    protected array $dependentRelations = ['stocks', 'movements', 'warehouseUsers'];
+    protected array $dependentRelations = ['warehouseUsers'];
 
     // NB : seules les données NON traduites vivent sur la table principale.
     // `code` reste unique et non traduit ; `name`, `address`, `city`, `phone` sont
@@ -79,22 +77,6 @@ class ProductWarehouse extends Model
     public function scopeActive($query): Builder
     {
         return $query->where('status', ProductWarehouseStatus::Active);
-    }
-
-    /**
-     * Relation : un entrepôt possède plusieurs lignes de stock (module 8).
-     */
-    public function stocks(): HasMany
-    {
-        return $this->hasMany(ProductWarehouseStock::class, 'warehouse_id');
-    }
-
-    /**
-     * Relation : un entrepôt possède plusieurs mouvements de stock (module 9).
-     */
-    public function movements(): HasMany
-    {
-        return $this->hasMany(ProductStockMovement::class, 'warehouse_id');
     }
 
     /**

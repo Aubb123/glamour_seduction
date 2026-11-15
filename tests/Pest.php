@@ -31,7 +31,6 @@ function bootV1WebRoutes(): void
     });
 
     require base_path('routes/product-warehouse-translations.php');
-    require base_path('routes/product-stock-movements-audits-logs.php');
     require base_path('routes/product-variant-images.php');
 
     $router->getRoutes()->refreshNameLookups();

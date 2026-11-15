@@ -301,11 +301,11 @@ it('restaure une traduction en corbeille', function () {
     expect(ProductWarehouseTranslation::where('warehouse_id', $warehouse->id)->count())->toBe(2);
 });
 
-it('déclare dependentRelations = [stocks, movements, warehouseUsers] pour ProductWarehouse', function () {
+it('déclare dependentRelations = [warehouseUsers] pour ProductWarehouse', function () {
     $warehouse = new ProductWarehouse;
 
     $property = new ReflectionProperty($warehouse, 'dependentRelations');
-    expect($property->getValue($warehouse))->toBe(['stocks', 'movements', 'warehouseUsers']);
+    expect($property->getValue($warehouse))->toBe(['warehouseUsers']);
 });
 
 it('active les traductions et la bonne clé étrangère pour ProductWarehouse', function () {
