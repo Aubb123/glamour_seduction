@@ -30,10 +30,12 @@ return [
             'required' => 'Le nom est obligatoire pour chaque traduction.',
             'string' => 'Le nom doit être une chaîne de caractères.',
             'max' => 'Le nom ne peut pas dépasser 255 caractères.',
+            'unique' => 'Ce nom est déjà utilisé pour cette langue.',
         ],
         'description' => [
             'required' => 'La description est obligatoire pour chaque traduction.',
             'string' => 'La description doit être une chaîne de caractères.',
+            'unique' => 'Cette description est déjà utilisée pour cette langue.',
         ],
     ],
 ];

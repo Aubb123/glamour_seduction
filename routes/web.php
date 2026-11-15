@@ -440,6 +440,7 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-variants/trashed', 'backend_product_variants_trashed')->middleware(['permission:product-variants.trashed'])->name('backend.product-variants.trashed');
             Route::patch('/backend/product-variants/restore/{uuid}', 'backend_product_variants_restore')->middleware(['permission:product-variants.restore'])->name('backend.product-variants.restore');
             Route::delete('/backend/product-variants/force-destroy/{uuid}', 'backend_product_variants_force_destroy')->middleware(['permission:product-variants.force_destroy'])->name('backend.product-variants.force_destroy');
+            Route::delete('/backend/product-variants/{productVariant}/images/{cloudFile}', 'backend_product_variants_destroy_file')->middleware(['permission:product-variants.update'])->name('backend.product-variants.destroy_file');
         });
 
         // Routes pour : Gestion des Catégories de Blog

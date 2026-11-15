@@ -28,11 +28,13 @@ return [
             'numeric' => 'The base price must be a number.',
             'min' => 'The base price must be greater than 0.',
             'max' => 'The base price may not exceed the maximum allowed value.',
+            'lt' => 'The base price must be lower than the compare at price.',
         ],
         'compare_at_price' => [
             'numeric' => 'The compare at price must be a number.',
             'min' => 'The compare at price must be greater than 0.',
             'max' => 'The compare at price may not exceed the maximum allowed value.',
+            'gt' => 'The compare at price must be greater than the base price.',
         ],
         'tags' => [
             'array' => 'The tags must be an array.',
@@ -59,6 +61,7 @@ return [
             'lang_id' => [
                 'required' => 'The language is required for each translation.',
                 'exists' => 'The selected language does not exist.',
+                'distinct' => 'Each translation must use a different language.',
             ],
             'name' => [
                 'required' => 'The name is required for each translation.',

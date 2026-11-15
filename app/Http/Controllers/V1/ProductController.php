@@ -124,7 +124,10 @@ class ProductController extends Controller
     // ─────────────────────────────────────────────
     private function resolveProductWithSlugCheck(Product $product, string $slug, string $action, string $langKey): Product
     {
-        $expectedSlug = $product->slug ?? $product->active_translation?->slug ?? 'null';
+        // Le slug vit exclusivement sur la traduction (`product_translations.slug`) :
+        // le modèle parent `Product` n'a pas de colonne `slug`, donc on ne lit que
+        // le slug de la traduction active (ou 'null' si aucune traduction).
+        $expectedSlug = $product->active_translation?->slug ?? 'null';
 
         if ($expectedSlug !== $slug) {
             // Log de l'erreur de correspondance du slug avec un message d'avertissement
@@ -432,6 +435,10 @@ class ProductController extends Controller
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.products.destroy_file', context: ['product_uuid' => $product->uuid, 'cloud_file_uuid' => $cloudFile->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy_file.error"), is_success: false);
+
+            // La méthode est typée RedirectResponse : on doit TOUJOURS retourner une réponse,
+            // sinon PHP lève un TypeError (500) en cas d'erreur inattendue.
+            return back()->with('error', __("{$this->backendLangPath}.destroy_file.flash_error"));
         }
     }
 

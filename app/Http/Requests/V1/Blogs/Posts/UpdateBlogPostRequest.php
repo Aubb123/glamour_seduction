@@ -74,30 +74,66 @@ class UpdateBlogPostRequest extends FormRequest
             return;
         }
 
-        $validator->after(function ($validator) use ($postId) {
-
+        $validator->after(function ($validator) use ($postId): void {
             $translations = $this->input('translations', []);
 
+            // Vérifie les doublons de lang_id dans le payload
+            $langIds = collect($translations)->pluck('lang_id');
+
+            if ($langIds->count() !== $langIds->unique()->count()) {
+                $validator->errors()->add(
+                    'translations',
+                    __("{$this->backendLangPath}.translations.lang_id.duplicate"),
+                );
+            }
+
+            // Vérifie l'unicité des champs traduits (title, content) par langue
+            $seen = [];
+
             foreach ($translations as $key => $translation) {
-
-                $langId = $translation['lang_id'] ?? null;
-                $title = $translation['title'] ?? null;
-
-                if (! $langId || ! $title) {
+                if (! is_array($translation)) {
                     continue;
                 }
 
-                // Vérifie unicité du (title, lang_id) en excluant le post courant
-                $exists = BlogPostTranslation::where('title', $title)
-                    ->where('lang_id', $langId)
-                    ->where('post_id', '!=', $postId)
-                    ->exists();
+                $langId = $translation['lang_id'] ?? null;
 
-                if ($exists) {
-                    $validator->errors()->add(
-                        "translations.{$key}.title",
-                        __("{$this->backendLangPath}.translations.unique_title")
-                    );
+                if (! $langId) {
+                    continue;
+                }
+
+                foreach (['title', 'content'] as $field) {
+                    $value = $translation[$field] ?? null;
+
+                    if ($value === null || $value === '') {
+                        continue;
+                    }
+
+                    // Doublon dans le payload courant
+                    $fingerprint = serialize([(string) $langId, (string) $value]);
+
+                    if (isset($seen[$fingerprint])) {
+                        $validator->errors()->add(
+                            "translations.{$key}.{$field}",
+                            __("validation.unique", ['attribute' => $field]),
+                        );
+
+                        continue;
+                    }
+
+                    $seen[$fingerprint] = true;
+
+                    // Doublon en base de données (exclut le post courant)
+                    $exists = BlogPostTranslation::where('lang_id', $langId)
+                        ->where($field, $value)
+                        ->where('post_id', '!=', $postId)
+                        ->exists();
+
+                    if ($exists) {
+                        $validator->errors()->add(
+                            "translations.{$key}.{$field}",
+                            __("{$this->backendLangPath}.translations.{$field}.unique"),
+                        );
+                    }
                 }
             }
         });

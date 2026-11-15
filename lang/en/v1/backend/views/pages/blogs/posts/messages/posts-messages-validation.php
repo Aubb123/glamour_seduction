@@ -31,15 +31,18 @@ return [
             'lang_id' => [
                 'required' => 'The language is required for each translation.',
                 'exists' => 'The selected language does not exist.',
+                'duplicate' => 'A language cannot appear more than once in the translations.',
             ],
             'title' => [
                 'required' => 'The title is required for each translation.',
                 'string' => 'The title must be a string.',
                 'max' => 'The title may not be greater than 255 characters.',
+                'unique' => 'This title is already used for this language.',
             ],
             'content' => [
                 'required' => 'The content is required for each translation.',
                 'string' => 'The content must be a string.',
+                'unique' => 'This content is already used for this language.',
             ],
             'unique_title' => 'This title is already used for this language.',
         ],

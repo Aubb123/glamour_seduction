@@ -41,7 +41,7 @@ class StoreProductRequest extends FormRequest
             'is_featured' => ['sometimes', 'boolean'],
             'weight' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
             'base_price' => ['required', 'numeric', 'min:0.01', 'max:99999999.99'],
-            'compare_at_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
+            'compare_at_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99', 'gt:base_price'],
             'tags' => ['sometimes', 'array'],
             'tags.*' => ['integer', 'exists:product_tags,id'],
 
@@ -51,7 +51,7 @@ class StoreProductRequest extends FormRequest
             'files.*' => ['required', 'file', 'mimes:jpg,png,webp', 'max:2048'],
 
             'translations' => ['required', 'array'],
-            'translations.*.lang_id' => ['required', 'exists:langs,id'],
+            'translations.*.lang_id' => ['required', 'exists:langs,id', 'distinct'],
             'translations.*.short_description' => ['required', 'string', 'max:500'],
             'translations.*.description' => ['required', 'string'],
         ];
@@ -108,6 +108,7 @@ class StoreProductRequest extends FormRequest
             'compare_at_price.numeric' => __("{$this->backendLangPath}.compare_at_price.numeric"),
             'compare_at_price.min' => __("{$this->backendLangPath}.compare_at_price.min"),
             'compare_at_price.max' => __("{$this->backendLangPath}.compare_at_price.max"),
+            'compare_at_price.gt' => __("{$this->backendLangPath}.compare_at_price.gt"),
 
             'tags.array' => __("{$this->backendLangPath}.tags.array"),
             'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
@@ -129,6 +130,7 @@ class StoreProductRequest extends FormRequest
 
             'translations.*.lang_id.required' => __("{$this->backendLangPath}.translations.lang_id.required"),
             'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.distinct' => __("{$this->backendLangPath}.translations.lang_id.distinct"),
 
             'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
             'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),

@@ -29,8 +29,6 @@ function bootV1WebRoutes(): void
         require base_path('routes/web.php');
     });
 
-    require base_path('routes/product-variant-images.php');
-
     $router->getRoutes()->refreshNameLookups();
     $router->getRoutes()->refreshActionLookups();
 }

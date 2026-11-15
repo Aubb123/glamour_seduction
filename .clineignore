@@ -1,0 +1,17 @@
+
+# Dépendances
+/vendor/
+/node_modules/
+
+# Fichiers générés
+/public/build/
+/bootstrap/cache/
+/storage/framework/
+/storage/logs/
+
+# Git
+/.git/
+
+# Fichiers sensibles
+.env
+.env.*

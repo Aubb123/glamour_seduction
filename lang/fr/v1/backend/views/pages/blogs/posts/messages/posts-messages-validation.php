@@ -31,15 +31,18 @@ return [
             'lang_id' => [
                 'required' => 'La langue est requise pour chaque traduction.',
                 'exists' => 'La langue sélectionnée n\'existe pas.',
+                'duplicate' => 'Une langue ne peut pas apparaître plusieurs fois dans les traductions.',
             ],
             'title' => [
                 'required' => 'Le titre est requis pour chaque traduction.',
                 'string' => 'Le titre doit être une chaîne de caractères.',
                 'max' => 'Le titre ne peut pas dépasser 255 caractères.',
+                'unique' => 'Ce titre est déjà utilisé pour cette langue.',
             ],
             'content' => [
                 'required' => 'Le contenu est requis pour chaque traduction.',
                 'string' => 'Le contenu doit être une chaîne de caractères.',
+                'unique' => 'Ce contenu est déjà utilisé pour cette langue.',
             ],
             'unique_title' => 'Ce titre est déjà utilisé pour cette langue.',
         ],

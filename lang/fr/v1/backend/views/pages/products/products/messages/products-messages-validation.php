@@ -28,11 +28,13 @@ return [
             'numeric' => 'Le prix de base doit être un nombre.',
             'min' => 'Le prix de base doit être supérieur à 0.',
             'max' => 'Le prix de base ne peut pas dépasser la valeur maximale autorisée.',
+            'lt' => 'Le prix de base doit être inférieur au prix barré.',
         ],
         'compare_at_price' => [
             'numeric' => 'Le prix barré doit être un nombre.',
             'min' => 'Le prix barré doit être supérieur à 0.',
             'max' => 'Le prix barré ne peut pas dépasser la valeur maximale autorisée.',
+            'gt' => 'Le prix barré doit être supérieur au prix de base.',
         ],
         'tags' => [
             'array' => 'Les tags doivent être un tableau.',
@@ -59,6 +61,7 @@ return [
             'lang_id' => [
                 'required' => 'La langue est requise pour chaque traduction.',
                 'exists' => 'La langue sélectionnée n\'existe pas.',
+                'distinct' => 'Chaque traduction doit utiliser une langue différente.',
             ],
             'name' => [
                 'required' => 'Le nom est requis pour chaque traduction.',

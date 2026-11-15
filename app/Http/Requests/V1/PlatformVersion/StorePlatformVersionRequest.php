@@ -3,7 +3,7 @@
 namespace App\Http\Requests\V1\PlatformVersion;
 
 use App\Enums\PlatformVersions\PlatformVersionStatus;
-use App\Http\Requests\Concerns\ValidatesTranslatedFields;
+use App\Models\PlatformVersionTranslation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
@@ -12,8 +12,6 @@ use function __;
 
 class StorePlatformVersionRequest extends FormRequest
 {
-    use ValidatesTranslatedFields;
-
     // Chemin de base pour les traductions (centralisé)
     protected string $backendLangPath = 'v1/backend/views/pages/platform-versions/messages/platform-messages-validation';
 
@@ -59,21 +57,65 @@ class StorePlatformVersionRequest extends FormRequest
     public function withValidator($validator): void
     {
         $validator->after(function ($validator): void {
-            $this->validateTranslatedFields(
-                $validator,
-                'platform_version_translations',
-                'platform_version_id',
-                null,
-                ['name', 'description'],
-            );
+            $translations = $this->input('translations', []);
 
-            $langIds = collect($this->input('translations', []))->pluck('lang_id');
+            // Vérifie les doublons de lang_id dans le payload
+            $langIds = collect($translations)->pluck('lang_id');
 
             if ($langIds->count() !== $langIds->unique()->count()) {
                 $validator->errors()->add(
                     'translations',
                     __("{$this->backendLangPath}.translations.lang_id.duplicate"),
                 );
+            }
+
+            // Vérifie l'unicité des champs traduits (name, description) par langue
+            $seen = [];
+
+            foreach ($translations as $key => $translation) {
+                if (! is_array($translation)) {
+                    continue;
+                }
+
+                $langId = $translation['lang_id'] ?? null;
+
+                if (! $langId) {
+                    continue;
+                }
+
+                foreach (['name', 'description'] as $field) {
+                    $value = $translation[$field] ?? null;
+
+                    if ($value === null || $value === '') {
+                        continue;
+                    }
+
+                    // Doublon dans le payload courant
+                    $fingerprint = serialize([(string) $langId, (string) $value]);
+
+                    if (isset($seen[$fingerprint])) {
+                        $validator->errors()->add(
+                            "translations.{$key}.{$field}",
+                            __("validation.unique", ['attribute' => $field]),
+                        );
+
+                        continue;
+                    }
+
+                    $seen[$fingerprint] = true;
+
+                    // Doublon en base de données
+                    $exists = PlatformVersionTranslation::where('lang_id', $langId)
+                        ->where($field, $value)
+                        ->exists();
+
+                    if ($exists) {
+                        $validator->errors()->add(
+                            "translations.{$key}.{$field}",
+                            __("{$this->backendLangPath}.translations.{$field}.unique"),
+                        );
+                    }
+                }
             }
         });
     }
@@ -101,6 +143,7 @@ class StorePlatformVersionRequest extends FormRequest
             'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
             'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
+            'translations.*.description.unique' => __("{$this->backendLangPath}.translations.description.unique"),
             'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
             'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
         ];

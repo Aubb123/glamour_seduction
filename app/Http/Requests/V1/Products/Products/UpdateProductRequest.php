@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Products\Products;
 
 use App\Enums\Products\Products\ProductStatus;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -51,7 +52,7 @@ class UpdateProductRequest extends FormRequest
             'files.*' => ['required', 'file', 'mimes:jpg,png,webp', 'max:2048'],
 
             'translations' => ['sometimes', 'required', 'array'],
-            'translations.*.lang_id' => ['sometimes', 'required', 'exists:langs,id'],
+            'translations.*.lang_id' => ['sometimes', 'required', 'exists:langs,id', 'distinct'],
             'translations.*.short_description' => ['sometimes', 'required', 'string', 'max:500'],
             'translations.*.description' => ['sometimes', 'required', 'string'],
         ];
@@ -76,6 +77,27 @@ class UpdateProductRequest extends FormRequest
             ];
         }
 
+        // ────────────────────────────────────────────
+        // Cohérence prix : compare_at_price doit rester strictement > base_price
+        // (sur une mise à jour partielle, on combine la valeur soumise et la
+        //  valeur déjà en base, tout en autorisant l'effacement à null).
+        // ────────────────────────────────────────────
+        $product = $this->route('product');
+
+        if ($product instanceof Product) {
+            $effectiveBasePrice = $this->input('base_price', $product->base_price);
+            $hasCompareAtKey = array_key_exists('compare_at_price', $this->all());
+            $submittedCompareAt = $this->input('compare_at_price');
+
+            if ($hasCompareAtKey) {
+                if (is_numeric($submittedCompareAt) && is_numeric($effectiveBasePrice)) {
+                    $rules['compare_at_price'][] = 'gt:'.$effectiveBasePrice;
+                }
+            } elseif ($this->has('base_price') && is_numeric($product->compare_at_price)) {
+                $rules['base_price'][] = 'lt:'.$product->compare_at_price;
+            }
+        }
+
         return $rules;
     }
 
@@ -95,7 +117,9 @@ class UpdateProductRequest extends FormRequest
             'base_price.required' => __("{$this->backendLangPath}.base_price.required"),
             'base_price.numeric' => __("{$this->backendLangPath}.base_price.numeric"),
             'base_price.min' => __("{$this->backendLangPath}.base_price.min"),
+            'base_price.lt' => __("{$this->backendLangPath}.base_price.lt"),
             'compare_at_price.numeric' => __("{$this->backendLangPath}.compare_at_price.numeric"),
+            'compare_at_price.gt' => __("{$this->backendLangPath}.compare_at_price.gt"),
             'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
 
             'cloud_platform_uuid.required_with' => __("{$this->backendLangPath}.cloud_platform_uuid.required_with"),
@@ -109,6 +133,7 @@ class UpdateProductRequest extends FormRequest
             'files.*.max' => __("{$this->backendLangPath}.files.max_file"),
 
             'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
+            'translations.*.lang_id.distinct' => __("{$this->backendLangPath}.translations.lang_id.distinct"),
             'translations.*.name.required' => __("{$this->backendLangPath}.translations.name.required"),
             'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
             'translations.*.short_description.max' => __("{$this->backendLangPath}.translations.short_description.max"),

@@ -393,3 +393,75 @@ it('déclare variants comme relation bloquante pour Product', function () {
     $property = new ReflectionProperty($product, 'dependentRelations');
     expect($property->getValue($product))->toBe(['variants']);
 });
+
+it('refuse un prix barré inférieur ou égal au prix de base à la création', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $this->actingAs($admin)
+        ->from(route('backend.products.create'))
+        ->post(route('backend.products.store'), productPayload($setup, [
+            'base_price' => 200,
+            'compare_at_price' => 150,
+        ]))
+        ->assertRedirect(route('backend.products.create'))
+        ->assertSessionHasErrors('compare_at_price');
+
+    expect(Product::count())->toBe(0);
+});
+
+it('refuse un prix barré inférieur ou égal au prix de base à la mise à jour', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $this->actingAs($admin)->post(route('backend.products.store'), productPayload($setup));
+    $product = Product::firstOrFail();
+
+    $this->actingAs($admin)
+        ->from(route('backend.products.edit', ['product' => $product->uuid]))
+        ->put(route('backend.products.update', ['product' => $product->uuid]), [
+            'base_price' => 300,
+            'compare_at_price' => 300,
+        ])
+        ->assertRedirect(route('backend.products.edit', ['product' => $product->uuid]))
+        ->assertSessionHasErrors('compare_at_price');
+
+    expect((float) $product->fresh()->base_price)->toBe(24990.0);
+});
+
+it('refuse un prix de base supérieur au prix barré existant lors d\'une mise à jour partielle', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $this->actingAs($admin)->post(route('backend.products.store'), productPayload($setup));
+    $product = Product::firstOrFail();
+
+    $this->actingAs($admin)
+        ->from(route('backend.products.edit', ['product' => $product->uuid]))
+        ->put(route('backend.products.update', ['product' => $product->uuid]), [
+            'base_price' => 99999,
+        ])
+        ->assertRedirect(route('backend.products.edit', ['product' => $product->uuid]))
+        ->assertSessionHasErrors('base_price');
+
+    expect((float) $product->fresh()->base_price)->toBe(24990.0);
+});
+
+it('refuse deux traductions pour la même langue', function () {
+    $admin = productAdmin();
+    $setup = productSetup();
+
+    $payload = productPayload($setup);
+    $payload['translations'] = [
+        ['lang_id' => $setup['fr']->id, 'name' => 'Doublon FR 1', 'short_description' => 'S1', 'description' => 'D1'],
+        ['lang_id' => $setup['fr']->id, 'name' => 'Doublon FR 2', 'short_description' => 'S2', 'description' => 'D2'],
+    ];
+
+    $this->actingAs($admin)
+        ->from(route('backend.products.create'))
+        ->post(route('backend.products.store'), $payload)
+        ->assertRedirect(route('backend.products.create'))
+        ->assertSessionHasErrors(['translations.0.lang_id', 'translations.1.lang_id']);
+
+    expect(Product::count())->toBe(0);
+});
