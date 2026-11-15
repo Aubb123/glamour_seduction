@@ -94,8 +94,6 @@ it('reproduit les colonnes clés du contrat de schéma', function () {
 
     // Entrepôts : données non traduites uniquement sur la table principale
     // (nom/slug/adresse/ville/téléphone portés par product_warehouse_translations).
-    // La colonne globale is_default a disparu : « entrepôt par défaut » est une
-    // notion PAR BOUTIQUE (pivot shop_warehouse.is_primary).
     expect(Schema::hasColumn('product_warehouses', 'uuid'))->toBeTrue();
     expect(Schema::hasColumn('product_warehouses', 'code'))->toBeTrue();
     expect(Schema::hasColumn('product_warehouses', 'status'))->toBeTrue();

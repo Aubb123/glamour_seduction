@@ -21,9 +21,6 @@ uses(RefreshDatabase::class);
 /**
  * Module Produits — Entrepôts (`product_warehouses`) et leurs traductions
  * (`product_warehouse_translations`).
- *
- * NB : « entrepôt par défaut » n'est plus une colonne globale : c'est une notion
- * PAR BOUTIQUE, portée par le pivot `shop_warehouse.is_primary` (ShopService).
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);

@@ -336,7 +336,6 @@ class ActivityLog extends Model
                     'continent_uuid' => __('Continent'),
                     'country_uuid' => __('Pays'),
                     'version_uuid' => __('Version'),
-                    'shop_uuid' => __('Boutique'),
                     'warehouse_uuid' => __('Entrepôt'),
                     default => __('Entité'),
                 };
