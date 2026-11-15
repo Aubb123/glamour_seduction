@@ -193,8 +193,6 @@ class ShopController extends Controller
             // Récupère les journaux d'activité de la boutique (les plus récents en premier)
             $logs = $shop->activityLogs()->with('user')->latest()->get();
 
-            // NB : `shopUsers` est un pivot : on ne charge plus `.user`/`.position`
-            // (ce sont désormais les colonnes du pivot).
             $shop->load(['translations.lang', 'warehouses', 'shopUsers'])->loadCount(['audits', 'activityLogs', 'shopUsers']);
 
             $availableUsers = User::orderBy('first_name')->get();

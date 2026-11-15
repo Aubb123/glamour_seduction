@@ -127,9 +127,6 @@ class ProductWarehouseController extends Controller
         try {
 
             // Charge les traductions actives, le personnel et les compteurs.
-            // NB : `warehouseUsers` est un pivot : on ne charge plus `.user`/`.position`
-            // (ce sont les colonnes du pivot) ; les postes sont résolus via
-            // Des donnees pour le panneau "Personnel" de la fiche entrepot - les utilisateurs disponibles sont fournis par $availableUsers.
             $warehouse = $productWarehouse;
             $warehouse->load(['warehouseUsers', 'translations.lang']);
             $warehouse->loadCount(['audits', 'activityLogs', 'warehouseUsers', 'shops']);
