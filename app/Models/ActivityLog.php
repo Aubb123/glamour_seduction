@@ -2,27 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\ActivityLog;
-use App\Models\Audit;
-use App\Models\BlogCategory;
-use App\Models\BlogPost;
-use App\Models\BlogPostComment;
-use App\Models\BlogPostCommentReply;
-use App\Models\BlogTag;
-use App\Models\CloudFile;
-use App\Models\CloudFolder;
-use App\Models\CloudPlatform;
-use App\Models\Contact;
-use App\Models\Faq;
-use App\Models\Gallery;
-use App\Models\GeoContinent;
-use App\Models\GeoCountry;
-use App\Models\Permission;
-use App\Models\PlatformVersion;
-use App\Models\Role;
-use App\Models\Subscribe;
-use App\Models\SubscribeHistory;
-use App\Models\User;
 use App\Traits\HasAuditModelBehaviors;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -179,7 +158,7 @@ class ActivityLog extends Model
         'continent_uuid' => ['model' => GeoContinent::class, 'route' => 'backend.geocontinents.show', 'params' => ['geoContinent', 'slug'], 'title' => 'active_translation.name'],
         'country_uuid' => ['model' => GeoCountry::class, 'route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug'], 'title' => 'active_translation.name'],
         'version_uuid' => ['model' => PlatformVersion::class, 'route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug'], 'title' => 'active_translation.name'],
-];
+    ];
 
     /**
      * Retourne l'entité liée au contexte du log (si identifiable).

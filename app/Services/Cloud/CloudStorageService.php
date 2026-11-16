@@ -14,7 +14,6 @@ use App\Traits\LogActivity;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 use function __;
 
@@ -192,6 +191,7 @@ class CloudStorageService
     public function url(CloudFile $cloudFile): string
     {
         $this->resolveDriverFromCloudFile($cloudFile);
+
         return $this->getDriver()->url($cloudFile->remote_path ?: $cloudFile->file_name);
     }
 
@@ -200,12 +200,14 @@ class CloudStorageService
         try {
             $expiresInMinutes ??= (int) (getSettingValue('temporary_url_expires_in_minutes', app()->getLocale()));
             $this->resolveDriverFromCloudFile($cloudFile);
+
             return $this->getDriver()->temporaryUrl(
                 $cloudFile->remote_path ?: $cloudFile->file_name,
                 getDateTime()->addMinutes($expiresInMinutes)
             );
         } catch (\Exception $e) {
             report($e);
+
             return null;
         }
     }
@@ -217,12 +219,15 @@ class CloudStorageService
                 if ($cloudFile->local_path && Storage::disk('local_uploads')->exists($cloudFile->local_path)) {
                     Storage::disk('local_uploads')->delete($cloudFile->local_path);
                 }
+
                 return true;
             }
             $this->resolveDriverFromCloudFile($cloudFile);
+
             return $this->getDriver()->delete($cloudFile->remote_path);
         } catch (\Exception $e) {
             report($e);
+
             return false;
         }
     }
@@ -230,12 +235,14 @@ class CloudStorageService
     public function exists(CloudFile $cloudFile): bool
     {
         $this->resolveDriverFromCloudFile($cloudFile);
+
         return $this->getDriver()->exists($cloudFile->remote_path);
     }
 
     public function download(CloudFile $cloudFile)
     {
         $this->resolveDriverFromCloudFile($cloudFile);
+
         return $this->getDriver()->download($cloudFile->remote_path);
     }
 
@@ -259,6 +266,7 @@ class CloudStorageService
         if (! $this->driver) {
             throw new \RuntimeException('Aucun driver de stockage configuré. Appelez forPlatform() ou setDriver() d\'abord.');
         }
+
         return $this->driver;
     }
 

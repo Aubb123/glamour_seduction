@@ -54,11 +54,16 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($previous instanceof ModelNotFoundException) {
                 app(ActivityLogger::class)->reportModelNotFound($previous);
             }
+
             return null;
         });
-        $exceptions->reportable(function (\Throwable $e): void {
-            if ($e instanceof ValidationException) return;
-            if ($e instanceof HttpExceptionInterface && $e->getStatusCode() < 500) return;
+        $exceptions->reportable(function (Throwable $e): void {
+            if ($e instanceof ValidationException) {
+                return;
+            }
+            if ($e instanceof HttpExceptionInterface && $e->getStatusCode() < 500) {
+                return;
+            }
             app(ActivityLogger::class)->reportServerError($e);
         });
     })->create();

@@ -4,9 +4,6 @@ namespace App\Models;
 
 use App\Enums\Products\Attributes\ProductAttributeType;
 use App\Enums\Products\Attributes\ProductAttributeValueStatus;
-use App\Models\ProductAttribute;
-use App\Models\ProductAttributeValueTranslation;
-use App\Models\ProductVariant;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

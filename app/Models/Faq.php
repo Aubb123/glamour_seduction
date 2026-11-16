@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\Faqs\FaqStatus;
-use App\Models\User;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

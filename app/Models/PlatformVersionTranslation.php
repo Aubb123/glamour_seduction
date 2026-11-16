@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Lang;
-use App\Models\PlatformVersion;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

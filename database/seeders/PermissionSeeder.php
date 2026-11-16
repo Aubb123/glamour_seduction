@@ -178,7 +178,6 @@ class PermissionSeeder extends Seeder
             'product-variants.deactivate',
             // product-variant-attribute-values (index, create, store, show, edit, update)
 
-
             // roles
             'roles.index',
             'roles.show',

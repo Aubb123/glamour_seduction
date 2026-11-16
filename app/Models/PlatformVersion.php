@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\PlatformVersions\PlatformVersionStatus;
-use App\Models\PlatformVersionTranslation;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

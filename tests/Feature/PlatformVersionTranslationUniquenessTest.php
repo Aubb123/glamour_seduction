@@ -5,14 +5,15 @@ declare(strict_types=1);
 use App\Models\Lang;
 use App\Models\PlatformVersion;
 use App\Models\PlatformVersionTranslation;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Database\Seeders\LangSeeder;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
-    $this->seed(\Database\Seeders\LangSeeder::class);
+    $this->seed(LangSeeder::class);
 });
 
 function translatedFieldValidator(array $payload, ?int $parentId = null): array

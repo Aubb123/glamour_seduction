@@ -3,12 +3,6 @@
 namespace App\Models;
 
 use App\Enums\Products\Products\ProductStatus;
-use App\Models\Currency;
-use App\Models\ProductBrand;
-use App\Models\ProductCategory;
-use App\Models\ProductTag;
-use App\Models\ProductTranslation;
-use App\Models\ProductVariant;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -21,8 +15,11 @@ class Product extends Model
     use HasModelBehaviors;
 
     protected $table = 'products';
+
     protected string $translationForeignKey = 'product_id';
+
     protected string $translationModel = ProductTranslation::class;
+
     protected array $dependentRelations = ['variants'];
 
     protected $fillable = [

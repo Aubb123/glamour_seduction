@@ -104,7 +104,7 @@ class UpdatePlatformVersionRequest extends FormRequest
                     if (isset($seen[$fingerprint])) {
                         $validator->errors()->add(
                             "translations.{$key}.{$field}",
-                            __("validation.unique", ['attribute' => $field]),
+                            __('validation.unique', ['attribute' => $field]),
                         );
 
                         continue;

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\Blogs\Tags\BlogTagStatus;
-use App\Models\BlogPost;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

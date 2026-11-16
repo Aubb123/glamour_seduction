@@ -15,7 +15,7 @@ class UpdateGeoCountryRequest extends FormRequest
     // Chemin de base pour les traductions (centralisé)
     protected string $backendLangPath = 'v1/backend/views/pages/geos/countries/messages/countries-messages-validation';
 
-    /** 
+    /**
      * ID résolu du pays à partir de l'UUID de la route.
      * Utilisé pour exclure le pays courant des règles d'unicité.
      */

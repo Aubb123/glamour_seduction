@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Subscribe;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
