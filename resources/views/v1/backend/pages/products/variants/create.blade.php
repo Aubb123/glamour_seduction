@@ -9,7 +9,7 @@
 
     <div class="row"><div class="col-sm-12"><div class="card">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="card-title mb-0">{{ __('Créer une variante') }} — {{ $product->active_translation?->name ?? ('#'.$product->id) }}</h5>
+            <h5 class="card-title mb-0">{{ __('Créer une vaPriante') }} — {{ $product->active_translation?->name ?? ('#'.$product->id) }}</h5>
             <a href="{{ route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="btn btn-secondary btn-sm"><i class="bx bx-arrow-back me-1"></i> {{ __('Retour au produit') }}</a>
         </div>
         <div class="card-body">
@@ -23,17 +23,35 @@
             <form id="create-variant-form" action="{{ route('backend.product-variants.store', ['product' => $product->uuid]) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="step-content" data-step-content="1">
-                    <div class="card border mb-3"><div class="card-body py-2"><div class="row align-items-center"><div class="col-md-4 text-muted fw-semibold">{{ __('Produit parent') }}</div><div class="col-md-8"><span class="badge badge-soft-primary">{{ $product->active_translation?->name ?? ('#'.$product->id) }}</span></div></div></div></div>
+                    @include('v1.backend.pages.products.variants.partials._parent-product', ['product' => $product])
                     <div class="row">
-                        <div class="col-md-6 mb-3"><label for="sku" class="form-label">{{ __('Référence SKU') }} <span class="text-danger">*</span></label><input type="text" name="sku" id="sku" class="form-control @error('sku') is-invalid @enderror" placeholder="ex : MAGIC-ROUGE-S" value="{{ old('sku') }}" required />@error('sku') <div class="invalid-feedback">{{ $message }}</div> @enderror</div>
-                        <div class="col-md-6 mb-3"><label for="barcode" class="form-label">{{ __('Code-barres') }}</label><input type="text" name="barcode" id="barcode" class="form-control @error('barcode') is-invalid @enderror" placeholder="ex : EAN-13" value="{{ old('barcode') }}" />@error('barcode') <div class="invalid-feedback">{{ $message }}</div> @enderror</div>
+                        <div class="col-md-6 mb-3"><label for="sku" class="form-label">{{ __('Référence SKU') }}</label>
+                        <input type="text" name="sku" id="sku" class="form-control @error('sku') is-invalid @enderror" placeholder="ex : MAGIC-ROUGE-S" value="{{ old('sku') }}" />@error('sku') <div class="invalid-feedback">{{ $message }}</div> @enderror<small class="text-muted">{{ __("Laissez vide pour générer automatiquement (produit + valeurs d'attributs).") }}</small></div>
+                        <div class="col-md-6 mb-3"><label for="barcode" class="form-label">{{ __('Code-barres') }}</label>
+                        <input type="text" name="barcode" id="barcode" class="form-control @error('barcode') is-invalid @enderror" placeholder="ex : EAN-13" value="{{ old('barcode') }}" />@error('barcode') <div class="invalid-feedback">{{ $message }}</div> @enderror<small class="text-muted">{{ __('Généré automatiquement (EAN-13) si vide.') }}</small></div>
                     </div>
                 </div>
 
                 <div class="step-content d-none" data-step-content="2"><div class="row">
-                    <div class="col-md-6 mb-3"><label for="price" class="form-label">{{ __('Prix') }}</label><input type="number" step="0.01" min="0.01" name="price" id="price" class="form-control @error('price') is-invalid @enderror" placeholder="0.00" value="{{ old('price') }}" />@error('price') <div class="invalid-feedback">{{ $message }}</div> @enderror<small class="text-muted">{{ __('Laissez vide pour hériter du prix du produit.') }}</small></div>
-                    <div class="col-md-6 mb-3"><label for="status" class="form-label">{{ __('Statut') }} <span class="text-danger">*</span></label><select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>@foreach (\App\Enums\Products\Variants\ProductVariantStatus::cases() as $status)<option value="{{ $status->value }}" {{ old('status', 'active') === $status->value ? 'selected' : '' }}>{{ $status->label() }}</option>@endforeach</select>@error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror</div>
-                    <div class="col-md-6 mb-3"><div class="form-check form-switch mt-4"><input class="form-check-input" type="checkbox" name="is_default" id="is_default" value="1" {{ old('is_default') ? 'checked' : '' }}><label class="form-check-label" for="is_default">{{ __('Variante par défaut') }}</label></div><small class="text-muted">{{ __('Une seule variante par défaut par produit.') }}</small></div>
+                    <div class="col-md-6 mb-3"><label for="price" class="form-label">{{ __('Prix') }}</label>
+                    <input type="number" step="0.01" min="0.01" name="price" id="price" class="form-control @error('price') is-invalid @enderror" placeholder="0.00" value="{{ old('price') }}" />@error('price') <div class="invalid-feedback">{{ $message }}</div> @enderror<small class="text-muted">{{ __('Laissez vide pour hériter du prix du produit.') }}</small></div>
+                    <div class="col-md-6 mb-3"><label for="status" class="form-label">{{ __('Statut') }} <span class="text-danger">*</span></label>
+                    <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>
+                        @foreach (\App\Enums\Products\Variants\ProductVariantStatus::cases() as $status)
+                            <option value="{{ $status->value }}" {{ old('status', 'active') === $status->value ? 'selected' : '' }}>{{ $status->label() }}</option>
+                        @endforeach
+                    </select>
+                    @error('status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" name="is_default" id="is_default" value="1" {{ old('is_default') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="is_default">{{ __('Variante par défaut') }}</label>
+                        </div>
+                        <small class="text-muted">{{ __('Une seule variante par défaut par produit.') }}</small>
+                    </div>
                 </div></div>
 
                 <div class="step-content d-none" data-step-content="3">
@@ -41,7 +59,19 @@
                     @php($selectedValueIds = old('attribute_value_ids', []))
                     <div class="row">
                         @forelse ($attributes as $attribute)
-                            <div class="col-md-12 mb-3"><label class="form-label d-block fw-semibold">{{ $attribute->active_translation?->name ?? ('#'.$attribute->id) }}</label><div class="d-flex flex-wrap gap-2">@foreach ($attribute->values as $value)<div class="form-check"><input class="form-check-input" type="checkbox" name="attribute_value_ids[]" id="attr-value-{{ $value->id }}" value="{{ $value->id }}" @if (in_array($value->id, $selectedValueIds)) checked @endif /><label class="form-check-label" for="attr-value-{{ $value->id }}">@include('v1.backend.pages.products.variants.partials._color-swatch', ['hex' => $value->hex_color]) {{ $value->active_translation?->label ?? $value->value }}</label></div>@endforeach</div></div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label d-block fw-semibold">
+                                    {{ $attribute->active_translation?->name ?? ('#'.$attribute->id) }}
+                                </label>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach ($attribute->values as $value)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="attribute_value_ids[]" id="attr-value-{{ $value->id }}" value="{{ $value->id }}" @if (in_array($value->id, $selectedValueIds)) checked @endif />
+                                            <label class="form-check-label" for="attr-value-{{ $value->id }}">@include('v1.backend.pages.products.variants.partials._color-swatch', ['hex' => $value->hex_color]) {{ $value->active_translation?->label ?? $value->value }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         @empty<div class="col-12"><div class="alert alert-warning mb-0">{{ __('Aucun attribut trouvé.') }}</div></div>
                         @endforelse
                     </div>

@@ -83,6 +83,7 @@
                                 <th>{{ __('Prix') }}</th>
                                 <th>{{ __('Prix barré') }}</th>
                                 <th>{{ __('Devise') }}</th>
+                                <th>{{ __('Variantes') }}</th>
                                 <th>{{ __('Audits') }}</th>
                                 <th>{{ __('Logs') }}</th>
                                 <th>{{ __('Mis en avant') }}</th>
@@ -100,13 +101,38 @@
                                                 <img src="{{ $image['url_img'] }}" alt="{{ $product->active_translation?->name ?? __('Image produit') }}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
                                             </a>
                                             <div>
-                                                <span class="fw-semibold" data-search-name>{{ $product->active_translation?->name ?? '—' }}</span>
+                                                @if ($product->trashed())
+                                                    <span class="fw-semibold" data-search-name>{{ $product->active_translation?->name ?? '—' }}</span>
+                                                @else
+                                                    <a href="{{ route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}"
+                                                       class="fw-semibold text-decoration-none" data-search-name>
+                                                        {{ $product->active_translation?->name ?? '—' }}
+                                                    </a>
+                                                @endif
                                                 <small class="text-muted d-block"><code>{{ $product->uuid }}</code></small>
                                             </div>
                                         </div>
                                     </td>
-                                    <td data-category="{{ $product->category_id }}">{{ $product->category?->active_translation?->name ?? '—' }}</td>
-                                    <td data-brand="{{ $product->brand_id ?? 'null' }}">{{ $product->brand?->active_translation?->name ?? '—' }}</td>
+                                    <td data-category="{{ $product->category_id }}">
+                                        @if ($product->category)
+                                            <a href="{{ route('backend.product-categories.show', ['productCategory' => $product->category->uuid, 'slug' => $product->category?->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                {{ $product->category?->active_translation?->name ?? '—' }}
+                                            </a>
+                                        @else
+                                            —
+                                        @endif
+                                    </td>
+                                    <td data-brand="{{ $product->brand_id ?? 'null' }}">
+                                        @if ($product->brand)
+                                            <a href="{{ route('backend.product-brands.show', ['productBrand' => $product->brand->uuid, 'slug' => $product->brand?->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                {{ $product->brand?->active_translation?->name ?? '—' }}
+                                            </a>
+                                        @else
+                                            —
+                                        @endif
+                                    </td>
                                     <td data-status="{{ $product->status->value }}">
                                         <span class="badge {{ $product->status->badgeClass() }} fs-14 px-3 py-2">
                                             {{ $product->status->label() }}
@@ -123,9 +149,23 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark border fs-12 px-2 py-1">
-                                            {{ $product->currency?->active_translation?->name ?? $product->currency?->code ?? '—' }} <small>{{ $product->currency?->symbol ?? '' }}</small>
-                                        </span>
+                                        @if ($product->currency)
+                                            <a href="{{ route('backend.currencies.show', ['currency' => $product->currency->uuid, 'slug' => $product->currency->active_translation?->slug ?? $product->currency->code]) }}"
+                                               class="text-decoration-none">
+                                                <span class="badge bg-light text-dark border fs-12 px-2 py-1">
+                                                    {{ $product->currency->active_translation?->name ?? $product->currency->code ?? '—' }} <small>{{ $product->currency->symbol ?? '' }}</small>
+                                                </span>
+                                            </a>
+                                        @else
+                                            <span class="badge bg-light text-dark border fs-12 px-2 py-1">—</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('backend.products.variants', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                            <span class="badge badge-soft-secondary">
+                                                <i class="bx bx-layer me-1"></i> {{ $product->variants_count ?? 0 }}
+                                            </span>
+                                        </a>
                                     </td>
                                     <td>
                                         <a href="{{ route('backend.products.audits', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}"
@@ -220,7 +260,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" class="text-center text-muted py-4">
+                                    <td colspan="13" class="text-center text-muted py-4">
                                         <i class="bx bx-box fs-3 d-block mb-2"></i>
                                         {{ __('Aucun produit trouvé.') }}
                                     </td>

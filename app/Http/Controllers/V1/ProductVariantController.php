@@ -33,7 +33,12 @@ class ProductVariantController extends Controller
     public function backend_product_variants_index(): View
     {
         try {
-            $variants = ProductVariant::with(['product', 'attributeValues'])
+            $variants = ProductVariant::with([
+                'product.translations',
+                'product.cloudFiles',
+                'cloudFiles',
+                'attributeValues.translations',
+            ])
                 ->withCount(['audits', 'activityLogs'])
                 ->orderByDesc('created_at')
                 ->get();
@@ -165,7 +170,8 @@ class ProductVariantController extends Controller
     public function backend_product_variants_show(ProductVariant $productVariant): View
     {
         try {
-            $productVariant->loadCount(['audits', 'activityLogs']);
+            $productVariant->loadCount(['audits', 'activityLogs'])
+                ->load(['product.cloudFiles', 'cloudFiles', 'attributeValues.translations']);
 
             $this->logActivity(
                 type: 'info',
@@ -198,6 +204,9 @@ class ProductVariantController extends Controller
     public function backend_product_variants_audits(ProductVariant $productVariant): View
     {
         try {
+            // Les compteurs alimentent les badges de navigation (_show-navigation).
+            $productVariant->loadCount(['audits', 'activityLogs']);
+
             $audits = $productVariant->audits()
                 ->orderByDesc('created_at')
                 ->get();
@@ -236,6 +245,9 @@ class ProductVariantController extends Controller
     public function backend_product_variants_activity_logs(ProductVariant $productVariant): View
     {
         try {
+            // Les compteurs alimentent les badges de navigation (_show-navigation).
+            $productVariant->loadCount(['audits', 'activityLogs']);
+
             $logs = $productVariant->activityLogs()
                 ->with('user')
                 ->orderByDesc('created_at')
@@ -552,7 +564,12 @@ class ProductVariantController extends Controller
     {
         try {
             $variants = ProductVariant::onlyTrashed()
-                ->with(['product', 'attributeValues'])
+                ->with([
+                    'product.translations',
+                    'product.cloudFiles',
+                    'cloudFiles',
+                    'attributeValues.translations',
+                ])
                 ->withCount(['audits', 'activityLogs'])
                 ->orderByDesc('deleted_at')
                 ->get();

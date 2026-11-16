@@ -21,10 +21,10 @@
             <form id="edit-variant-form" action="{{ route('backend.product-variants.update', ['productVariant' => $variant->uuid]) }}" method="POST" enctype="multipart/form-data">
                 @csrf @method('PUT')
                 <div class="step-content" data-step-content="1">
-                    <div class="card border mb-3"><div class="card-body py-2"><div class="row align-items-center"><div class="col-md-4 text-muted fw-semibold">{{ __('Produit parent') }}</div><div class="col-md-8"><span class="badge badge-soft-primary">{{ $variant->product?->active_translation?->name ?? ('#'.$variant->product_id) }}</span></div></div></div></div>
+                    @include('v1.backend.pages.products.variants.partials._parent-product', ['product' => $variant->product])
                     <div class="row">
-                        <div class="col-md-6 mb-3"><label for="sku" class="form-label">{{ __('Référence SKU') }} <span class="text-danger">*</span></label><input type="text" name="sku" id="sku" class="form-control @error('sku') is-invalid @enderror" placeholder="ex : MAGIC-ROUGE-S" value="{{ old('sku', $variant->sku) }}" required />@error('sku') <div class="invalid-feedback">{{ $message }}</div> @enderror</div>
-                        <div class="col-md-6 mb-3"><label for="barcode" class="form-label">{{ __('Code-barres') }}</label><input type="text" name="barcode" id="barcode" class="form-control @error('barcode') is-invalid @enderror" placeholder="ex : EAN-13" value="{{ old('barcode', $variant->barcode) }}" />@error('barcode') <div class="invalid-feedback">{{ $message }}</div> @enderror</div>
+                        <div class="col-md-6 mb-3"><label for="sku" class="form-label">{{ __('Référence SKU') }}</label><input type="text" name="sku" id="sku" class="form-control @error('sku') is-invalid @enderror" placeholder="ex : MAGIC-ROUGE-S" value="{{ old('sku', $variant->sku) }}" />@error('sku') <div class="invalid-feedback">{{ $message }}</div> @enderror<small class="text-muted">{{ __('Laissez vide pour conserver la référence actuelle.') }}</small></div>
+                        <div class="col-md-6 mb-3"><label for="barcode" class="form-label">{{ __('Code-barres') }}</label><input type="text" name="barcode" id="barcode" class="form-control @error('barcode') is-invalid @enderror" placeholder="ex : EAN-13" value="{{ old('barcode', $variant->barcode) }}" />@error('barcode') <div class="invalid-feedback">{{ $message }}</div> @enderror<small class="text-muted">{{ __('Laissez vide pour retirer le code-barres.') }}</small></div>
                     </div>
                 </div>
                 <div class="step-content d-none" data-step-content="2"><div class="row">

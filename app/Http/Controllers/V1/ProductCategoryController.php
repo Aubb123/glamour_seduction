@@ -41,7 +41,7 @@ class ProductCategoryController extends Controller
         try {
 
             // ✅ Récupère toutes les catégories avec leurs traductions, leur parent et les fichiers cloud, triées par sort_order décroissant
-            $categories = ProductCategory::with(['parent.translations', 'cloudFiles'])->withActiveTranslation()->withCount(['children', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $categories = ProductCategory::with(['parent.translations', 'cloudFiles'])->withActiveTranslation()->withCount(['children', 'products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des catégories
             $this->logActivity(type: 'info', action: 'backend.product-categories.index', context: ['count' => $categories->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -156,7 +156,7 @@ class ProductCategoryController extends Controller
 
             // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
             // + les compteurs (withCount)
-            $category->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['children', 'audits', 'activityLogs']);
+            $category->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['children', 'products', 'audits', 'activityLogs']);
 
             // Récupère toutes les traductions supprimées (soft deleted) de cette catégorie
             $productCategoryTranslations = ProductCategoryTranslation::onlyTrashed()->where('category_id', $category->id)->get();
@@ -191,7 +191,7 @@ class ProductCategoryController extends Controller
             $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.audits', 'audits');
 
             // Charge les compteurs (withCount)
-            $category->loadCount(['children', 'audits', 'activityLogs']);
+            $category->loadCount(['children', 'products', 'audits', 'activityLogs']);
 
             // $categoryName prend le nom de la traduction active si elle existe, sinon une chaîne vide
             $categoryName = $category->active_translation?->name ?? '';
@@ -227,7 +227,7 @@ class ProductCategoryController extends Controller
             $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.activity-logs', 'activity-logs');
 
             // Charge les compteurs (withCount)
-            $category->loadCount(['children', 'audits', 'activityLogs']);
+            $category->loadCount(['children', 'products', 'audits', 'activityLogs']);
 
             // $categoryName prend le nom de la traduction active si elle existe, sinon une chaîne vide
             $categoryName = $category->active_translation?->name ?? '';
@@ -248,6 +248,82 @@ class ProductCategoryController extends Controller
             $this->logActivity(type: 'error', action: 'backend.product-categories.activity-logs', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productCategory->uuid]), is_success: false);
 
             // Retourne une erreur serveur générique en cas de problème lors de la récupération des journaux d'activité
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // CHILDREN (sous-catégories)
+    // ─────────────────────────────────────────────
+    public function backend_product_categories_children(ProductCategory $productCategory, string $slug): View
+    {
+        try {
+
+            // Vérifie que le slug correspond
+            $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.children', 'children');
+
+            // Charge les compteurs affichés par la navigation
+            $category->loadCount(['children', 'products', 'audits', 'activityLogs']);
+
+            // Sous-catégories directes de la catégorie
+            $children = $category->children()
+                ->with(['parent.translations', 'cloudFiles'])
+                ->withActiveTranslation()
+                ->withCount(['children', 'products', 'audits', 'activityLogs'])
+                ->orderBy('sort_order', 'desc')
+                ->get();
+
+            $categoryName = $category->active_translation?->name ?? '';
+
+            // Log de la consultation des sous-catégories d'une catégorie
+            $this->logActivity(type: 'info', action: 'backend.product-categories.children', context: ['category_uuid' => $category->uuid, 'count' => $children->count()], message: null, activity: __("{$this->backendLangPath}.children.success", ['name' => $categoryName]), is_success: true, loggable: $category);
+
+            // Retourne la vue des sous-catégories de la catégorie
+            return view('v1.backend.pages.products.categories.others.children', compact('category', 'children'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la consultation des sous-catégories d'une catégorie
+            $this->logActivity(type: 'error', action: 'backend.product-categories.children', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.children.error", ['uuid' => $productCategory->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // PRODUCTS (produits de la catégorie)
+    // ─────────────────────────────────────────────
+    public function backend_product_categories_products(ProductCategory $productCategory, string $slug): View
+    {
+        try {
+
+            // Vérifie que le slug correspond
+            $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.products', 'products');
+
+            // Charge les compteurs affichés par la navigation
+            $category->loadCount(['children', 'products', 'audits', 'activityLogs']);
+
+            // Produits rattachés à la catégorie (mêmes relations que la liste des produits)
+            $products = $category->products()
+                ->withActiveTranslation()
+                ->with(['category', 'brand', 'currency', 'tags'])
+                ->withCount(['variants', 'audits', 'activityLogs'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $categoryName = $category->active_translation?->name ?? '';
+
+            // Log de la consultation des produits d'une catégorie
+            $this->logActivity(type: 'info', action: 'backend.product-categories.products', context: ['category_uuid' => $category->uuid, 'count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.products.success", ['name' => $categoryName]), is_success: true, loggable: $category);
+
+            // Retourne la vue des produits de la catégorie
+            return view('v1.backend.pages.products.categories.others.product', compact('category', 'products'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la consultation des produits d'une catégorie
+            $this->logActivity(type: 'error', action: 'backend.product-categories.products', context: ['category_uuid' => $productCategory->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.products.error", ['uuid' => $productCategory->uuid]), is_success: false);
+
             abort(500);
         }
     }
@@ -453,7 +529,7 @@ class ProductCategoryController extends Controller
         try {
 
             // $categories récupère toutes les catégories supprimées (soft deleted) avec leurs traductions actives, leurs fichiers cloud et les compteurs, triées par date de suppression décroissante
-            $categories = ProductCategory::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['children', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $categories = ProductCategory::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['children', 'products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des catégories
             $this->logActivity(type: 'info', action: 'backend.product-categories.trashed', context: ['count' => $categories->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

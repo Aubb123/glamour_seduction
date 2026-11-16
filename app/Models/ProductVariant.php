@@ -3,22 +3,31 @@
 namespace App\Models;
 
 use App\Enums\Products\Variants\ProductVariantStatus;
-use App\Models\Product;
-use App\Models\ProductAttributeValue;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
+/**
+ * Variante d'un produit (ex. « T-shirt rouge, taille M »).
+ *
+ * Contraintes d'unicité (par conception) :
+ * - le SKU est unique GLOBALEMENT (toutes variantes confondues), pas par produit ;
+ * - le code-barres est unique lorsqu'il est renseigné (`NULL` reste autorisé
+ *   plusieurs fois, comportement standard de MySQL/SQLite sur index unique).
+ * - une combinaison de valeurs d'attributs ne peut exister qu'une seule fois
+ *   par produit (voir `attributeCombinationExists()`).
+ */
 class ProductVariant extends Model
 {
     use HasModelBehaviors;
 
     protected $table = 'product_variants';
+
     protected bool $hasTranslations = false;
+
     protected array $dependentRelations = [];
 
     protected $fillable = ['product_id', 'sku', 'barcode', 'price', 'status', 'is_default'];
@@ -42,6 +51,47 @@ class ProductVariant extends Model
     public function attributeValues(): BelongsToMany
     {
         return $this->belongsToMany(ProductAttributeValue::class, 'product_variant_attribute_value', 'product_variant_id', 'attribute_value_id');
+    }
+
+    /**
+     * Indique si une combinaison de valeurs d'attributs est déjà utilisée
+     * par une autre variante (non supprimée) du même produit.
+     *
+     * La comparaison se fait sur des ensembles : l'ordre et les doublons sont
+     * ignorés. Un ensemble vide (variante sans options) n'est jamais considéré
+     * comme un doublon : plusieurs variantes « sans options » restent autorisées.
+     *
+     * @param  array<int, int|string>  $attributeValueIds
+     */
+    public static function attributeCombinationExists(int $productId, array $attributeValueIds, ?int $exceptId = null): bool
+    {
+        $candidate = array_values(array_unique(array_filter(array_map('intval', $attributeValueIds))));
+        sort($candidate);
+
+        if ($candidate === []) {
+            return false;
+        }
+
+        // Charge toutes les variantes du produit en une requête (évite le N+1).
+        $variants = static::query()
+            ->where('product_id', $productId)
+            ->when($exceptId !== null, fn (Builder $query) => $query->whereKeyNot($exceptId))
+            ->with('attributeValues:id')
+            ->get();
+
+        foreach ($variants as $variant) {
+            $existing = $variant->attributeValues
+                ->pluck('id')
+                ->map(fn ($id) => (int) $id)
+                ->all();
+            sort($existing);
+
+            if ($existing === $candidate) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** Images shown for this variant, falling back to the parent product gallery. */

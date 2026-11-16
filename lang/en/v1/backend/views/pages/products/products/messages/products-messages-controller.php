@@ -36,6 +36,12 @@ return [
             'error' => 'Error while viewing the product activity logs: :uuid',
             'slug_mismatch' => 'The product slug does not match the expected slug.',
         ],
+        'variants' => [
+            'success' => 'Viewing product variants: :name',
+            'warning' => 'Attempt to view variants of a missing product: :uuid',
+            'error' => 'Error while viewing the product variants: :uuid',
+            'slug_mismatch' => 'The product slug does not match the expected slug.',
+        ],
         'edit' => [
             'success' => 'Access to the product edit page: :name',
             'warning' => 'Attempt to edit a missing product: :uuid',

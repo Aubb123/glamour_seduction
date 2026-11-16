@@ -278,3 +278,101 @@ it('déclare products et children comme relations bloquantes (dependentRelations
     $property = new ReflectionProperty($category, 'dependentRelations');
     expect($property->getValue($category))->toBe(['products', 'children']);
 });
+
+/**
+ * Crée une catégorie de test (sans passer par le téléversement d'images).
+ *
+ * @return array{category: ProductCategory}
+ */
+function productCategoryFixture(?ProductCategory $parent = null): array
+{
+    $fr = Lang::where('code', 'fr')->firstOrFail();
+
+    $category = ProductCategory::create([
+        'parent_id' => $parent?->id,
+        'sort_order' => random_int(100000, 999999),
+        'status' => 'active',
+    ]);
+
+    $category->translations()->create([
+        'lang_id' => $fr->id,
+        'name' => 'Catégorie FIX '.uniqid(),
+        'slug' => 'categorie-fix-'.uniqid(),
+        'description' => 'Description.',
+    ]);
+
+    return ['category' => $category];
+}
+
+it('affiche les liens vers les sous-catégories et les produits de chaque catégorie', function () {
+    $admin = productCategoryAdmin();
+    $setup = productCategoryFixture();
+    productCategoryFixture($setup['category']);
+
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-categories.index'))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain(route('backend.product-categories.children', [
+        'productCategory' => $setup['category']->uuid,
+        'slug' => $setup['category']->active_translation?->slug ?? 'null',
+    ]));
+
+    expect($html)->toContain(route('backend.product-categories.products', [
+        'productCategory' => $setup['category']->uuid,
+        'slug' => $setup['category']->active_translation?->slug ?? 'null',
+    ]));
+});
+
+it('affiche la page des produits d\'une catégorie', function () {
+    $admin = productCategoryAdmin();
+    $this->seed(\Database\Seeders\CurrencySeeder::class);
+
+    $setup = productCategoryFixture();
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+
+    $product = \App\Models\Product::create([
+        'category_id' => $setup['category']->id,
+        'currency_id' => \App\Models\Currency::where('is_default', true)->firstOrFail()->id,
+        'status' => 'draft',
+        'base_price' => 9990,
+    ]);
+
+    $product->translations()->create([
+        'lang_id' => $langFr->id,
+        'name' => 'Produit CAT '.uniqid(),
+        'short_description' => 'Short.',
+        'description' => 'Desc.',
+    ]);
+
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-categories.products', [
+            'productCategory' => $setup['category']->uuid,
+            'slug' => $setup['category']->active_translation?->slug ?? 'null',
+        ]))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain($product->active_translation->name)
+        ->and($html)->toContain('products-table');
+});
+
+it('affiche la page des sous-catégories d\'une catégorie avec uniquement ses enfants directs', function () {
+    $admin = productCategoryAdmin();
+    $parent = productCategoryFixture();
+    $child = productCategoryFixture($parent['category']);
+    $unrelated = productCategoryFixture();
+
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-categories.children', [
+            'productCategory' => $parent['category']->uuid,
+            'slug' => $parent['category']->active_translation?->slug ?? 'null',
+        ]))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain($child['category']->active_translation->name)
+        ->and($html)->toContain('product-categories-table')
+        ->and($html)->not->toContain($unrelated['category']->active_translation->name);
+});

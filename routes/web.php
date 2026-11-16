@@ -283,6 +283,8 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-categories/show/{productCategory}/{slug}', 'backend_product_categories_show')->middleware(['permission:product-categories.show'])->name('backend.product-categories.show');
             Route::get('/backend/product-categories/audits/{productCategory}/{slug}', 'backend_product_categories_audits')->middleware(['permission:product-categories.audits'])->name('backend.product-categories.audits');
             Route::get('/backend/product-categories/activity-logs/{productCategory}/{slug}', 'backend_product_categories_activity_logs')->middleware(['permission:product-categories.activity_logs'])->name('backend.product-categories.activity-logs');
+            Route::get('/backend/product-categories/children/{productCategory}/{slug}', 'backend_product_categories_children')->middleware(['permission:product-categories.index'])->name('backend.product-categories.children');
+            Route::get('/backend/product-categories/products/{productCategory}/{slug}', 'backend_product_categories_products')->middleware(['permission:product-categories.index'])->name('backend.product-categories.products');
             Route::get('/backend/product-categories/edit/{productCategory}', 'backend_product_categories_edit')->middleware(['permission:product-categories.edit'])->name('backend.product-categories.edit');
             Route::put('/backend/product-categories/update/{productCategory}', 'backend_product_categories_update')->middleware(['permission:product-categories.update'])->name('backend.product-categories.update');
             Route::patch('/backend/product-categories/activate/{productCategory}', 'backend_product_categories_activate')->middleware(['permission:product-categories.activate'])->name('backend.product-categories.activate');
@@ -403,6 +405,7 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/products/show/{product}/{slug}', 'backend_products_show')->middleware(['permission:products.show'])->name('backend.products.show');
             Route::get('/backend/products/audits/{product}/{slug}', 'backend_products_audits')->middleware(['permission:products.audits'])->name('backend.products.audits');
             Route::get('/backend/products/activity-logs/{product}/{slug}', 'backend_products_activity_logs')->middleware(['permission:products.activity_logs'])->name('backend.products.activity-logs');
+            Route::get('/backend/products/variants/{product}/{slug}', 'backend_products_variants')->middleware(['permission:product-variants.index'])->name('backend.products.variants');
             Route::get('/backend/products/edit/{product}', 'backend_products_edit')->middleware(['permission:products.edit'])->name('backend.products.edit');
             Route::put('/backend/products/update/{product}', 'backend_products_update')->middleware(['permission:products.update'])->name('backend.products.update');
             Route::patch('/backend/products/publish/{product}', 'backend_products_publish')->middleware(['permission:products.publish'])->name('backend.products.publish');

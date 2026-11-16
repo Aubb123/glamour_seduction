@@ -36,6 +36,12 @@ return [
             'error' => 'Erreur lors de la consultation des journaux d\'activité du produit : :uuid',
             'slug_mismatch' => 'Le slug du produit ne correspond pas au slug attendu.',
         ],
+        'variants' => [
+            'success' => 'Consultation des variantes du produit : :name',
+            'warning' => 'Tentative de consultation des variantes d\'un produit inexistant : :uuid',
+            'error' => 'Erreur lors de la consultation des variantes du produit : :uuid',
+            'slug_mismatch' => 'Le slug du produit ne correspond pas au slug attendu.',
+        ],
         'edit' => [
             'success' => 'Accès à la page de modification du produit : :name',
             'warning' => 'Tentative de modification d\'un produit inexistant : :uuid',

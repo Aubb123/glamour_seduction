@@ -16,4 +16,16 @@
             <span class="badge bg-primary ms-1">{{ $category->activity_logs_count ?? 0 }}</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link @if(request()->routeIs('backend.product-categories.children')) active @endif" href="{{ route('backend.product-categories.children', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}">
+            <i class="bx bx-collection me-1"></i> {{ __('Sous-catégories') }}
+            <span class="badge bg-primary ms-1">{{ $category->children_count ?? 0 }}</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @if(request()->routeIs('backend.product-categories.products')) active @endif" href="{{ route('backend.product-categories.products', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}">
+            <i class="bx bx-cube me-1"></i> {{ __('Produits') }}
+            <span class="badge bg-primary ms-1">{{ $category->products_count ?? 0 }}</span>
+        </a>
+    </li>
 </ul>

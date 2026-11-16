@@ -51,7 +51,16 @@
         <div class="card">
 
             <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-                <h5 class="card-title mb-0">{{ __('Liste des variantes de produits') }}</h5>
+                <h5 class="card-title mb-0">
+                    {{ __('Liste des variantes de produits') }}
+                    @isset($product)
+                        —
+                        <a href="{{ route('backend.products.show', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}"
+                           class="text-decoration-none">
+                            {{ $product->active_translation?->name ?? ('#'.$product->id) }}
+                        </a>
+                    @endisset
+                </h5>
 
                 <div class="d-flex align-items-center gap-2">
 
@@ -83,32 +92,67 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle w-100" id="product-variants-table">
+                    <table class="table table-centered text-nowrap" id="product-variants-table">
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>{{ __('Image') }}</th>
                                 <th>SKU</th>
                                 <th>{{ __('Produit') }}</th>
                                 <th>{{ __("Valeurs d'attributs") }}</th>
                                 <th>{{ __('Prix') }}</th>
                                 <th>{{ __('Statut') }}</th>
                                 <th>{{ __('Par défaut') }}</th>
+                                <th>{{ __('Audits') }}</th>
+                                <th>{{ __('Logs') }}</th>
                                 <th class="text-center">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
                             @forelse ($variants as $variant)
+                                @php($firstImage = $variant->displayImages()->first())
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td><span class="fw-semibold"><code>{{ $variant->sku }}</code></span></td>
-                                    <td>{{ $variant->product?->active_translation?->name ?? ('#'.$variant->product_id) }}</td>
+                                    <td>
+                                        @if ($firstImage)
+                                            <a href="{{ route('cloud-file.show', ['uuid' => $firstImage->uuid]) }}" target="_blank" rel="noopener noreferrer">
+                                                <img src="{{ route('cloud-file.show', ['uuid' => $firstImage->uuid]) }}"
+                                                     alt="{{ __('Image variante') }} {{ $variant->sku }}"
+                                                     style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
+                                            </a>
+                                        @else
+                                            <img src="{{ asset(getEnvFolder() . 'others/all/assets/images/default.jpg') }}"
+                                                 alt="{{ __('Image variante') }}"
+                                                 style="width:30px;height:30px;border-radius:50%;object-fit:cover;">
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($variant->trashed())
+                                            <code>{{ $variant->sku }}</code>
+                                        @else
+                                            <a href="{{ route('backend.product-variants.show', ['productVariant' => $variant->uuid]) }}" class="text-decoration-none">
+                                                <code>{{ $variant->sku }}</code>
+                                            </a>
+                                        @endif
+                                        <small class="text-muted d-block"><code>{{ $variant->uuid }}</code></small>
+                                    </td>
+                                    <td>
+                                        @if ($variant->product)
+                                            <a href="{{ route('backend.products.show', ['product' => $variant->product->uuid, 'slug' => $variant->product->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                                {{ $variant->product->active_translation?->name ?? ('#'.$variant->product_id) }}
+                                            </a>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         @forelse ($variant->attributeValues as $value)
-                                            <span class="badge badge-soft-primary me-1">
+                                            <a href="{{ route('backend.product-attribute-values.show', ['productAttributeValue' => $value->uuid, 'slug' => $value->active_translation?->slug ?? 'null']) }}"
+                                               class="badge badge-soft-primary me-1 text-decoration-none">
                                                 @include('v1.backend.pages.products.variants.partials._color-swatch', ['hex' => $value->hex_color])
                                                 {{ $value->active_translation?->label ?? $value->value }}
-                                            </span>
+                                            </a>
                                         @empty
                                             <span class="text-muted">—</span>
                                         @endforelse
@@ -130,6 +174,32 @@
                                             <span class="badge badge-soft-success">{{ __('Par défaut') }}</span>
                                         @else
                                             <span class="badge badge-soft-secondary">—</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($variant->trashed())
+                                            <span class="badge badge-soft-primary">
+                                                <i class="bx bx-file me-1"></i> {{ $variant->audits_count ?? 0 }}
+                                            </span>
+                                        @else
+                                            <a href="{{ route('backend.product-variants.audits', ['productVariant' => $variant->uuid]) }}" class="text-decoration-none">
+                                                <span class="badge badge-soft-primary">
+                                                    <i class="bx bx-file me-1"></i> {{ $variant->audits_count ?? 0 }}
+                                                </span>
+                                            </a>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($variant->trashed())
+                                            <span class="badge badge-soft-info">
+                                                <i class="bx bx-pulse me-1"></i> {{ $variant->activity_logs_count ?? 0 }}
+                                            </span>
+                                        @else
+                                            <a href="{{ route('backend.product-variants.activity-logs', ['productVariant' => $variant->uuid]) }}" class="text-decoration-none">
+                                                <span class="badge badge-soft-info">
+                                                    <i class="bx bx-pulse me-1"></i> {{ $variant->activity_logs_count ?? 0 }}
+                                                </span>
+                                            </a>
                                         @endif
                                     </td>
                                     <td class="text-center">
@@ -194,7 +264,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">
+                                    <td colspan="11" class="text-center text-muted py-4">
                                         <i class="bx bx-layer fs-3 d-block mb-2"></i>
                                         {{ __('Aucune variante trouvée.') }}
                                     </td>

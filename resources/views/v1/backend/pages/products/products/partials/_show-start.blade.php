@@ -23,6 +23,11 @@
                             <span class="badge bg-primary ms-1">{{ $product->activity_logs_count ?? 0 }}</span>
                         </a>
 
+                        <a href="{{ route('backend.products.variants', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-secondary btn-sm">
+                            <i class="bx bx-layer me-1"></i> {{ __('Variantes') }}
+                            <span class="badge bg-primary ms-1">{{ $product->variants_count ?? 0 }}</span>
+                        </a>
+
                         <div class="dropdown">
                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bx bx-cog me-1"></i> {{ __('Actions') }}

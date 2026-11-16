@@ -80,6 +80,16 @@
                                     <div class="col-4 text-muted fw-semibold">{{ __('Sous-catégories') }}</div>
                                     <div class="col-8 fw-semibold">{{ number_format($category->children_count ?? 0) }}</div>
                                 </div>
+                                <hr class="my-2">
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Produits') }}</div>
+                                    <div class="col-8 fw-semibold">
+                                        <a href="{{ route('backend.product-categories.products', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}"
+                                           class="badge badge-soft-primary text-decoration-none text-nowrap">
+                                            {{ number_format($category->products_count ?? 0) }}
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -85,6 +85,7 @@
                                 <th scope="col">Nom</th>
                                 <th scope="col">Parent</th>
                                 <th scope="col">Sous-catégories</th>
+                                <th scope="col">Produits</th>
                                 <th scope="col">Audits</th>
                                 <th scope="col">Logs</th>
                                 <th scope="col">Ordre</th>
@@ -123,11 +124,33 @@
                                     </td>
 
                                     <td>
-                                        <a href="{{ route('backend.product-categories.index') }}" class="text-decoration-none">
+                                        @if ($category->trashed())
                                             <span class="badge badge-soft-primary">
                                                 <i class="bx bx-collection me-1"></i> {{ $category->children_count ?? 0 }}
                                             </span>
-                                        </a>
+                                        @else
+                                            <a href="{{ route('backend.product-categories.children', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                <span class="badge badge-soft-primary">
+                                                    <i class="bx bx-collection me-1"></i> {{ $category->children_count ?? 0 }}
+                                                </span>
+                                            </a>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($category->trashed())
+                                            <span class="badge badge-soft-info">
+                                                <i class="bx bx-cube me-1"></i> {{ $category->products_count ?? 0 }}
+                                            </span>
+                                        @else
+                                            <a href="{{ route('backend.product-categories.products', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                <span class="badge badge-soft-info">
+                                                    <i class="bx bx-cube me-1"></i> {{ $category->products_count ?? 0 }}
+                                                </span>
+                                            </a>
+                                        @endif
                                     </td>
 
                                     <td>

@@ -93,7 +93,10 @@
                                         <div class="col-8 fw-bold">
                                             {{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}
                                             @if ($product->currency)
-                                                <span class="text-muted fw-normal small ms-1">({{ __('devise par défaut') }} : {{ $product->currency->active_translation?->name ?? $product->currency->code }})</span>
+                                                <a href="{{ route('backend.currencies.show', ['currency' => $product->currency->uuid, 'slug' => $product->currency->active_translation?->slug ?? $product->currency->code]) }}"
+                                                   class="text-muted fw-normal small ms-1 text-decoration-none">
+                                                    ({{ __('devise par défaut') }} : {{ $product->currency->active_translation?->name ?? $product->currency->code }})
+                                                </a>
                                             @endif
                                         </div>
                                     </div>

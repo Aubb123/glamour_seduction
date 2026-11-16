@@ -30,6 +30,18 @@ return [
             'error' => 'Error viewing category audits: :uuid',
             'slug_mismatch' => 'The product category slug does not match the expected slug.',
         ],
+        'children' => [
+            'success' => 'Viewing sub-categories of the product category: :name',
+            'warning' => 'Attempt to view sub-categories of a non-existent category: :uuid',
+            'error' => 'Error viewing the category sub-categories: :uuid',
+            'slug_mismatch' => 'The product category slug does not match the expected slug.',
+        ],
+        'products' => [
+            'success' => 'Viewing products of the product category: :name',
+            'warning' => 'Attempt to view products of a non-existent category: :uuid',
+            'error' => 'Error viewing the category products: :uuid',
+            'slug_mismatch' => 'The product category slug does not match the expected slug.',
+        ],
         'activity-logs' => [
             'success' => 'Viewing product category activity logs: :name',
             'warning' => 'Attempt to view activity logs of a non-existent category: :uuid',

@@ -39,7 +39,7 @@ class ProductController extends Controller
         try {
 
             // ✅ Récupère tous les produits avec leurs traductions, catégorie, marque et tags, triés par date de création décroissante
-            $products = Product::withActiveTranslation()->with(['category', 'brand', 'currency', 'tags'])->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $products = Product::withActiveTranslation()->with(['category', 'brand', 'currency', 'tags'])->withCount(['variants', 'audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des produits
             $this->logActivity(type: 'info', action: 'backend.products.index', context: ['count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -152,7 +152,7 @@ class ProductController extends Controller
             $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.show', 'show');
 
             // Charge les compteurs (withCount)
-            $product->loadCount(['audits', 'activityLogs']);
+            $product->loadCount(['variants', 'audits', 'activityLogs']);
 
             // Charge les fichiers cloud (pour l'affichage de l'image dans la vue)
             $product->load('cloudFiles');
@@ -189,6 +189,9 @@ class ProductController extends Controller
 
             $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.audits', 'audits');
 
+            // Les compteurs alimentent les badges de navigation (_show-navigation).
+            $product->loadCount(['variants', 'audits', 'activityLogs']);
+
             // Récupère les audits du produit
             $audits = $product->audits()->orderBy('created_at', 'desc')->get();
 
@@ -216,6 +219,9 @@ class ProductController extends Controller
 
             $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.activity-logs', 'activity-logs');
 
+            // Les compteurs alimentent les badges de navigation (_show-navigation).
+            $product->loadCount(['variants', 'audits', 'activityLogs']);
+
             // Récupère les journaux d'activité du produit
             $logs = $product->activityLogs()->orderBy('created_at', 'desc')->get();
 
@@ -229,6 +235,40 @@ class ProductController extends Controller
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.products.activity-logs', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $product->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // VARIANTS
+    // ─────────────────────────────────────────────
+    public function backend_products_variants(Product $product, string $slug): View
+    {
+        try {
+
+            $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.variants', 'variants');
+
+            // Compteurs affichés par la navigation (_show-navigation / _show-start)
+            $product->loadCount(['variants', 'audits', 'activityLogs']);
+
+            // Variantes du produit, prêtes pour le tableau partagé du module variantes
+            $variants = $product->variants()
+                ->with(['product.translations', 'product.cloudFiles', 'cloudFiles', 'attributeValues.translations'])
+                ->withCount(['audits', 'activityLogs'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $productName = $product->active_translation?->name ?? __("{$this->backendLangPath}.show.no_name");
+
+            // Log de la consultation des variantes du produit
+            $this->logActivity(type: 'info', action: 'backend.products.variants', context: ['product_uuid' => $product->uuid, 'count' => $variants->count()], message: null, activity: __("{$this->backendLangPath}.variants.success", ['name' => $productName]), is_success: true, loggable: $product);
+
+            return view('v1.backend.pages.products.products.others.variants', compact('product', 'variants'));
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.products.variants', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.variants.error", ['uuid' => $product->uuid]), is_success: false);
 
             abort(500);
         }
@@ -393,7 +433,7 @@ class ProductController extends Controller
 
             return redirect()->route('backend.products.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['name' => $productName]));
 
-        }  catch (\InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
 
             $this->logActivity(type: 'warning', action: 'backend.products.destroy', context: ['product_uuid' => $product->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $product->uuid]), is_success: false);
 
@@ -407,6 +447,7 @@ class ProductController extends Controller
         }
 
     }
+
     // ─────────────────────────────────────────────
     // DESTROY FILE (retrait d'une image individuelle depuis la fiche show)
     // ─────────────────────────────────────────────
@@ -441,7 +482,6 @@ class ProductController extends Controller
             return back()->with('error', __("{$this->backendLangPath}.destroy_file.flash_error"));
         }
     }
-
 
     // ─────────────────────────────────────────────
     // TRASHED

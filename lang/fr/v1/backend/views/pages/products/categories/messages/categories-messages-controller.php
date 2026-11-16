@@ -30,6 +30,18 @@ return [
             'error' => 'Erreur lors de la consultation des audits de la catégorie : :uuid',
             'slug_mismatch' => 'Le slug de la catégorie de produits ne correspond pas au slug attendu.',
         ],
+        'children' => [
+            'success' => 'Consultation des sous-catégories de la catégorie de produits : :name',
+            'warning' => 'Tentative de consultation des sous-catégories d\'une catégorie inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des sous-catégories de la catégorie : :uuid',
+            'slug_mismatch' => 'Le slug de la catégorie de produits ne correspond pas au slug attendu.',
+        ],
+        'products' => [
+            'success' => 'Consultation des produits de la catégorie de produits : :name',
+            'warning' => 'Tentative de consultation des produits d\'une catégorie inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des produits de la catégorie : :uuid',
+            'slug_mismatch' => 'Le slug de la catégorie de produits ne correspond pas au slug attendu.',
+        ],
         'activity-logs' => [
             'success' => 'Consultation des journaux d\'activité de la catégorie de produits : :name',
             'warning' => 'Tentative de consultation des journaux d\'activité d\'une catégorie inexistante : :uuid',

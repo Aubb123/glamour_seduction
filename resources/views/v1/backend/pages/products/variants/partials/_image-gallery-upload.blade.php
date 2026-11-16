@@ -42,11 +42,17 @@
                     <a href="{{ route('cloud-file.show', ['uuid' => $image->uuid]) }}" target="_blank" rel="noopener">
                         <img src="{{ route('cloud-file.show', ['uuid' => $image->uuid]) }}" alt="{{ __('Variant image :number', ['number' => $loop->iteration]) }}">
                     </a>
-                    <form action="{{ route('backend.product-variants.destroy_file', ['productVariant' => $entity->uuid, 'cloudFile' => $image->uuid]) }}" method="POST" class="text-center mt-1">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger py-0" onclick="return confirm('{{ __('Remove this variant image?') }}')">{{ __('Remove') }}</button>
-                    </form>
+
+                    {{-- Case à cocher traitée par le formulaire principal (remove_cloud_file_uuids[]).
+                         Aucun <form> imbriqué ici : cela casserait le formulaire d'édition. --}}
+                    <div class="form-check mt-1">
+                        <input class="form-check-input" type="checkbox"
+                               name="remove_cloud_file_uuids[]" value="{{ $image->uuid }}"
+                               id="remove-variant-image-{{ $image->uuid }}">
+                        <label class="form-check-label small text-danger" for="remove-variant-image-{{ $image->uuid }}">
+                            {{ __("Retirer à l'enregistrement") }}
+                        </label>
+                    </div>
                 </div>
             @endforeach
         </div>

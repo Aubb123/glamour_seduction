@@ -3,10 +3,11 @@
 namespace App\Services\V1\Controllers;
 
 use App\Enums\Products\Variants\ProductVariantStatus;
-use App\Models\CloudFile;
 use App\Models\Product;
+use App\Models\ProductAttributeValue;
 use App\Models\ProductVariant;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 use function __;
 
@@ -34,11 +35,18 @@ class ProductVariantService
                 || ($data['is_default'] ?? null) === '1'
                 || ($data['is_default'] ?? false) === true;
 
+            // Refuse une combinaison d'options déjà utilisée par une autre variante du produit.
+            $this->ensureAttributeCombinationIsUnique($product->id, $data['attribute_value_ids'] ?? []);
+
             // Crée la variante avec les données déjà validées par la requête.
+            // SKU et code-barres sont générés automatiquement lorsque le formulaire les laisse vides.
+            $sku = trim((string) ($data['sku'] ?? ''));
+            $barcode = trim((string) ($data['barcode'] ?? ''));
+
             $variant = ProductVariant::create([
                 'product_id' => $product->id,
-                'sku' => $data['sku'],
-                'barcode' => $data['barcode'] ?? null,
+                'sku' => $sku !== '' ? $sku : $this->generateSku($product, $data['attribute_value_ids'] ?? []),
+                'barcode' => $barcode !== '' ? $barcode : $this->generateBarcode(),
                 'price' => $data['price'] ?? null,
                 'status' => ($data['status'] ?? null) === ProductVariantStatus::Inactive->value
                     ? ProductVariantStatus::Inactive
@@ -64,6 +72,23 @@ class ProductVariantService
     // ─────────────────────────────────────────────
     public function backend_product_variants_update(ProductVariant $variant, array $data): ProductVariant
     {
+        // Invariant : un produit doit toujours conserver une variante par défaut.
+        if (array_key_exists('is_default', $data)) {
+            $wantsDefault = ($data['is_default'] ?? null) === '1'
+                || ($data['is_default'] ?? null) === true;
+
+            if (! $wantsDefault && $variant->is_default) {
+                $hasOtherDefault = ProductVariant::where('product_id', $variant->product_id)
+                    ->where('id', '!=', $variant->id)
+                    ->where('is_default', true)
+                    ->exists();
+
+                if (! $hasOtherDefault) {
+                    throw new \InvalidArgumentException(__("{$this->backendLangPath}.default.last_default_forbidden"));
+                }
+            }
+        }
+
         // Déduplique les images demandées en suppression, puis vérifie qu'elles appartiennent à cette variante.
         $removeUuids = collect($data['remove_cloud_file_uuids'] ?? [])
             ->filter()
@@ -76,7 +101,7 @@ class ProductVariantService
             ->get();
 
         if ($imagesToRemove->count() !== $removeUuids->count()) {
-            throw new \InvalidArgumentException(__('One or more selected images do not belong to this variant.'));
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.images.not_owned"));
         }
 
         // Vérifie la limite de quatre images en tenant compte des suppressions demandées.
@@ -86,7 +111,7 @@ class ProductVariantService
             ->count();
 
         if ($existingImageCount - $imagesToRemove->count() + count($newFiles) > 4) {
-            throw new \InvalidArgumentException(__('A variant can have at most four images. Remove an image before adding another.'));
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.images.limit_exceeded"));
         }
 
         return DB::transaction(function () use ($variant, $data, $imagesToRemove) {
@@ -94,7 +119,8 @@ class ProductVariantService
             $updateData = [];
 
             // Seuls les champs réellement transmis sont modifiés.
-            if (isset($data['sku'])) {
+            // Un SKU laissé vide conserve la valeur existante.
+            if (! empty($data['sku'])) {
                 $updateData['sku'] = $data['sku'];
             }
 
@@ -126,6 +152,7 @@ class ProductVariantService
 
             // Ne remplace les options que si le formulaire les a explicitement transmises.
             if (array_key_exists('attribute_value_ids', $data)) {
+                $this->ensureAttributeCombinationIsUnique($variant->product_id, $data['attribute_value_ids'] ?? [], $variant->id);
                 $this->syncAttributeValues($variant, $data['attribute_value_ids'] ?? []);
             }
 
@@ -158,7 +185,7 @@ class ProductVariantService
         $platformUuid = $data['cloud_platform_uuid'] ?? null;
 
         if (! $platformUuid) {
-            throw new \InvalidArgumentException(__('Select a cloud platform to upload variant images.'));
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.images.cloud_platform_required"));
         }
 
         $this->cloudFileService->uploadEntityFiles(
@@ -195,6 +222,78 @@ class ProductVariantService
                 ->values()
                 ->toArray()
         );
+    }
+
+    /**
+     * Refuse une combinaison de valeurs d'attributs déjà utilisée par une variante du produit.
+     * Défense en profondeur : la validation des FormRequests couvre déjà ce cas côté HTTP.
+     */
+    private function ensureAttributeCombinationIsUnique(int $productId, array $attributeValueIds, ?int $exceptId = null): void
+    {
+        if (ProductVariant::attributeCombinationExists($productId, $attributeValueIds, $exceptId)) {
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.attribute_values.duplicate_combination"));
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // GÉNÉRATION AUTOMATIQUE (SKU / CODE-BARRES)
+    // ─────────────────────────────────────────────
+    /**
+     * Génère un SKU lisible et unique à partir du produit parent et des valeurs
+     * d'attributs sélectionnées (ex. « TSHIRT-ROUGE-XL »), suffixé si nécessaire.
+     */
+    private function generateSku(Product $product, array $attributeValueIds): string
+    {
+        $parts = [$product->active_translation?->name ?? ('PRODUIT-'.$product->id)];
+
+        $ids = array_filter(array_map('intval', $attributeValueIds));
+
+        if ($ids !== []) {
+            $labels = ProductAttributeValue::whereIn('id', $ids)
+                ->get()
+                ->map(fn (ProductAttributeValue $value) => $value->active_translation?->label ?? $value->value);
+
+            $parts = array_merge($parts, $labels->all());
+        }
+
+        $base = Str::upper(Str::slug(implode(' ', array_filter($parts))));
+        $base = $base !== '' ? Str::limit($base, 80, '') : 'SKU';
+
+        // Le SKU est unique globalement, y compris vis-à-vis des variantes en corbeille.
+        $candidate = $base;
+        $suffix = 1;
+
+        while (ProductVariant::withTrashed()->where('sku', $candidate)->exists()) {
+            $candidate = Str::limit($base, 75, '').'-'.str_pad((string) $suffix, 3, '0', STR_PAD_LEFT);
+            $suffix++;
+        }
+
+        return $candidate;
+    }
+
+    /**
+     * Génère un code-barres EAN-13 unique (préfixe 20 = usage interne / circulation restreinte).
+     */
+    private function generateBarcode(): string
+    {
+        do {
+            $digits = '20'.str_pad((string) random_int(0, 9999999999), 10, '0', STR_PAD_LEFT);
+            $barcode = $digits.$this->ean13CheckDigit($digits);
+        } while (ProductVariant::withTrashed()->where('barcode', $barcode)->exists());
+
+        return $barcode;
+    }
+
+    /** Calcule la clé de contrôle EAN-13 des 12 premiers chiffres. */
+    private function ean13CheckDigit(string $digits): string
+    {
+        $sum = 0;
+
+        foreach (str_split($digits) as $index => $digit) {
+            $sum += (int) $digit * ($index % 2 === 0 ? 1 : 3);
+        }
+
+        return (string) ((10 - ($sum % 10)) % 10);
     }
 
     // ─────────────────────────────────────────────
@@ -239,6 +338,11 @@ class ProductVariantService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.active_forbidden"));
             }
 
+            // Une variante par défaut ne peut pas être supprimée : il faut d'abord en désigner une autre.
+            if ($variant->is_default) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.default_forbidden"));
+            }
+
             if ($variant->trashed()) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy.already_deleted"));
             }
@@ -255,7 +359,9 @@ class ProductVariantService
         DB::transaction(function () use ($variant) {
 
             if ($variant->trashed()) {
+
                 restore_function($variant);
+
             } else {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.restore.not_trashed_forbidden"));
             }

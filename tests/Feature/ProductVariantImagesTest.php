@@ -3,12 +3,14 @@
 declare(strict_types=1);
 
 use App\Http\Requests\V1\Products\Variants\StoreProductVariantRequest;
+use App\Http\Requests\V1\Products\Variants\UpdateProductVariantRequest;
 use App\Models\CloudFile;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
@@ -55,4 +57,45 @@ it('allows zero images and rejects a fifth image on variant creation', function 
 
     expect($validator->fails())->toBeTrue()
         ->and($validator->errors()->has('files'))->toBeTrue();
+});
+
+it('validates the remove_cloud_file_uuids list on update', function () {
+    $rules = app(UpdateProductVariantRequest::class)->rules();
+
+    $uuid = fn (): string => (string) Str::uuid();
+
+    // Liste valide : quatre UUID distincts.
+    expect(Validator::make([
+        'remove_cloud_file_uuids' => [$uuid(), $uuid(), $uuid(), $uuid()],
+    ], $rules)->passes())->toBeTrue();
+
+    // Plus de quatre UUID → refusé.
+    $tooMany = Validator::make([
+        'remove_cloud_file_uuids' => [$uuid(), $uuid(), $uuid(), $uuid(), $uuid()],
+    ], $rules);
+
+    expect($tooMany->fails())->toBeTrue()
+        ->and($tooMany->errors()->has('remove_cloud_file_uuids'))->toBeTrue();
+
+    // Doublon → règle distinct.
+    $duplicate = $uuid();
+    $duplicates = Validator::make([
+        'remove_cloud_file_uuids' => [$duplicate, $duplicate],
+    ], $rules);
+
+    expect($duplicates->fails())->toBeTrue()
+        ->and($duplicates->errors()->has('remove_cloud_file_uuids.0'))->toBeTrue();
+});
+
+it('inherits the parent product base price when the variant has no price', function () {
+    $product = new Product(['base_price' => 19990]);
+
+    $inherited = new ProductVariant(['price' => null]);
+    $inherited->setRelation('product', $product);
+
+    $priced = new ProductVariant(['price' => 24990]);
+    $priced->setRelation('product', $product);
+
+    expect($inherited->effectivePrice())->toBe('19990.00')
+        ->and($priced->effectivePrice())->toBe('24990.00');
 });

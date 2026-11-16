@@ -16,4 +16,10 @@
             <span class="badge bg-primary ms-1">{{ $product->activity_logs_count ?? 0 }}</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link @if(request()->routeIs('backend.products.variants')) active @endif" href="{{ route('backend.products.variants', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}">
+            <i class="bx bx-layer me-1"></i> Variantes
+            <span class="badge bg-primary ms-1">{{ $product->variants_count ?? 0 }}</span>
+        </a>
+    </li>
 </ul>
