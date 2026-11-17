@@ -41,7 +41,7 @@ class ProductTagController extends Controller
         try {
 
             // ✅ Récupère toutes les tags avec leurs traductions et les fichiers cloud, triées par sort_order décroissant
-            $tags = ProductTag::withActiveTranslation()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $tags = ProductTag::withActiveTranslation()->withCount(['products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des tags
             $this->logActivity(type: 'info', action: 'backend.product-tags.index', context: ['count' => $tags->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -147,7 +147,7 @@ class ProductTagController extends Controller
 
             // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
             // + les compteurs (withCount)
-            $tag->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['audits', 'activityLogs']);
+            $tag->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['products', 'audits', 'activityLogs']);
 
             // Récupère toutes les traductions supprimées (soft deleted) de cette tag
             $productTagTranslations = ProductTagTranslation::onlyTrashed()->where('tag_id', $tag->id)->get();
@@ -180,7 +180,7 @@ class ProductTagController extends Controller
             $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.audits', 'audits');
 
             // Charge les compteurs (withCount)
-            $tag->loadCount(['audits', 'activityLogs']);
+            $tag->loadCount(['products', 'audits', 'activityLogs']);
 
             $tagName = $tag->active_translation?->name ?? '';
 
@@ -209,7 +209,7 @@ class ProductTagController extends Controller
             $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.activity-logs', 'activity-logs');
 
             // Charge les compteurs (withCount)
-            $tag->loadCount(['audits', 'activityLogs']);
+            $tag->loadCount(['products', 'audits', 'activityLogs']);
 
             $tagName = $tag->active_translation?->name ?? '';
 
@@ -222,6 +222,45 @@ class ProductTagController extends Controller
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.product-tags.activity-logs', context: ['tag_uuid' => $productTag->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productTag->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // PRODUCTS (produits du tag)
+    // ─────────────────────────────────────────────
+    public function backend_product_tags_products(ProductTag $productTag, string $slug): View
+    {
+        try {
+
+            // Vérifie que le slug correspond
+            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.products', 'products');
+
+            // Charge les compteurs affichés par la navigation
+            $tag->loadCount(['products', 'audits', 'activityLogs']);
+
+            // Produits rattachés au tag (relation N-N via la table pivot product_tag,
+            // mêmes relations que la liste des produits)
+            $products = $tag->products()
+                ->withActiveTranslation()
+                ->with(['category', 'brand', 'currency', 'tags'])
+                ->withCount(['variants', 'audits', 'activityLogs'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $tagName = $tag->active_translation?->name ?? '';
+
+            // Log de la consultation des produits d'un tag
+            $this->logActivity(type: 'info', action: 'backend.product-tags.products', context: ['tag_uuid' => $tag->uuid, 'count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.products.success", ['name' => $tagName]), is_success: true, loggable: $tag);
+
+            // Retourne la vue des produits du tag
+            return view('v1.backend.pages.products.tags.others.product', compact('tag', 'products'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la consultation des produits d'un tag
+            $this->logActivity(type: 'error', action: 'backend.product-tags.products', context: ['tag_uuid' => $productTag->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.products.error", ['uuid' => $productTag->uuid]), is_success: false);
 
             abort(500);
         }
@@ -405,7 +444,7 @@ class ProductTagController extends Controller
     {
         try {
 
-            $tags = ProductTag::onlyTrashed()->withTrashedActiveTranslation()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $tags = ProductTag::onlyTrashed()->withTrashedActiveTranslation()->withCount(['products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des tags
             $this->logActivity(type: 'info', action: 'backend.product-tags.trashed', context: ['count' => $tags->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

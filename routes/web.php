@@ -309,6 +309,7 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-brands/show/{productBrand}/{slug}', 'backend_product_brands_show')->middleware(['permission:product-brands.show'])->name('backend.product-brands.show');
             Route::get('/backend/product-brands/audits/{productBrand}/{slug}', 'backend_product_brands_audits')->middleware(['permission:product-brands.audits'])->name('backend.product-brands.audits');
             Route::get('/backend/product-brands/activity-logs/{productBrand}/{slug}', 'backend_product_brands_activity_logs')->middleware(['permission:product-brands.activity_logs'])->name('backend.product-brands.activity-logs');
+            Route::get('/backend/product-brands/products/{productBrand}/{slug}', 'backend_product_brands_products')->middleware(['permission:product-brands.index'])->name('backend.product-brands.products');
             Route::get('/backend/product-brands/edit/{productBrand}', 'backend_product_brands_edit')->middleware(['permission:product-brands.edit'])->name('backend.product-brands.edit');
             Route::put('/backend/product-brands/update/{productBrand}', 'backend_product_brands_update')->middleware(['permission:product-brands.update'])->name('backend.product-brands.update');
             Route::patch('/backend/product-brands/activate/{productBrand}', 'backend_product_brands_activate')->middleware(['permission:product-brands.activate'])->name('backend.product-brands.activate');
@@ -333,6 +334,7 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-tags/show/{productTag}/{slug}', 'backend_product_tags_show')->middleware(['permission:product-tags.show'])->name('backend.product-tags.show');
             Route::get('/backend/product-tags/audits/{productTag}/{slug}', 'backend_product_tags_audits')->middleware(['permission:product-tags.audits'])->name('backend.product-tags.audits');
             Route::get('/backend/product-tags/activity-logs/{productTag}/{slug}', 'backend_product_tags_activity_logs')->middleware(['permission:product-tags.activity_logs'])->name('backend.product-tags.activity-logs');
+            Route::get('/backend/product-tags/products/{productTag}/{slug}', 'backend_product_tags_products')->middleware(['permission:product-tags.index'])->name('backend.product-tags.products');
             Route::get('/backend/product-tags/edit/{productTag}', 'backend_product_tags_edit')->middleware(['permission:product-tags.edit'])->name('backend.product-tags.edit');
             Route::put('/backend/product-tags/update/{productTag}', 'backend_product_tags_update')->middleware(['permission:product-tags.update'])->name('backend.product-tags.update');
             Route::patch('/backend/product-tags/activate/{productTag}', 'backend_product_tags_activate')->middleware(['permission:product-tags.activate'])->name('backend.product-tags.activate');
@@ -357,6 +359,8 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-attributes/show/{productAttribute}/{slug}', 'backend_product_attributes_show')->middleware(['permission:product-attributes.show'])->name('backend.product-attributes.show');
             Route::get('/backend/product-attributes/audits/{productAttribute}/{slug}', 'backend_product_attributes_audits')->middleware(['permission:product-attributes.audits'])->name('backend.product-attributes.audits');
             Route::get('/backend/product-attributes/activity-logs/{productAttribute}/{slug}', 'backend_product_attributes_activity_logs')->middleware(['permission:product-attributes.activity_logs'])->name('backend.product-attributes.activity-logs');
+            Route::get('/backend/product-attributes/values/{productAttribute}/{slug}', 'backend_product_attributes_values')->middleware(['permission:product-attributes.index'])->name('backend.product-attributes.values');
+            Route::get('/backend/product-attributes/products/{productAttribute}/{slug}', 'backend_product_attributes_products')->middleware(['permission:product-attributes.index'])->name('backend.product-attributes.products');
             Route::get('/backend/product-attributes/edit/{productAttribute}', 'backend_product_attributes_edit')->middleware(['permission:product-attributes.edit'])->name('backend.product-attributes.edit');
             Route::put('/backend/product-attributes/update/{productAttribute}', 'backend_product_attributes_update')->middleware(['permission:product-attributes.update'])->name('backend.product-attributes.update');
             Route::patch('/backend/product-attributes/activate/{productAttribute}', 'backend_product_attributes_activate')->middleware(['permission:product-attributes.activate'])->name('backend.product-attributes.activate');
@@ -381,6 +385,7 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-attribute-values/show/{productAttributeValue}/{slug}', 'backend_product_attribute_values_show')->middleware(['permission:product-attribute-values.show'])->name('backend.product-attribute-values.show');
             Route::get('/backend/product-attribute-values/audits/{productAttributeValue}/{slug}', 'backend_product_attribute_values_audits')->middleware(['permission:product-attribute-values.audits'])->name('backend.product-attribute-values.audits');
             Route::get('/backend/product-attribute-values/activity-logs/{productAttributeValue}/{slug}', 'backend_product_attribute_values_activity_logs')->middleware(['permission:product-attribute-values.activity_logs'])->name('backend.product-attribute-values.activity-logs');
+            Route::get('/backend/product-attribute-values/products/{productAttributeValue}/{slug}', 'backend_product_attribute_values_products')->middleware(['permission:product-attribute-values.index'])->name('backend.product-attribute-values.products');
             Route::get('/backend/product-attribute-values/edit/{productAttributeValue}', 'backend_product_attribute_values_edit')->middleware(['permission:product-attribute-values.edit'])->name('backend.product-attribute-values.edit');
             Route::put('/backend/product-attribute-values/update/{productAttributeValue}', 'backend_product_attribute_values_update')->middleware(['permission:product-attribute-values.update'])->name('backend.product-attribute-values.update');
             Route::patch('/backend/product-attribute-values/activate/{productAttributeValue}', 'backend_product_attribute_values_activate')->middleware(['permission:product-attribute-values.activate'])->name('backend.product-attribute-values.activate');

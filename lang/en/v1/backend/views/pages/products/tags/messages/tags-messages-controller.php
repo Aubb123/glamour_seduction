@@ -36,6 +36,12 @@ return [
             'error' => 'Error viewing tag activity logs: :uuid',
             'slug_mismatch' => 'The product tag slug does not match the expected slug.',
         ],
+        'products' => [
+            'success' => 'Viewing products of the product tag: :name',
+            'warning' => 'Attempt to view products of a non-existent tag: :uuid',
+            'error' => 'Error viewing tag products: :uuid',
+            'slug_mismatch' => 'The product tag slug does not match the expected slug.',
+        ],
 
         'edit' => [
             'success' => 'Access to the tag modification page: :name',

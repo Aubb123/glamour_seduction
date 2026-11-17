@@ -67,6 +67,30 @@ class ProductAttribute extends Model
     }
 
     /**
+     * Nombre de produits associés à cet attribut (via ses valeurs et les variantes de produits).
+     */
+    public function productsCount(): int
+    {
+        // Un produit est compté dès qu'une de ses variantes porte une valeur de cet attribut.
+        return Product::query()
+            ->whereHas('variants.attributeValues', fn (Builder $query) => $query->where('product_attribute_values.attribute_id', $this->getKey()))
+            ->count();
+    }
+
+    /**
+     * Scope : ajoute `products_count` à la requête (même logique, sans N+1 sur les listes).
+     */
+    public function scopeWithProductsCount(Builder $query): Builder
+    {
+        $subquery = Product::query()
+            ->selectRaw('count(*)')
+            ->whereHas('variants.attributeValues', fn (Builder $q) => $q->whereColumn('product_attribute_values.attribute_id', 'product_attributes.id'))
+            ->toBase();
+
+        return $query->addSelect(['products_count' => $subquery]);
+    }
+
+    /**
      * Indique si cet attribut est de type "couleur" et impose donc un code HEX par valeur.
      */
     public function isColor(): bool

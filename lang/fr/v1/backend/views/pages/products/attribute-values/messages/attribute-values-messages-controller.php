@@ -36,6 +36,12 @@ return [
             'error' => 'Erreur lors de la consultation des journaux d\'activité de la valeur d\'attribut : :uuid',
             'slug_mismatch' => 'Le slug de la valeur d\'attribut de produits ne correspond pas au slug attendu.',
         ],
+        'products' => [
+            'success' => 'Consultation des produits liés à la valeur d\'attribut de produits : :name',
+            'warning' => 'Tentative de consultation des produits d\'une valeur inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des produits de la valeur d\'attribut : :uuid',
+            'slug_mismatch' => 'Le slug de la valeur d\'attribut de produits ne correspond pas au slug attendu.',
+        ],
         'edit' => [
             'success' => 'Accès à la page de modification de la valeur d\'attribut : :name',
             'warning' => 'Tentative de modification d\'une valeur inexistante : :uuid',

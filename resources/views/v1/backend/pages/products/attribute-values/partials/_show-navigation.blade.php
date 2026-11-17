@@ -5,6 +5,12 @@
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link @if(request()->routeIs('backend.product-attribute-values.products')) active @endif" href="{{ route('backend.product-attribute-values.products', ['productAttributeValue' => $value->uuid, 'slug' => $value->active_translation?->slug ?? 'null']) }}">
+            <i class="bx bx-cube me-1"></i> {{ __('Produits') }}
+            <span class="badge bg-primary ms-1">{{ $value->products_count ?? 0 }}</span>
+        </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link @if(request()->routeIs('backend.product-attribute-values.audits')) active @endif" href="{{ route('backend.product-attribute-values.audits', ['productAttributeValue' => $value->uuid, 'slug' => $value->active_translation?->slug ?? 'null']) }}">
             <i class="bx bx-file me-1"></i> {{ __('Audits') }}
             <span class="badge bg-primary ms-1">{{ $value->audits_count ?? 0 }}</span>

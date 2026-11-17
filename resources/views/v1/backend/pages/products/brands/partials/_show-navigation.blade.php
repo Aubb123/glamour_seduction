@@ -16,4 +16,10 @@
             <span class="badge bg-primary ms-1">{{ $brand->activity_logs_count ?? 0 }}</span>
         </a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link @if(request()->routeIs('backend.product-brands.products')) active @endif" href="{{ route('backend.product-brands.products', ['productBrand' => $brand->uuid, 'slug' => $brand->active_translation?->slug ?? 'null']) }}">
+            <i class="bx bx-cube me-1"></i> {{ __('Produits') }}
+            <span class="badge bg-primary ms-1">{{ $brand->products_count ?? 0 }}</span>
+        </a>
+    </li>
 </ul>

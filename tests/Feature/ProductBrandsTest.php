@@ -3,9 +3,12 @@
 declare(strict_types=1);
 
 use App\Models\CloudPlatform;
+use App\Models\Currency;
 use App\Models\GeoCountry;
 use App\Models\Lang;
+use App\Models\Product;
 use App\Models\ProductBrand;
+use App\Models\ProductCategory;
 use App\Models\User;
 use Database\Seeders\CloudFolderSeeder;
 use Database\Seeders\CloudPlatformSeeder;
@@ -214,4 +217,77 @@ it('déclare products comme relation bloquante (dependentRelations, module Produ
 
     $property = new ReflectionProperty($brand, 'dependentRelations');
     expect($property->getValue($brand))->toBe(['products']);
+});
+
+it('affiche les produits rattachés à une marque (products avec slug)', function () {
+    $admin = productBrandAdmin();
+
+    $this->actingAs($admin)->post(route('backend.product-brands.store'), productBrandPayload());
+
+    $brand = ProductBrand::firstOrFail();
+    $slug = $brand->active_translation?->slug ?? 'null';
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
+
+    // Devise + catégorie minimales pour rattacher un produit à la marque
+    $currency = Currency::create([
+        'code' => 'XOF',
+        'symbol' => 'F',
+        'decimal_places' => 0,
+        'numeric_code' => '952',
+        'sort_order' => random_int(1, 999),
+        'is_default' => true,
+        'exchange_rate' => 1,
+        'status' => 'active',
+    ]);
+
+    $category = ProductCategory::create(['sort_order' => random_int(1, 999), 'status' => 'active']);
+    $category->translations()->create(['lang_id' => $langFr->id, 'name' => 'Catégorie '.uniqid(), 'description' => 'Description catégorie.']);
+
+    // Produit rattaché à la marque
+    $product = Product::create([
+        'category_id' => $category->id,
+        'brand_id' => $brand->id,
+        'currency_id' => $currency->id,
+        'status' => 'published',
+        'is_featured' => true,
+        'weight' => 0.50,
+        'base_price' => 15000,
+        'compare_at_price' => 20000,
+    ]);
+
+    $productName = 'Produit '.uniqid();
+
+    // Traductions fr + en : `withActiveTranslation()` ne charge que la langue courante
+    // (et la langue de référence), donc on couvre les deux pour un rendu déterministe.
+    $product->translations()->create([
+        'lang_id' => $langFr->id,
+        'name' => $productName,
+        'short_description' => 'Résumé produit.',
+        'description' => '<p>Description produit.</p>',
+    ]);
+
+    $product->translations()->create([
+        'lang_id' => $langEn->id,
+        'name' => $productName,
+        'short_description' => 'Product summary.',
+        'description' => '<p>Product description.</p>',
+    ]);
+
+    // La liste des marques expose le total de produits avec un lien vers la page dédiée
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-brands.index'))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain(route('backend.product-brands.products', ['productBrand' => $brand->uuid, 'slug' => $slug]));
+
+    // La page « produits de la marque » liste les produits de cette marque
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-brands.products', ['productBrand' => $brand->uuid, 'slug' => $slug]))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain('products-table');
+    expect($html)->toContain($productName);
 });

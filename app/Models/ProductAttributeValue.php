@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\DB;
 
 class ProductAttributeValue extends Model
 {
@@ -77,6 +78,36 @@ class ProductAttributeValue extends Model
     public function scopeActive($query): Builder
     {
         return $query->where('status', ProductAttributeValueStatus::Active);
+    }
+
+    /**
+     * Nombre de produits associés à cette valeur (produits dont une variante porte cette valeur).
+     */
+    public function productsCount(): int
+    {
+        // Un produit est compté dès qu'une de ses variantes porte cette valeur d'attribut.
+        return Product::query()
+            ->whereHas('variants.attributeValues', fn (Builder $query) => $query->where('product_attribute_values.id', $this->getKey()))
+            ->count();
+    }
+
+    /**
+     * Scope : ajoute `products_count` à la requête (sous-requête corrélée, sans N+1).
+     *
+     * NB : la table externe est `product_attribute_values`, d'où l'écriture SQL manuelle
+     * (un `whereColumn` Eloquent serait ambigu entre la table interne et externe).
+     */
+    public function scopeWithProductsCount(Builder $query): Builder
+    {
+        return $query->addSelect([
+            'products_count' => DB::table('product_variant_attribute_value as pvav')
+                ->selectRaw('count(distinct product_variants.product_id)')
+                ->join('product_variants', 'product_variants.id', '=', 'pvav.product_variant_id')
+                ->join('products', 'products.id', '=', 'product_variants.product_id')
+                ->whereColumn('pvav.attribute_value_id', 'product_attribute_values.id')
+                ->whereNull('product_variants.deleted_at')
+                ->whereNull('products.deleted_at'),
+        ]);
     }
 
     /**

@@ -13,21 +13,6 @@
                             <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
                         </a>
 
-                        <a href="{{ route('backend.blog-post-comments.audits', ['blogPostComment' => $comment->uuid]) }}" class="btn btn-soft-primary btn-sm">
-                            <i class="bx bx-file me-1"></i> {{ __('Audits') }}
-                            <span class="badge bg-primary ms-1">{{ $comment->audits_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.blog-post-comments.activity-logs', ['blogPostComment' => $comment->uuid]) }}" class="btn btn-soft-info btn-sm">
-                            <i class="bx bx-pulse me-1"></i> {{ __('Logs d\'activité') }}
-                            <span class="badge bg-primary ms-1">{{ $comment->activity_logs_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.blog-post-comments.replies', ['blogPostComment' => $comment->uuid]) }}" class="btn btn-soft-success btn-sm">
-                            <i class="bx bx-reply me-1"></i> {{ __('Réponses') }}
-                            <span class="badge bg-primary ms-1">{{ $comment->replies_count ?? 0 }}</span>
-                        </a>
-
                         <div class="dropdown">
                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bx bx-cog me-1"></i> {{ __('Actions') }}

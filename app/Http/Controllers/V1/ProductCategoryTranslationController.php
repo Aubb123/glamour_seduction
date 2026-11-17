@@ -72,7 +72,7 @@ class ProductCategoryTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_product_category_translations_trashed(string $category_uuid): View
+    public function backend_product_category_translations_trashed(string $category_uuid): View|RedirectResponse
     {
         try {
 

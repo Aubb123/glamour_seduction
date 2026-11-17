@@ -20,6 +20,12 @@
             'color' => 'primary',
         ],
         [
+            'label' => __('Produits'),
+            'value' => $values->sum('products_count'),
+            'icon'  => 'bx bx-cube',
+            'color' => 'dark',
+        ],
+        [
             'label' => __('Actives'),
             'value' => $values->where('status', \App\Enums\Products\Attributes\ProductAttributeValueStatus::Active)->count(),
             'icon'  => 'bx bx-check-circle',
@@ -76,6 +82,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">{{ __('Attribut') }}</th>
+                                <th scope="col">{{ __('Produits') }}</th>
                                 <th scope="col">{{ __("Clé machine") }}</th>
                                 <th scope="col">{{ __('Couleur') }}</th>
                                 <th scope="col">{{ __('Libellé') }}</th>
@@ -103,6 +110,21 @@
                                             </a>
                                         @else
                                             <span class="badge badge-soft-primary">—</span>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($value->trashed())
+                                            <span class="badge badge-soft-primary">
+                                                <i class="bx bx-cube me-1"></i> {{ $value->products_count ?? 0 }}
+                                            </span>
+                                        @else
+                                            <a href="{{ route('backend.product-attribute-values.products', ['productAttributeValue' => $value->uuid, 'slug' => $value->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                <span class="badge badge-soft-primary">
+                                                    <i class="bx bx-cube me-1"></i> {{ $value->products_count ?? 0 }}
+                                                </span>
+                                            </a>
                                         @endif
                                     </td>
 
@@ -208,7 +230,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ request()->routeIs('backend.product-attribute-values.trashed') ? 13 : 12 }}" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.product-attribute-values.trashed') ? 14 : 13 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __("Aucune valeur d'attribut trouvée.") }}
                                     </td>

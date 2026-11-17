@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Products\AttributeValues\StoreProductAttributeValueRequest;
 use App\Http\Requests\V1\Products\AttributeValues\UpdateProductAttributeValueRequest;
+use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Models\ProductAttributeValueTranslation;
@@ -36,7 +37,7 @@ class ProductAttributeValueController extends Controller
         try {
 
             // Récupère toutes les valeurs avec leur traduction active, triées par sort_order décroissant
-            $values = ProductAttributeValue::withActiveTranslation()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $values = ProductAttributeValue::withActiveTranslation()->withProductsCount()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des valeurs
             $this->logActivity(type: 'info', action: 'backend.product-attribute-values.index', context: ['count' => $values->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -148,6 +149,9 @@ class ProductAttributeValueController extends Controller
             // Charge les compteurs (withCount)
             $value->loadCount(['audits', 'activityLogs']);
 
+            // Nombre total de produits liés via cette valeur (navigation)
+            $value->products_count = $value->productsCount();
+
             // Récupère toutes les traductions supprimées (soft deleted) de cette valeur
             $productAttributeValueTranslations = ProductAttributeValueTranslation::onlyTrashed()->where('attribute_value_id', $value->id)->get();
 
@@ -181,6 +185,9 @@ class ProductAttributeValueController extends Controller
             // Charge les compteurs (withCount)
             $value->loadCount(['audits', 'activityLogs']);
 
+            // Nombre total de produits liés via cette valeur (navigation)
+            $value->products_count = $value->productsCount();
+
             $valueName = $value->active_translation?->label ?? '';
 
             $audits = $value->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
@@ -210,6 +217,9 @@ class ProductAttributeValueController extends Controller
             // Charge les compteurs (withCount)
             $value->loadCount(['audits', 'activityLogs']);
 
+            // Nombre total de produits liés via cette valeur (navigation)
+            $value->products_count = $value->productsCount();
+
             $valueName = $value->active_translation?->label ?? '';
 
             $logs = $value->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
@@ -221,6 +231,48 @@ class ProductAttributeValueController extends Controller
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.product-attribute-values.activity-logs', context: ['value_uuid' => $productAttributeValue->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productAttributeValue->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // PRODUITS LIES A LA VALEUR D'ATTRIBUT
+    // ─────────────────────────────────────────────
+    public function backend_product_attribute_values_products(ProductAttributeValue $productAttributeValue, string $slug): View
+    {
+        try {
+
+            // Vérifie que le slug correspond à la valeur d'attribut
+            $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.products', 'products');
+
+            // Charge les compteurs affichés par la navigation
+            $value->loadCount(['audits', 'activityLogs']);
+            $value->products_count = $value->productsCount();
+
+            // Produits liés à cette valeur : un produit est concerné dès qu'une de ses
+            // variantes porte cette valeur (pivot product_variant_attribute_value).
+            $products = Product::withActiveTranslation()
+                ->with(['category', 'brand', 'currency', 'tags'])
+                ->withCount(['variants', 'audits', 'activityLogs'])
+                ->whereHas('variants.attributeValues', function ($query) use ($value) {
+                    $query->where('product_attribute_values.id', $value->id);
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $valueName = $value->active_translation?->label ?? '';
+
+            // Log de la consultation des produits d'une valeur d'attribut
+            $this->logActivity(type: 'info', action: 'backend.product-attribute-values.products', context: ['value_uuid' => $value->uuid, 'count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.products.success", ['name' => $valueName]), is_success: true, loggable: $value);
+
+            // Retourne la vue des produits de la valeur d'attribut
+            return view('v1.backend.pages.products.attribute-values.others.product', compact('value', 'products'));
+
+        } catch (\Exception $e) {
+
+            // Log de l'erreur serveur lors de la consultation des produits d'une valeur d'attribut
+            $this->logActivity(type: 'error', action: 'backend.product-attribute-values.products', context: ['value_uuid' => $productAttributeValue->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.products.error", ['uuid' => $productAttributeValue->uuid]), is_success: false);
 
             abort(500);
         }
@@ -404,7 +456,7 @@ class ProductAttributeValueController extends Controller
     {
         try {
 
-            $values = ProductAttributeValue::onlyTrashed()->withTrashedActiveTranslation()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $values = ProductAttributeValue::onlyTrashed()->withTrashedActiveTranslation()->withProductsCount()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des valeurs
             $this->logActivity(type: 'info', action: 'backend.product-attribute-values.trashed', context: ['count' => $values->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

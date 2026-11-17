@@ -64,7 +64,7 @@ class ProductAttributeValueTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_value_translations_trashed(string $attribute_value_uuid): View
+    public function backend_product_attribute_value_translations_trashed(string $attribute_value_uuid): View|RedirectResponse
     {
         try {
 

@@ -20,6 +20,18 @@
             'color' => 'primary',
         ],
         [
+            'label' => __("Valeurs d'attributs"),
+            'value' => $attributes->sum('values_count'),
+            'icon'  => 'bx bx-list-details',
+            'color' => 'info',
+        ],
+        [
+            'label' => __('Produits'),
+            'value' => $attributes->sum('products_count'),
+            'icon'  => 'bx bx-cube',
+            'color' => 'dark',
+        ],
+        [
             'label' => __('Actifs'),
             'value' => $attributes->where('status', \App\Enums\Products\Attributes\ProductAttributeStatus::Active)->count(),
             'icon'  => 'bx bx-check-circle',
@@ -76,6 +88,8 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">{{ __('Nom') }}</th>
+                                <th scope="col">{{ __('Valeurs') }}</th>
+                                <th scope="col">{{ __('Produits') }}</th>
                                 <th scope="col">{{ __('Audits') }}</th>
                                 <th scope="col">{{ __('Logs') }}</th>
                                 <th scope="col">{{ __('Ordre') }}</th>
@@ -96,6 +110,36 @@
                                         <a href="{{ route('backend.product-attributes.show', ['productAttribute' => $attribute->uuid, 'slug' => $attribute->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-nowrap">
                                             {{ Str::limit($attribute->active_translation?->name ?? '-', 20) }}
                                         </a>
+                                    </td>
+
+                                    <td>
+                                        @if ($attribute->trashed())
+                                            <span class="badge badge-soft-info">
+                                                <i class="bx bx-list-details me-1"></i> {{ $attribute->values_count ?? 0 }}
+                                            </span>
+                                        @else
+                                            <a href="{{ route('backend.product-attributes.values', ['productAttribute' => $attribute->uuid, 'slug' => $attribute->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                <span class="badge badge-soft-info">
+                                                    <i class="bx bx-list-details me-1"></i> {{ $attribute->values_count ?? 0 }}
+                                                </span>
+                                            </a>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($attribute->trashed())
+                                            <span class="badge badge-soft-primary">
+                                                <i class="bx bx-cube me-1"></i> {{ $attribute->products_count ?? 0 }}
+                                            </span>
+                                        @else
+                                            <a href="{{ route('backend.product-attributes.products', ['productAttribute' => $attribute->uuid, 'slug' => $attribute->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                <span class="badge badge-soft-primary">
+                                                    <i class="bx bx-cube me-1"></i> {{ $attribute->products_count ?? 0 }}
+                                                </span>
+                                            </a>
+                                        @endif
                                     </td>
 
                                     <td>
@@ -197,7 +241,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ request()->routeIs('backend.product-attributes.trashed') ? 10 : 9 }}" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.product-attributes.trashed') ? 12 : 11 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('Aucun attribut trouvé.') }}
                                     </td>

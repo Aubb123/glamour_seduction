@@ -63,7 +63,7 @@ class ProductTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_product_translations_trashed(string $product_uuid): View
+    public function backend_product_translations_trashed(string $product_uuid): View|RedirectResponse
     {
         try {
 

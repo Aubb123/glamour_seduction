@@ -36,6 +36,12 @@ return [
             'error' => 'Error viewing brand activity logs: :uuid',
             'slug_mismatch' => 'The product brand slug does not match the expected slug.',
         ],
+        'products' => [
+            'success' => 'Viewing products of the product brand: :name',
+            'warning' => 'Attempt to view products of a non-existent brand: :uuid',
+            'error' => 'Error viewing brand products: :uuid',
+            'slug_mismatch' => 'The product brand slug does not match the expected slug.',
+        ],
 
         'edit' => [
             'success' => 'Access to the brand modification page: :name',

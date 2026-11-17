@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Products\Attributes\StoreProductAttributeRequest;
 use App\Http\Requests\V1\Products\Attributes\UpdateProductAttributeRequest;
+use App\Models\Product;
 use App\Models\ProductAttribute;
 use App\Models\ProductAttributeTranslation;
 use App\Services\V1\Controllers\ProductAttributeService;
@@ -37,7 +38,7 @@ class ProductAttributeController extends Controller
         try {
 
             // Récupère les attributs de produit avec leur traduction active et leurs compteurs, triés par ordre décroissant
-            $attributes = ProductAttribute::withActiveTranslation()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $attributes = ProductAttribute::withActiveTranslation()->withProductsCount()->withCount(['values', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Journalise l'accès à la liste des attributs de produit
             $this->logActivity(type: 'info', action: 'backend.product-attributes.index', context: ['count' => $attributes->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -142,7 +143,10 @@ class ProductAttributeController extends Controller
             $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.show', 'show');
 
             // Charge les compteurs associés à l'attribut de produit
-            $attribute->loadCount(['audits', 'activityLogs']);
+            $attribute->loadCount(['values', 'audits', 'activityLogs']);
+
+            // Nombre total de produits liés via les valeurs de l'attribut (navigation)
+            $attribute->products_count = $attribute->productsCount();
 
             // Récupère les traductions supprimées de l'attribut de produit
             $productAttributeTranslations = ProductAttributeTranslation::onlyTrashed()->where('attribute_id', $attribute->id)->get();
@@ -175,7 +179,10 @@ class ProductAttributeController extends Controller
             $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.audits', 'audits');
 
             // Charge les compteurs associés à l'attribut de produit
-            $attribute->loadCount(['audits', 'activityLogs']);
+            $attribute->loadCount(['values', 'audits', 'activityLogs']);
+
+            // Nombre total de produits liés via les valeurs de l'attribut (navigation)
+            $attribute->products_count = $attribute->productsCount();
 
             $attributeName = $attribute->active_translation?->name ?? '';
 
@@ -204,7 +211,10 @@ class ProductAttributeController extends Controller
             $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.activity-logs', 'activity-logs');
 
             // Charge les compteurs associés à l'attribut de produit
-            $attribute->loadCount(['audits', 'activityLogs']);
+            $attribute->loadCount(['values', 'audits', 'activityLogs']);
+
+            // Nombre total de produits liés via les valeurs de l'attribut (navigation)
+            $attribute->products_count = $attribute->productsCount();
 
             $attributeName = $attribute->active_translation?->name ?? '';
 
@@ -217,6 +227,90 @@ class ProductAttributeController extends Controller
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.product-attributes.activity-logs', context: ['attribute_uuid' => $productAttribute->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productAttribute->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // VALEURS DE L'ATTRIBUT
+    // ─────────────────────────────────────────────
+    public function backend_product_attributes_values(ProductAttribute $productAttribute, string $slug): View
+    {
+        try {
+
+            // Vérifie que le slug correspond à l'attribut de produit
+            $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.values', 'values');
+
+            // Charge les compteurs affichés par la navigation
+            $attribute->loadCount(['values', 'audits', 'activityLogs']);
+
+            // Nombre total de produits liés via les valeurs de l'attribut (navigation)
+            $attribute->products_count = $attribute->productsCount();
+
+            // Valeurs rattachées à l'attribut (relation 1-N via attribute_id),
+            // mêmes relations que la liste des valeurs d'attributs
+            $values = $attribute->values()
+                ->withActiveTranslation()
+                ->with(['attribute' => fn ($q) => $q->withActiveTranslation()])
+                ->withCount(['audits', 'activityLogs'])
+                ->orderBy('sort_order', 'desc')
+                ->get();
+
+            $attributeName = $attribute->active_translation?->name ?? '';
+
+            // Journalise la consultation des valeurs d'un attribut de produit
+            $this->logActivity(type: 'info', action: 'backend.product-attributes.values', context: ['attribute_uuid' => $attribute->uuid, 'count' => $values->count()], message: null, activity: __("{$this->backendLangPath}.values.success", ['name' => $attributeName]), is_success: true, loggable: $attribute);
+
+            // Retourne la vue des valeurs de l'attribut
+            return view('v1.backend.pages.products.attributes.others.valeurs-attributs', compact('attribute', 'values'));
+
+        } catch (\Exception $e) {
+
+            // Journalise l'erreur serveur lors de la consultation des valeurs d'un attribut
+            $this->logActivity(type: 'error', action: 'backend.product-attributes.values', context: ['attribute_uuid' => $productAttribute->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.values.error", ['uuid' => $productAttribute->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // PRODUITS LIES A L'ATTRIBUT (via ses valeurs)
+    // ─────────────────────────────────────────────
+    public function backend_product_attributes_products(ProductAttribute $productAttribute, string $slug): View
+    {
+        try {
+
+            // Vérifie que le slug correspond à l'attribut de produit
+            $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.products', 'products');
+
+            // Charge les compteurs affichés par la navigation
+            $attribute->loadCount(['values', 'audits', 'activityLogs']);
+            $attribute->products_count = $attribute->productsCount();
+
+            // Produits liés à l'attribut : un produit est concerné dès qu'une de ses
+            // variantes porte une valeur de cet attribut (pivot product_variant_attribute_value).
+            $products = Product::withActiveTranslation()
+                ->with(['category', 'brand', 'currency', 'tags'])
+                ->withCount(['variants', 'audits', 'activityLogs'])
+                ->whereHas('variants.attributeValues', function ($query) use ($attribute) {
+                    $query->where('product_attribute_values.attribute_id', $attribute->id);
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            $attributeName = $attribute->active_translation?->name ?? '';
+
+            // Journalise la consultation des produits d'un attribut de produit
+            $this->logActivity(type: 'info', action: 'backend.product-attributes.products', context: ['attribute_uuid' => $attribute->uuid, 'count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.products.success", ['name' => $attributeName]), is_success: true, loggable: $attribute);
+
+            // Retourne la vue des produits de l'attribut
+            return view('v1.backend.pages.products.attributes.others.product', compact('attribute', 'products'));
+
+        } catch (\Exception $e) {
+
+            // Journalise l'erreur serveur lors de la consultation des produits d'un attribut
+            $this->logActivity(type: 'error', action: 'backend.product-attributes.products', context: ['attribute_uuid' => $productAttribute->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.products.error", ['uuid' => $productAttribute->uuid]), is_success: false);
 
             abort(500);
         }
@@ -397,7 +491,7 @@ class ProductAttributeController extends Controller
     {
         try {
 
-            $attributes = ProductAttribute::onlyTrashed()->withTrashedActiveTranslation()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $attributes = ProductAttribute::onlyTrashed()->withTrashedActiveTranslation()->withProductsCount()->withCount(['values', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Journalise la consultation de la corbeille des attributs de produit
             $this->logActivity(type: 'info', action: 'backend.product-attributes.trashed', context: ['count' => $attributes->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

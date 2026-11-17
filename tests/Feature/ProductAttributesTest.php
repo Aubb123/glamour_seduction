@@ -361,3 +361,52 @@ it('ignore un code HEX fourni pour un attribut non couleur', function () {
 
     expect(ProductAttributeValue::firstOrFail()->hex_color)->toBeNull();
 });
+
+// ─────────────────────────────────────────────────────────────
+// Valeurs rattachées à un attribut (page dédiée + compteur)
+// ─────────────────────────────────────────────────────────────
+
+it('affiche les valeurs rattachées à un attribut (values avec slug)', function () {
+    $admin = productAttributeAdmin();
+    $attribute = createAttribute();
+    $slug = $attribute->active_translation?->slug ?? 'null';
+
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
+
+    $labelFr = 'Rouge '.uniqid();
+    $labelEn = 'Red '.uniqid();
+
+    // Deux valeurs rattachées à l'attribut
+    foreach ([1, 2] as $index) {
+        $this->actingAs($admin)
+            ->post(route('backend.product-attribute-values.store'), productAttributeValuePayload($attribute->id, [
+                'value' => 'valeur-'.$index.'-'.strtolower(uniqid()),
+                'translations' => [
+                    ['lang_id' => $langFr->id, 'label' => $index === 1 ? $labelFr : 'Autre '.uniqid()],
+                    ['lang_id' => $langEn->id, 'label' => $index === 1 ? $labelEn : 'Other '.uniqid()],
+                ],
+            ]))
+            ->assertRedirect()
+            ->assertSessionHas('success');
+    }
+
+    expect($attribute->values()->count())->toBe(2);
+
+    // La liste des attributs expose le total de valeurs avec un lien vers la page dédiée
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-attributes.index'))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain(route('backend.product-attributes.values', ['productAttribute' => $attribute->uuid, 'slug' => $slug]));
+
+    // La page « valeurs de l'attribut » liste les valeurs associées à cet attribut
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-attributes.values', ['productAttribute' => $attribute->uuid, 'slug' => $slug]))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain('product-attribute-values-table');
+    expect($html)->toContain($labelFr);
+});

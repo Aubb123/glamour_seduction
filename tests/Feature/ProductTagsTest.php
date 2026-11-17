@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Models\Currency;
 use App\Models\GeoCountry;
 use App\Models\Lang;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductTag;
 use App\Models\User;
 use Database\Seeders\GeoContinentSeeder;
@@ -204,4 +207,79 @@ it('déclare une liste vide de dependentRelations (étendue au pivot du module P
 
     $property = new ReflectionProperty($tag, 'dependentRelations');
     expect($property->getValue($tag))->toBe([]);
+});
+
+it('affiche les produits rattachés à un tag (products avec slug)', function () {
+    $admin = productTagAdmin();
+
+    $this->actingAs($admin)->post(route('backend.product-tags.store'), productTagPayload());
+
+    $tag = ProductTag::firstOrFail();
+    $slug = $tag->active_translation?->slug ?? 'null';
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
+
+    // Devise + catégorie minimales pour rattacher un produit au tag
+    $currency = Currency::create([
+        'code' => 'XOF',
+        'symbol' => 'F',
+        'decimal_places' => 0,
+        'numeric_code' => '952',
+        'sort_order' => random_int(1, 999),
+        'is_default' => true,
+        'exchange_rate' => 1,
+        'status' => 'active',
+    ]);
+
+    $category = ProductCategory::create(['sort_order' => random_int(1, 999), 'status' => 'active']);
+    $category->translations()->create(['lang_id' => $langFr->id, 'name' => 'Catégorie '.uniqid(), 'description' => 'Description catégorie.']);
+
+    // Produit rattaché au tag via le pivot product_tag
+    $product = Product::create([
+        'category_id' => $category->id,
+        'brand_id' => null,
+        'currency_id' => $currency->id,
+        'status' => 'published',
+        'is_featured' => true,
+        'weight' => 0.50,
+        'base_price' => 15000,
+        'compare_at_price' => 20000,
+    ]);
+
+    $product->tags()->attach($tag->id);
+
+    $productName = 'Produit '.uniqid();
+
+    // Traductions fr + en : `withActiveTranslation()` ne charge que la langue courante
+    // (et la langue de référence), donc on couvre les deux pour un rendu déterministe.
+    $product->translations()->create([
+        'lang_id' => $langFr->id,
+        'name' => $productName,
+        'short_description' => 'Résumé produit.',
+        'description' => '<p>Description produit.</p>',
+    ]);
+
+    $product->translations()->create([
+        'lang_id' => $langEn->id,
+        'name' => $productName,
+        'short_description' => 'Product summary.',
+        'description' => '<p>Product description.</p>',
+    ]);
+
+    // La liste des tags expose le total de produits avec un lien vers la page dédiée
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-tags.index'))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain(route('backend.product-tags.products', ['productTag' => $tag->uuid, 'slug' => $slug]));
+
+    // La page « produits du tag » liste les produits associés à ce tag
+    $html = $this->actingAs($admin)
+        ->get(route('backend.product-tags.products', ['productTag' => $tag->uuid, 'slug' => $slug]))
+        ->assertOk()
+        ->getContent();
+
+    expect($html)->toContain('products-table');
+    expect($html)->toContain($productName);
 });

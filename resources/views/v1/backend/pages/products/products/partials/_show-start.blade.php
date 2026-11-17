@@ -13,21 +13,6 @@
                             <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
                         </a>
 
-                        <a href="{{ route('backend.products.audits', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-primary btn-sm">
-                            <i class="bx bx-file me-1"></i> {{ __('Audits') }}
-                            <span class="badge bg-primary ms-1">{{ $product->audits_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.products.activity-logs', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-info btn-sm">
-                            <i class="bx bx-pulse me-1"></i> {{ __("Logs d'activité") }}
-                            <span class="badge bg-primary ms-1">{{ $product->activity_logs_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.products.variants', ['product' => $product->uuid, 'slug' => $product->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-secondary btn-sm">
-                            <i class="bx bx-layer me-1"></i> {{ __('Variantes') }}
-                            <span class="badge bg-primary ms-1">{{ $product->variants_count ?? 0 }}</span>
-                        </a>
-
                         <div class="dropdown">
                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bx bx-cog me-1"></i> {{ __('Actions') }}

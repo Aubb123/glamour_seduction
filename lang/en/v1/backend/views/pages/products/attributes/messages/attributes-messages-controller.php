@@ -36,6 +36,18 @@ return [
             'error' => 'Error while viewing the attribute activity logs: :uuid',
             'slug_mismatch' => 'The product attribute slug does not match the expected slug.',
         ],
+        'values' => [
+            'success' => 'Viewing values of the product attribute: :name',
+            'warning' => 'Attempt to view values of a missing attribute: :uuid',
+            'error' => 'Error while viewing the attribute values: :uuid',
+            'slug_mismatch' => 'The product attribute slug does not match the expected slug.',
+        ],
+        'products' => [
+            'success' => 'Viewing products linked to the product attribute: :name',
+            'warning' => 'Attempt to view products of a missing attribute: :uuid',
+            'error' => 'Error while viewing the attribute products: :uuid',
+            'slug_mismatch' => 'The product attribute slug does not match the expected slug.',
+        ],
         'edit' => [
             'success' => 'Access to the attribute edit page: :name',
             'warning' => 'Attempt to edit a missing attribute: :uuid',

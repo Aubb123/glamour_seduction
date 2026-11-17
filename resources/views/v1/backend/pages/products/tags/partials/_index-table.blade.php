@@ -20,6 +20,12 @@
             'color' => 'primary',
         ],
         [
+            'label' => 'Produits',
+            'value' => $tags->sum('products_count'),
+            'icon'  => 'bx bx-cube',
+            'color' => 'success',
+        ],
+        [
             'label' => 'Actives',
             'value' => $tags->where('status', \App\Enums\Products\Tags\ProductTagStatus::Active)->count(),
             'icon'  => 'bx bx-check-circle',
@@ -77,6 +83,7 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Nom</th>
+                                <th scope="col">Produits</th>
                                 <th scope="col">Audits</th>
                                 <th scope="col">Logs</th>
                                 <th scope="col">Ordre</th>
@@ -97,6 +104,21 @@
                                         <a href="{{ route('backend.product-tags.show', ['productTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}" class="text-decoration-none text-nowrap">
                                             {{ Str::limit($tag->active_translation?->name ?? '-', 20) }}
                                         </a>
+                                    </td>
+
+                                    <td>
+                                        @if ($tag->trashed())
+                                            <span class="badge badge-soft-info">
+                                                <i class="bx bx-cube me-1"></i> {{ $tag->products_count ?? 0 }}
+                                            </span>
+                                        @else
+                                            <a href="{{ route('backend.product-tags.products', ['productTag' => $tag->uuid, 'slug' => $tag->active_translation?->slug ?? 'null']) }}"
+                                               class="text-decoration-none">
+                                                <span class="badge badge-soft-info">
+                                                    <i class="bx bx-cube me-1"></i> {{ $tag->products_count ?? 0 }}
+                                                </span>
+                                            </a>
+                                        @endif
                                     </td>
 
                                     <td>

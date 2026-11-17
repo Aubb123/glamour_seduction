@@ -13,26 +13,6 @@
                             <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
                         </a>
 
-                        <a href="{{ route('backend.product-categories.audits', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-primary btn-sm">
-                            <i class="bx bx-file me-1"></i> {{ __('Audits') }}
-                            <span class="badge bg-primary ms-1">{{ $category->audits_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.product-categories.activity-logs', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-info btn-sm">
-                            <i class="bx bx-pulse me-1"></i> {{ __('Logs d\'activité') }}
-                            <span class="badge bg-primary ms-1">{{ $category->activity_logs_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.product-categories.children', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-secondary btn-sm">
-                            <i class="bx bx-collection me-1"></i> {{ __('Sous-catégories') }}
-                            <span class="badge bg-primary ms-1">{{ $category->children_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.product-categories.products', ['productCategory' => $category->uuid, 'slug' => $category->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-primary btn-sm">
-                            <i class="bx bx-cube me-1"></i> {{ __('Produits') }}
-                            <span class="badge bg-primary ms-1">{{ $category->products_count ?? 0 }}</span>
-                        </a>
-
                         <div class="dropdown">
                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bx bx-cog me-1"></i> {{ __('Actions') }}

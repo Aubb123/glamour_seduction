@@ -36,6 +36,12 @@ return [
             'error' => 'Erreur lors de la consultation des journaux d\'activité de la marque : :uuid',
             'slug_mismatch' => 'Le slug de la marque de produits ne correspond pas au slug attendu.',
         ],
+        'products' => [
+            'success' => 'Consultation des produits de la marque de produits : :name',
+            'warning' => 'Tentative de consultation des produits d\'une marque inexistante : :uuid',
+            'error' => 'Erreur lors de la consultation des produits de la marque : :uuid',
+            'slug_mismatch' => 'Le slug de la marque de produits ne correspond pas au slug attendu.',
+        ],
 
         'edit' => [
             'success' => 'Accès à la page de modification de la marque : :name',

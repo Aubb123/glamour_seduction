@@ -13,16 +13,6 @@
                             <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
                         </a>
 
-                        <a href="{{ route('backend.blog-posts.audits', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-primary btn-sm">
-                            <i class="bx bx-file me-1"></i> {{ __('Audits') }}
-                            <span class="badge bg-primary ms-1">{{ $post->audits_count ?? 0 }}</span>
-                        </a>
-
-                        <a href="{{ route('backend.blog-posts.activity-logs', ['blogPost' => $post->uuid, 'slug' => $post->active_translation?->slug ?? 'null']) }}" class="btn btn-soft-info btn-sm">
-                            <i class="bx bx-pulse me-1"></i> {{ __('Logs d\'activité') }}
-                            <span class="badge bg-primary ms-1">{{ $post->activity_logs_count ?? 0 }}</span>
-                        </a>
-
                         <div class="dropdown">
                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bx bx-cog me-1"></i> {{ __('Actions') }}
