@@ -76,6 +76,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     <small class="text-muted">{{ __('Plus le chiffre est petit, plus le continent apparaît en premier.') }}</small>
+                                    @include('v1.backend.layouts.partials._last-sort-order')
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="status" class="form-label">{{ __('Statut') }}</label>

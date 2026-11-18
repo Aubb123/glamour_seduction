@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('views')->default(0);
             $table->unsignedSmallInteger('time_read')->default(1);
             $table->enum('status', ['draft', 'published', 'archived', 'scheduled'])->default('draft'); // Status de l'article brouillon, publié, archivé ou programmé
-            $table->unsignedInteger('sort_order')->default(0);
+            $table->integer('sort_order')->unique(); // Ordre d'affichage de l'article dans les listes : 0 en premier
             $table->timestamp('published_at')->nullable();
             //
             $table->timestamps();

@@ -75,7 +75,10 @@ class ProductCategoryController extends Controller
             $this->logActivity(type: 'info', action: 'backend.product-categories.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Affiche la vue de création d'une catégorie
-            return view('v1.backend.pages.products.categories.create', compact('langs', 'parents'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductCategory::class);
+
+            return view('v1.backend.pages.products.categories.create', compact('langs', 'parents', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -349,7 +352,10 @@ class ProductCategoryController extends Controller
             $parents = ProductCategory::withActiveTranslation()->where('id', '!=', $category->id)->orderBy('sort_order')->get();
 
             // Retourne la vue d'édition de la catégorie avec les données nécessaires
-            return view('v1.backend.pages.products.categories.edit', compact('category', 'langs', 'parents'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductCategory::class);
+
+            return view('v1.backend.pages.products.categories.edit', compact('category', 'langs', 'parents', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

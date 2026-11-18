@@ -210,7 +210,10 @@ class CurrencyController extends Controller
             $this->logActivity(type: 'info', action: 'backend.currencies.edit', context: ['currency_uuid' => $currency->uuid, 'currency_code' => $currency->code], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $currency->active_translation?->name ?? $currency->code]), is_success: true, loggable: $currency);
 
             // Retourne la vue d'édition de la devise avec les données nécessaires
-            return view('v1.backend.pages.currencies.edit', compact('currency', 'langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(Currency::class);
+
+            return view('v1.backend.pages.currencies.edit', compact('currency', 'langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

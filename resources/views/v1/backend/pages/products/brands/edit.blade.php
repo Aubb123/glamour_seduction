@@ -54,6 +54,7 @@
                                     <label for="sort_order" class="form-label">Ordre de tri <span class="text-danger">*</span></label>
                                     <input type="number" name="sort_order" id="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $brand->sort_order) }}" min="0" required />
                                     @error('sort_order') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                    @include('v1.backend.layouts.partials._last-sort-order')
                                 </div>
 
                                 <div class="col-md-6 mb-3">

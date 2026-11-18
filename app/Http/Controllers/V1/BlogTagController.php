@@ -67,7 +67,10 @@ class BlogTagController extends Controller
             $this->logActivity(type: 'info', action: 'backend.blog-tags.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Affiche la vue de création d'un tag
-            return view('v1.backend.pages.blogs.tags.create', compact('langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(BlogTag::class);
+
+            return view('v1.backend.pages.blogs.tags.create', compact('langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -273,7 +276,10 @@ class BlogTagController extends Controller
             $tag = $blogTag;
 
             // Retourne la vue d'édition du tag avec les données nécessaires
-            return view('v1.backend.pages.blogs.tags.edit', compact('tag', 'langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(BlogTag::class);
+
+            return view('v1.backend.pages.blogs.tags.edit', compact('tag', 'langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

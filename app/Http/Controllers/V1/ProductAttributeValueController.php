@@ -70,7 +70,10 @@ class ProductAttributeValueController extends Controller
             $this->logActivity(type: 'info', action: 'backend.product-attribute-values.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Affiche la vue de création d'une valeur
-            return view('v1.backend.pages.products.attribute-values.create', compact('langs', 'attributes'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductAttributeValue::class);
+
+            return view('v1.backend.pages.products.attribute-values.create', compact('langs', 'attributes', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -296,7 +299,10 @@ class ProductAttributeValueController extends Controller
             $attributes = ProductAttribute::withActiveTranslation()->where('status', 'active')->orderBy('sort_order', 'desc')->get();
 
             // Retourne la vue d'édition de la valeur avec les données nécessaires
-            return view('v1.backend.pages.products.attribute-values.edit', compact('value', 'langs', 'attributes'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductAttributeValue::class);
+
+            return view('v1.backend.pages.products.attribute-values.edit', compact('value', 'langs', 'attributes', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

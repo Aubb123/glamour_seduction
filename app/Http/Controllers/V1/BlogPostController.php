@@ -75,7 +75,10 @@ class BlogPostController extends Controller
             $this->logActivity(type: 'info', action: 'backend.blog-posts.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Retourne la vue de création avec les données nécessaires
-            return view('v1.backend.pages.blogs.posts.create', compact('langs', 'categories', 'tags'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(BlogPost::class);
+
+            return view('v1.backend.pages.blogs.posts.create', compact('langs', 'categories', 'tags', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -263,7 +266,10 @@ class BlogPostController extends Controller
             $editMode = true;
 
             // Retourne la vue d'édition avec l'article, les langues, les catégories et les tags
-            return view('v1.backend.pages.blogs.posts.edit', compact('post', 'langs', 'categories', 'tags', 'postTagIds', 'editMode'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(BlogPost::class);
+
+            return view('v1.backend.pages.blogs.posts.edit', compact('post', 'langs', 'categories', 'tags', 'postTagIds', 'editMode', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

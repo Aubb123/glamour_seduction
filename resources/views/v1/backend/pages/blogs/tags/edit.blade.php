@@ -51,6 +51,7 @@
                                        class="form-control @error('sort_order') is-invalid @enderror"
                                        value="{{ old('sort_order', $tag->sort_order) }}" min="0" required />
                                 @error('sort_order') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                    @include('v1.backend.layouts.partials._last-sort-order')
                             </div>
 
                             <div class="mb-3">

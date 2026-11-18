@@ -209,7 +209,10 @@ class GeoContinentController extends Controller
             $this->logActivity(type: 'info', action: 'backend.geocontinents.edit', context: ['continent_uuid' => $continent->uuid, 'continent_code' => $continent->code], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $continent->active_translation?->name ?? $continent->code]), is_success: true, loggable: $continent);
 
             // Retourne la vue d'édition du continent avec les données nécessaires
-            return view('v1.backend.pages.geos.continents.edit', compact('continent', 'langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(GeoContinent::class);
+
+            return view('v1.backend.pages.geos.continents.edit', compact('continent', 'langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

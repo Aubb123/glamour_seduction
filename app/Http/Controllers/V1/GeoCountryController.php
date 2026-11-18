@@ -232,7 +232,10 @@ class GeoCountryController extends Controller
             $this->logActivity(type: 'info', action: 'backend.geocountries.edit', context: ['country_uuid' => $country->uuid, 'country_code' => $country->code], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $country->active_translation?->name ?? $country->code]), is_success: true, loggable: $country);
 
             // Retourne la vue d'édition du pays avec les données nécessaires
-            return view('v1.backend.pages.geos.countries.edit', compact('country', 'langs', 'continents', 'geocountries', 'currencies'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(GeoCountry::class);
+
+            return view('v1.backend.pages.geos.countries.edit', compact('country', 'langs', 'continents', 'geocountries', 'currencies', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

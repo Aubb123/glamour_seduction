@@ -22,7 +22,7 @@ return new class extends Migration
             //
             $table->string('value'); // Clé machine de la valeur (ex : rouge, xl, medical-silicone), utilisée comme référence technique
             $table->string('hex_color', 9)->nullable(); // Code couleur HEX (ex : #FF0000, #FFF, #FF0000AA), renseigné uniquement lorsque l'attribut parent est de type "color"
-            $table->integer('sort_order')->default(0); // Ordre d'affichage de la valeur dans les selects/listes
+            $table->integer('sort_order')->unique(); // Ordre d'affichage de la valeur dans les selects/listes : 0 en premier
             $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si la valeur est utilisable
             //
             $table->timestamps();

@@ -70,7 +70,10 @@ class FaqController extends Controller
             $this->logActivity(type: 'info', action: 'backend.faqs.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Retourne la vue de création avec les langues
-            return view('v1.backend.pages.faqs.create', compact('langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(Faq::class);
+
+            return view('v1.backend.pages.faqs.create', compact('langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -244,7 +247,10 @@ class FaqController extends Controller
             $this->logActivity(type: 'info', action: 'backend.faqs.edit', context: ['faq_uuid' => $faq->uuid, 'faq_question' => $faq->active_translation?->question], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $faq->active_translation?->question ?? '']), is_success: true, loggable: $faq);
 
             // Retourne la vue d'édition avec la FAQ et les langues
-            return view('v1.backend.pages.faqs.edit', compact('faq', 'langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(Faq::class);
+
+            return view('v1.backend.pages.faqs.edit', compact('faq', 'langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

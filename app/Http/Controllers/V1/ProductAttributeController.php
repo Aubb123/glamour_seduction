@@ -68,7 +68,10 @@ class ProductAttributeController extends Controller
             $this->logActivity(type: 'info', action: 'backend.product-attributes.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Affiche le formulaire de création d'un attribut de produit
-            return view('v1.backend.pages.products.attributes.create', compact('langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductAttribute::class);
+
+            return view('v1.backend.pages.products.attributes.create', compact('langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -331,7 +334,10 @@ class ProductAttributeController extends Controller
             $attribute = $productAttribute;
 
             // Affiche le formulaire de modification de l'attribut de produit
-            return view('v1.backend.pages.products.attributes.edit', compact('attribute', 'langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductAttribute::class);
+
+            return view('v1.backend.pages.products.attributes.edit', compact('attribute', 'langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

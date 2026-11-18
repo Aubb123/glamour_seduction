@@ -184,3 +184,17 @@ if (! function_exists('formatPrice')) {
         return app(PricingService::class)->formatPrice($amount, $currency);
     }
 }
+
+// ─────────────────────────────────────────────
+// Ordre d'affichage (sort_order)
+// ─────────────────────────────────────────────
+
+// Function getLastSortOrder : dernier ordre d'affichage utilisé dans une table.
+// NB : withTrashed() est volontaire — la contrainte unique porte aussi sur les
+// lignes supprimées (soft delete), donc réutiliser une valeur supprimée échouerait.
+if (! function_exists('getLastSortOrder')) {
+    function getLastSortOrder(string $modelClass): int
+    {
+        return (int) $modelClass::withTrashed()->max('sort_order');
+    }
+}

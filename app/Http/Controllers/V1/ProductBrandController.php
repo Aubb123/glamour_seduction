@@ -73,7 +73,10 @@ class ProductBrandController extends Controller
             $this->logActivity(type: 'info', action: 'backend.product-brands.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Affiche la vue de création d'une marque
-            return view('v1.backend.pages.products.brands.create', compact('langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductBrand::class);
+
+            return view('v1.backend.pages.products.brands.create', compact('langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -299,7 +302,10 @@ class ProductBrandController extends Controller
             $brand = $productBrand;
 
             // Retourne la vue d'édition de la marque avec les données nécessaires
-            return view('v1.backend.pages.products.brands.edit', compact('brand', 'langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(ProductBrand::class);
+
+            return view('v1.backend.pages.products.brands.edit', compact('brand', 'langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 

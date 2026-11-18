@@ -16,6 +16,8 @@ class ProductAttributeValueSeeder extends Seeder
     public function run(): void
     {
         // Le code HEX n'est renseigné que pour les valeurs de l'attribut « Couleur » (type = color).
+        // NB : `sort_order` est unique au niveau de la table product_attribute_values (comme les
+        // autres modules), donc la numérotation est continue d'un attribut à l'autre.
         $valuesByAttribute = [
             'Couleur' => [
                 ['value' => 'rouge', 'hex_color' => '#FF0000', 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Rouge'], ['lang_code' => 'en', 'label' => 'Red']]],
@@ -23,14 +25,14 @@ class ProductAttributeValueSeeder extends Seeder
                 ['value' => 'blanc', 'hex_color' => '#FFFFFF', 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Blanc'], ['lang_code' => 'en', 'label' => 'White']]],
             ],
             'Taille' => [
-                ['value' => 's',  'hex_color' => null, 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'S'],  ['lang_code' => 'en', 'label' => 'S']]],
-                ['value' => 'm',  'hex_color' => null, 'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'M'],  ['lang_code' => 'en', 'label' => 'M']]],
-                ['value' => 'xl', 'hex_color' => null, 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'XL'], ['lang_code' => 'en', 'label' => 'XL']]],
+                ['value' => 's',  'hex_color' => null, 'sort_order' => 4, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'S'],  ['lang_code' => 'en', 'label' => 'S']]],
+                ['value' => 'm',  'hex_color' => null, 'sort_order' => 5, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'M'],  ['lang_code' => 'en', 'label' => 'M']]],
+                ['value' => 'xl', 'hex_color' => null, 'sort_order' => 6, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'XL'], ['lang_code' => 'en', 'label' => 'XL']]],
             ],
             'Matière' => [
-                ['value' => 'silicone-medical', 'hex_color' => null, 'sort_order' => 1, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Silicone médical'], ['lang_code' => 'en', 'label' => 'Medical silicone']]],
-                ['value' => 'cuir',             'hex_color' => null, 'sort_order' => 2, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Cuir'],             ['lang_code' => 'en', 'label' => 'Leather']]],
-                ['value' => 'metal',            'hex_color' => null, 'sort_order' => 3, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Métal'],            ['lang_code' => 'en', 'label' => 'Metal']]],
+                ['value' => 'silicone-medical', 'hex_color' => null, 'sort_order' => 7, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Silicone médical'], ['lang_code' => 'en', 'label' => 'Medical silicone']]],
+                ['value' => 'cuir',             'hex_color' => null, 'sort_order' => 8, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Cuir'],             ['lang_code' => 'en', 'label' => 'Leather']]],
+                ['value' => 'metal',            'hex_color' => null, 'sort_order' => 9, 'status' => 'active', 'translations' => [['lang_code' => 'fr', 'label' => 'Métal'],            ['lang_code' => 'en', 'label' => 'Metal']]],
             ],
         ];
 

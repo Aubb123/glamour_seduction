@@ -70,7 +70,10 @@ class GalleryController extends Controller
             $this->logActivity(type: 'info', action: 'backend.galleries.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             // Retourne la vue de création avec les langues
-            return view('v1.backend.pages.galleries.create', compact('langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(Gallery::class);
+
+            return view('v1.backend.pages.galleries.create', compact('langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -244,7 +247,10 @@ class GalleryController extends Controller
             $this->logActivity(type: 'info', action: 'backend.galleries.edit', context: ['gallery_uuid' => $gallery->uuid, 'gallery_title' => $gallery->active_translation?->title], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $gallery->active_translation?->title ?? '']), is_success: true, loggable: $gallery);
 
             // Retourne la vue d'édition avec la galerie et les langues
-            return view('v1.backend.pages.galleries.edit', compact('gallery', 'langs'));
+            // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
+            $lastSortOrder = getLastSortOrder(Gallery::class);
+
+            return view('v1.backend.pages.galleries.edit', compact('gallery', 'langs', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
