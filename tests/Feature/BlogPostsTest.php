@@ -14,6 +14,7 @@ use Database\Seeders\CloudPlatformSeeder;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
+use Database\Seeders\SettingSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -27,6 +28,7 @@ uses(RefreshDatabase::class);
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
+    $this->seed(SettingSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
     $this->seed(GeoContinentSeeder::class);
     $this->seed(GeoCountrySeeder::class);
@@ -57,6 +59,28 @@ function postsAdmin(): User
     $admin->assignRole('administrator');
 
     return $admin;
+}
+
+function postsModerator(): User
+{
+    $country = GeoCountry::where('code', 'BEN')->firstOrFail();
+
+    $moderator = User::create([
+        'country_id' => $country->id,
+        'first_name' => 'Marc', 'last_name' => 'Dupont',
+        'email' => 'moderator@site.com', 'gender' => 'male',
+        'phone' => '+22900000001', 'password' => 'password',
+        'status' => 'active',
+    ]);
+
+    $moderator->forceFill([
+        'email_verified_at' => now(),
+        'phone_verified_at' => now(),
+    ])->save();
+
+    $moderator->assignRole('moderator');
+
+    return $moderator;
 }
 
 function createPostFixture(): array
@@ -184,4 +208,75 @@ it('affiche la page d’édition d’un article', function () {
     $this->actingAs($admin)
         ->get(route('backend.blog-posts.edit', ['blogPost' => $post->uuid]))
         ->assertOk();
+});
+
+it('empêche un modérateur sans droit de publication de créer un article publié', function () {
+    $moderator = postsModerator();
+    $payload = postPayload(['status' => 'published']);
+
+    // Le rôle modérateur n'a pas la permission de publication
+    expect($moderator->can('blog-posts.toggle_visibility'))->toBeFalse();
+
+    // Publication refusée : le statut demandé n'est pas autorisé
+    $this->actingAs($moderator)
+        ->from(route('backend.blog-posts.create'))
+        ->post(route('backend.blog-posts.store'), $payload)
+        ->assertSessionHasErrors(['status']);
+
+    expect(BlogPost::count())->toBe(0);
+
+    // La création en brouillon reste autorisée
+    $this->actingAs($moderator)
+        ->post(route('backend.blog-posts.store'), array_merge($payload, [
+            'status' => 'draft',
+            'image' => UploadedFile::fake()->create('post.jpg', 100, 'image/jpeg'),
+        ]))
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect(BlogPost::where('status', 'draft')->count())->toBe(1);
+});
+
+it('retourne une 404 quand le slug ne correspond pas à l’article', function () {
+    $admin = postsAdmin();
+
+    $this->actingAs($admin)->post(route('backend.blog-posts.store'), postPayload());
+    $post = BlogPost::firstOrFail();
+
+    $this->actingAs($admin)
+        ->get(route('backend.blog-posts.show', ['blogPost' => $post->uuid, 'slug' => 'slug-incorrect']))
+        ->assertNotFound();
+});
+
+it('refuse un ordre de tri déjà utilisé par un autre article', function () {
+    $admin = postsAdmin();
+
+    $payload = postPayload();
+
+    $this->actingAs($admin)
+        ->post(route('backend.blog-posts.store'), $payload)
+        ->assertRedirect()
+        ->assertSessionHas('success');
+
+    expect(BlogPost::count())->toBe(1);
+
+    $langFr = Lang::where('code', 'fr')->firstOrFail();
+    $langEn = Lang::where('code', 'en')->firstOrFail();
+    $uid = uniqid();
+
+    // Même ordre de tri, mais titres et contenus différents : seul sort_order doit être refusé
+    $duplicate = array_merge($payload, [
+        'image' => UploadedFile::fake()->create('post-2.jpg', 100, 'image/jpeg'),
+        'translations' => [
+            ['lang_id' => $langFr->id, 'title' => 'Second article '.$uid, 'content' => '<p>Un tout autre contenu.</p>'],
+            ['lang_id' => $langEn->id, 'title' => 'Second post '.$uid, 'content' => '<p>Completely different content.</p>'],
+        ],
+    ]);
+
+    $this->actingAs($admin)
+        ->from(route('backend.blog-posts.create'))
+        ->post(route('backend.blog-posts.store'), $duplicate)
+        ->assertSessionHasErrors(['sort_order']);
+
+    expect(BlogPost::count())->toBe(1);
 });

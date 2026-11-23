@@ -43,6 +43,13 @@ class BlogPostTranslationController extends Controller
             // Redirige vers la page précédente avec un message flash de succès pour la suppression
             return back()->with('success', __("{$this->backendLangPath}.translations.destroy.flash_success"));
 
+        } catch (ModelNotFoundException $e) {
+
+            // Log de l'erreur : traduction introuvable
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning", ['uuid' => $uuid]), is_success: false);
+
+            return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_warning"));
+
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression avec un message d'avertissement spécifique
@@ -81,6 +88,13 @@ class BlogPostTranslationController extends Controller
 
             // Retourne la vue avec les traductions supprimées et l'article correspondant
             return view('v1.backend.pages.blogs.posts.translations.trashed', compact('post', 'blogPostTranslations'));
+
+        } catch (ModelNotFoundException $e) {
+
+            // Log de l'erreur : article introuvable pour la corbeille de traductions
+            $this->logActivity(type: 'warning', action: 'backend.blog-post-translations.trashed', context: ['post_uuid' => $post_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.warning", ['uuid' => $post_uuid]), is_success: false);
+
+            abort(404);
 
         } catch (\Exception $e) {
 

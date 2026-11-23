@@ -141,12 +141,12 @@ class ProductTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_tags_show(ProductTag $productTag, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
-
-            // Vérifie que le slug correspond
-            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.show', 'show');
 
             // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
             // + les compteurs (withCount)
@@ -177,10 +177,10 @@ class ProductTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_tags_audits(ProductTag $productTag, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.audits', 'audits');
+        try {
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['products', 'audits', 'activityLogs']);
@@ -206,10 +206,10 @@ class ProductTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_tags_activity_logs(ProductTag $productTag, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['products', 'audits', 'activityLogs']);
@@ -235,10 +235,10 @@ class ProductTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_tags_products(ProductTag $productTag, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.products', 'products');
 
-            // Vérifie que le slug correspond
-            $tag = $this->resolveProductTagWithSlugCheck($productTag, $slug, 'backend.product-tags.products', 'products');
+        try {
 
             // Charge les compteurs affichés par la navigation
             $tag->loadCount(['products', 'audits', 'activityLogs']);

@@ -47,13 +47,14 @@ class UpdateBlogPostRequest extends FormRequest
         return [
             'category_id' => ['required', 'exists:blog_categories,id'],
             'status' => ['required', Rule::in(BlogPostStatus::values())],
-            'sort_order' => ['required', 'integer', 'min:0'],
+            // L'unicité inclut les articles en corbeille, comme la contrainte en base de données.
+            'sort_order' => ['required', 'integer', 'min:0', Rule::unique('blog_posts', 'sort_order')->ignore($this->getBlogPostId())],
             'published_at' => ['nullable', 'date', 'required_if:status,scheduled', 'after_or_equal:now'],
-            'tags' => ['required', 'array'],
+            'tags' => ['required', 'array', 'max:'.(int) getRequiredSettingValue('max_blog_post_tags', app()->getLocale())],
             'tags.*' => ['exists:blog_tags,id'],
 
             'cloud_platform_uuid' => ['nullable', 'exists:cloud_platforms,uuid'],
-            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:'.getMaxImageSizeKb()],
 
             // Traductions obligatoires
             'translations' => ['required', 'array'],
@@ -151,6 +152,7 @@ class UpdateBlogPostRequest extends FormRequest
             'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
             'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
             'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
+            'sort_order.unique' => __("{$this->backendLangPath}.sort_order.unique"),
 
             'published_at.date' => __("{$this->backendLangPath}.published_at.date"),
             'published_at.required_if' => __("{$this->backendLangPath}.published_at.required_if"),
@@ -158,13 +160,14 @@ class UpdateBlogPostRequest extends FormRequest
             'published_at.after_or_equal' => __("{$this->backendLangPath}.published_at.after"),
 
             'tags.array' => __("{$this->backendLangPath}.tags.array"),
+            'tags.max' => __("{$this->backendLangPath}.tags.max", ['max' => (int) getRequiredSettingValue('max_blog_post_tags', app()->getLocale())]),
             'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
 
             'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
 
             'image.image' => __("{$this->backendLangPath}.image.image"),
             'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'image.max' => __("{$this->backendLangPath}.image.max", ['max' => getMaxImageSizeMb()]),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

@@ -18,6 +18,10 @@ return [
         // ── Valeur ──
         'value' => [
             'string' => 'La valeur doit être une chaîne de caractères.',
+            'integer' => 'La valeur du paramètre « :key » doit être un entier.',
+            'numeric' => 'La valeur du paramètre « :key » doit être un nombre.',
+            'range' => 'La valeur du paramètre « :key » doit être comprise entre :min et :max.',
+            'image_range' => "Le nombre minimum d'images par produit ne peut pas dépasser le nombre maximum.",
         ],
 
         // ── Traductions ──

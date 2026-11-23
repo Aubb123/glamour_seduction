@@ -20,7 +20,7 @@ return [
             'required' => 'The image is required.',
             'image' => 'The file must be an image.',
             'mimes' => 'The image must be a file of type: jpg, png, webp.',
-            'max' => 'The image may not be greater than 2 MB.',
+            'max' => 'The image may not be greater than :max MB.',
         ],
         'translations' => [
             'required' => 'Translations are required.',

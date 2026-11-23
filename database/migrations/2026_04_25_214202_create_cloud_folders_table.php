@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             //
             $table->foreignId('cloud_platform_id')->constrained('cloud_platforms')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('cloud_folder_id')->nullable()->constrained('cloud_folders')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('cloud_folder_id')->nullable()->constrained('cloud_folders')->cascadeOnUpdate()->cascadeOnDelete();
             //
             $table->string('folder_name');
             $table->string('folder_id')->nullable();

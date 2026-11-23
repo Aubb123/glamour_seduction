@@ -21,7 +21,7 @@ return [
         ],
         'images' => [
             'not_owned' => 'Une ou plusieurs images sélectionnées n\'appartiennent pas à cette variante.',
-            'limit_exceeded' => 'Une variante peut contenir au maximum quatre images. Retirez une image avant d\'en ajouter une autre.',
+            'limit_exceeded' => 'Une variante peut contenir au maximum :max images. Retirez une image avant d\'en ajouter une autre.',
             'cloud_platform_required' => 'Sélectionnez une plateforme cloud pour téléverser les images de la variante.',
         ],
         'restore' => [

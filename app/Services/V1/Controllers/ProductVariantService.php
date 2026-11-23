@@ -104,14 +104,15 @@ class ProductVariantService
             throw new \InvalidArgumentException(__("{$this->backendLangPath}.images.not_owned"));
         }
 
-        // Vérifie la limite de quatre images en tenant compte des suppressions demandées.
+        // Vérifie la limite d'images configurée en tenant compte des suppressions demandées.
+        $maxVariantImages = (int) getRequiredSettingValue('max_product_variant_images', app()->getLocale());
         $newFiles = array_values(array_filter($data['files'] ?? []));
         $existingImageCount = $variant->cloudFiles()
             ->where('file_type', 'image')
             ->count();
 
-        if ($existingImageCount - $imagesToRemove->count() + count($newFiles) > 4) {
-            throw new \InvalidArgumentException(__("{$this->backendLangPath}.images.limit_exceeded"));
+        if ($existingImageCount - $imagesToRemove->count() + count($newFiles) > $maxVariantImages) {
+            throw new \InvalidArgumentException(__("{$this->backendLangPath}.images.limit_exceeded", ['max' => $maxVariantImages]));
         }
 
         return DB::transaction(function () use ($variant, $data, $imagesToRemove) {

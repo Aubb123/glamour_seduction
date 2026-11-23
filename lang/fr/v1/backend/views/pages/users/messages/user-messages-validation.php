@@ -43,7 +43,7 @@ return [
         'image' => [
             'image' => 'L\'image doit être un fichier image valide.',
             'mimes' => 'L\'image doit être un fichier de type: jpg, png, webp.',
-            'max' => 'L\'image ne peut pas dépasser 2 Mo.',
+            'max' => 'L\'image ne peut pas dépasser :max Mo.',
         ],
     ],
 ];

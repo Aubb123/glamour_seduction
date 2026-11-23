@@ -197,8 +197,13 @@ class CloudStorageService
 
     public function temporaryUrl(CloudFile $cloudFile, ?int $expiresInMinutes = null): ?string
     {
+        // Durée de validité strictement issue du setting "cloudfiles.temporary_url_expires_in_minutes" :
+        // aucune valeur par défaut n'est appliquée. La résolution est faite AVANT le try/catch
+        // afin que l'erreur de configuration ne soit pas avalée et renvoyée silencieusement en null.
+        $expiresInMinutes ??= (int) getRequiredSettingValue('temporary_url_expires_in_minutes', app()->getLocale());
+
         try {
-            $expiresInMinutes ??= (int) (getSettingValue('temporary_url_expires_in_minutes', app()->getLocale()));
+
             $this->resolveDriverFromCloudFile($cloudFile);
 
             return $this->getDriver()->temporaryUrl(

@@ -25,7 +25,7 @@ return new class extends Migration
             // Pays de rattachement (rempli uniquement si type != 'country')
             $table->foreignId('sovereign_id')->nullable()->constrained('geo_countries')->cascadeOnUpdate()->cascadeOnDelete();
             // Devise principale du pays (normalisée via la table currencies — créée avant)
-            $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnUpdate()->cascadeOnDelete();
             // Code ISO 3166-1 alpha-3 (ex: FRA, USA, BEN) — nullable car certaines entités n'en ont pas (subdivisions GB-ENG...)
             $table->string('code', 3)->nullable()->unique();
             // Code ISO 3166-1 alpha-2 (ex: FR, US, BJ) — étendu aux subdivisions (GB-ENG...) donc longueur 10

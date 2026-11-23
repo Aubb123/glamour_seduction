@@ -14,6 +14,7 @@ return [
             'required' => 'L\'ordre de tri est obligatoire.',
             'integer' => 'L\'ordre de tri doit être un nombre entier.',
             'min' => 'L\'ordre de tri doit être au minimum 0.',
+            'unique' => 'Cet ordre de tri est déjà utilisé par un autre article.',
         ],
         'published_at' => [
             'date' => 'La date de publication doit être une date valide.',
@@ -23,7 +24,16 @@ return [
         'tags' => [
             'required' => 'Les tags sont obligatoires.',
             'array' => 'Les tags doivent être un tableau.',
+            'max' => 'Vous pouvez sélectionner au maximum :max tags.',
             'exists' => 'Un ou plusieurs tags sélectionnés n\'existent pas.',
+        ],
+        'cloud_platform_uuid' => [
+            'exists' => 'La plateforme cloud sélectionnée n\'existe pas.',
+        ],
+        'image' => [
+            'image' => 'Le fichier doit être une image.',
+            'mimes' => 'L\'image doit être au format jpg, png ou webp.',
+            'max' => 'L\'image ne doit pas dépasser :max Mo.',
         ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',

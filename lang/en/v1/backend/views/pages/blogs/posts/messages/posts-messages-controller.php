@@ -72,6 +72,7 @@ return [
             'flash_error' => 'An error occurred.',
         ],
         'force_destroy' => [
+            'unknown' => 'Unknown post',
             'success' => 'Permanently deleting post: :name',
             'warning' => 'Attempt to permanently delete a non-existent post: :uuid',
             'warning_meta' => 'Business error when permanently deleting post: :uuid',
@@ -105,6 +106,7 @@ return [
             ],
             'trashed' => [
                 'accessed' => 'Viewing deleted translations for post: :name',
+                'warning' => 'Attempt to access the deleted translations of a non-existent post: :uuid',
                 'error' => 'Error viewing deleted translations: :uuid',
             ],
             'restore' => [
@@ -120,6 +122,7 @@ return [
                 'success' => 'Permanently deleting translation: :uuid',
                 'warning' => 'Attempt to permanently delete a non-existent translation: :uuid',
                 'warning_meta' => 'Validation error when permanently deleting translation: :uuid',
+                'error' => 'Error while permanently deleting translation: :uuid',
                 'flash_success' => 'Translation permanently deleted successfully.',
                 'flash_warning' => 'Translation not found.',
                 'flash_error' => 'An error occurred.',

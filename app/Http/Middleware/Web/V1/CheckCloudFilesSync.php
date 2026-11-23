@@ -37,11 +37,6 @@ class CheckCloudFilesSync
         // Récupère l'utilisateur authentifié
         $user = $request->user();
 
-        // Récupère la valeur du setting "max_unsynced_files_before_redirect" pour déterminer le seuil.
-        // La valeur peut être absente (null) ou invalide : on retombe sur un défaut de 10,
-        // et on garantit un seuil d'au moins 1 pour éviter une redirection systématique.
-        $threshold = max(1, (int) (getSettingValue('max_unsynced_files_before_redirect', app()->getLocale()) ?? 10));
-
         // L'utilisateur doit être connecté
         if (! $user) {
             return $next($request);
@@ -92,6 +87,15 @@ class CheckCloudFilesSync
                     ->count();
             }
         );
+
+        // Aucun fichier en attente : le seuil n'a aucune incidence, il n'est donc pas exigé.
+        if ($nonSyncedCount === 0) {
+            return $next($request);
+        }
+
+        // Seuil strictement issu de la table settings : aucune valeur par défaut.
+        // Une exception traduite est levée si le paramètre n'est pas configuré.
+        $threshold = (int) getRequiredSettingValue('max_unsynced_files_before_redirect', app()->getLocale());
 
         // Si le nombre de fichiers non synchronisés atteint le seuil, redirige vers la page de synchronisation
         if ($nonSyncedCount >= $threshold) {

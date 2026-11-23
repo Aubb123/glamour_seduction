@@ -75,10 +75,10 @@ class RoleController extends Controller
     // ─────────────────────────────────────────────
     public function backend_roles_show(Role $role, string $slug): View
     {
-        try {
+        // Rôle résolu par le binding implicite sur uuid (404 automatique si introuvable)
+        $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.show', 'show');
 
-            // Rôle résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.show', 'show');
+        try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
 
@@ -108,10 +108,10 @@ class RoleController extends Controller
     // ─────────────────────────────────────────────
     public function backend_roles_permissions(Role $role, string $slug): View
     {
-        try {
+        // Rôle résolu par le binding implicite sur uuid
+        $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.permissions', 'permissions');
 
-            // Rôle résolu par le binding implicite sur uuid
-            $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.permissions', 'permissions');
+        try {
 
             $role->loadCount(['audits', 'activityLogs', 'users', 'permissions']);
 
@@ -132,10 +132,10 @@ class RoleController extends Controller
     // ─────────────────────────────────────────────
     public function backend_roles_users(Role $role, string $slug): View
     {
-        try {
+        // Rôle résolu par le binding implicite sur uuid
+        $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.users', 'users');
 
-            // Rôle résolu par le binding implicite sur uuid
-            $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.users', 'users');
+        try {
 
             $role->loadCount(['audits', 'activityLogs', 'users', 'permissions']);
 
@@ -157,10 +157,10 @@ class RoleController extends Controller
     // ─────────────────────────────────────────────
     public function backend_roles_audits(Role $role, string $slug): View
     {
-        try {
+        // Rôle résolu par le binding implicite sur uuid
+        $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.audits', 'audits');
 
-            // Rôle résolu par le binding implicite sur uuid
-            $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.audits', 'audits');
+        try {
 
             $role->loadCount(['audits', 'activityLogs', 'users', 'permissions']);
 
@@ -182,10 +182,10 @@ class RoleController extends Controller
     // ─────────────────────────────────────────────
     public function backend_roles_activity_logs(Role $role, string $slug): View
     {
-        try {
+        // Rôle résolu par le binding implicite sur uuid
+        $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.activity-logs', 'activity-logs');
 
-            // Rôle résolu par le binding implicite sur uuid
-            $role = $this->resolveRoleWithSlugCheck($role, $slug, 'backend.roles.activity-logs', 'activity-logs');
+        try {
 
             $role->loadCount(['audits', 'activityLogs', 'users', 'permissions']);
 

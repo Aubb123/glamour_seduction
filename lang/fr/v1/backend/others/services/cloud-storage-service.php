@@ -10,5 +10,6 @@ return [
         'migrate_error' => 'Une erreur est survenue lors de la migration du fichier vers le stockage cloud.',
         'duplicate_file' => 'Un fichier identique existe déjà dans ce dossier. Le doublon a été refusé.',
         'platform_not_found' => 'La plateforme cloud du fichier (UUID : :uuid) est introuvable ou son dossier est manquant.',
+        'cloud_platform_not_found' => 'La plateforme cloud sélectionnée est introuvable.',
     ],
 ];

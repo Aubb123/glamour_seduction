@@ -10,5 +10,6 @@ return [
         'migrate_error' => 'An error occurred while migrating the file to cloud storage.',
         'duplicate_file' => 'An identical file already exists in this folder. The duplicate was rejected.',
         'platform_not_found' => 'The cloud platform of the file (UUID: :uuid) was not found, or its folder is missing.',
+        'cloud_platform_not_found' => 'The selected cloud platform could not be found.',
     ],
 ];

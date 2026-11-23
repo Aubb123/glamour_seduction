@@ -11,7 +11,8 @@ it('tous les helpers applicatifs sont déclarés', function () {
         'assertTranslationRestore', 'destroy_function', 'restore_function',
         'force_destroy_function', 'getTranslation', 'getArchitectureCloud',
         'getActiveCloudPlatforms', 'getSidebarMenu', 'getCreateLinks',
-        'isRouteActive', 'isChildRouteActive', 'getSettingValue',
+        'isRouteActive', 'isChildRouteActive',
+        'getRequiredSettingValue', 'getMaxImageSizeKb', 'getMaxImageSizeMb',
     ];
 
     foreach ($helpers as $helper) {

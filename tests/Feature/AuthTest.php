@@ -6,6 +6,7 @@ use App\Models\GeoContinent;
 use App\Models\GeoCountry;
 use App\Models\User;
 use Database\Seeders\LangSeeder;
+use Database\Seeders\SettingSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,6 +21,7 @@ uses(RefreshDatabase::class);
 */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
+    $this->seed(SettingSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
     bootV1WebRoutes();
 });

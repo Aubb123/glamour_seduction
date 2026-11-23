@@ -1612,7 +1612,12 @@ class GeoCountrySeeder extends Seeder
         ];
 
         // Nombre maximum de pays insérés en local, piloté par le setting "geo.max_countries_per_seed".
-        $maxCountriesPerSeed = (int) (getSettingValue('max_countries_per_seed', app()->getLocale()));
+        // Le paramètre n'est requis que dans l'environnement local, seul endroit où la limite
+        // s'applique : aucune valeur par défaut n'est appliquée, une exception traduite est
+        // levée s'il n'est pas configuré.
+        $maxCountriesPerSeed = app()->environment('local')
+            ? (int) getRequiredSettingValue('max_countries_per_seed', app()->getLocale())
+            : null;
 
         // Insérer les pays et leurs traductions dans la base de données
         foreach ($countries as $index => $data) {

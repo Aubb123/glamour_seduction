@@ -291,6 +291,7 @@
     <script>
         $(document).ready(function () {
             $('#product-variants-table').DataTable({
+                pageLength: {{ (int) getRequiredSettingValue('datatable_default_page_length', app()->getLocale()) }},
                 dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>' +
                 'tr'                                        +
                 '<"row mt-3"<"col-md-5"l><"col-md-7"p>>',
@@ -301,7 +302,6 @@
                     url: "{{ app()->getLocale() === 'fr' ? asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/fr-FR.json') : asset(getEnvFolder() . 'others/backend/datatables/cdn.datatables.net/plug-ins/3.0.1/i18n/en-GB.json') }}"
                 },
                 order: [[0, 'asc']],
-                pageLength: 25,
             });
         });
     </script>

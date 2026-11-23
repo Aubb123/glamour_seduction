@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers products (une variante appartient à UN produit)
             //
             $table->string('sku')->unique(); // Référence unique de la variante (Stock Keeping Unit)
-            $table->string('barcode')->nullable(); // Code-barres optionnel (EAN-13, UPC…)
+            $table->string('barcode')->nullable()->unique(); // Code-barres optionnel (EAN-13, UPC…) — unique lorsqu'il est renseigné (NULL multiples autorisés)
             //
             $table->decimal('price', 10, 2)->nullable(); // Si NULL → on utilise base_price du produit
             $table->enum('status', ['active', 'inactive'])->default('active'); // Indique si la variante est vendable

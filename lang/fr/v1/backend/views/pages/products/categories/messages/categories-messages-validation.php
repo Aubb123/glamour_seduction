@@ -24,7 +24,7 @@ return [
             'required' => 'L\'image est obligatoire.',
             'image' => 'Le fichier doit être une image.',
             'mimes' => 'L\'image doit être au format JPG, PNG ou WEBP.',
-            'max' => 'La taille de l\'image ne peut pas dépasser 2 Mo.',
+            'max' => 'La taille de l\'image ne peut pas dépasser :max Mo.',
         ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',

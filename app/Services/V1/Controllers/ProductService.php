@@ -62,9 +62,10 @@ class ProductService
     {
         // Vérifie la limite totale avant la transaction et toute mise à jour
         if (! empty($data['files'])) {
+            $maxProductImages = (int) getRequiredSettingValue('max_product_images', app()->getLocale());
             $existingImageCount = $product->cloudFiles()->where('file_type', 'image')->count();
-            if ($existingImageCount + count($data['files']) > 4) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.image_limit_exceeded"));
+            if ($existingImageCount + count($data['files']) > $maxProductImages) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.image_limit_exceeded", ['max' => $maxProductImages]));
             }
         }
 
@@ -366,9 +367,10 @@ class ProductService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy_file.not_found"));
             }
 
-            // Empêche de supprimer la dernière image : au moins une image doit rester
-            if ($product->cloudFiles()->where('file_type', 'image')->count() <= 1) {
-                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy_file.last_image_forbidden"));
+            // Empêche de descendre sous le minimum d'images configuré.
+            $minProductImages = (int) getRequiredSettingValue('min_product_images', app()->getLocale());
+            if ($product->cloudFiles()->where('file_type', 'image')->count() <= $minProductImages) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.destroy_file.last_image_forbidden", ['min' => $minProductImages]));
             }
 
             destroy_function($cloudFile);

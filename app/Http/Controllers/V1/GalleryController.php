@@ -143,13 +143,13 @@ class GalleryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_galleries_show(Gallery $gallery, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $gallery = $this->resolveGalleryWithSlugCheck($gallery, $slug, 'backend.galleries.show', 'show');
+
         try {
 
             // Récupère les langues actives pour l'affichage
             $langs = getActiveLangs()['langs'];
-
-            // Vérifie que le slug correspond
-            $gallery = $this->resolveGalleryWithSlugCheck($gallery, $slug, 'backend.galleries.show', 'show');
 
             // Charge les compteurs et la relation utilisateur
             $gallery->load(['user'])->loadCount(['audits', 'activityLogs']);
@@ -180,10 +180,10 @@ class GalleryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_galleries_audits(Gallery $gallery, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $gallery = $this->resolveGalleryWithSlugCheck($gallery, $slug, 'backend.galleries.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $gallery = $this->resolveGalleryWithSlugCheck($gallery, $slug, 'backend.galleries.audits', 'audits');
+        try {
 
             // Charge les compteurs
             $gallery->loadCount(['audits', 'activityLogs']);
@@ -209,10 +209,10 @@ class GalleryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_galleries_activity_logs(Gallery $gallery, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $gallery = $this->resolveGalleryWithSlugCheck($gallery, $slug, 'backend.galleries.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $gallery = $this->resolveGalleryWithSlugCheck($gallery, $slug, 'backend.galleries.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs
             $gallery->loadCount(['audits', 'activityLogs']);

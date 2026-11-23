@@ -21,10 +21,14 @@ class StoreProductVariantRequest extends FormRequest
 
     public function rules(): array
     {
+        // Limites métier pilotées par la table settings (aucune valeur codée en dur).
+        $maxVariantImages = (int) getRequiredSettingValue('max_product_variant_images', app()->getLocale());
+        $maxProductPrice = getRequiredSettingValue('max_product_price', app()->getLocale());
+
         return [
             'sku' => ['nullable', 'string', 'max:100', 'unique:product_variants,sku'],
             'barcode' => ['nullable', 'string', 'max:100', 'unique:product_variants,barcode'],
-            'price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
+            'price' => ['nullable', 'numeric', 'min:0.01', 'max:'.$maxProductPrice],
             'status' => ['required', Rule::in(ProductVariantStatus::values())],
             'is_default' => ['sometimes', 'boolean'],
             'attribute_value_ids' => [
@@ -45,13 +49,16 @@ class StoreProductVariantRequest extends FormRequest
             ],
             'attribute_value_ids.*' => ['integer', 'exists:product_attribute_values,id'],
             'cloud_platform_uuid' => ['nullable', 'required_with:files', 'exists:cloud_platforms,uuid'],
-            'files' => ['nullable', 'array', 'max:4'],
-            'files.*' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
+            'files' => ['nullable', 'array', 'max:'.$maxVariantImages],
+            'files.*' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:'.getMaxImageSizeKb()],
         ];
     }
 
     public function messages(): array
     {
+        $maxVariantImages = (int) getRequiredSettingValue('max_product_variant_images', app()->getLocale());
+        $maxProductPrice = getRequiredSettingValue('max_product_price', app()->getLocale());
+
         return [
             'sku.string' => __("{$this->backendLangPath}.sku.string"),
             'sku.max' => __("{$this->backendLangPath}.sku.max"),
@@ -61,7 +68,7 @@ class StoreProductVariantRequest extends FormRequest
             'barcode.unique' => __("{$this->backendLangPath}.barcode.unique"),
             'price.numeric' => __("{$this->backendLangPath}.price.numeric"),
             'price.min' => __("{$this->backendLangPath}.price.min"),
-            'price.max' => __("{$this->backendLangPath}.price.max"),
+            'price.max' => __("{$this->backendLangPath}.price.max", ['max' => $maxProductPrice]),
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
             'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
@@ -71,10 +78,10 @@ class StoreProductVariantRequest extends FormRequest
             'cloud_platform_uuid.required_with' => __("{$this->backendLangPath}.cloud_platform_uuid.required_with"),
             'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
             'files.array' => __("{$this->backendLangPath}.files.array"),
-            'files.max' => __("{$this->backendLangPath}.files.max"),
+            'files.max' => __("{$this->backendLangPath}.files.max", ['max' => $maxVariantImages]),
             'files.*.file' => __("{$this->backendLangPath}.files.file"),
             'files.*.mimes' => __("{$this->backendLangPath}.files.mimes"),
-            'files.*.max' => __("{$this->backendLangPath}.files.max_file"),
+            'files.*.max' => __("{$this->backendLangPath}.files.max_file", ['max' => getMaxImageSizeMb()]),
         ];
     }
 }

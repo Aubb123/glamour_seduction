@@ -18,6 +18,7 @@ return [
         'productAttribute' => 'attribut de produits',
         'productAttributeValue' => "valeur d'attribut de produits",
         'product' => 'produit',
+        'warehouse' => 'entrepôt',
         'shop' => 'boutique',
         'role' => 'rôle',
         'version' => 'version',
@@ -40,6 +41,9 @@ return [
 
     // Échec de la suppression physique d'un ancien fichier cloud lors du remplacement
     'delete_old_cloud_files' => 'Impossible de supprimer l\'ancien fichier cloud « :name » sur le stockage. L\'upload a été annulée pour éviter de laisser un fichier orphelin.',
+
+    // Paramètre de configuration obligatoire absent (aucune valeur par défaut appliquée)
+    'setting_not_configured' => 'Le paramètre « :key » n\'est pas configuré. Veuillez le définir dans les paramètres avant de poursuivre.',
 
     // ─────────────────────────────────────────────────────────────
     // VERROU DE SÉCURITÉ — SUPPRESSION D'ENTITÉS PARENTES

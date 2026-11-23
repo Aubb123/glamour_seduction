@@ -21,7 +21,7 @@ return new class extends Migration
             $table->uuid('uuid')->unique();
             //
             // Catégorie parente (hiérarchie) — null = catégorie racine
-            $table->foreignId('parent_id')->nullable()->constrained('product_categories')->cascadeOnUpdate()->nullOnDelete();
+            $table->foreignId('parent_id')->nullable()->constrained('product_categories')->cascadeOnUpdate()->cascadeOnDelete();
             //
             $table->integer('sort_order')->unique(); // Utile dans les selects/listes // Pour l'ordre d'affichage : 0 en premier
             $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si la catégorie est visible

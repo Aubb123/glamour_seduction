@@ -21,7 +21,7 @@ return [
         ],
         'images' => [
             'not_owned' => 'One or more selected images do not belong to this variant.',
-            'limit_exceeded' => 'A variant can have at most four images. Remove an image before adding another.',
+            'limit_exceeded' => 'A variant can have at most :max images. Remove an image before adding another.',
             'cloud_platform_required' => 'Select a cloud platform to upload variant images.',
         ],
         'restore' => [

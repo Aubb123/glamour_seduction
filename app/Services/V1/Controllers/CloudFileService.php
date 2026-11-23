@@ -20,6 +20,9 @@ class CloudFileService
 {
     protected string $backendLangPath = 'v1/backend/views/pages/clouds/files/messages/cloud-files-messages-service.cloud-files';
 
+    // Messages internes au service de fichiers cloud (indépendants du chemin de l'appelant).
+    protected string $serviceLangPath = 'v1/backend/others/services/cloud-storage-service.files';
+
     public function __construct(protected CloudStorageService $cloudStorage) {}
 
     public function backend_cloud_files_store($data): CloudFile
@@ -52,7 +55,9 @@ class CloudFileService
             return ['success_count' => 0, 'failed_count' => 0];
         }
 
-        $maxFiles = getSettingValue('max_files_sync_batch', app()->getLocale());
+        // Limite strictement issue du setting "cloudfiles.max_files_sync_batch"
+        // (aucune valeur par défaut appliquée).
+        $maxFiles = (int) getRequiredSettingValue('max_files_sync_batch', app()->getLocale());
         if (count($fileUuids) > $maxFiles) {
             throw new \InvalidArgumentException(__("{$this->backendLangPath}.sync.max_selection_exceeded", ['max' => $maxFiles]));
         }
@@ -123,7 +128,12 @@ class CloudFileService
     public function uploadEntityImage(UploadedFile $file, string $cloudPlatformUuid, Model $entity, string $entityTable, string $backendLangPath): CloudFile
     {
         deleteOldCloudFiles($entity, 'image');
-        $cloudPlatform = CloudPlatform::where('uuid', $cloudPlatformUuid)->firstOrFail();
+        $cloudPlatform = CloudPlatform::where('uuid', $cloudPlatformUuid)->first();
+
+        if (! $cloudPlatform) {
+            throw new \InvalidArgumentException(__("{$this->serviceLangPath}.cloud_platform_not_found"));
+        }
+
         if ($cloudPlatform->status !== CloudPlatformStatus::Active) {
             throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_inactive"));
         }
@@ -148,7 +158,12 @@ class CloudFileService
     /** @param array<int, UploadedFile> $files */
     public function uploadEntityFiles(array $files, string $cloudPlatformUuid, Model $entity, string $entityTable, string $backendLangPath): array
     {
-        $cloudPlatform = CloudPlatform::where('uuid', $cloudPlatformUuid)->firstOrFail();
+        $cloudPlatform = CloudPlatform::where('uuid', $cloudPlatformUuid)->first();
+
+        if (! $cloudPlatform) {
+            throw new \InvalidArgumentException(__("{$this->serviceLangPath}.cloud_platform_not_found"));
+        }
+
         if ($cloudPlatform->status !== CloudPlatformStatus::Active) {
             throw new \InvalidArgumentException(__("{$backendLangPath}.store.cloud_platform_inactive"));
         }

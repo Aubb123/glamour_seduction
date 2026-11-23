@@ -138,12 +138,12 @@ class ProductAttributeController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attributes_show(ProductAttribute $productAttribute, string $slug): View
     {
+        // Vérifie que le slug correspond à l'attribut de produit
+        $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives à transmettre à la vue
-
-            // Vérifie que le slug correspond à l'attribut de produit
-            $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.show', 'show');
 
             // Charge les compteurs associés à l'attribut de produit
             $attribute->loadCount(['values', 'audits', 'activityLogs']);
@@ -176,10 +176,10 @@ class ProductAttributeController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attributes_audits(ProductAttribute $productAttribute, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond à l'attribut de produit
+        $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.audits', 'audits');
 
-            // Vérifie que le slug correspond à l'attribut de produit
-            $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.audits', 'audits');
+        try {
 
             // Charge les compteurs associés à l'attribut de produit
             $attribute->loadCount(['values', 'audits', 'activityLogs']);
@@ -208,10 +208,10 @@ class ProductAttributeController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attributes_activity_logs(ProductAttribute $productAttribute, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond à l'attribut de produit
+        $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond à l'attribut de produit
-            $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs associés à l'attribut de produit
             $attribute->loadCount(['values', 'audits', 'activityLogs']);
@@ -240,10 +240,10 @@ class ProductAttributeController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attributes_values(ProductAttribute $productAttribute, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond à l'attribut de produit
+        $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.values', 'values');
 
-            // Vérifie que le slug correspond à l'attribut de produit
-            $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.values', 'values');
+        try {
 
             // Charge les compteurs affichés par la navigation
             $attribute->loadCount(['values', 'audits', 'activityLogs']);
@@ -282,10 +282,10 @@ class ProductAttributeController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attributes_products(ProductAttribute $productAttribute, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond à l'attribut de produit
+        $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.products', 'products');
 
-            // Vérifie que le slug correspond à l'attribut de produit
-            $attribute = $this->resolveProductAttributeWithSlugCheck($productAttribute, $slug, 'backend.product-attributes.products', 'products');
+        try {
 
             // Charge les compteurs affichés par la navigation
             $attribute->loadCount(['values', 'audits', 'activityLogs']);

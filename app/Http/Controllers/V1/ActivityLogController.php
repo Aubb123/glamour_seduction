@@ -146,20 +146,17 @@ class ActivityLogController extends Controller
     {
         try {
 
-            // Log de l'activité de nettoyage en cours
-            $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: [], message: null, activity: "{$this->backendLangPath}.clear.flash_info", is_success: true);
+            // Durée de conservation pilotée par le setting "retention.activity_logs_retention_days".
+            $days = (int) getRequiredSettingValue('activity_logs_retention_days', app()->getLocale());
 
-            // Faire un redirecte back avec un message flash impossible de nettoyer les logs
-            return redirect()->route('backend.activity-logs.index')->with('info', __("{$this->backendLangPath}.clear.flash_info", ['count' => $deletedCount ?? 0]));
+            // Supprime les logs plus anciens que la durée configurée
+            $deletedCount = $this->activityLogService->backend_activity_logs_clear_old_logs($days);
 
-            // // Utilise le service pour supprimer les logs de plus de 3 jours
-            // $deletedCount = $this->activityLogService->backend_activity_logs_clear_old_logs(3);
+            // Log de l'activité de nettoyage réussie
+            $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->backendLangPath}.clear.success", ['count' => $deletedCount]), is_success: true);
 
-            // // Log de l'activité de nettoyage réussie
-            // $this->logActivity(type: 'info', action: 'backend.activity-logs.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->backendLangPath}.clear.success", ['count' => $deletedCount]), is_success: true);
-
-            // // Redirige vers la liste des logs avec un message flash de succès
-            // return redirect()->route('backend.activity-logs.index')->with('success', __("{$this->backendLangPath}.clear.flash_success", ['count' => $deletedCount]));
+            // Redirige vers la liste des logs avec un message flash de succès
+            return redirect()->route('backend.activity-logs.index')->with('success', __("{$this->backendLangPath}.clear.flash_success", ['count' => $deletedCount]));
 
         } catch (\Exception $e) {
 

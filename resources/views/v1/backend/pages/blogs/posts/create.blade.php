@@ -61,21 +61,37 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="sort_order" class="form-label">{{ __('Ordre de tri') }} <span class="text-danger">*</span></label>
-                                    <input type="number" name="sort_order" id="sort_order" class="form-control @error('sort_order') is-invalid @enderror" placeholder="0" value="{{ old('sort_order', 0) }}" min="0" required />
+                                    <input type="number" name="sort_order" id="sort_order" class="form-control @error('sort_order') is-invalid @enderror" placeholder="0" value="{{ old('sort_order', $lastSortOrder > 0 ? $lastSortOrder + 1 : 0) }}" min="0" required />
                                     @error('sort_order') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     @include('v1.backend.layouts.partials._last-sort-order')
                                 </div>
 
                                 <div class="col-md-12 mb-3">
                                     <label for="tags" class="form-label">{{ __('Tags') }} <span class="text-danger">*</span></label>
-                                    <select name="tags[]" id="tags" class="form-select @error('tags') is-invalid @enderror" multiple size="6" required>
+                                    <select name="tags[]" id="tags" class="form-select @error('tags') is-invalid @enderror" multiple size="6" data-max="{{ $maxBlogTags }}" required>
                                         @foreach ($tags as $tag)
                                             <option value="{{ $tag->id }}" {{ is_array(old('tags')) && in_array($tag->id, old('tags')) ? 'selected' : '' }}>
                                                 {{ $tag->active_translation?->name ?? '#' . $tag->id }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <small class="text-muted">{{ __('Maximum') }} {{ $maxBlogTags }} {{ __('tags.') }}</small>
                                     @error('tags') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                    <script>
+                                        // Limite le nombre de tags sélectionnés à la valeur configurée dans les settings.
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            const tagsSelect = document.getElementById('tags');
+                                            if (! tagsSelect) return;
+                                            const maxTags = parseInt(tagsSelect.dataset.max, 10) || 0;
+                                            if (maxTags < 1) return;
+                                            tagsSelect.addEventListener('change', function () {
+                                                const selected = Array.from(this.selectedOptions);
+                                                if (selected.length > maxTags) {
+                                                    selected.slice(maxTags).forEach(option => { option.selected = false; });
+                                                }
+                                            });
+                                        });
+                                    </script>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -95,6 +111,7 @@
                                     <small class="text-muted">{{ __('Requis pour le statut "Programmé".') }}</small>
                                     @error('published_at') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
+
                             </div>
 
                         </div>
@@ -184,6 +201,11 @@
             const publishedAtInput = document.getElementById('published_at');
 
             function togglePublishedAtField() {
+                // Sans permission de publication, le champ date n'est pas rendu
+                if (!publishedAtWrapper || !publishedAtInput) {
+                    return;
+                }
+
                 if (statusSelect.value === 'scheduled') {
                     publishedAtWrapper.style.display = '';
                     publishedAtInput.required = true;

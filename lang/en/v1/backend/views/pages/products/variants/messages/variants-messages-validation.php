@@ -35,14 +35,14 @@ return [
         ],
         'files' => [
             'array' => 'The images must be a list.',
-            'max' => 'A variant can have at most four images.',
+            'max' => 'A variant can have at most :max images.',
             'file' => 'Each image must be a valid file.',
             'mimes' => 'Accepted formats: JPG, JPEG, PNG, WEBP, GIF.',
-            'max_file' => 'Each image may not exceed 2 MB.',
+            'max_file' => 'Each image may not exceed :max MB.',
         ],
         'remove_cloud_file_uuids' => [
             'array' => 'The list of images to remove is invalid.',
-            'max' => 'At most four images can be selected for removal.',
+            'max' => 'At most :max images can be selected for removal.',
             'uuid' => 'An image reference is invalid.',
             'distinct' => 'The same image cannot be selected twice.',
         ],

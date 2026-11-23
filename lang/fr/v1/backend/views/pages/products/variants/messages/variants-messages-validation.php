@@ -35,14 +35,14 @@ return [
         ],
         'files' => [
             'array' => 'Les images doivent être un tableau.',
-            'max' => 'Une variante peut contenir au maximum quatre images.',
+            'max' => 'Une variante peut contenir au maximum :max images.',
             'file' => 'Chaque image doit être un fichier valide.',
             'mimes' => 'Formats acceptés : JPG, JPEG, PNG, WEBP, GIF.',
-            'max_file' => 'Chaque image ne peut pas dépasser 2 Mo.',
+            'max_file' => 'Chaque image ne peut pas dépasser :max Mo.',
         ],
         'remove_cloud_file_uuids' => [
             'array' => 'La liste des images à retirer est invalide.',
-            'max' => 'Vous pouvez sélectionner au maximum quatre images à retirer.',
+            'max' => 'Vous pouvez sélectionner au maximum :max images à retirer.',
             'uuid' => 'Une référence d\'image est invalide.',
             'distinct' => 'La même image ne peut pas être sélectionnée deux fois.',
         ],

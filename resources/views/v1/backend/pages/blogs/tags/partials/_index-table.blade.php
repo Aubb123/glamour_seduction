@@ -245,6 +245,7 @@
     <script>
         $(document).ready(function() {
             $('#blog-tags-table').DataTable({
+                pageLength: {{ (int) getRequiredSettingValue('datatable_default_page_length', app()->getLocale()) }},
                 dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>' +
                     '<"row"<"col-md-12"tr>>'                  +
                     '<"row mt-3"<"col-md-5"l><"col-md-7"p>>',

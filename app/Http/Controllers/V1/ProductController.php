@@ -144,12 +144,12 @@ class ProductController extends Controller
     // ─────────────────────────────────────────────
     public function backend_products_show(Product $product, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
-
-            // Vérifie que le slug correspond
-            $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.show', 'show');
 
             // Charge les compteurs (withCount)
             $product->loadCount(['variants', 'audits', 'activityLogs']);
@@ -185,9 +185,9 @@ class ProductController extends Controller
     // ─────────────────────────────────────────────
     public function backend_products_audits(Product $product, string $slug): View
     {
-        try {
+        $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.audits', 'audits');
 
-            $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.audits', 'audits');
+        try {
 
             // Les compteurs alimentent les badges de navigation (_show-navigation).
             $product->loadCount(['variants', 'audits', 'activityLogs']);
@@ -215,9 +215,9 @@ class ProductController extends Controller
     // ─────────────────────────────────────────────
     public function backend_products_activity_logs(Product $product, string $slug): View
     {
-        try {
+        $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.activity-logs', 'activity-logs');
 
-            $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.activity-logs', 'activity-logs');
+        try {
 
             // Les compteurs alimentent les badges de navigation (_show-navigation).
             $product->loadCount(['variants', 'audits', 'activityLogs']);
@@ -245,9 +245,9 @@ class ProductController extends Controller
     // ─────────────────────────────────────────────
     public function backend_products_variants(Product $product, string $slug): View
     {
-        try {
+        $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.variants', 'variants');
 
-            $product = $this->resolveProductWithSlugCheck($product, $slug, 'backend.products.variants', 'variants');
+        try {
 
             // Compteurs affichés par la navigation (_show-navigation / _show-start)
             $product->loadCount(['variants', 'audits', 'activityLogs']);

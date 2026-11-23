@@ -209,6 +209,7 @@
     <script>
         $(document).ready(function() {
             $('#subscribes-table').DataTable({
+                pageLength: {{ (int) getRequiredSettingValue('datatable_default_page_length', app()->getLocale()) }},
                 dom: '<"row mb-3"<"col-md-6"B><"col-md-6"f>>tr<"row mt-3"<"col-md-5"l><"col-md-7"p>>',
                 buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
                 language: {

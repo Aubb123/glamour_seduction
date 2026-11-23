@@ -193,6 +193,14 @@ class CloudFileController extends Controller
 
             return redirect()->route('backend.cloud-files.sync')->with('error', $e->getMessage());
 
+        } catch (\RuntimeException $e) {
+
+            // Paramètre de configuration manquant (ex : max_files_sync_batch non défini) :
+            // on affiche le message traduit renvoyé par getRequiredSettingValue().
+            $this->logActivity(type: 'error', action: 'backend.cloud-files.sync-selected', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.sync.flash_error"), is_success: false);
+
+            return redirect()->route('backend.cloud-files.sync')->with('error', $e->getMessage());
+
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.cloud-files.sync-selected', context: [], message: $e->getMessage(), activity: __("{$this->backendLangPath}.sync.flash_error"), is_success: false);

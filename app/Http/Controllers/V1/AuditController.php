@@ -144,20 +144,17 @@ class AuditController extends Controller
     {
         try {
 
-            // Log de l'activité de nettoyage en cours
-            $this->logActivity(type: 'info', action: 'backend.audits.clear', context: [], message: null, activity: __("{$this->backendLangPath}.clear.flash_info"), is_success: true);
+            // Durée de conservation pilotée par le setting "retention.audits_retention_days".
+            $days = (int) getRequiredSettingValue('audits_retention_days', app()->getLocale());
 
-            // Faire un redirecte back avec un message flash impossible de nettoyer les audits
-            return redirect()->route('backend.audits.index')->with('info', __("{$this->backendLangPath}.clear.flash_info", ['count' => 0]));
+            // Supprime les audits plus anciens que la durée configurée
+            $deletedCount = $this->auditService->backend_audits_clear_old_audits($days);
 
-            // // Utilise le service pour supprimer les audits de plus de 3 jours
-            // $deletedCount = $this->auditService->backend_audits_clear_old_audits(3);
+            // Log de l'activité de nettoyage réussie
+            $this->logActivity(type: 'info', action: 'backend.audits.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->backendLangPath}.clear.success", ['count' => $deletedCount]), is_success: true);
 
-            // // Log de l'activité de nettoyage réussie
-            // $this->logActivity(type: 'info', action: 'backend.audits.clear', context: ['deleted_count' => $deletedCount], message: null, activity: __("{$this->backendLangPath}.clear.success", ['count' => $deletedCount]), is_success: true);
-
-            // // Redirige vers la liste des audits avec un message flash de succès
-            // return redirect()->route('backend.audits.index')->with('success', __("{$this->backendLangPath}.clear.flash_success", ['count' => $deletedCount]));
+            // Redirige vers la liste des audits avec un message flash de succès
+            return redirect()->route('backend.audits.index')->with('success', __("{$this->backendLangPath}.clear.flash_success", ['count' => $deletedCount]));
 
         } catch (\Exception $e) {
 

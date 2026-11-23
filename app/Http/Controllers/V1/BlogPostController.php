@@ -12,6 +12,7 @@ use App\Models\BlogPostTranslation;
 use App\Models\BlogTag;
 use App\Services\V1\Controllers\BlogPostService;
 use App\Traits\LogActivity;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -78,7 +79,10 @@ class BlogPostController extends Controller
             // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
             $lastSortOrder = getLastSortOrder(BlogPost::class);
 
-            return view('v1.backend.pages.blogs.posts.create', compact('langs', 'categories', 'tags', 'lastSortOrder'));
+            // Limite de tags pilotée par le setting blogs (pour l'indication affichée dans le formulaire)
+            $maxBlogTags = (int) getRequiredSettingValue('max_blog_post_tags', app()->getLocale());
+
+            return view('v1.backend.pages.blogs.posts.create', compact('langs', 'categories', 'tags', 'lastSortOrder', 'maxBlogTags'));
 
         } catch (\Exception $e) {
 
@@ -135,7 +139,7 @@ class BlogPostController extends Controller
 
         if ($expectedSlug !== $slug) {
             // Log de l'erreur de correspondance du slug avec un message d'avertissement
-            $this->logActivity(type: 'warning', action: $action, context: ['post_uuid' => $blogPost->uuid, 'post_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$langKey}.slug_mismatch"), is_success: false);
+            $this->logActivity(type: 'warning', action: $action, context: ['post_uuid' => $blogPost->uuid, 'post_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $blogPost);
 
             abort(404);
         }
@@ -148,10 +152,10 @@ class BlogPostController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_posts_show(BlogPost $blogPost, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $post = $this->resolvePostWithSlugCheck($blogPost, $slug, 'backend.blog-posts.show', 'show');
 
-            // Vérifie que le slug correspond
-            $post = $this->resolvePostWithSlugCheck($blogPost, $slug, 'backend.blog-posts.show', 'show');
+        try {
 
             // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
             $post->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang'), 'tags'])->loadCount(['audits', 'activityLogs']);
@@ -188,10 +192,10 @@ class BlogPostController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_posts_audits(BlogPost $blogPost, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $post = $this->resolvePostWithSlugCheck($blogPost, $slug, 'backend.blog-posts.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $post = $this->resolvePostWithSlugCheck($blogPost, $slug, 'backend.blog-posts.audits', 'audits');
+        try {
 
             // Charge la traduction active pour l'affichage du titre/slug
             $post->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['audits', 'activityLogs']);
@@ -217,10 +221,10 @@ class BlogPostController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_posts_activity_logs(BlogPost $blogPost, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $post = $this->resolvePostWithSlugCheck($blogPost, $slug, 'backend.blog-posts.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $post = $this->resolvePostWithSlugCheck($blogPost, $slug, 'backend.blog-posts.activity-logs', 'activity-logs');
+        try {
 
             // Charge la traduction active pour l'affichage du titre/slug
             $post->load(['translations' => fn ($q) => $q->whereNull('deleted_at')->with('lang')])->loadCount(['audits', 'activityLogs']);
@@ -269,7 +273,10 @@ class BlogPostController extends Controller
             // Dernier ordre d'affichage utilisé (indice affiché sous le champ sort_order)
             $lastSortOrder = getLastSortOrder(BlogPost::class);
 
-            return view('v1.backend.pages.blogs.posts.edit', compact('post', 'langs', 'categories', 'tags', 'postTagIds', 'editMode', 'lastSortOrder'));
+            // Limite de tags pilotée par le setting blogs (pour l'indication affichée dans le formulaire)
+            $maxBlogTags = (int) getRequiredSettingValue('max_blog_post_tags', app()->getLocale());
+
+            return view('v1.backend.pages.blogs.posts.edit', compact('post', 'langs', 'categories', 'tags', 'postTagIds', 'editMode', 'lastSortOrder', 'maxBlogTags'));
 
         } catch (\Exception $e) {
 
@@ -449,6 +456,13 @@ class BlogPostController extends Controller
             // Redirige vers la page précédente avec un message flash de succès pour la restauration
             return redirect()->back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['name' => $postTitle]));
 
+        } catch (ModelNotFoundException $e) {
+
+            // Log de l'erreur : article introuvable (UUID obsolète ou déjà purgé)
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.restore', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.restore.warning", ['uuid' => $uuid]), is_success: false);
+
+            abort(404);
+
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de restauration avec un message d'avertissement spécifique
@@ -487,6 +501,13 @@ class BlogPostController extends Controller
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression définitive
             return redirect()->back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success", ['name' => $postTitle]));
+
+        } catch (ModelNotFoundException $e) {
+
+            // Log de l'erreur : article introuvable (UUID obsolète ou déjà purgé)
+            $this->logActivity(type: 'warning', action: 'backend.blog-posts.force_destroy', context: ['post_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.force_destroy.warning", ['uuid' => $uuid]), is_success: false);
+
+            abort(404);
 
         } catch (\InvalidArgumentException $e) {
 

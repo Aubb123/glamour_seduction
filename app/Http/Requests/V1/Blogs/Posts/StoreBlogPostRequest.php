@@ -24,16 +24,20 @@ class StoreBlogPostRequest extends FormRequest
 
     public function rules(): array
     {
+        // Limite métier pilotée par la table settings (aucune valeur codée en dur).
+        $maxBlogTags = (int) getRequiredSettingValue('max_blog_post_tags', app()->getLocale());
+
         return [
             'category_id' => ['required', 'exists:blog_categories,id'],
             'status' => ['required', Rule::in(BlogPostStatus::values())], // Brouillon, Publié, Archivé, Planifié
-            'sort_order' => ['required', 'integer', 'min:0'],
+            // L'unicité inclut les articles en corbeille, comme la contrainte en base de données.
+            'sort_order' => ['required', 'integer', 'min:0', Rule::unique('blog_posts', 'sort_order')],
             'published_at' => ['nullable', 'date', 'required_if:status,scheduled', 'after_or_equal:now'],
-            'tags' => ['required', 'array'],
+            'tags' => ['required', 'array', 'max:'.$maxBlogTags],
             'tags.*' => ['exists:blog_tags,id'],
 
             'cloud_platform_uuid' => ['required', 'exists:cloud_platforms,uuid'],
-            'image' => ['required', 'image', 'mimes:jpg,png,webp', 'max:2048'],
+            'image' => ['required', 'image', 'mimes:jpg,png,webp', 'max:'.getMaxImageSizeKb()],
 
             // Traductions obligatoires
             'translations' => ['required', 'array'],
@@ -55,30 +59,37 @@ class StoreBlogPostRequest extends FormRequest
             // Vérifie les doublons de lang_id dans le payload
             $langIds = collect($translations)->pluck('lang_id');
 
+            // Si le nombre d'éléments est différent du nombre d'éléments uniques, il y a des doublons
             if ($langIds->count() !== $langIds->unique()->count()) {
-                $validator->errors()->add(
-                    'translations',
-                    __("{$this->backendLangPath}.translations.lang_id.duplicate"),
-                );
+                $validator->errors()->add('translations', __("{$this->backendLangPath}.translations.lang_id.duplicate"));
             }
 
             // Vérifie l'unicité des champs traduits (title, content) par langue
             $seen = [];
 
+            // Parcours des traductions pour vérifier les doublons dans le payload et en base de données
             foreach ($translations as $key => $translation) {
+
+                // Ignore les traductions non valides (non-array)
                 if (! is_array($translation)) {
                     continue;
                 }
 
+                // Récupère le lang_id de la traduction courante
                 $langId = $translation['lang_id'] ?? null;
 
+                // Ignore les traductions sans lang_id (non valides)
                 if (! $langId) {
                     continue;
                 }
 
+                // Vérifie les champs traduits (title, content) pour les doublons dans le payload et en base de données
                 foreach (['title', 'content'] as $field) {
+
+                    // Récupère la valeur du champ traduit pour la traduction courante
                     $value = $translation[$field] ?? null;
 
+                    // Ignore les champs vides (non valides)
                     if ($value === null || $value === '') {
                         continue;
                     }
@@ -87,10 +98,7 @@ class StoreBlogPostRequest extends FormRequest
                     $fingerprint = serialize([(string) $langId, (string) $value]);
 
                     if (isset($seen[$fingerprint])) {
-                        $validator->errors()->add(
-                            "translations.{$key}.{$field}",
-                            __('validation.unique', ['attribute' => $field]),
-                        );
+                        $validator->errors()->add("translations.{$key}.{$field}", __('validation.unique', ['attribute' => $field]));
 
                         continue;
                     }
@@ -98,15 +106,11 @@ class StoreBlogPostRequest extends FormRequest
                     $seen[$fingerprint] = true;
 
                     // Doublon en base de données
-                    $exists = BlogPostTranslation::where('lang_id', $langId)
-                        ->where($field, $value)
-                        ->exists();
+                    $exists = BlogPostTranslation::where('lang_id', $langId)->where($field, $value)->exists();
 
+                    // Ajoute une erreur de validation si le doublon existe en base de données
                     if ($exists) {
-                        $validator->errors()->add(
-                            "translations.{$key}.{$field}",
-                            __("{$this->backendLangPath}.translations.{$field}.unique"),
-                        );
+                        $validator->errors()->add("translations.{$key}.{$field}", __("{$this->backendLangPath}.translations.{$field}.unique"));
                     }
                 }
             }
@@ -125,6 +129,7 @@ class StoreBlogPostRequest extends FormRequest
             'sort_order.required' => __("{$this->backendLangPath}.sort_order.required"),
             'sort_order.integer' => __("{$this->backendLangPath}.sort_order.integer"),
             'sort_order.min' => __("{$this->backendLangPath}.sort_order.min"),
+            'sort_order.unique' => __("{$this->backendLangPath}.sort_order.unique"),
 
             'published_at.date' => __("{$this->backendLangPath}.published_at.date"),
             'published_at.required_if' => __("{$this->backendLangPath}.published_at.required_if"),
@@ -133,13 +138,14 @@ class StoreBlogPostRequest extends FormRequest
 
             'tags.required' => __("{$this->backendLangPath}.tags.required"),
             'tags.array' => __("{$this->backendLangPath}.tags.array"),
+            'tags.max' => __("{$this->backendLangPath}.tags.max", ['max' => (int) getRequiredSettingValue('max_blog_post_tags', app()->getLocale())]),
             'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
 
             'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
 
             'image.image' => __("{$this->backendLangPath}.image.image"),
             'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'image.max' => __("{$this->backendLangPath}.image.max", ['max' => getMaxImageSizeMb()]),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

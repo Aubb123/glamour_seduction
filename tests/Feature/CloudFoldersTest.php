@@ -15,6 +15,7 @@ use Database\Seeders\LangSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\SettingSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -27,6 +28,7 @@ beforeEach(function () {
     $this->seed(PlatformVersionSeeder::class);
     $this->seed(GeoContinentSeeder::class);
     $this->seed(GeoCountrySeeder::class);
+    $this->seed(SettingSeeder::class);
     $this->seed(RoleSeeder::class);
     $this->seed(PermissionSeeder::class);
     $this->seed(CloudPlatformSeeder::class);

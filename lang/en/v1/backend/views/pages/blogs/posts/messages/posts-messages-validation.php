@@ -14,6 +14,7 @@ return [
             'required' => 'The sort order is required.',
             'integer' => 'The sort order must be an integer.',
             'min' => 'The sort order must be at least 0.',
+            'unique' => 'This sort order is already used by another post.',
         ],
         'published_at' => [
             'date' => 'The publication date must be a valid date.',
@@ -23,7 +24,16 @@ return [
         'tags' => [
             'required' => 'The tags are required.',
             'array' => 'Tags must be an array.',
+            'max' => 'You can select at most :max tags.',
             'exists' => 'One or more selected tags do not exist.',
+        ],
+        'cloud_platform_uuid' => [
+            'exists' => 'The selected cloud platform does not exist.',
+        ],
+        'image' => [
+            'image' => 'The file must be an image.',
+            'mimes' => 'The image must be a jpg, png or webp file.',
+            'max' => 'The image may not be greater than :max MB.',
         ],
         'translations' => [
             'required' => 'Translations are required.',

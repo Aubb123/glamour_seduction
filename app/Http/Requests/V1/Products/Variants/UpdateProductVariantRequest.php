@@ -20,10 +20,14 @@ class UpdateProductVariantRequest extends FormRequest
 
     public function rules(): array
     {
+        // Limites métier pilotées par la table settings (aucune valeur codée en dur).
+        $maxVariantImages = (int) getRequiredSettingValue('max_product_variant_images', app()->getLocale());
+        $maxProductPrice = getRequiredSettingValue('max_product_price', app()->getLocale());
+
         return [
             'sku' => ['sometimes', 'nullable', 'string', 'max:100', Rule::unique('product_variants', 'sku')->ignore($this->route('productVariant'))],
             'barcode' => ['nullable', 'string', 'max:100', Rule::unique('product_variants', 'barcode')->ignore($this->route('productVariant'))],
-            'price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
+            'price' => ['nullable', 'numeric', 'min:0.01', 'max:'.$maxProductPrice],
             'status' => ['sometimes', 'required', Rule::in(ProductVariantStatus::values())],
             'is_default' => ['sometimes', 'boolean'],
             'attribute_value_ids' => [
@@ -44,15 +48,18 @@ class UpdateProductVariantRequest extends FormRequest
             ],
             'attribute_value_ids.*' => ['integer', 'exists:product_attribute_values,id'],
             'cloud_platform_uuid' => ['nullable', 'required_with:files', 'exists:cloud_platforms,uuid'],
-            'files' => ['nullable', 'array', 'max:4'],
-            'files.*' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
-            'remove_cloud_file_uuids' => ['sometimes', 'array', 'max:4'],
+            'files' => ['nullable', 'array', 'max:'.$maxVariantImages],
+            'files.*' => ['required', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:'.getMaxImageSizeKb()],
+            'remove_cloud_file_uuids' => ['sometimes', 'array', 'max:'.$maxVariantImages],
             'remove_cloud_file_uuids.*' => ['required', 'uuid', 'distinct'],
         ];
     }
 
     public function messages(): array
     {
+        $maxVariantImages = (int) getRequiredSettingValue('max_product_variant_images', app()->getLocale());
+        $maxProductPrice = getRequiredSettingValue('max_product_price', app()->getLocale());
+
         return [
             'sku.string' => __("{$this->backendLangPath}.sku.string"),
             'sku.max' => __("{$this->backendLangPath}.sku.max"),
@@ -62,7 +69,7 @@ class UpdateProductVariantRequest extends FormRequest
             'barcode.unique' => __("{$this->backendLangPath}.barcode.unique"),
             'price.numeric' => __("{$this->backendLangPath}.price.numeric"),
             'price.min' => __("{$this->backendLangPath}.price.min"),
-            'price.max' => __("{$this->backendLangPath}.price.max"),
+            'price.max' => __("{$this->backendLangPath}.price.max", ['max' => $maxProductPrice]),
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
             'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
@@ -72,12 +79,12 @@ class UpdateProductVariantRequest extends FormRequest
             'cloud_platform_uuid.required_with' => __("{$this->backendLangPath}.cloud_platform_uuid.required_with"),
             'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
             'files.array' => __("{$this->backendLangPath}.files.array"),
-            'files.max' => __("{$this->backendLangPath}.files.max"),
+            'files.max' => __("{$this->backendLangPath}.files.max", ['max' => $maxVariantImages]),
             'files.*.file' => __("{$this->backendLangPath}.files.file"),
             'files.*.mimes' => __("{$this->backendLangPath}.files.mimes"),
-            'files.*.max' => __("{$this->backendLangPath}.files.max_file"),
+            'files.*.max' => __("{$this->backendLangPath}.files.max_file", ['max' => getMaxImageSizeMb()]),
             'remove_cloud_file_uuids.array' => __("{$this->backendLangPath}.remove_cloud_file_uuids.array"),
-            'remove_cloud_file_uuids.max' => __("{$this->backendLangPath}.remove_cloud_file_uuids.max"),
+            'remove_cloud_file_uuids.max' => __("{$this->backendLangPath}.remove_cloud_file_uuids.max", ['max' => $maxVariantImages]),
             'remove_cloud_file_uuids.*.uuid' => __("{$this->backendLangPath}.remove_cloud_file_uuids.uuid"),
             'remove_cloud_file_uuids.*.distinct' => __("{$this->backendLangPath}.remove_cloud_file_uuids.distinct"),
         ];

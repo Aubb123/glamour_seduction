@@ -12,6 +12,7 @@ use Database\Seeders\CurrencySeeder;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
+use Database\Seeders\SettingSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -25,6 +26,7 @@ beforeEach(function () {
     // Ordre important : CurrencySeeder AVANT GeoCountrySeeder
     // (le pays associe currency_id via Currency::where('code', …))
     $this->seed(LangSeeder::class);
+    $this->seed(SettingSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
     $this->seed(GeoContinentSeeder::class);
     $this->seed(CurrencySeeder::class);

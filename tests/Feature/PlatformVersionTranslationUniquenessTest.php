@@ -6,6 +6,7 @@ use App\Models\Lang;
 use App\Models\PlatformVersion;
 use App\Models\PlatformVersionTranslation;
 use Database\Seeders\LangSeeder;
+use Database\Seeders\SettingSeeder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
@@ -14,6 +15,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->seed(LangSeeder::class);
+    $this->seed(SettingSeeder::class);
 });
 
 function translatedFieldValidator(array $payload, ?int $parentId = null): array

@@ -19,9 +19,9 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             //
-            $table->foreignId('category_id')->constrained('product_categories')->cascadeOnUpdate()->restrictOnDelete(); // Une catégorie à produits ne s'efface pas si elle a des produits
-            $table->foreignId('brand_id')->nullable()->constrained('product_brands')->cascadeOnUpdate()->nullOnDelete(); // Marque optionnelle
-            $table->foreignId('currency_id')->constrained('currencies')->cascadeOnUpdate()->restrictOnDelete(); // Devise par défaut de la plateforme (associée automatiquement)
+            $table->foreignId('category_id')->constrained('product_categories')->cascadeOnUpdate()->cascadeOnDelete(); // La suppression d'une catégorie supprime ses produits (cascade)
+            $table->foreignId('brand_id')->nullable()->constrained('product_brands')->cascadeOnUpdate()->cascadeOnDelete(); // Marque optionnelle
+            $table->foreignId('currency_id')->constrained('currencies')->cascadeOnUpdate()->cascadeOnDelete(); // Devise par défaut de la plateforme (associée automatiquement)
             //
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft'); // Statut de publication du produit
             $table->boolean('is_featured')->default(false); // Produit mis en avant sur la boutique

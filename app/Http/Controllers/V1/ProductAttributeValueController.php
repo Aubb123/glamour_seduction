@@ -142,12 +142,12 @@ class ProductAttributeValueController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attribute_values_show(ProductAttributeValue $productAttributeValue, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
-
-            // Vérifie que le slug correspond
-            $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.show', 'show');
 
             // Charge les compteurs (withCount)
             $value->loadCount(['audits', 'activityLogs']);
@@ -180,10 +180,10 @@ class ProductAttributeValueController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attribute_values_audits(ProductAttributeValue $productAttributeValue, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.audits', 'audits');
+        try {
 
             // Charge les compteurs (withCount)
             $value->loadCount(['audits', 'activityLogs']);
@@ -212,10 +212,10 @@ class ProductAttributeValueController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attribute_values_activity_logs(ProductAttributeValue $productAttributeValue, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs (withCount)
             $value->loadCount(['audits', 'activityLogs']);
@@ -244,10 +244,10 @@ class ProductAttributeValueController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_attribute_values_products(ProductAttributeValue $productAttributeValue, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond à la valeur d'attribut
+        $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.products', 'products');
 
-            // Vérifie que le slug correspond à la valeur d'attribut
-            $value = $this->resolveValueWithSlugCheck($productAttributeValue, $slug, 'backend.product-attribute-values.products', 'products');
+        try {
 
             // Charge les compteurs affichés par la navigation
             $value->loadCount(['audits', 'activityLogs']);

@@ -146,13 +146,13 @@ class ProductBrandController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_brands_show(ProductBrand $productBrand, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.show', 'show');
+
         try {
 
             // Récupère les langues actives pour les passer à la vue
             $langs = getActiveLangs()['langs'];
-
-            // Vérifie que le slug correspond
-            $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.show', 'show');
 
             // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
             // + les compteurs (withCount)
@@ -185,10 +185,10 @@ class ProductBrandController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_brands_audits(ProductBrand $productBrand, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.audits', 'audits');
+        try {
 
             // Charge les compteurs (withCount)
             $brand->loadCount(['products', 'audits', 'activityLogs']);
@@ -220,10 +220,10 @@ class ProductBrandController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_brands_activity_logs(ProductBrand $productBrand, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs (withCount)
             $brand->loadCount(['products', 'audits', 'activityLogs']);
@@ -255,10 +255,10 @@ class ProductBrandController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_brands_products(ProductBrand $productBrand, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.products', 'products');
 
-            // Vérifie que le slug correspond
-            $brand = $this->resolveBrandWithSlugCheck($productBrand, $slug, 'backend.product-brands.products', 'products');
+        try {
 
             // Charge les compteurs affichés par la navigation
             $brand->loadCount(['products', 'audits', 'activityLogs']);

@@ -84,7 +84,7 @@ class UpdateProductCategoryRequest extends FormRequest
 
             // 'nullable' ici car en update, on ne réenvoie pas forcément une
             // nouvelle image si l'utilisateur ne veut pas la changer.
-            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:2048'], // 2 Mo
+            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:'.getMaxImageSizeKb()],
 
             // Le tableau de traductions lui-même
             'translations' => ['required', 'array'],
@@ -145,7 +145,7 @@ class UpdateProductCategoryRequest extends FormRequest
 
             'image.image' => __("{$this->backendLangPath}.image.image"),
             'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'image.max' => __("{$this->backendLangPath}.image.max", ['max' => getMaxImageSizeMb()]),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

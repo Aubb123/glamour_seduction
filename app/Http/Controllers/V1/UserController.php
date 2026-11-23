@@ -74,10 +74,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_show(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.show', 'show');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.show', 'show');
+        try {
 
             // Charge les compteurs (withCount)
             $user->loadCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies']);
@@ -104,10 +104,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_activity_logs(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.activity-logs', 'activity-logs');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -133,10 +133,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_subscribes(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.subscribes', 'subscribes');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.subscribes', 'subscribes');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -162,10 +162,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_galleries(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.galleries', 'galleries');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.galleries', 'galleries');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -191,10 +191,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_contacts(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.contacts', 'contacts');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.contacts', 'contacts');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -220,10 +220,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_faqs(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.faqs', 'faqs');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.faqs', 'faqs');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -249,10 +249,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_audits(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.audits', 'audits');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -278,10 +278,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_blog_posts(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.blog-posts', 'blog-posts');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.blog-posts', 'blog-posts');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -307,10 +307,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_blog_post_comments(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.blog-post-comments', 'blog-post-comments');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.blog-post-comments', 'blog-post-comments');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 
@@ -336,10 +336,10 @@ class UserController extends Controller
     // ─────────────────────────────────────────────
     public function backend_users_blog_post_comment_replies(User $user, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.blog-post-comment-replies', 'blog-post-comment-replies');
 
-            // Vérifie que le slug correspond
-            $user = $this->resolveUserWithSlugCheck($user, $slug, 'backend.users.blog-post-comment-replies', 'blog-post-comment-replies');
+        try {
 
             $userName = $user->first_name.' '.$user->last_name;
 

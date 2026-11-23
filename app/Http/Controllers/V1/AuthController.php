@@ -25,7 +25,7 @@ class AuthController extends Controller
         // Validation
         $validated = $request->validate([
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'password' => ['required', 'string', 'min:'.(int) getRequiredSettingValue('min_password_length', app()->getLocale()), 'max:255'],
         ]);
 
         // Tentative de connexion

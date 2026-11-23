@@ -143,13 +143,13 @@ class FaqController extends Controller
     // ─────────────────────────────────────────────
     public function backend_faqs_show(Faq $faq, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $faq = $this->resolveFaqWithSlugCheck($faq, $slug, 'backend.faqs.show', 'show');
+
         try {
 
             // Récupère les langues actives pour l'affichage
             $langs = getActiveLangs()['langs'];
-
-            // Vérifie que le slug correspond
-            $faq = $this->resolveFaqWithSlugCheck($faq, $slug, 'backend.faqs.show', 'show');
 
             // Charge les compteurs
             $faq->loadCount(['audits', 'activityLogs']);
@@ -180,10 +180,10 @@ class FaqController extends Controller
     // ─────────────────────────────────────────────
     public function backend_faqs_audits(Faq $faq, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $faq = $this->resolveFaqWithSlugCheck($faq, $slug, 'backend.faqs.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $faq = $this->resolveFaqWithSlugCheck($faq, $slug, 'backend.faqs.audits', 'audits');
+        try {
 
             // Charge les compteurs
             $faq->loadCount(['audits', 'activityLogs']);
@@ -209,10 +209,10 @@ class FaqController extends Controller
     // ─────────────────────────────────────────────
     public function backend_faqs_activity_logs(Faq $faq, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $faq = $this->resolveFaqWithSlugCheck($faq, $slug, 'backend.faqs.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $faq = $this->resolveFaqWithSlugCheck($faq, $slug, 'backend.faqs.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs
             $faq->loadCount(['audits', 'activityLogs']);

@@ -35,21 +35,27 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Limites métier pilotées par la table settings (aucune valeur codée en dur).
+        $maxProductImages = (int) getRequiredSettingValue('max_product_images', app()->getLocale());
+        $maxProductTags = (int) getRequiredSettingValue('max_product_tags', app()->getLocale());
+        $maxProductPrice = getRequiredSettingValue('max_product_price', app()->getLocale());
+        $maxProductWeight = getRequiredSettingValue('max_product_weight', app()->getLocale());
+
         $rules = [
             'category_id' => ['sometimes', 'required', 'integer', 'exists:product_categories,id'],
             'brand_id' => ['sometimes', 'nullable', 'integer', 'exists:product_brands,id'],
             'status' => ['sometimes', 'required', Rule::in(ProductStatus::values())],
             'is_featured' => ['sometimes', 'boolean'],
-            'weight' => ['nullable', 'numeric', 'min:0', 'max:99999.99'],
-            'base_price' => ['sometimes', 'required', 'numeric', 'min:0.01', 'max:99999999.99'],
-            'compare_at_price' => ['nullable', 'numeric', 'min:0.01', 'max:99999999.99'],
-            'tags' => ['sometimes', 'array'],
+            'weight' => ['nullable', 'numeric', 'min:0', 'max:'.$maxProductWeight],
+            'base_price' => ['sometimes', 'required', 'numeric', 'min:0.01', 'max:'.$maxProductPrice],
+            'compare_at_price' => ['nullable', 'numeric', 'min:0.01', 'max:'.$maxProductPrice],
+            'tags' => ['sometimes', 'array', 'max:'.$maxProductTags],
             'tags.*' => ['integer', 'exists:product_tags,id'],
 
-            // Images principales du produit (jusqu'à 4 images, pattern woononvi driver_documents)
+            // Images principales du produit (nombre piloté par les settings products)
             'cloud_platform_uuid' => ['nullable', 'required_with:files', 'exists:cloud_platforms,uuid'],
-            'files' => ['nullable', 'array', 'max:4'],
-            'files.*' => ['required', 'file', 'mimes:jpg,png,webp', 'max:2048'],
+            'files' => ['nullable', 'array', 'max:'.$maxProductImages],
+            'files.*' => ['required', 'file', 'mimes:jpg,png,webp', 'max:'.getMaxImageSizeKb()],
 
             'translations' => ['sometimes', 'required', 'array'],
             'translations.*.lang_id' => ['sometimes', 'required', 'exists:langs,id', 'distinct'],
@@ -106,6 +112,10 @@ class UpdateProductRequest extends FormRequest
      */
     public function messages(): array
     {
+        $maxProductImages = (int) getRequiredSettingValue('max_product_images', app()->getLocale());
+        $maxProductTags = (int) getRequiredSettingValue('max_product_tags', app()->getLocale());
+        $maxProductPrice = getRequiredSettingValue('max_product_price', app()->getLocale());
+
         return [
             'category_id.required' => __("{$this->backendLangPath}.category_id.required"),
             'category_id.exists' => __("{$this->backendLangPath}.category_id.exists"),
@@ -120,17 +130,19 @@ class UpdateProductRequest extends FormRequest
             'base_price.lt' => __("{$this->backendLangPath}.base_price.lt"),
             'compare_at_price.numeric' => __("{$this->backendLangPath}.compare_at_price.numeric"),
             'compare_at_price.gt' => __("{$this->backendLangPath}.compare_at_price.gt"),
+            'tags.array' => __("{$this->backendLangPath}.tags.array"),
+            'tags.max' => __("{$this->backendLangPath}.tags.max", ['max' => $maxProductTags]),
             'tags.*.exists' => __("{$this->backendLangPath}.tags.exists"),
 
             'cloud_platform_uuid.required_with' => __("{$this->backendLangPath}.cloud_platform_uuid.required_with"),
             'cloud_platform_uuid.exists' => __("{$this->backendLangPath}.cloud_platform_uuid.exists"),
 
             'files.array' => __("{$this->backendLangPath}.files.array"),
-            'files.max' => __("{$this->backendLangPath}.files.max"),
+            'files.max' => __("{$this->backendLangPath}.files.max", ['max' => $maxProductImages]),
             'files.*.required' => __("{$this->backendLangPath}.files.required_file"),
             'files.*.file' => __("{$this->backendLangPath}.files.file"),
             'files.*.mimes' => __("{$this->backendLangPath}.files.mimes"),
-            'files.*.max' => __("{$this->backendLangPath}.files.max_file"),
+            'files.*.max' => __("{$this->backendLangPath}.files.max_file", ['max' => getMaxImageSizeMb()]),
 
             'translations.*.lang_id.exists' => __("{$this->backendLangPath}.translations.lang_id.exists"),
             'translations.*.lang_id.distinct' => __("{$this->backendLangPath}.translations.lang_id.distinct"),

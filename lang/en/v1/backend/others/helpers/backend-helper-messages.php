@@ -18,6 +18,7 @@ return [
         'productAttribute' => 'product attribute',
         'productAttributeValue' => 'product attribute value',
         'product' => 'product',
+        'warehouse' => 'warehouse',
         'shop' => 'shop',
         'role' => 'role',
         'version' => 'version',
@@ -40,6 +41,9 @@ return [
 
     // Failure to physically delete an old cloud file during replacement
     'delete_old_cloud_files' => 'Unable to delete the old cloud file ":name" from storage. The upload has been canceled to avoid leaving an orphaned file.',
+
+    // Required configuration setting missing (no default value applied)
+    'setting_not_configured' => 'The ":key" setting is not configured. Please define it in the settings before continuing.',
 
     // ─────────────────────────────────────────────────────────────
     // SECURITY LOCK — PARENT ENTITY DELETION

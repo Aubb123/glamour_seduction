@@ -141,12 +141,12 @@ class BlogCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_categories_show(BlogCategory $blogCategory, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
-
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.show', 'show');
 
             // Charge les compteurs (withCount)
             $category->loadCount(['posts', 'audits', 'activityLogs']);
@@ -179,10 +179,10 @@ class BlogCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_categories_posts(BlogCategory $blogCategory, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.posts', 'posts');
 
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.posts', 'posts');
+        try {
 
             // Charge les compteurs (withCount)
             $category->loadCount(['posts', 'audits', 'activityLogs']);
@@ -212,10 +212,10 @@ class BlogCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_categories_audits(BlogCategory $blogCategory, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.audits', 'audits');
+        try {
 
             // Charge les compteurs (withCount)
             $category->loadCount(['posts', 'audits', 'activityLogs']);
@@ -241,10 +241,10 @@ class BlogCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_categories_activity_logs(BlogCategory $blogCategory, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($blogCategory, $slug, 'backend.blog-categories.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs (withCount)
             $category->loadCount(['posts', 'audits', 'activityLogs']);

@@ -24,11 +24,11 @@ return [
         ],
         'update' => [
             'cloud_platform_uuid_required' => 'Cannot upload the image: the cloud platform was not selected.',
-            'image_limit_exceeded' => 'A product cannot have more than 4 images in total.',
+            'image_limit_exceeded' => 'A product cannot have more than :max images in total.',
         ],
         'destroy_file' => [
             'not_found' => 'This image does not belong to this product.',
-            'last_image_forbidden' => 'Cannot remove this image: the product must keep at least one image.',
+            'last_image_forbidden' => 'Cannot remove this image: the product must keep at least :min image(s).',
         ],
         'trashedTranslationConflict' => 'Cannot update this product translation (language :lang_id): it is in the trash. Please restore it from the trash before updating it.',
     ],

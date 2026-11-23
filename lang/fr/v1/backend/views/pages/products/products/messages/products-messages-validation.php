@@ -21,7 +21,7 @@ return [
         'weight' => [
             'numeric' => 'Le poids doit être un nombre.',
             'min' => 'Le poids doit être au minimum 0.',
-            'max' => 'Le poids ne peut pas dépasser 99999.99 kg.',
+            'max' => 'Le poids ne peut pas dépasser :max kg.',
         ],
         'base_price' => [
             'required' => 'Le prix de base est obligatoire.',
@@ -38,6 +38,7 @@ return [
         ],
         'tags' => [
             'array' => 'Les tags doivent être un tableau.',
+            'max' => 'Vous pouvez sélectionner au maximum :max tags.',
             'exists' => 'Un des tags sélectionnés n\'existe pas.',
         ],
         'cloud_platform_uuid' => [
@@ -48,12 +49,12 @@ return [
         'files' => [
             'required' => 'Au moins une image est obligatoire pour le produit.',
             'array' => 'Les images doivent être un tableau.',
-            'min' => 'Vous devez joindre au moins une image.',
-            'max' => 'Vous pouvez joindre au maximum 4 images.',
+            'min' => 'Vous devez joindre au moins :min image(s).',
+            'max' => 'Vous pouvez joindre au maximum :max images.',
             'required_file' => 'Chaque image jointe est obligatoire.',
             'file' => 'Chaque image doit être un fichier valide.',
             'mimes' => 'Chaque image doit être au format JPG, PNG ou WEBP.',
-            'max_file' => 'Chaque image ne peut pas dépasser 2 Mo.',
+            'max_file' => 'Chaque image ne peut pas dépasser :max Mo.',
         ],
         'translations' => [
             'required' => 'Les traductions sont obligatoires.',

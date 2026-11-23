@@ -137,12 +137,12 @@ class BlogTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_tags_show(BlogTag $blogTag, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
-
-            // Vérifie que le slug correspond
-            $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.show', 'show');
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['posts', 'audits', 'activityLogs']);
@@ -175,10 +175,10 @@ class BlogTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_tags_posts(BlogTag $blogTag, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.posts', 'posts');
 
-            // Vérifie que le slug correspond
-            $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.posts', 'posts');
+        try {
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['posts', 'audits', 'activityLogs']);
@@ -208,10 +208,10 @@ class BlogTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_tags_audits(BlogTag $blogTag, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.audits', 'audits');
+        try {
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['posts', 'audits', 'activityLogs']);
@@ -237,10 +237,10 @@ class BlogTagController extends Controller
     // ─────────────────────────────────────────────
     public function backend_blog_tags_activity_logs(BlogTag $blogTag, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $tag = $this->resolveTagWithSlugCheck($blogTag, $slug, 'backend.blog-tags.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs (withCount)
             $tag->loadCount(['posts', 'audits', 'activityLogs']);

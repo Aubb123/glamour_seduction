@@ -72,6 +72,7 @@ return [
             'flash_error' => 'Une erreur est survenue.',
         ],
         'force_destroy' => [
+            'unknown' => 'Article inconnu',
             'success' => 'Suppression définitive de l\'article : :name',
             'warning' => 'Tentative de suppression définitive d\'un article inexistant : :uuid',
             'warning_meta' => 'Erreur métier lors de la suppression définitive de l\'article : :uuid',
@@ -105,6 +106,7 @@ return [
             ],
             'trashed' => [
                 'accessed' => 'Affichage des traductions supprimées pour l\'article : :name',
+                'warning' => 'Tentative d\'accès à la corbeille des traductions d\'un article inexistant : :uuid',
                 'error' => 'Erreur lors de l\'affichage des traductions supprimées : :uuid',
             ],
             'restore' => [

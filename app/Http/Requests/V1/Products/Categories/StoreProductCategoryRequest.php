@@ -60,7 +60,7 @@ class StoreProductCategoryRequest extends FormRequest
             'cloud_platform_uuid' => ['required', 'exists:cloud_platforms,uuid'],
 
             // L'image de la catégorie est obligatoire et doit être un fichier image valide (jpg, png, webp) de taille maximale 2 Mo
-            'image' => ['required', 'image', 'mimes:jpg,png,webp', 'max:2048'], // 2 Mo
+            'image' => ['required', 'image', 'mimes:jpg,png,webp', 'max:'.getMaxImageSizeKb()],
 
             // Le tableau de traductions lui-même
             'translations' => ['required', 'array'],
@@ -126,7 +126,7 @@ class StoreProductCategoryRequest extends FormRequest
             'image.required' => __("{$this->backendLangPath}.image.required"),
             'image.image' => __("{$this->backendLangPath}.image.image"),
             'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'image.max' => __("{$this->backendLangPath}.image.max", ['max' => getMaxImageSizeMb()]),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

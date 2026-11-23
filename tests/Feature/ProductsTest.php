@@ -16,6 +16,7 @@ use Database\Seeders\CloudPlatformSeeder;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
+use Database\Seeders\SettingSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -29,6 +30,7 @@ uses(RefreshDatabase::class);
  */
 beforeEach(function () {
     $this->seed(LangSeeder::class);
+    $this->seed(SettingSeeder::class);
     $this->seed(PlatformVersionSeeder::class);
     $this->seed(GeoContinentSeeder::class);
     $this->seed(GeoCountrySeeder::class);

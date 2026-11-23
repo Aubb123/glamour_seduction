@@ -77,7 +77,7 @@ class UpdateGeoCountryRequest extends FormRequest
             'phone_code' => ['nullable', 'string', 'max:10', 'regex:/^\+[0-9]{1,4}(-[0-9]{1,4})?$/'],
 
             // Chemin de l'image/drapeau — optionnel, fichier image valide
-            'file_path' => ['nullable', 'image', 'mimes:png,jpg,webp', 'max:2048'],
+            'file_path' => ['nullable', 'image', 'mimes:png,jpg,webp', 'max:'.getMaxImageSizeKb()],
 
             // Ordre d'affichage dans les listes — optionnel, entier positif ou nul
             'sort_order' => ['required', 'integer', 'min:0', 'unique:geo_countries,sort_order,'.$this->countryId],
@@ -165,7 +165,7 @@ class UpdateGeoCountryRequest extends FormRequest
             // Image
             'file_path.image' => __($this->backendLangPath.'.file_path.image'),
             'file_path.mimes' => __($this->backendLangPath.'.file_path.mimes'),
-            'file_path.max' => __($this->backendLangPath.'.file_path.max'),
+            'file_path.max' => __($this->backendLangPath.'.file_path.max', ['max' => getMaxImageSizeMb()]),
 
             // Ordre d'affichage
             'sort_order.integer' => __($this->backendLangPath.'.sort_order.integer'),

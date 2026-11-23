@@ -44,6 +44,8 @@ use App\Http\Controllers\V1\ProductTagController as V1ProductTagController;
 use App\Http\Controllers\V1\ProductTagTranslationController as V1ProductTagTranslationController;
 use App\Http\Controllers\V1\ProductTranslationController as V1ProductTranslationController;
 use App\Http\Controllers\V1\ProductVariantController as V1ProductVariantController;
+use App\Http\Controllers\V1\ProductWarehouseController as V1ProductWarehouseController;
+use App\Http\Controllers\V1\ProductWarehouseTranslationController as V1ProductWarehouseTranslationController;
 use App\Http\Controllers\V1\RoleController as V1RoleController;
 use App\Http\Controllers\V1\RoleTranslationController as V1RoleTranslationController;
 use App\Http\Controllers\V1\SettingController as V1SettingController;
@@ -449,6 +451,30 @@ if ($version && $version->code === 'v1') {
             Route::patch('/backend/product-variants/restore/{uuid}', 'backend_product_variants_restore')->middleware(['permission:product-variants.restore'])->name('backend.product-variants.restore');
             Route::delete('/backend/product-variants/force-destroy/{uuid}', 'backend_product_variants_force_destroy')->middleware(['permission:product-variants.force_destroy'])->name('backend.product-variants.force_destroy');
             Route::delete('/backend/product-variants/{productVariant}/images/{cloudFile}', 'backend_product_variants_destroy_file')->middleware(['permission:product-variants.update'])->name('backend.product-variants.destroy_file');
+        });
+
+        // Routes pour : Gestion des Entrepôts de Produits (module Boutique)
+        Route::controller(V1ProductWarehouseController::class)->group(function () {
+            Route::get('/backend/product-warehouses/index', 'backend_product_warehouses_index')->middleware(['permission:product-warehouses.index'])->name('backend.product-warehouses.index');
+            Route::get('/backend/product-warehouses/create', 'backend_product_warehouses_create')->middleware(['permission:product-warehouses.create'])->name('backend.product-warehouses.create');
+            Route::post('/backend/product-warehouses/store', 'backend_product_warehouses_store')->middleware(['permission:product-warehouses.store'])->name('backend.product-warehouses.store');
+            Route::get('/backend/product-warehouses/show/{productWarehouse}/{slug}', 'backend_product_warehouses_show')->middleware(['permission:product-warehouses.show'])->name('backend.product-warehouses.show');
+            Route::get('/backend/product-warehouses/audits/{productWarehouse}/{slug}', 'backend_product_warehouses_audits')->middleware(['permission:product-warehouses.audits'])->name('backend.product-warehouses.audits');
+            Route::get('/backend/product-warehouses/activity-logs/{productWarehouse}/{slug}', 'backend_product_warehouses_activity_logs')->middleware(['permission:product-warehouses.activity_logs'])->name('backend.product-warehouses.activity-logs');
+            Route::get('/backend/product-warehouses/edit/{productWarehouse}', 'backend_product_warehouses_edit')->middleware(['permission:product-warehouses.edit'])->name('backend.product-warehouses.edit');
+            Route::put('/backend/product-warehouses/update/{productWarehouse}', 'backend_product_warehouses_update')->middleware(['permission:product-warehouses.update'])->name('backend.product-warehouses.update');
+            Route::patch('/backend/product-warehouses/change-status/{productWarehouse}', 'backend_product_warehouses_change_status')->middleware(['permission:product-warehouses.toggle_visibility'])->name('backend.product-warehouses.change_status');
+            Route::patch('/backend/product-warehouses/set-default/{productWarehouse}', 'backend_product_warehouses_set_default')->middleware(['permission:product-warehouses.toggle_visibility'])->name('backend.product-warehouses.set_default');
+            Route::delete('/backend/product-warehouses/destroy/{productWarehouse}', 'backend_product_warehouses_destroy')->middleware(['permission:product-warehouses.destroy'])->name('backend.product-warehouses.destroy');
+            Route::get('/backend/product-warehouses/trashed', 'backend_product_warehouses_trashed')->middleware(['permission:product-warehouses.trashed'])->name('backend.product-warehouses.trashed');
+            Route::patch('/backend/product-warehouses/restore/{uuid}', 'backend_product_warehouses_restore')->middleware(['permission:product-warehouses.restore'])->name('backend.product-warehouses.restore');
+            Route::delete('/backend/product-warehouses/force-destroy/{uuid}', 'backend_product_warehouses_force_destroy')->middleware(['permission:product-warehouses.force_destroy'])->name('backend.product-warehouses.force_destroy');
+        });
+        Route::controller(V1ProductWarehouseTranslationController::class)->group(function () {
+            Route::delete('/backend/product-warehouse-translations/destroy/{uuid}', 'backend_product_warehouse_translations_destroy')->middleware(['permission:product-warehouse-translations.destroy'])->name('backend.product-warehouse-translations.destroy');
+            Route::get('/backend/product-warehouse-translations/trashed/{warehouse_uuid}', 'backend_product_warehouse_translations_trashed')->middleware(['permission:product-warehouse-translations.trashed'])->name('backend.product-warehouse-translations.trashed');
+            Route::patch('/backend/product-warehouse-translations/restore/{uuid}', 'backend_product_warehouse_translations_restore')->middleware(['permission:product-warehouse-translations.restore'])->name('backend.product-warehouse-translations.restore');
+            Route::delete('/backend/product-warehouse-translations/force-destroy/{uuid}', 'backend_product_warehouse_translations_force_destroy')->middleware(['permission:product-warehouse-translations.force_destroy'])->name('backend.product-warehouse-translations.force_destroy');
         });
 
         // Routes pour : Gestion des Catégories de Blog

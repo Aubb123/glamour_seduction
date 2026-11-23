@@ -18,6 +18,10 @@ return [
         // ── Value ──
         'value' => [
             'string' => 'The value must be a string.',
+            'integer' => 'The value of the ":key" setting must be an integer.',
+            'numeric' => 'The value of the ":key" setting must be a number.',
+            'range' => 'The value of the ":key" setting must be between :min and :max.',
+            'image_range' => 'The minimum number of images per product cannot exceed the maximum number.',
         ],
 
         // ── Translations ──

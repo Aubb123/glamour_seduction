@@ -70,7 +70,7 @@ return [
     'file_path' => [
         'image' => 'Le fichier image est invalide.',
         'mimes' => 'Le fichier doit être une image au format PNG, JPG ou WEBP.',
-        'max' => 'Le fichier image ne peut pas dépasser 2 Mo.',
+        'max' => 'Le fichier image ne peut pas dépasser :max Mo.',
     ],
 
     // ─────────────────────────────────────────────

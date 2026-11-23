@@ -560,6 +560,7 @@ class BackendHelper
                             ['label' => "Valeurs d'attributs", 'route' => 'backend.product-attribute-values.index', 'patterns' => ['backend.product-attribute-values.*', 'backend.product-attribute-value-translations.*']],
                             ['label' => 'Produits', 'route' => 'backend.products.index', 'patterns' => ['backend.products.*', 'backend.product-translations.*']],
                             ['label' => 'Variantes', 'route' => 'backend.product-variants.index', 'patterns' => ['backend.product-variants.*']],
+                            ['label' => 'Entrepôts', 'route' => 'backend.product-warehouses.index', 'patterns' => ['backend.product-warehouses.*', 'backend.product-warehouse-translations.*']],
 
                         ],
                     ],
@@ -695,6 +696,12 @@ class BackendHelper
                 'route' => 'backend.products.create',
                 'permission' => 'products.create',
             ],
+            [
+                'label' => __('Entrepôt'),
+                'icon' => 'ti ti-building-warehouse',
+                'route' => 'backend.product-warehouses.create',
+                'permission' => 'product-warehouses.create',
+            ],
 
             [
                 'label' => __("Valeur d'attribut"),
@@ -734,45 +741,37 @@ class BackendHelper
     }
 
     /**
-     * Récupère la valeur d'un paramètre de configuration.
+     * Récupère la valeur d'un paramètre de configuration en exigeant qu'il soit défini.
+     *
+     * Aucune valeur par défaut n'est appliquée : si le paramètre est absent de la table
+     * settings (ligne inexistante ou valeur nulle/vide), une exception explicite et
+     * traduite est levée pour signaler la configuration manquante.
+     *
+     * @throws \RuntimeException
      */
-    public static function getSettingValue(string $key, ?string $locale = null): mixed
+    public static function getRequiredSettingValue(string $key, ?string $locale = null): mixed
     {
-        // Récupère le nombre maximum de fichiers cloudfiles non synchronisés avant redirection
-        $setting_max_unsynced_files_before_redirect = Setting::where('key', 'max_unsynced_files_before_redirect')->first();
+        // Paramètre totalement absent de la table settings.
+        $setting = Setting::where('key', $key)->first();
 
-        // Récupère le nombres maximum de fichiers cloudfiles à synchroniser en une seule fois
-        $setting_max_files_sync_batch = Setting::where('key', 'max_files_sync_batch')->first();
+        if (! $setting) {
+            throw new \RuntimeException(
+                __("v1/backend/others/helpers/backend-helper-messages.setting_not_configured", ['key' => $key])
+            );
+        }
 
-        // Récupère le délai de réessai après un échec de synchronisation
-        $setting_retry_sync_after_minutes = Setting::where('key', 'retry_sync_after_minutes')->first();
+        // Valeur principale absente : on vérifie aussi la traduction de la locale demandée,
+        // car un setting traduisible peut porter sa valeur sur la traduction.
+        if ($setting->value === null || $setting->value === '') {
+            $translation = $setting->is_translatable ? $setting->getTranslationFor($locale) : null;
 
-        // Récupère le délai avant remise en file des fichiers bloqués en "processing"
-        $setting_reset_stuck_processing_after_minutes = Setting::where('key', 'reset_stuck_processing_after_minutes')->first();
+            if (! $translation || $translation->value === null || $translation->value === '') {
+                throw new \RuntimeException(
+                    __("v1/backend/others/helpers/backend-helper-messages.setting_not_configured", ['key' => $key])
+                );
+            }
+        }
 
-        // Récupère la durée de validité des URL temporaires
-        $setting_temporary_url_expires_in_minutes = Setting::where('key', 'temporary_url_expires_in_minutes')->first();
-
-        // Récupère le nombre maximum de pays insérés par seed
-        $setting_max_countries_per_seed = Setting::where('key', 'max_countries_per_seed')->first();
-
-        // Récupère le nom du site
-        $setting_site_name = Setting::where('key', 'site_name')->first();
-
-        // Récupère le mode maintenance du site
-        $setting_maintenance_mode = Setting::where('key', 'maintenance_mode')->first();
-
-        return match ($key) {
-            'max_unsynced_files_before_redirect' => $setting_max_unsynced_files_before_redirect?->getValue($locale),
-            'max_files_sync_batch' => $setting_max_files_sync_batch?->getValue($locale),
-            'retry_sync_after_minutes' => $setting_retry_sync_after_minutes?->getValue($locale),
-            'reset_stuck_processing_after_minutes' => $setting_reset_stuck_processing_after_minutes?->getValue($locale),
-            'temporary_url_expires_in_minutes' => $setting_temporary_url_expires_in_minutes?->getValue($locale),
-            'max_countries_per_seed' => $setting_max_countries_per_seed?->getValue($locale),
-            'site_name' => $setting_site_name?->getValue($locale),
-            'maintenance_mode' => $setting_maintenance_mode?->getValue($locale),
-            default => null,
-        };
-
+        return $setting->getValue($locale);
     }
 }

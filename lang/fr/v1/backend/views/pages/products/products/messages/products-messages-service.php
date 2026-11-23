@@ -24,11 +24,11 @@ return [
         ],
         'update' => [
             'cloud_platform_uuid_required' => 'Impossible de téléverser l\'image : la plateforme cloud n\'a pas été sélectionnée.',
-            'image_limit_exceeded' => 'Un produit ne peut pas comporter plus de 4 images au total.',
+            'image_limit_exceeded' => 'Un produit ne peut pas comporter plus de :max images au total.',
         ],
         'destroy_file' => [
             'not_found' => 'Cette image n\'appartient pas à ce produit.',
-            'last_image_forbidden' => 'Impossible de retirer cette image : le produit doit conserver au moins une image.',
+            'last_image_forbidden' => 'Impossible de retirer cette image : le produit doit conserver au moins :min image(s).',
         ],
         'trashedTranslationConflict' => 'Impossible de mettre à jour cette traduction du produit (langue :lang_id) : elle se trouve dans la corbeille. Veuillez la restaurer depuis la corbeille avant de la mettre à jour.',
     ],

@@ -92,27 +92,29 @@ class BackendController extends Controller
         ];
 
         // ─── Derniers utilisateurs inscrits ───────────────────────
+        $latestItemsLimit = (int) getRequiredSettingValue('dashboard_latest_items_limit', app()->getLocale());
+
         $latestUsers = User::with(['country'])
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit($latestItemsLimit)
             ->get();
 
         // ─── Derniers messages de contact ─────────────────────────
         $latestContacts = Contact::orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit($latestItemsLimit)
             ->get();
 
         // ─── Derniers articles publiés ────────────────────────────
         $latestPosts = BlogPost::withActiveTranslation()
             ->with(['user'])
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit($latestItemsLimit)
             ->get();
 
         // ─── Derniers abonnés ─────────────────────────────────────
         $latestSubscribes = Subscribe::with(['user'])
             ->orderBy('created_at', 'desc')
-            ->limit(5)
+            ->limit($latestItemsLimit)
             ->get();
 
         return view('v1.backend.pages.index', compact(

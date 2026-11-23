@@ -43,7 +43,7 @@ class UpdateGalleryRequest extends FormRequest
             'status' => ['required', Rule::in(GalleryStatus::values())],
 
             'cloud_platform_uuid' => ['nullable', 'exists:cloud_platforms,uuid'],
-            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpg,png,webp', 'max:'.getMaxImageSizeKb()],
 
             // Traductions obligatoires
             'translations' => ['required', 'array'],
@@ -106,7 +106,7 @@ class UpdateGalleryRequest extends FormRequest
 
             'image.image' => __("{$this->backendLangPath}.image.image"),
             'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'image.max' => __("{$this->backendLangPath}.image.max", ['max' => getMaxImageSizeKb()]),
 
             'translations.required' => __("{$this->backendLangPath}.translations.required"),
             'translations.array' => __("{$this->backendLangPath}.translations.array"),

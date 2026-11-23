@@ -149,11 +149,28 @@ if (! function_exists('isChildRouteActive')) {
     }
 }
 
-// Function getSettingValue
-if (! function_exists('getSettingValue')) {
-    function getSettingValue(string $key, ?string $locale = null): mixed
+// Function getRequiredSettingValue : lève une exception traduite
+// si le paramètre n'est pas configuré (aucune valeur par défaut n'est appliquée).
+if (! function_exists('getRequiredSettingValue')) {
+    function getRequiredSettingValue(string $key, ?string $locale = null): mixed
     {
-        return BackendHelper::getSettingValue($key, $locale);
+        return BackendHelper::getRequiredSettingValue($key, $locale);
+    }
+}
+
+// Function getMaxImageSizeKb : taille maximale d'upload en kilooctets (unité des règles Laravel).
+if (! function_exists('getMaxImageSizeKb')) {
+    function getMaxImageSizeKb(): int
+    {
+        return (int) getRequiredSettingValue('max_image_size_kb', app()->getLocale());
+    }
+}
+
+// Function getMaxImageSizeMb : même limite convertie en mégaoctets, pour les messages utilisateur.
+if (! function_exists('getMaxImageSizeMb')) {
+    function getMaxImageSizeMb(): float
+    {
+        return round(getMaxImageSizeKb() / 1024, 2);
     }
 }
 

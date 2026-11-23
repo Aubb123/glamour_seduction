@@ -27,11 +27,11 @@ class UpdateUserRequest extends FormRequest
             'gender' => 'required|in:male,female',
             'status' => ['required', Rule::in(UserStatus::values())],
             'country_id' => 'required|exists:geo_countries,id',
-            'password' => 'nullable|string|min:8',
+            'password' => 'nullable|string|min:'.(int) getRequiredSettingValue('min_password_length', app()->getLocale()),
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
             'cloud_platform_uuid' => 'nullable|string|exists:cloud_platforms,uuid',
-            'image' => 'nullable|image|mimes:jpg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,png,webp|max:'.getMaxImageSizeKb(),
         ];
     }
 
@@ -69,7 +69,7 @@ class UpdateUserRequest extends FormRequest
 
             'image.image' => __("{$this->backendLangPath}.image.image"),
             'image.mimes' => __("{$this->backendLangPath}.image.mimes"),
-            'image.max' => __("{$this->backendLangPath}.image.max"),
+            'image.max' => __("{$this->backendLangPath}.image.max", ['max' => getMaxImageSizeMb()]),
         ];
     }
 }

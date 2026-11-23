@@ -59,6 +59,7 @@ class Setting extends Model
     {
         return match ($this->type) {
             'integer' => (int) $value,
+            'float', 'decimal' => (float) $value,
             'boolean' => filter_var($value, FILTER_VALIDATE_BOOLEAN),
             'json' => json_decode($value, true),
             default => $value,

@@ -275,9 +275,13 @@ class BlogPostService
     // ─────────────────────────────────────────────
     private function calculateTimeRead(string $content): int
     {
-        // ~200 mots par minute (vitesse de lecture moyenne)
-        $wordCount = str_word_count(strip_tags($content));
-        $minutes = (int) ceil($wordCount / 200);
+        // Vitesse de lecture (mots/minute) pilotée par le setting blogs.
+        // On retire les balises HTML puis on décode les entités (&eacute;, &nbsp;…) avant de compter.
+        // str_word_count() est évité : il coupe les mots aux caractères accentués (« élève » = 2 mots).
+        $text = html_entity_decode((string) preg_replace('/<[^>]+>/', ' ', $content), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $wordCount = (int) preg_match_all('/[\p{L}\p{N}]+(?:[\'’-][\p{L}\p{N}]+)*/u', $text);
+        $wordsPerMinute = max(1, (int) getRequiredSettingValue('blog_reading_words_per_minute', app()->getLocale()));
+        $minutes = (int) ceil($wordCount / $wordsPerMinute);
 
         return max(1, $minutes); // minimum 1 minute
     }

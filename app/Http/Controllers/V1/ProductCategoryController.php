@@ -149,13 +149,13 @@ class ProductCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_categories_show(ProductCategory $productCategory, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.show', 'show');
+
         try {
 
             // Récupère les langues actives pour les passer à la vue
             $langs = getActiveLangs()['langs'];
-
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.show', 'show');
 
             // Charge les traductions non supprimées avec leur langue (pour l'affichage de toutes les langues)
             // + les compteurs (withCount)
@@ -188,10 +188,10 @@ class ProductCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_categories_audits(ProductCategory $productCategory, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.audits', 'audits');
 
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.audits', 'audits');
+        try {
 
             // Charge les compteurs (withCount)
             $category->loadCount(['children', 'products', 'audits', 'activityLogs']);
@@ -224,10 +224,10 @@ class ProductCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_categories_activity_logs(ProductCategory $productCategory, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.activity-logs', 'activity-logs');
 
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.activity-logs', 'activity-logs');
+        try {
 
             // Charge les compteurs (withCount)
             $category->loadCount(['children', 'products', 'audits', 'activityLogs']);
@@ -260,10 +260,10 @@ class ProductCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_categories_children(ProductCategory $productCategory, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.children', 'children');
 
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.children', 'children');
+        try {
 
             // Charge les compteurs affichés par la navigation
             $category->loadCount(['children', 'products', 'audits', 'activityLogs']);
@@ -298,10 +298,10 @@ class ProductCategoryController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_categories_products(ProductCategory $productCategory, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.products', 'products');
 
-            // Vérifie que le slug correspond
-            $category = $this->resolveCategoryWithSlugCheck($productCategory, $slug, 'backend.product-categories.products', 'products');
+        try {
 
             // Charge les compteurs affichés par la navigation
             $category->loadCount(['children', 'products', 'audits', 'activityLogs']);

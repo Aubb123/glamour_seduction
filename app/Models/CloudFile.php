@@ -96,8 +96,10 @@ class CloudFile extends Model
      */
     public function scopeRetryable(Builder $query, ?int $retryAfterMinutes = null): Builder
     {
-        // Seuil par défaut piloté par le setting "cloudfiles.retry_sync_after_minutes".
-        $retryAfterMinutes ??= (int) (getSettingValue('retry_sync_after_minutes', app()->getLocale()));
+        // Seuil strictement issu du setting "cloudfiles.retry_sync_after_minutes" :
+        // aucune valeur par défaut n'est appliquée. Une exception traduite est levée
+        // si le paramètre n'est pas configuré.
+        $retryAfterMinutes ??= (int) getRequiredSettingValue('retry_sync_after_minutes', app()->getLocale());
 
         return $query->whereIn('sync_status', [CloudFileStatus::Pending, CloudFileStatus::Error])
             ->where(function (Builder $query) use ($retryAfterMinutes) {
@@ -112,8 +114,10 @@ class CloudFile extends Model
      */
     public static function resetStuckProcessing(?int $minutes = null): int
     {
-        // Seuil par défaut piloté par le setting "cloudfiles.reset_stuck_processing_after_minutes".
-        $minutes ??= (int) (getSettingValue('reset_stuck_processing_after_minutes', app()->getLocale()));
+        // Seuil strictement issu du setting "cloudfiles.reset_stuck_processing_after_minutes" :
+        // aucune valeur par défaut n'est appliquée. Une exception traduite est levée
+        // si le paramètre n'est pas configuré.
+        $minutes ??= (int) getRequiredSettingValue('reset_stuck_processing_after_minutes', app()->getLocale());
 
         return static::query()
             ->where('sync_status', CloudFileStatus::Processing)
