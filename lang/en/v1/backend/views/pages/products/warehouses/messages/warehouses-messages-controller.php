@@ -102,6 +102,12 @@ return [
             'error' => 'Error while viewing activity logs of the warehouse: :uuid',
             'slug_mismatch' => 'The warehouse slug does not match the expected slug.',
         ],
+        'locations' => [
+            'success' => 'Viewing locations of the warehouse: :name',
+            'warning' => 'Attempt to view locations of an unknown warehouse: :uuid',
+            'error' => 'Error while viewing locations of the warehouse: :uuid',
+            'slug_mismatch' => 'The warehouse slug does not match the expected slug.',
+        ],
         'translations' => [
             'not_found' => 'Attempt to access an unknown warehouse translation (UUID: :uuid).',
             'destroy' => [

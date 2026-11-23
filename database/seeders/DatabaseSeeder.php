@@ -68,6 +68,9 @@ class DatabaseSeeder extends Seeder
 
             ProductWarehouseSeeder::class,
             ProductWarehouseTranslationSeeder::class,
+
+            ProductWarehouseLocationSeeder::class,
+            ProductWarehouseLocationTranslationSeeder::class,
         ]);
 
     }

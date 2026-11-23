@@ -58,6 +58,8 @@ class PermissionSeeder extends Seeder
         'product-variants' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Variantes de produits (module Boutique)
         'product-warehouses' => ['toggle_visibility', 'audits', 'activity_logs'], // Entrepôts de produits (module Boutique)
         'product-warehouse-translations' => [], // Traductions des entrepôts de produits
+        'product-warehouse-locations' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Emplacements d'entrepôt (module Boutique)
+        'product-warehouse-location-translations' => [], // Traductions des emplacements d'entrepôt
 
         'faqs' => ['toggle_active', 'audits', 'activity_logs'], // FAQs
         'faq-translations' => [], // Traductions des FAQs
@@ -188,6 +190,15 @@ class PermissionSeeder extends Seeder
             'product-warehouses.edit',
             'product-warehouses.update',
             // product-warehouse-translations (index, create, store, show, edit, update)
+
+            // product-warehouse-locations
+            'product-warehouse-locations.index',
+            'product-warehouse-locations.show',
+            'product-warehouse-locations.create',
+            'product-warehouse-locations.store',
+            'product-warehouse-locations.edit',
+            'product-warehouse-locations.update',
+            // product-warehouse-location-translations (index, create, store, show, edit, update)
 
             // roles
             'roles.index',

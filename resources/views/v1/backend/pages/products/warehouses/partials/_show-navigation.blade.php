@@ -5,6 +5,12 @@
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link @if(request()->routeIs('backend.product-warehouses.locations')) active @endif" href="{{ route('backend.product-warehouses.locations', ['productWarehouse' => $warehouse->uuid, 'slug' => $warehouse->active_translation?->slug ?? 'null']) }}">
+            <i class="bx bx-map-pin me-1"></i> {{ __('Emplacements') }}
+            <span class="badge bg-primary ms-1">{{ $warehouse->locations_count ?? 0 }}</span>
+        </a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link @if(request()->routeIs('backend.product-warehouses.audits')) active @endif" href="{{ route('backend.product-warehouses.audits', ['productWarehouse' => $warehouse->uuid, 'slug' => $warehouse->active_translation?->slug ?? 'null']) }}">
             <i class="bx bx-file me-1"></i> {{ __('Audits') }}
             <span class="badge bg-primary ms-1">{{ $warehouse->audits_count ?? 0 }}</span>

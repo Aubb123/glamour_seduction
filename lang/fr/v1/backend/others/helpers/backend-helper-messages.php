@@ -19,6 +19,7 @@ return [
         'productAttributeValue' => "valeur d'attribut de produits",
         'product' => 'produit',
         'warehouse' => 'entrepôt',
+        'warehouseLocation' => 'emplacement d\'entrepôt',
         'shop' => 'boutique',
         'role' => 'rôle',
         'version' => 'version',
@@ -122,6 +123,20 @@ return [
                 'participle' => 'liée',
                 'object' => 'la',
             ],
+            'ProductWarehouse' => [
+                'label' => 'entrepôt',
+                'demonstrative' => 'cet',
+                'pronoun' => 'il',
+                'participle' => 'lié',
+                'object' => 'le',
+            ],
+            'ProductWarehouseLocation' => [
+                'label' => 'emplacement d\'entrepôt',
+                'demonstrative' => 'cet',
+                'pronoun' => 'il',
+                'participle' => 'lié',
+                'object' => 'le',
+            ],
             'Shop' => [
                 'label' => 'boutique',
                 'demonstrative' => 'cette',
@@ -150,6 +165,12 @@ return [
             'ProductCategory' => [
                 'products' => 'produits',
                 'children' => 'sous-catégories',
+            ],
+            'ProductWarehouse' => [
+                'locations' => 'emplacements',
+            ],
+            'ProductWarehouseLocation' => [
+                'children' => 'sous-emplacements',
             ],
         ],
 

@@ -87,6 +87,7 @@
                                 <th scope="col">Type</th>
                                 <th scope="col">Ville</th>
                                 <th scope="col">Pays</th>
+                                <th scope="col">{{ __('Emplacements') }}</th>
                                 <th scope="col">Défaut</th>
                                 <th scope="col">Statut</th>
                                 <th scope="col">Audits</th>
@@ -132,6 +133,14 @@
                                         @else
                                             <span class="badge badge-soft-primary">—</span>
                                         @endif
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ route('backend.product-warehouses.locations', ['productWarehouse' => $warehouse->uuid, 'slug' => $warehouse->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                            <span class="badge badge-soft-secondary">
+                                                <i class="bx bx-map-pin me-1"></i> {{ $warehouse->locations_count ?? 0 }}
+                                            </span>
+                                        </a>
                                     </td>
 
                                     <td>
@@ -248,7 +257,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ request()->routeIs('backend.product-warehouses.trashed') ? 14 : 13 }}" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.product-warehouses.trashed') ? 15 : 14 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         Aucun entrepôt trouvé.
                                     </td>

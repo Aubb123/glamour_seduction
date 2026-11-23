@@ -217,7 +217,7 @@ class SettingSeeder extends Seeder
                 'is_translatable' => false,
                 'is_editable' => true,
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => "Nombre maximum de tags par article", 'value' => null, 'description' => "Nombre maximum de tags pouvant être associés à un article de blog."],
+                    ['lang_code' => 'fr', 'name' => 'Nombre maximum de tags par article', 'value' => null, 'description' => 'Nombre maximum de tags pouvant être associés à un article de blog.'],
                     ['lang_code' => 'en', 'name' => 'Maximum tags per blog post', 'value' => null, 'description' => 'Maximum number of tags that can be attached to a blog post.'],
                 ],
             ],
@@ -279,6 +279,20 @@ class SettingSeeder extends Seeder
                 'translations' => [
                     ['lang_code' => 'fr', 'name' => "Longueur maximale des notes d'entrepôt (caractères)", 'value' => null, 'description' => "Nombre maximum de caractères autorisé pour les notes internes d'un entrepôt."],
                     ['lang_code' => 'en', 'name' => 'Maximum warehouse notes length (characters)', 'value' => null, 'description' => 'Maximum number of characters allowed for the internal notes of a warehouse.'],
+                ],
+            ],
+            // Profondeur maximale de remontée de la chaîne des parents d'un emplacement
+            [
+                'group' => 'products',
+                'key' => 'max_product_warehouse_location_parent_depth',
+                'value' => 100,
+                'type' => 'integer',
+                'is_public' => false,
+                'is_translatable' => false,
+                'is_editable' => true,
+                'translations' => [
+                    ['lang_code' => 'fr', 'name' => 'Profondeur maximale de la hiérarchie des emplacements', 'value' => null, 'description' => "Nombre maximal de niveaux remontés lors de la vérification anti-cycle d'un emplacement d'entrepôt."],
+                    ['lang_code' => 'en', 'name' => 'Maximum warehouse location hierarchy depth', 'value' => null, 'description' => 'Maximum number of levels walked when checking a warehouse location for cycles.'],
                 ],
             ],
             // Nombre maximum de tags par produit

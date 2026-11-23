@@ -19,6 +19,7 @@ return [
         'productAttributeValue' => 'product attribute value',
         'product' => 'product',
         'warehouse' => 'warehouse',
+        'warehouseLocation' => 'warehouse location',
         'shop' => 'shop',
         'role' => 'role',
         'version' => 'version',
@@ -122,6 +123,20 @@ return [
                 'participle' => 'linked',
                 'object' => 'it',
             ],
+            'ProductWarehouse' => [
+                'label' => 'warehouse',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
+            'ProductWarehouseLocation' => [
+                'label' => 'warehouse location',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
             'Shop' => [
                 'label' => 'shop',
                 'demonstrative' => 'this',
@@ -150,6 +165,12 @@ return [
             'ProductCategory' => [
                 'products' => 'products',
                 'children' => 'subcategories',
+            ],
+            'ProductWarehouse' => [
+                'locations' => 'locations',
+            ],
+            'ProductWarehouseLocation' => [
+                'children' => 'sub-locations',
             ],
         ],
 

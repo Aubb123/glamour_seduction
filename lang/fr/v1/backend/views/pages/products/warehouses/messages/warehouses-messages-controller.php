@@ -102,6 +102,12 @@ return [
             'error' => 'Erreur lors de la consultation des journaux d\'activité de l\'entrepôt : :uuid',
             'slug_mismatch' => 'Le slug de l\'entrepôt ne correspond pas au slug attendu.',
         ],
+        'locations' => [
+            'success' => 'Consultation des emplacements de l\'entrepôt : :name',
+            'warning' => 'Tentative de consultation des emplacements d\'un entrepôt inexistant : :uuid',
+            'error' => 'Erreur lors de la consultation des emplacements de l\'entrepôt : :uuid',
+            'slug_mismatch' => 'Le slug de l\'entrepôt ne correspond pas au slug attendu.',
+        ],
         'translations' => [
             'not_found' => 'Tentative d\'accès à une traduction d\'entrepôt introuvable (UUID: :uuid).',
             'destroy' => [

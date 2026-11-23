@@ -8,6 +8,7 @@ use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductWarehouse extends Model
 {
@@ -26,9 +27,8 @@ class ProductWarehouse extends Model
     // Relations enfants dont la présence bloquera la suppression de cet entrepôt
     // (delete / force_delete) lors d'une suppression temporaire (BackendHelper::destroy_function)
     // ou définitive (BackendHelper::force_destroy_function).
-    // NB : vide pour l'instant — les modules « emplacements » et « stocks » ajouteront
-    // respectivement 'locations' et 'stocks' ici lorsqu'ils existeront.
-    protected array $dependentRelations = [];
+    // NB : le module « stocks » ajoutera 'stocks' ici lorsqu'il existera.
+    protected array $dependentRelations = ['locations'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -73,6 +73,14 @@ class ProductWarehouse extends Model
     public function country(): BelongsTo
     {
         return $this->belongsTo(GeoCountry::class, 'country_id');
+    }
+
+    /**
+     * Relation vers les emplacements physiques rattachés à cet entrepôt.
+     */
+    public function locations(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseLocation::class, 'warehouse_id');
     }
 
     /**

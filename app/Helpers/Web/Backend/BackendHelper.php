@@ -561,6 +561,7 @@ class BackendHelper
                             ['label' => 'Produits', 'route' => 'backend.products.index', 'patterns' => ['backend.products.*', 'backend.product-translations.*']],
                             ['label' => 'Variantes', 'route' => 'backend.product-variants.index', 'patterns' => ['backend.product-variants.*']],
                             ['label' => 'Entrepôts', 'route' => 'backend.product-warehouses.index', 'patterns' => ['backend.product-warehouses.*', 'backend.product-warehouse-translations.*']],
+                            ['label' => 'Emplacements', 'route' => 'backend.product-warehouse-locations.index', 'patterns' => ['backend.product-warehouse-locations.*', 'backend.product-warehouse-location-translations.*']],
 
                         ],
                     ],
@@ -702,6 +703,12 @@ class BackendHelper
                 'route' => 'backend.product-warehouses.create',
                 'permission' => 'product-warehouses.create',
             ],
+            [
+                'label' => __('Emplacement'),
+                'icon' => 'ti ti-map-pin',
+                'route' => 'backend.product-warehouse-locations.create',
+                'permission' => 'product-warehouse-locations.create',
+            ],
 
             [
                 'label' => __("Valeur d'attribut"),
@@ -756,7 +763,7 @@ class BackendHelper
 
         if (! $setting) {
             throw new \RuntimeException(
-                __("v1/backend/others/helpers/backend-helper-messages.setting_not_configured", ['key' => $key])
+                __('v1/backend/others/helpers/backend-helper-messages.setting_not_configured', ['key' => $key])
             );
         }
 
@@ -767,7 +774,7 @@ class BackendHelper
 
             if (! $translation || $translation->value === null || $translation->value === '') {
                 throw new \RuntimeException(
-                    __("v1/backend/others/helpers/backend-helper-messages.setting_not_configured", ['key' => $key])
+                    __('v1/backend/others/helpers/backend-helper-messages.setting_not_configured', ['key' => $key])
                 );
             }
         }

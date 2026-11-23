@@ -38,7 +38,7 @@ class ProductWarehouseController extends Controller
             // Récupère tous les entrepôts avec leur traduction active, leur pays et le nombre d'audits/logs
             $warehouses = ProductWarehouse::withActiveTranslation()
                 ->with(['country'])
-                ->withCount(['audits', 'activityLogs'])
+                ->withCount(['audits', 'activityLogs', 'locations'])
                 ->orderBy('sort_order', 'desc')
                 ->get();
 
@@ -139,7 +139,7 @@ class ProductWarehouseController extends Controller
             $warehouse->load([
                 'translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang'),
                 'country',
-            ])->loadCount(['audits', 'activityLogs']);
+            ])->loadCount(['audits', 'activityLogs', 'locations']);
 
             $langs = getActiveLangs()['langs'];
 
@@ -171,7 +171,7 @@ class ProductWarehouseController extends Controller
 
         try {
 
-            $warehouse->load(['translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang')])->loadCount(['audits', 'activityLogs']);
+            $warehouse->load(['translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang')])->loadCount(['audits', 'activityLogs', 'locations']);
 
             $warehouseName = $warehouse->active_translation?->name ?? '';
 
@@ -199,7 +199,7 @@ class ProductWarehouseController extends Controller
         try {
 
             $warehouse->load(['translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang')])
-                ->loadCount(['audits', 'activityLogs']);
+                ->loadCount(['audits', 'activityLogs', 'locations']);
 
             $warehouseName = $warehouse->active_translation?->name ?? '';
 
@@ -212,6 +212,40 @@ class ProductWarehouseController extends Controller
         } catch (\Exception $e) {
 
             $this->logActivity(type: 'error', action: 'backend.product-warehouses.activity-logs', context: ['warehouse_uuid' => $productWarehouse->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productWarehouse->uuid]), is_success: false);
+
+            abort(500);
+        }
+    }
+
+    // ─────────────────────────────────────────────
+    // LOCATIONS (emplacements rattachés à l'entrepôt)
+    // ─────────────────────────────────────────────
+    public function backend_product_warehouses_locations(ProductWarehouse $productWarehouse, string $slug): View
+    {
+        $warehouse = $this->resolveWarehouseWithSlugCheck($productWarehouse, $slug, 'backend.product-warehouses.locations', 'locations');
+
+        try {
+
+            // Compteurs affichés par la navigation (_show-navigation / _show-start)
+            $warehouse->loadCount(['locations', 'audits', 'activityLogs']);
+
+            // Emplacements de l'entrepôt, prêts pour le tableau partagé du module emplacements
+            $locations = $warehouse->locations()
+                ->withActiveTranslation()
+                ->with(['warehouse', 'parent'])
+                ->withCount(['audits', 'activityLogs'])
+                ->orderBy('sort_order')
+                ->get();
+
+            $warehouseName = $warehouse->active_translation?->name ?? __("{$this->backendLangPath}.show.no_name");
+
+            $this->logActivity(type: 'info', action: 'backend.product-warehouses.locations', context: ['warehouse_uuid' => $warehouse->uuid, 'count' => $locations->count()], message: null, activity: __("{$this->backendLangPath}.locations.success", ['name' => $warehouseName]), is_success: true, loggable: $warehouse);
+
+            return view('v1.backend.pages.products.warehouses.others.locations', compact('warehouse', 'locations'));
+
+        } catch (\Exception $e) {
+
+            $this->logActivity(type: 'error', action: 'backend.product-warehouses.locations', context: ['warehouse_uuid' => $warehouse->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.locations.error", ['uuid' => $warehouse->uuid]), is_success: false);
 
             abort(500);
         }
@@ -384,7 +418,7 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouses = ProductWarehouse::onlyTrashed()->withTrashedActiveTranslation()->with(['country'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $warehouses = ProductWarehouse::onlyTrashed()->withTrashedActiveTranslation()->with(['country'])->withCount(['audits', 'activityLogs', 'locations'])->orderBy('deleted_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.trashed', context: ['count' => $warehouses->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
