@@ -209,7 +209,7 @@ class ProductWarehouseLocationService
 
                 $existingTranslation->update([
                     'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
 
             } else {
@@ -218,7 +218,7 @@ class ProductWarehouseLocationService
                     'location_id' => $location->id,
                     'lang_id' => $translation['lang_id'],
                     'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
             }
         }

@@ -78,6 +78,7 @@ return [
                 'unique' => 'This name is already used for this language (including the trash).',
             ],
             'description' => [
+                'required' => 'The description is required.',
                 'string' => 'The description must be a string.',
             ],
         ],

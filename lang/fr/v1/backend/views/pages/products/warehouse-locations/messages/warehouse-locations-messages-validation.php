@@ -55,6 +55,7 @@ return [
                 'unique_in_warehouse' => 'Ce nom est déjà utilisé par un autre emplacement de cet entrepôt pour cette langue (corbeille incluse).',
             ],
             'description' => [
+                'required' => 'La description est obligatoire.',
                 'string' => 'La description doit être une chaîne de caractères.',
             ],
         ],

@@ -201,8 +201,8 @@ it('accepte de conserver son propre sort_order en édition', function () {
         'warehouse_id' => $location->warehouse_id,
         'sort_order' => 700,
         'translations' => [
-            ['lang_id' => Lang::where('code', 'fr')->value('id'), 'name' => $location->translations()->first()->name, 'description' => null],
-            ['lang_id' => Lang::where('code', 'en')->value('id'), 'name' => 'Updated '.uniqid(), 'description' => null],
+            ['lang_id' => Lang::where('code', 'fr')->value('id'), 'name' => $location->translations()->first()->name, 'description' => 'Description de test.'],
+            ['lang_id' => Lang::where('code', 'en')->value('id'), 'name' => 'Updated '.uniqid(), 'description' => 'Description de test.'],
         ],
     ]);
 
@@ -222,8 +222,8 @@ it('accepte le même nom dans deux entrepôts mais le refuse deux fois dans le m
     $langEn = Lang::where('code', 'en')->value('id');
 
     $translations = [
-        ['lang_id' => $langFr, 'name' => 'Zone Partagée', 'description' => null],
-        ['lang_id' => $langEn, 'name' => 'Shared Zone', 'description' => null],
+        ['lang_id' => $langFr, 'name' => 'Zone Partagée', 'description' => 'Description de test.'],
+        ['lang_id' => $langEn, 'name' => 'Shared Zone', 'description' => 'Description de test.'],
     ];
 
     // 1. COT-01
@@ -262,8 +262,8 @@ it('accepte le même nom deux fois dans le même entrepôt pour des langues diff
     $this->actingAs($admin)
         ->post(route('backend.product-warehouse-locations.store'), locationPayload([
             'translations' => [
-                ['lang_id' => $langFr, 'name' => 'Nom Identique', 'description' => null],
-                ['lang_id' => $langEn, 'name' => 'Nom Identique', 'description' => null],
+                ['lang_id' => $langFr, 'name' => 'Nom Identique', 'description' => 'Description de test.'],
+                ['lang_id' => $langEn, 'name' => 'Nom Identique', 'description' => 'Description de test.'],
             ],
         ]))
         ->assertRedirect()
@@ -278,13 +278,13 @@ it('refuse un nom déjà utilisé dans le même entrepôt lors de l’édition',
     $langEn = Lang::where('code', 'en')->value('id');
 
     createLocation($this, $admin, ['translations' => [
-        ['lang_id' => $langFr, 'name' => 'Nom A', 'description' => null],
-        ['lang_id' => $langEn, 'name' => 'Name A', 'description' => null],
+        ['lang_id' => $langFr, 'name' => 'Nom A', 'description' => 'Description de test.'],
+        ['lang_id' => $langEn, 'name' => 'Name A', 'description' => 'Description de test.'],
     ]]);
 
     $second = createLocation($this, $admin, ['translations' => [
-        ['lang_id' => $langFr, 'name' => 'Nom B', 'description' => null],
-        ['lang_id' => $langEn, 'name' => 'Name B', 'description' => null],
+        ['lang_id' => $langFr, 'name' => 'Nom B', 'description' => 'Description de test.'],
+        ['lang_id' => $langEn, 'name' => 'Name B', 'description' => 'Description de test.'],
     ]]);
 
     $this->actingAs($admin)
@@ -293,8 +293,8 @@ it('refuse un nom déjà utilisé dans le même entrepôt lors de l’édition',
             'warehouse_id' => $second->warehouse_id,
             'sort_order' => $second->sort_order,
             'translations' => [
-                ['lang_id' => $langFr, 'name' => 'Nom A', 'description' => null],
-                ['lang_id' => $langEn, 'name' => 'Name B', 'description' => null],
+                ['lang_id' => $langFr, 'name' => 'Nom A', 'description' => 'Description de test.'],
+                ['lang_id' => $langEn, 'name' => 'Name B', 'description' => 'Description de test.'],
             ],
         ]))
         ->assertSessionHasErrors(['translations.0.name']);
@@ -378,7 +378,7 @@ it('ne permet pas de modifier le code ni l’entrepôt après création', functi
             'translations' => $location->translations()->get()->map(fn ($translation) => [
                 'lang_id' => $translation->lang_id,
                 'name' => $translation->name,
-                'description' => null,
+                'description' => 'Description de test.',
             ])->all(),
         ]))
         ->assertRedirect()
@@ -445,7 +445,7 @@ it('refuse un parent égal à soi-même ou un cycle', function () {
     $rootTranslations = $root->translations()->get()->map(fn ($translation) => [
         'lang_id' => $translation->lang_id,
         'name' => $translation->name,
-        'description' => null,
+        'description' => 'Description de test.',
     ])->all();
 
     // Self

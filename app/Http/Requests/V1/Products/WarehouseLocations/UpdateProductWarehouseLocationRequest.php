@@ -62,7 +62,7 @@ class UpdateProductWarehouseLocationRequest extends FormRequest
             'translations' => ['required', 'array'],
             'translations.*.lang_id' => ['required', 'exists:langs,id'],
             'translations.*.name' => ['required', 'string', 'max:150'],
-            'translations.*.description' => ['nullable', 'string'],
+            'translations.*.description' => ['required', 'string'],
         ];
     }
 
@@ -244,6 +244,7 @@ class UpdateProductWarehouseLocationRequest extends FormRequest
             'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
             'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique_in_warehouse"),
 
+            'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
             'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
         ];
     }

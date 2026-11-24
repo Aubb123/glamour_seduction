@@ -78,6 +78,7 @@ return [
                 'unique' => 'Ce nom est déjà utilisé pour cette langue (corbeille incluse).',
             ],
             'description' => [
+                'required' => 'La description est obligatoire.',
                 'string' => 'La description doit être une chaîne de caractères.',
             ],
         ],

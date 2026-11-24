@@ -63,7 +63,7 @@ class UpdateProductWarehouseRequest extends FormRequest
             'translations' => ['required', 'array'],
             'translations.*.lang_id' => ['required', 'exists:langs,id'],
             'translations.*.name' => ['required', 'string', 'max:150'],
-            'translations.*.description' => ['nullable', 'string'],
+            'translations.*.description' => ['required', 'string'],
         ];
 
         // Le nom doit être unique par langue (corbeille incluse), hors entrepôt courant
@@ -203,6 +203,7 @@ class UpdateProductWarehouseRequest extends FormRequest
             'translations.*.name.string' => __("{$this->backendLangPath}.translations.name.string"),
             'translations.*.name.max' => __("{$this->backendLangPath}.translations.name.max"),
             'translations.*.name.unique' => __("{$this->backendLangPath}.translations.name.unique"),
+            'translations.*.description.required' => __("{$this->backendLangPath}.translations.description.required"),
             'translations.*.description.string' => __("{$this->backendLangPath}.translations.description.string"),
             'is_default.storage_required' => __("{$this->backendLangPath}.is_default.storage_required"),
             'is_default.active_required' => __("{$this->backendLangPath}.is_default.active_required"),

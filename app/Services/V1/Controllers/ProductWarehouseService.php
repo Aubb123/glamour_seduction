@@ -271,7 +271,7 @@ class ProductWarehouseService
 
                 $existingTranslation->update([
                     'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
 
             } else {
@@ -280,7 +280,7 @@ class ProductWarehouseService
                     'warehouse_id' => $warehouse->id,
                     'lang_id' => $translation['lang_id'],
                     'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
             }
         }

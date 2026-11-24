@@ -55,6 +55,7 @@ return [
                 'unique_in_warehouse' => 'This name is already used by another location of this warehouse for this language (trash included).',
             ],
             'description' => [
+                'required' => 'The description is required.',
                 'string' => 'The description must be a string.',
             ],
         ],
