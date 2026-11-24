@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('lang_id')->constrained('langs')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table langs fr, en, ar, es, pt, zh, de
             //
             $table->string('name', 150); // Nom de l'emplacement dans la langue de traduction
-            $table->text('description')->nullable(); // Description de l'emplacement dans la langue de traduction
+            $table->text('description'); // Description de l'emplacement dans la langue de traduction (obligatoire)
             //
             $table->timestamps();
             $table->softDeletes();

@@ -23,7 +23,7 @@ return new class extends Migration
             //
             $table->string('name', 150); // Nom de l'entrepôt dans la langue de traduction
             $table->string('slug'); // Slug SEO-friendly
-            $table->text('description')->nullable(); // Description de l'entrepôt dans la langue de traduction
+            $table->text('description'); // Description de l'entrepôt dans la langue de traduction (obligatoire)
             //
             $table->timestamps();
             $table->softDeletes();
