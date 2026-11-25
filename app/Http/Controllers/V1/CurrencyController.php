@@ -31,7 +31,7 @@ class CurrencyController extends Controller
         try {
 
             // Récupère toutes les devises avec leurs traductions actives et leurs compteurs
-            $currencies = Currency::withCount(['countries', 'audits', 'activityLogs'])->withActiveTranslation()->orderBy('sort_order', 'desc')->get();
+            $currencies = Currency::withAuditsCountTotal()->withCount(['countries', 'audits', 'activityLogs'])->withActiveTranslation()->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des devises
             $this->logActivity(type: 'info', action: 'backend.currencies.index', context: ['count' => $currencies->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -59,7 +59,7 @@ class CurrencyController extends Controller
 
             // Devise résolue par le binding implicite sur uuid (404 si introuvable)
             $currency = Currency::query()
-                ->withCount(['countries', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['countries', 'audits', 'activityLogs'])
                 ->with(['translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang')])
                 ->findOrFail($currency->id);
 
@@ -97,7 +97,7 @@ class CurrencyController extends Controller
         try {
 
             $currency = Currency::query()
-                ->withCount(['countries', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['countries', 'audits', 'activityLogs'])
                 ->withActiveTranslation()
                 ->findOrFail($currency->id);
 
@@ -133,7 +133,7 @@ class CurrencyController extends Controller
         try {
 
             $currency = Currency::query()
-                ->withCount(['countries', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['countries', 'audits', 'activityLogs'])
                 ->withActiveTranslation()
                 ->findOrFail($currency->id);
 
@@ -147,7 +147,7 @@ class CurrencyController extends Controller
 
             $currencyName = $currency->active_translation?->name ?? $currency->code;
 
-            $audits = $currency->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $currency->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.currencies.audits', context: ['currency_uuid' => $currency->uuid, 'currency_code' => $currency->code], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $currencyName]), is_success: true, loggable: $currency);
 
@@ -169,7 +169,7 @@ class CurrencyController extends Controller
         try {
 
             $currency = Currency::query()
-                ->withCount(['countries', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['countries', 'audits', 'activityLogs'])
                 ->withActiveTranslation()
                 ->findOrFail($currency->id);
 
@@ -352,7 +352,7 @@ class CurrencyController extends Controller
         try {
 
             // Récupère toutes les devises supprimées (soft deleted) avec leurs traductions, triées par date de suppression décroissante
-            $currencies = Currency::onlyTrashed()->withTrashedActiveTranslation()->withCount(['countries', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $currencies = Currency::onlyTrashed()->withTrashedActiveTranslation()->withAuditsCountTotal()->withCount(['countries', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des devises
             $this->logActivity(type: 'info', action: 'backend.currencies.trashed', context: ['count' => $currencies->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

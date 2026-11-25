@@ -41,7 +41,7 @@ class BlogPostController extends Controller
         try {
 
             // Récupère tous les articles avec leur traduction active, catégorie et auteur, triés par ordre de tri décroissant
-            $posts = BlogPost::withActiveTranslation()->with(['cloudFiles', 'category.translations.lang', 'user'])->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $posts = BlogPost::withActiveTranslation()->with(['cloudFiles', 'category.translations.lang', 'user'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.blog-posts.index', context: ['count' => $posts->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -202,7 +202,7 @@ class BlogPostController extends Controller
 
             $postTitle = $post->active_translation?->title ?? '';
 
-            $audits = $post->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $post->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.blog-posts.audits', context: ['post_uuid' => $post->uuid, 'post_title' => $postTitle], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $postTitle]), is_success: true, loggable: $post);
 
@@ -418,7 +418,7 @@ class BlogPostController extends Controller
         try {
 
             // Récupère tous les articles supprimés avec leur traduction active, triés par date de suppression décroissante
-            $posts = BlogPost::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $posts = BlogPost::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des articles supprimés réussie
             $this->logActivity(type: 'info', action: 'backend.blog-posts.trashed', context: ['count' => $posts->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

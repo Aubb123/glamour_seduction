@@ -28,6 +28,8 @@ class PermissionSeeder extends Seeder
         'geo-continents-translations' => [], // Exemple pour les traductions des continents, avec uniquement les actions de base
         'geo-countries' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Exemple pour les pays, avec des actions spécifiques en plus du CRUD de base
         'geo-countries-translations' => [], // Exemple pour les traductions des pays, avec uniquement les actions de base
+        'geo-division-types' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Types de division géographique
+        'geo-division-type-translations' => [], // Traductions des types de division géographique
         'currencies' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Exemple pour les devises, avec des actions spécifiques en plus du CRUD de base
         'currency-translations' => [], // Exemple pour les traductions des devises, avec uniquement les actions de base
         'roles' => ['activate', 'deactivate', 'audits', 'activity_logs'], // Exemple pour les rôles, avec des actions spécifiques en plus du CRUD de base
@@ -106,6 +108,15 @@ class PermissionSeeder extends Seeder
             'geo-countries.edit',
             'geo-countries.update',
             // geo-countries-translations (index, create, store, show, edit, update)
+
+            // geo-division-types
+            'geo-division-types.index',
+            'geo-division-types.show',
+            'geo-division-types.create',
+            'geo-division-types.store',
+            'geo-division-types.edit',
+            'geo-division-types.update',
+            // geo-division-type-translations (index, create, store, show, edit, update)
 
             // currencies
             'currencies.index',

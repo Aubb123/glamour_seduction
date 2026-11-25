@@ -41,7 +41,7 @@ class ProductCategoryController extends Controller
         try {
 
             // ✅ Récupère toutes les catégories avec leurs traductions, leur parent et les fichiers cloud, triées par sort_order décroissant
-            $categories = ProductCategory::with(['parent.translations', 'cloudFiles'])->withActiveTranslation()->withCount(['children', 'products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $categories = ProductCategory::with(['parent.translations', 'cloudFiles'])->withActiveTranslation()->withAuditsCountTotal()->withCount(['children', 'products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des catégories
             $this->logActivity(type: 'info', action: 'backend.product-categories.index', context: ['count' => $categories->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -201,7 +201,7 @@ class ProductCategoryController extends Controller
 
             // $audits contient les audits de la catégorie, avec les relations 'user' et 'auditable',
             //  triés par date de création décroissante
-            $audits = $category->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $category->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des audits d'une catégorie
             $this->logActivity(type: 'info', action: 'backend.product-categories.audits', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $categoryName]), is_success: true, loggable: $category);
@@ -272,7 +272,7 @@ class ProductCategoryController extends Controller
             $children = $category->children()
                 ->with(['parent.translations', 'cloudFiles'])
                 ->withActiveTranslation()
-                ->withCount(['children', 'products', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['children', 'products', 'audits', 'activityLogs'])
                 ->orderBy('sort_order', 'desc')
                 ->get();
 
@@ -310,7 +310,7 @@ class ProductCategoryController extends Controller
             $products = $category->products()
                 ->withActiveTranslation()
                 ->with(['category', 'brand', 'currency', 'tags'])
-                ->withCount(['variants', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['variants', 'audits', 'activityLogs'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -535,7 +535,7 @@ class ProductCategoryController extends Controller
         try {
 
             // $categories récupère toutes les catégories supprimées (soft deleted) avec leurs traductions actives, leurs fichiers cloud et les compteurs, triées par date de suppression décroissante
-            $categories = ProductCategory::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['children', 'products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $categories = ProductCategory::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['children', 'products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des catégories
             $this->logActivity(type: 'info', action: 'backend.product-categories.trashed', context: ['count' => $categories->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

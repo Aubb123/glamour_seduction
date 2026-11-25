@@ -38,7 +38,7 @@ class CloudPlatformController extends Controller
         try {
 
             // Récupère toutes les plateformes cloud, triées par date de création décroissante
-            $platforms = CloudPlatform::withCount(['audits', 'activityLogs', 'folders', 'files'])->orderBy('created_at', 'desc')->get();
+            $platforms = CloudPlatform::withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'folders', 'files'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.cloud-platforms.index', context: ['count' => $platforms->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -269,7 +269,7 @@ class CloudPlatformController extends Controller
                 return redirect()->route('backend.cloud-platforms.index')->with('error', __("{$this->backendLangPath}.audits.slug_mismatch"));
             }
 
-            $audits = $platform->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $platform->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.cloud-platforms.audits', context: ['cloud_platform_uuid' => $platform->uuid, 'cloud_platform_name' => $platform->label], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $platform->label]), is_success: true, loggable: $platform);
 
@@ -478,7 +478,7 @@ class CloudPlatformController extends Controller
         try {
 
             // Récupère toutes les plateformes cloud supprimées, triées par date de suppression décroissante
-            $platforms = CloudPlatform::onlyTrashed()->withCount(['audits', 'activityLogs', 'folders', 'files'])->orderBy('deleted_at', 'desc')->get();
+            $platforms = CloudPlatform::onlyTrashed()->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'folders', 'files'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des plateformes supprimées réussie
             $this->logActivity(type: 'info', action: 'backend.cloud-platforms.trashed', context: ['count' => $platforms->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

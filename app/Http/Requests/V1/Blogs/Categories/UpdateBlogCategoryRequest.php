@@ -45,13 +45,21 @@ class UpdateBlogCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        // Récupère l'ID interne de la catégorie à partir de l'UUID de la route.
-        $blogCategoryId = BlogCategory::where('uuid', $this->route('uuid'))->value('id');
+        // Récupère l'ID interne de la catégorie à partir du binding implicite de route.
+        //
+        // NB : le paramètre de route est `{blogCategory}` (lié par UUID), PAS `{uuid}`.
+        // Utiliser `$this->route('uuid')` renvoyait null et déclenchait à tort un
+        // abort(404) à chaque mise à jour.
+        $blogCategory = $this->route('blogCategory');
+
+        $blogCategoryId = $blogCategory instanceof BlogCategory
+            ? $blogCategory->getKey()
+            : BlogCategory::where('uuid', $blogCategory)->value('id');
 
         if (! $blogCategoryId) {
 
             // Log de l'erreur si nécessaire
-            $this->logActivity(type: 'error', action: 'backend.blog-categories.update', context: ['blog_category_uuid' => $this->route('uuid')], message: 'BlogCategory not found for update.', activity: __("{$this->backendLangPath}.not_found"), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-categories.update', context: ['blog_category_uuid' => $blogCategory instanceof BlogCategory ? $blogCategory->uuid : $blogCategory], message: 'BlogCategory not found for update.', activity: __("{$this->backendLangPath}.not_found"), is_success: false);
 
             // Retourne une réponse 404 avec un message d'erreur
             abort(404, __("{$this->backendLangPath}.not_found"));

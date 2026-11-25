@@ -29,6 +29,8 @@ class DatabaseSeeder extends Seeder
             CurrencyTranslationSeeder::class,
             GeoCountrySeeder::class,
             GeoCountryTranslationSeeder::class,
+            GeoDivisionTypeSeeder::class,
+            GeoDivisionTypeTranslationSeeder::class,
             RoleSeeder::class,
             RoleTranslationSeeder::class,
             PermissionSeeder::class,

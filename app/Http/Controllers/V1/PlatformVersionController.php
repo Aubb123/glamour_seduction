@@ -35,7 +35,7 @@ class PlatformVersionController extends Controller
         try {
 
             // ✅ Récupère toutes les versions avec leurs traductions, triées par date de création décroissante
-            $versions = PlatformVersion::withCount(['audits', 'activityLogs'])->withActiveTranslation()->orderBy('created_at', 'desc')->get();
+            $versions = PlatformVersion::withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->withActiveTranslation()->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des versions
             $this->logActivity(type: 'info', action: 'backend.versions.index', context: ['count' => $versions->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -171,7 +171,7 @@ class PlatformVersionController extends Controller
 
             $versionName = $version->active_translation?->name ?? $version->code;
 
-            $audits = $version->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $version->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.versions.audits', context: ['version_uuid' => $version->uuid, 'version_code' => $version->code], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $versionName]), is_success: true, loggable: $version);
 

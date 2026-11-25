@@ -44,7 +44,7 @@ class CloudFileController extends Controller
             // Récupère tous les fichiers cloud avec leur dossier, plateforme et entité associée, triés par date de création décroissante
             // (eager-loading pour éviter les requêtes N+1 sur la liste)
             $files = CloudFile::with(['cloudFolder.platform', 'fileable'])
-                ->withCount(['audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -98,7 +98,7 @@ class CloudFileController extends Controller
             // Fichier cloud résolu par binding implicite ({cloudFile}) avec ses compteurs
             $file = $cloudFile->loadCount(['audits', 'activityLogs']);
 
-            $audits = $file->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $file->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.cloud-files.audits', context: ['cloud_file_uuid' => $file->uuid, 'cloud_file_name' => $file->file_name], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $file->file_name]), is_success: true, loggable: $file);
 
@@ -255,7 +255,7 @@ class CloudFileController extends Controller
         try {
 
             // Récupère tous les fichiers cloud supprimés (soft deleted) avec leur dossier, plateforme et entité associée
-            $files = CloudFile::onlyTrashed()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $files = CloudFile::onlyTrashed()->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des fichiers supprimés réussie
             $this->logActivity(type: 'info', action: 'backend.cloud-files.trashed', context: ['count' => $files->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

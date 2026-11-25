@@ -38,7 +38,7 @@ class ProductAttributeController extends Controller
         try {
 
             // Récupère les attributs de produit avec leur traduction active et leurs compteurs, triés par ordre décroissant
-            $attributes = ProductAttribute::withActiveTranslation()->withProductsCount()->withCount(['values', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $attributes = ProductAttribute::withActiveTranslation()->withProductsCount()->withAuditsCountTotal()->withCount(['values', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Journalise l'accès à la liste des attributs de produit
             $this->logActivity(type: 'info', action: 'backend.product-attributes.index', context: ['count' => $attributes->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -189,7 +189,7 @@ class ProductAttributeController extends Controller
 
             $attributeName = $attribute->active_translation?->name ?? '';
 
-            $audits = $attribute->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $attribute->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-attributes.audits', context: ['attribute_uuid' => $attribute->uuid, 'attribute_name' => $attributeName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $attributeName]), is_success: true, loggable: $attribute);
 
@@ -256,7 +256,7 @@ class ProductAttributeController extends Controller
             $values = $attribute->values()
                 ->withActiveTranslation()
                 ->with(['attribute' => fn ($q) => $q->withActiveTranslation()])
-                ->withCount(['audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
                 ->orderBy('sort_order', 'desc')
                 ->get();
 
@@ -295,7 +295,7 @@ class ProductAttributeController extends Controller
             // variantes porte une valeur de cet attribut (pivot product_variant_attribute_value).
             $products = Product::withActiveTranslation()
                 ->with(['category', 'brand', 'currency', 'tags'])
-                ->withCount(['variants', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['variants', 'audits', 'activityLogs'])
                 ->whereHas('variants.attributeValues', function ($query) use ($attribute) {
                     $query->where('product_attribute_values.attribute_id', $attribute->id);
                 })
@@ -497,7 +497,7 @@ class ProductAttributeController extends Controller
     {
         try {
 
-            $attributes = ProductAttribute::onlyTrashed()->withTrashedActiveTranslation()->withProductsCount()->withCount(['values', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $attributes = ProductAttribute::onlyTrashed()->withTrashedActiveTranslation()->withProductsCount()->withAuditsCountTotal()->withCount(['values', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Journalise la consultation de la corbeille des attributs de produit
             $this->logActivity(type: 'info', action: 'backend.product-attributes.trashed', context: ['count' => $attributes->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

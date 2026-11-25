@@ -34,7 +34,7 @@ class SubscribeController extends Controller
         try {
 
             // Récupère tous les abonnés avec leur utilisateur, triés par date de création décroissante
-            $subscribes = Subscribe::withCount(['audits', 'activityLogs'])->with(['user'])->orderBy('created_at', 'desc')->get();
+            $subscribes = Subscribe::withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->with(['user'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.subscribes.index', context: ['count' => $subscribes->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -88,7 +88,7 @@ class SubscribeController extends Controller
 
             // Instance bindée + compteurs
             $subscribe->loadCount(['audits', 'activityLogs']);
-            $audits = $subscribe->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $subscribe->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.subscribes.audits', context: ['subscribe_uuid' => $subscribe->uuid, 'subscribe_email' => $subscribe->email], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $subscribe->email]), is_success: true, loggable: $subscribe);
 
@@ -235,7 +235,7 @@ class SubscribeController extends Controller
         try {
 
             // Récupère tous les abonnés supprimés, triés par date de suppression décroissante
-            $subscribes = Subscribe::onlyTrashed()->with(['user'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $subscribes = Subscribe::onlyTrashed()->with(['user'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des abonnés supprimés réussie
             $this->logActivity(type: 'info', action: 'backend.subscribes.trashed', context: ['count' => $subscribes->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

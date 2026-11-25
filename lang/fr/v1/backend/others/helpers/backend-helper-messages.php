@@ -5,6 +5,7 @@ return [
     // Libellés d'entités traduisibles (utilisés dans les messages génériques via :entity)
     'entityLabels' => [
         'country' => 'pays',
+        'divisionType' => 'type de division',
         'continent' => 'continent',
         'currency' => 'devise',
         'category' => 'catégorie',
@@ -62,6 +63,13 @@ return [
             ],
             'GeoCountry' => [
                 'label' => 'pays',
+                'demonstrative' => 'ce',
+                'pronoun' => 'il',
+                'participle' => 'lié',
+                'object' => 'le',
+            ],
+            'GeoDivisionType' => [
+                'label' => 'type de division',
                 'demonstrative' => 'ce',
                 'pronoun' => 'il',
                 'participle' => 'lié',

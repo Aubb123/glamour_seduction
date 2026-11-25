@@ -5,6 +5,7 @@ return [
     // Translated entity labels (used in the generic messages via :entity)
     'entityLabels' => [
         'country' => 'country',
+        'divisionType' => 'division type',
         'continent' => 'continent',
         'currency' => 'currency',
         'category' => 'category',
@@ -62,6 +63,13 @@ return [
             ],
             'GeoCountry' => [
                 'label' => 'country',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
+            'GeoDivisionType' => [
+                'label' => 'division type',
                 'demonstrative' => 'this',
                 'pronoun' => 'it',
                 'participle' => 'linked',

@@ -41,7 +41,7 @@ class BlogCategoryController extends Controller
         try {
 
             // ✅ Récupère toutes les catégories avec leurs traductions, triées par sort_order décroissant
-            $categories = BlogCategory::with(['cloudFiles'])->withActiveTranslation()->withCount(['posts', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $categories = BlogCategory::with(['cloudFiles'])->withActiveTranslation()->withAuditsCountTotal()->withCount(['posts', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des catégories
             $this->logActivity(type: 'info', action: 'backend.blog-categories.index', context: ['count' => $categories->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -155,7 +155,7 @@ class BlogCategoryController extends Controller
             $blogCategoryTranslations = BlogCategoryTranslation::onlyTrashed()->where('category_id', $category->id)->get();
 
             // Récupère les articles de blog de cette catégorie
-            $posts = $category->posts()->withActiveTranslation()->with(['cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $posts = $category->posts()->withActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             $categoryName = $category->active_translation?->name ?? __("{$this->backendLangPath}.show.no_name");
 
@@ -188,7 +188,7 @@ class BlogCategoryController extends Controller
             $category->loadCount(['posts', 'audits', 'activityLogs']);
 
             // Récupère les articles de blog de cette catégorie
-            $posts = $category->posts()->withActiveTranslation()->with(['cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $posts = $category->posts()->withActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             $categoryName = $category->active_translation?->name ?? __("{$this->backendLangPath}.posts.no_name");
 
@@ -222,7 +222,7 @@ class BlogCategoryController extends Controller
 
             $categoryName = $category->active_translation?->name ?? '';
 
-            $audits = $category->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $category->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.blog-categories.audits', context: ['category_uuid' => $category->uuid, 'category_name' => $categoryName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $categoryName]), is_success: true, loggable: $category);
 
@@ -443,7 +443,7 @@ class BlogCategoryController extends Controller
     {
         try {
 
-            $categories = BlogCategory::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['posts', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $categories = BlogCategory::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['posts', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des catégories
             $this->logActivity(type: 'info', action: 'backend.blog-categories.trashed', context: ['count' => $categories->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

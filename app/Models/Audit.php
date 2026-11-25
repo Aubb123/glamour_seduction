@@ -62,6 +62,7 @@ class Audit extends Model
         'permission',
         'geoContinent',
         'geoCountry',
+        'geoDivisionType',
         'platformVersion',
         'subscribeHistory',
     ];
@@ -88,6 +89,7 @@ class Audit extends Model
         'App\Models\CloudFile' => ['route' => 'backend.cloud-files.show', 'params' => ['cloudFile']],
         'App\Models\GeoContinent' => ['route' => 'backend.geocontinents.show', 'params' => ['geoContinent', 'slug']],
         'App\Models\GeoCountry' => ['route' => 'backend.geocountries.show', 'params' => ['geoCountry', 'slug']],
+        'App\Models\GeoDivisionType' => ['route' => 'backend.geodivisiontypes.show', 'params' => ['geoDivisionType', 'slug']],
         'App\Models\PlatformVersion' => ['route' => 'backend.versions.show', 'params' => ['platformVersion', 'slug']],
     ];
 
@@ -149,6 +151,7 @@ class Audit extends Model
             'App\Models\CloudFile' => $this->auditable->file_name,
             'App\Models\GeoContinent' => $this->auditable->active_translation?->name,
             'App\Models\GeoCountry' => $this->auditable->active_translation?->name,
+            'App\Models\GeoDivisionType' => $this->auditable->active_translation?->name,
             'App\Models\PlatformVersion' => $this->auditable->active_translation?->name,
             default => null,
         } ?: null;
@@ -177,6 +180,7 @@ class Audit extends Model
             'App\Models\CloudFile' => __('Fichier cloud'),
             'App\Models\GeoContinent' => __('Continent'),
             'App\Models\GeoCountry' => __('Pays'),
+            'App\Models\GeoDivisionType' => __('Type de division'),
             'App\Models\PlatformVersion' => __('Version'),
             default => __('Entité'),
         };

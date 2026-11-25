@@ -36,7 +36,7 @@ class BlogTagController extends Controller
         try {
 
             // ✅ Récupère tous les tags avec leurs traductions, triés par sort_order décroissant
-            $tags = BlogTag::withActiveTranslation()->withCount(['posts', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $tags = BlogTag::withActiveTranslation()->withAuditsCountTotal()->withCount(['posts', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des tags
             $this->logActivity(type: 'info', action: 'backend.blog-tags.index', context: ['count' => $tags->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -151,7 +151,7 @@ class BlogTagController extends Controller
             $blogTagTranslations = BlogTagTranslation::onlyTrashed()->where('tag_id', $tag->id)->get();
 
             // Récupère les articles de blog associés à ce tag
-            $posts = $tag->posts()->withActiveTranslation()->with(['cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $posts = $tag->posts()->withActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             $tagName = $tag->active_translation?->name ?? __("{$this->backendLangPath}.show.no_name");
 
@@ -184,7 +184,7 @@ class BlogTagController extends Controller
             $tag->loadCount(['posts', 'audits', 'activityLogs']);
 
             // Récupère les articles de blog associés à ce tag
-            $posts = $tag->posts()->withActiveTranslation()->with(['cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $posts = $tag->posts()->withActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             $tagName = $tag->active_translation?->name ?? __("{$this->backendLangPath}.posts.no_name");
 
@@ -218,7 +218,7 @@ class BlogTagController extends Controller
 
             $tagName = $tag->active_translation?->name ?? '';
 
-            $audits = $tag->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $tag->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.blog-tags.audits', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $tagName]), is_success: true, loggable: $tag);
 
@@ -439,7 +439,7 @@ class BlogTagController extends Controller
     {
         try {
 
-            $tags = BlogTag::onlyTrashed()->withTrashedActiveTranslation()->withCount(['posts', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $tags = BlogTag::onlyTrashed()->withTrashedActiveTranslation()->withAuditsCountTotal()->withCount(['posts', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des tags
             $this->logActivity(type: 'info', action: 'backend.blog-tags.trashed', context: ['count' => $tags->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

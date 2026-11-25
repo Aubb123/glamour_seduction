@@ -36,7 +36,7 @@ class CloudFolderController extends Controller
         try {
 
             // Récupère tous les dossiers cloud avec leur plateforme et dossier parent, triés par date de création décroissante
-            $folders = CloudFolder::withCount(['audits', 'activityLogs', 'files', 'children'])->with('platform', 'parent')->orderBy('created_at', 'desc')->get();
+            $folders = CloudFolder::withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'files', 'children'])->with('platform', 'parent')->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.cloud-folders.index', context: ['count' => $folders->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -155,7 +155,7 @@ class CloudFolderController extends Controller
             // Dossier cloud résolu par binding implicite ({cloudFolder}) avec ses compteurs
             $folder = $cloudFolder->loadCount(['audits', 'activityLogs', 'files', 'children']);
 
-            $audits = $folder->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $folder->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.cloud-folders.audits', context: ['cloud_folder_uuid' => $folder->uuid, 'cloud_folder_name' => $folder->folder_name], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $folder->folder_name]), is_success: true, loggable: $folder);
 

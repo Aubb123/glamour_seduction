@@ -41,7 +41,7 @@ class ProductTagController extends Controller
         try {
 
             // ✅ Récupère toutes les tags avec leurs traductions et les fichiers cloud, triées par sort_order décroissant
-            $tags = ProductTag::withActiveTranslation()->withCount(['products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $tags = ProductTag::withActiveTranslation()->withAuditsCountTotal()->withCount(['products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des tags
             $this->logActivity(type: 'info', action: 'backend.product-tags.index', context: ['count' => $tags->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -187,7 +187,7 @@ class ProductTagController extends Controller
 
             $tagName = $tag->active_translation?->name ?? '';
 
-            $audits = $tag->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $tag->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-tags.audits', context: ['tag_uuid' => $tag->uuid, 'tag_name' => $tagName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $tagName]), is_success: true, loggable: $tag);
 
@@ -248,7 +248,7 @@ class ProductTagController extends Controller
             $products = $tag->products()
                 ->withActiveTranslation()
                 ->with(['category', 'brand', 'currency', 'tags'])
-                ->withCount(['variants', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['variants', 'audits', 'activityLogs'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -450,7 +450,7 @@ class ProductTagController extends Controller
     {
         try {
 
-            $tags = ProductTag::onlyTrashed()->withTrashedActiveTranslation()->withCount(['products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $tags = ProductTag::onlyTrashed()->withTrashedActiveTranslation()->withAuditsCountTotal()->withCount(['products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des tags
             $this->logActivity(type: 'info', action: 'backend.product-tags.trashed', context: ['count' => $tags->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

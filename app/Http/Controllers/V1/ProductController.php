@@ -39,7 +39,7 @@ class ProductController extends Controller
         try {
 
             // ✅ Récupère tous les produits avec leurs traductions, catégorie, marque et tags, triés par date de création décroissante
-            $products = Product::withActiveTranslation()->with(['category', 'brand', 'currency', 'tags'])->withCount(['variants', 'audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $products = Product::withActiveTranslation()->with(['category', 'brand', 'currency', 'tags'])->withAuditsCountTotal()->withCount(['variants', 'audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des produits
             $this->logActivity(type: 'info', action: 'backend.products.index', context: ['count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -161,7 +161,7 @@ class ProductController extends Controller
             $productTranslations = ProductTranslation::onlyTrashed()->where('product_id', $product->id)->get();
 
             // Charge les variantes du produit (onglet « Variantes »)
-            $variants = $product->variants()->with(['attributeValues'])->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $variants = $product->variants()->with(['attributeValues'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             $productName = $product->active_translation?->name ?? __("{$this->backendLangPath}.show.no_name");
 
@@ -193,7 +193,7 @@ class ProductController extends Controller
             $product->loadCount(['variants', 'audits', 'activityLogs']);
 
             // Récupère les audits du produit
-            $audits = $product->audits()->orderBy('created_at', 'desc')->get();
+            $audits = $product->auditsWithTranslations()->orderBy('created_at', 'desc')->get();
 
             $productName = $product->active_translation?->name ?? __("{$this->backendLangPath}.show.no_name");
 
@@ -255,7 +255,7 @@ class ProductController extends Controller
             // Variantes du produit, prêtes pour le tableau partagé du module variantes
             $variants = $product->variants()
                 ->with(['product.translations', 'product.cloudFiles', 'cloudFiles', 'attributeValues.translations'])
-                ->withCount(['audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -490,7 +490,7 @@ class ProductController extends Controller
     {
         try {
 
-            $products = Product::onlyTrashed()->withTrashedActiveTranslation()->with(['category', 'brand', 'tags'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $products = Product::onlyTrashed()->withTrashedActiveTranslation()->with(['category', 'brand', 'tags'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.products.trashed', context: ['count' => $products->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 

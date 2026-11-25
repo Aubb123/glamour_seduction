@@ -43,7 +43,7 @@ class GeoContinentController extends Controller
 
             // ✅ Récupère tous les continents avec leurs traductions et le nombre de pays associés.
             // Tri par ordre de tri croissant : plus le chiffre est petit, plus le continent apparaît en premier.
-            $geocontinents = GeoContinent::withCount(['audits', 'activityLogs', 'countries'])->withActiveTranslation()->orderBy('sort_order', 'desc')->get();
+            $geocontinents = GeoContinent::withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'countries'])->withActiveTranslation()->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des continents
             $this->logActivity(type: 'info', action: 'backend.geocontinents.index', context: ['count' => $geocontinents->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -63,18 +63,14 @@ class GeoContinentController extends Controller
     // ─────────────────────────────────────────────
     // SHOW
     // ─────────────────────────────────────────────
-    public function backend_geocontinents_show(GeoContinent $geoContinent, string $slug): View|RedirectResponse
+    public function backend_geocontinents_show(GeoContinent $geoContinent, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $continent = $this->resolveContinentWithSlugCheck($geoContinent, $slug, 'backend.geocontinents.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour les passer à la vue
-
-            // Continent résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            // + contrôle du slug SEO présent dans l'URL (redirection vers l'index en cas d'incohérence)
-            $continent = $this->resolveContinent($geoContinent, $slug, 'show');
-            if ($continent instanceof RedirectResponse) {
-                return $continent;
-            }
 
             // Récupère toutes les traductions supprimées (soft deleted) de ce continent
             $trashedTranslations = GeoContinentTranslation::onlyTrashed()->where('continent_id', $continent->id)->get();
@@ -102,16 +98,12 @@ class GeoContinentController extends Controller
     // ─────────────────────────────────────────────
     // COUNTRIES
     // ─────────────────────────────────────────────
-    public function backend_geocontinents_countries(GeoContinent $geoContinent, string $slug): View|RedirectResponse
+    public function backend_geocontinents_countries(GeoContinent $geoContinent, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $continent = $this->resolveContinentWithSlugCheck($geoContinent, $slug, 'backend.geocontinents.countries', 'countries');
 
-            // Continent résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            // + contrôle du slug SEO présent dans l'URL (redirection vers l'index en cas d'incohérence)
-            $continent = $this->resolveContinent($geoContinent, $slug, 'countries');
-            if ($continent instanceof RedirectResponse) {
-                return $continent;
-            }
+        try {
 
             // Récupère les pays associés à ce continent avec leurs traductions actives
             $geocountries = GeoCountry::withActiveTranslation()->with(['continent'])->where('continent_id', $continent->id)->orderBy('sort_order', 'desc')->get();
@@ -136,20 +128,16 @@ class GeoContinentController extends Controller
     // ─────────────────────────────────────────────
     // AUDITS
     // ─────────────────────────────────────────────
-    public function backend_geocontinents_audits(GeoContinent $geoContinent, string $slug): View|RedirectResponse
+    public function backend_geocontinents_audits(GeoContinent $geoContinent, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $continent = $this->resolveContinentWithSlugCheck($geoContinent, $slug, 'backend.geocontinents.audits', 'audits');
 
-            // Continent résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            // + contrôle du slug SEO présent dans l'URL (redirection vers l'index en cas d'incohérence)
-            $continent = $this->resolveContinent($geoContinent, $slug, 'audits');
-            if ($continent instanceof RedirectResponse) {
-                return $continent;
-            }
+        try {
 
             $continentName = $continent->active_translation?->name ?? $continent->code;
 
-            $audits = $continent->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $continent->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.geocontinents.audits', context: ['continent_uuid' => $continent->uuid, 'continent_code' => $continent->code], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $continentName]), is_success: true, loggable: $continent);
 
@@ -166,16 +154,12 @@ class GeoContinentController extends Controller
     // ─────────────────────────────────────────────
     // ACTIVITY LOGS
     // ─────────────────────────────────────────────
-    public function backend_geocontinents_activity_logs(GeoContinent $geoContinent, string $slug): View|RedirectResponse
+    public function backend_geocontinents_activity_logs(GeoContinent $geoContinent, string $slug): View
     {
-        try {
+        // Vérifie que le slug correspond
+        $continent = $this->resolveContinentWithSlugCheck($geoContinent, $slug, 'backend.geocontinents.activity-logs', 'activity-logs');
 
-            // Continent résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            // + contrôle du slug SEO présent dans l'URL (redirection vers l'index en cas d'incohérence)
-            $continent = $this->resolveContinent($geoContinent, $slug, 'activity-logs');
-            if ($continent instanceof RedirectResponse) {
-                return $continent;
-            }
+        try {
 
             $continentName = $continent->active_translation?->name ?? $continent->code;
 
@@ -342,7 +326,7 @@ class GeoContinentController extends Controller
         try {
 
             // Récupère tous les continents supprimés (soft deleted) avec leurs traductions, triés par date de suppression décroissante
-            $geocontinents = GeoContinent::onlyTrashed()->withTrashedActiveTranslation()->withCount(['countries', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $geocontinents = GeoContinent::onlyTrashed()->withTrashedActiveTranslation()->withAuditsCountTotal()->withCount(['countries', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des continents
             $this->logActivity(type: 'info', action: 'backend.geocontinents.trashed', context: ['count' => $geocontinents->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
@@ -368,21 +352,22 @@ class GeoContinentController extends Controller
      *
      * Centralise la logique commune aux pages show / countries / audits / activity-logs :
      * - charge les compteurs (audits, activityLogs, countries) ;
-     * - en cas d'incohérence du slug, logge un avertissement et redirige vers l'index.
+     * - en cas d'incohérence du slug, logge un avertissement et renvoie une 404.
      *
      * NB : le slug vit sur la traduction (pas de colonne slug sur geo_continents),
      * on lit donc directement `active_translation?->slug`.
      */
-    private function resolveContinent(GeoContinent $geoContinent, string $slug, string $segment): GeoContinent|RedirectResponse
+    private function resolveContinentWithSlugCheck(GeoContinent $geoContinent, string $slug, string $action, string $langKey): GeoContinent
     {
+        // Charge les compteurs affichés par la navigation
         $continent = $geoContinent->loadCount(['audits', 'activityLogs', 'countries']);
 
         $expectedSlug = $continent->active_translation?->slug ?? 'null';
 
         if ($expectedSlug !== $slug) {
-            $this->logActivity(type: 'warning', action: "backend.geocontinents.{$segment}", context: ['continent_uuid' => $continent->uuid, 'continent_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$segment}.slug_mismatch"), is_success: false, loggable: $continent);
+            $this->logActivity(type: 'warning', action: $action, context: ['continent_uuid' => $continent->uuid, 'continent_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $continent);
 
-            return redirect()->route('backend.geocontinents.index')->with('error', __("{$this->backendLangPath}.{$segment}.slug_mismatch"));
+            abort(404);
         }
 
         return $continent;

@@ -36,7 +36,7 @@ class BlogPostCommentReplyController extends Controller
         try {
 
             // Récupère toutes les réponses avec leurs relations, triées par date de création décroissante
-            $replies = BlogPostCommentReply::withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $replies = BlogPostCommentReply::withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.blog-post-comment-replies.index', context: ['count' => $replies->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -187,7 +187,7 @@ class BlogPostCommentReplyController extends Controller
         try {
 
             // Récupère toutes les réponses supprimées, triées par date de suppression décroissante
-            $replies = BlogPostCommentReply::onlyTrashed()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $replies = BlogPostCommentReply::onlyTrashed()->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.blog-post-comment-replies.trashed', context: ['count' => $replies->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
@@ -293,7 +293,7 @@ class BlogPostCommentReplyController extends Controller
 
             $replyContent = $reply->content;
 
-            $audits = $reply->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $reply->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.blog-post-comment-replies.audits', context: ['reply_uuid' => $reply->uuid, 'reply_content' => $replyContent], message: null, activity: __("{$this->backendLangPath}.audits.success", ['content' => $replyContent]), is_success: true, loggable: $reply);
 

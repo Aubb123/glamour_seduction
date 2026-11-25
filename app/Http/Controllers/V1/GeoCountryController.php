@@ -32,7 +32,7 @@ class GeoCountryController extends Controller
         try {
 
             // ✅ Récupère tous les pays avec leurs traductions actives et leur continent, triés par ordre d'affichage décroissant
-            $geocountries = GeoCountry::withCount(['users', 'audits', 'activityLogs'])->withActiveTranslation()->with(['continent', 'currency'])->orderBy('sort_order', 'desc')->get();
+            $geocountries = GeoCountry::withAuditsCountTotal()->withCount(['users', 'audits', 'activityLogs'])->withActiveTranslation()->with(['continent', 'currency'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des pays
             $this->logActivity(type: 'info', action: 'backend.geocountries.index', context: ['count' => $geocountries->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -50,10 +50,32 @@ class GeoCountryController extends Controller
     }
 
     // ─────────────────────────────────────────────
+    // Résolution + vérification slug (helper privé)
+    // ─────────────────────────────────────────────
+    private function resolveCountryWithSlugCheck(GeoCountry $geoCountry, string $slug, string $action, string $langKey): GeoCountry
+    {
+        // Vérifie que le slug correspond au pays, sinon renvoie une 404
+        $expectedSlug = $geoCountry->active_translation?->slug ?? $geoCountry->code;
+
+        // Si le slug fourni ne correspond pas au slug attendu, on log l'erreur et on renvoie une 404
+        if ($expectedSlug !== $slug) {
+            // Log de l'erreur de correspondance du slug avec un message d'avertissement
+            $this->logActivity(type: 'warning', action: $action, context: ['country_uuid' => $geoCountry->uuid, 'country_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.{$langKey}.slug_mismatch"), is_success: false, loggable: $geoCountry);
+
+            abort(404);
+        }
+
+        return $geoCountry;
+    }
+
+    // ─────────────────────────────────────────────
     // SHOW
     // ─────────────────────────────────────────────
-    public function backend_geocountries_show(GeoCountry $geoCountry, string $slug): View|RedirectResponse
+    public function backend_geocountries_show(GeoCountry $geoCountry, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $geoCountry = $this->resolveCountryWithSlugCheck($geoCountry, $slug, 'backend.geocountries.show', 'show');
+
         try {
 
             $langs = getActiveLangs()['langs']; // Récupère les langues actives pour afficher les onglets de traduction
@@ -62,18 +84,10 @@ class GeoCountryController extends Controller
             // Charge tout en une seule requête : traductions actives (toutes langues actives,
             // car l'onglet "Traductions" de la vue affiche chaque langue), continent et compteurs.
             $country = GeoCountry::query()
-                ->withCount(['users', 'audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['users', 'audits', 'activityLogs'])
                 ->with(['continent', 'currency'])
                 ->with(['translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang')])
                 ->findOrFail($geoCountry->id);
-
-            $expectedSlug = $country->active_translation?->slug ?? $country->code;
-
-            if ($expectedSlug !== $slug) {
-                $this->logActivity(type: 'warning', action: 'backend.geocountries.show', context: ['country_uuid' => $country->uuid, 'country_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.show.slug_mismatch"), is_success: false, loggable: $country);
-
-                return redirect()->route('backend.geocountries.index')->with('error', __("{$this->backendLangPath}.show.slug_mismatch")); // Redirection vers la liste des pays avec un message d'erreur
-            }
 
             $geoCountryTranslations = GeoCountryTranslation::onlyTrashed()->where('country_id', $country->id)->get(); // Récupère toutes les traductions supprimées (soft deleted) de ce pays
 
@@ -97,26 +111,18 @@ class GeoCountryController extends Controller
     // ─────────────────────────────────────────────
     // USERS
     // ─────────────────────────────────────────────
-    public function backend_geocountries_users(GeoCountry $geoCountry, string $slug): View|RedirectResponse
+    public function backend_geocountries_users(GeoCountry $geoCountry, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $country = $this->resolveCountryWithSlugCheck($geoCountry, $slug, 'backend.geocountries.users', 'users');
+
         try {
 
-            // Pays résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            $country = GeoCountry::query()
-                ->withActiveTranslation()
-                ->withCount(['users', 'audits', 'activityLogs'])
-                ->findOrFail($geoCountry->id);
-
-            $expectedSlug = $country->active_translation?->slug ?? $country->code;
-
-            if ($expectedSlug !== $slug) {
-                $this->logActivity(type: 'warning', action: 'backend.geocountries.users', context: ['country_uuid' => $country->uuid, 'country_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.users.slug_mismatch"), is_success: false, loggable: $country);
-
-                return redirect()->route('backend.geocountries.index')->with('error', __("{$this->backendLangPath}.users.slug_mismatch"));
-            }
+            // Charge les compteurs affichés par la navigation
+            $country->loadCount(['users', 'audits', 'activityLogs']);
 
             // Récupère les utilisateurs de ce pays
-            $users = User::with(['cloudFiles'])->withCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies'])->where('country_id', $country->id)->orderBy('created_at', 'desc')->get();
+            $users = User::with(['cloudFiles'])->withAuditsCountTotal()->withCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies'])->where('country_id', $country->id)->orderBy('created_at', 'desc')->get();
 
             $countryName = $country->activeTranslation?->name ?? $country->code;
 
@@ -138,27 +144,19 @@ class GeoCountryController extends Controller
     // ─────────────────────────────────────────────
     // AUDITS
     // ─────────────────────────────────────────────
-    public function backend_geocountries_audits(GeoCountry $geoCountry, string $slug): View|RedirectResponse
+    public function backend_geocountries_audits(GeoCountry $geoCountry, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $country = $this->resolveCountryWithSlugCheck($geoCountry, $slug, 'backend.geocountries.audits', 'audits');
+
         try {
 
-            // Pays résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            $country = GeoCountry::query()
-                ->withActiveTranslation()
-                ->withCount(['users', 'audits', 'activityLogs'])
-                ->findOrFail($geoCountry->id);
-
-            $expectedSlug = $country->active_translation?->slug ?? $country->code;
-
-            if ($expectedSlug !== $slug) {
-                $this->logActivity(type: 'warning', action: 'backend.geocountries.audits', context: ['country_uuid' => $country->uuid, 'country_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.audits.slug_mismatch"), is_success: false, loggable: $country);
-
-                return redirect()->route('backend.geocountries.index')->with('error', __("{$this->backendLangPath}.audits.slug_mismatch"));
-            }
+            // Charge les compteurs affichés par la navigation
+            $country->loadCount(['users', 'audits', 'activityLogs']);
 
             $countryName = $country->active_translation?->name ?? $country->code;
 
-            $audits = $country->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $country->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.geocountries.audits', context: ['country_uuid' => $country->uuid, 'country_code' => $country->code], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $countryName]), is_success: true, loggable: $country);
 
@@ -175,23 +173,15 @@ class GeoCountryController extends Controller
     // ─────────────────────────────────────────────
     // ACTIVITY LOGS
     // ─────────────────────────────────────────────
-    public function backend_geocountries_activity_logs(GeoCountry $geoCountry, string $slug): View|RedirectResponse
+    public function backend_geocountries_activity_logs(GeoCountry $geoCountry, string $slug): View
     {
+        // Vérifie que le slug correspond
+        $country = $this->resolveCountryWithSlugCheck($geoCountry, $slug, 'backend.geocountries.activity-logs', 'activity-logs');
+
         try {
 
-            // Pays résolu par le binding implicite sur uuid (404 automatique si introuvable)
-            $country = GeoCountry::query()
-                ->withActiveTranslation()
-                ->withCount(['users', 'audits', 'activityLogs'])
-                ->findOrFail($geoCountry->id);
-
-            $expectedSlug = $country->active_translation?->slug ?? $country->code;
-
-            if ($expectedSlug !== $slug) {
-                $this->logActivity(type: 'warning', action: 'backend.geocountries.activity-logs', context: ['country_uuid' => $country->uuid, 'country_slug' => $slug, 'expected_slug' => $expectedSlug], message: null, activity: __("{$this->backendLangPath}.activity-logs.slug_mismatch"), is_success: false, loggable: $country);
-
-                return redirect()->route('backend.geocountries.index')->with('error', __("{$this->backendLangPath}.activity-logs.slug_mismatch"));
-            }
+            // Charge les compteurs affichés par la navigation
+            $country->loadCount(['users', 'audits', 'activityLogs']);
 
             $countryName = $country->active_translation?->name ?? $country->code;
 
@@ -368,7 +358,7 @@ class GeoCountryController extends Controller
         try {
 
             // Récupère tous les pays supprimés (soft deleted) avec leurs traductions, triés par date de suppression décroissante
-            $geocountries = GeoCountry::onlyTrashed()->withTrashedActiveTranslation()->with(['continent', 'currency'])->withCount(['users', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $geocountries = GeoCountry::onlyTrashed()->withTrashedActiveTranslation()->with(['continent', 'currency'])->withAuditsCountTotal()->withCount(['users', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des pays
             $this->logActivity(type: 'info', action: 'backend.geocountries.trashed', context: ['count' => $geocountries->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

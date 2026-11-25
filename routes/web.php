@@ -27,6 +27,8 @@ use App\Http\Controllers\V1\GeoContinentController as V1GeoContinentController;
 use App\Http\Controllers\V1\GeoContinentTranslationController as V1GeoContinentTranslationController;
 use App\Http\Controllers\V1\GeoCountryController as V1GeoCountryController;
 use App\Http\Controllers\V1\GeoCountryTranslationController as V1GeoCountryTranslationController;
+use App\Http\Controllers\V1\GeoDivisionTypeController as V1GeoDivisionTypeController;
+use App\Http\Controllers\V1\GeoDivisionTypeTranslationController as V1GeoDivisionTypeTranslationController;
 use App\Http\Controllers\V1\LangController as V1LangController;
 use App\Http\Controllers\V1\PermissionController as V1PermissionController;
 use App\Http\Controllers\V1\PlatformVersionController as V1PlatformVersionController;
@@ -191,6 +193,30 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/geo-countries-translations/trashed/{geoCountry}', 'backend_geocountries_translations_trashed')->middleware(['permission:geo-countries-translations.trashed'])->name('backend.geocountries.translation.trashed')->withTrashed();
             Route::patch('/backend/geo-countries-translations/restore/{uuid}', 'backend_geocountries_translations_restore')->middleware(['permission:geo-countries-translations.restore'])->name('backend.geocountries.translation.restore');
             Route::delete('/backend/geo-countries-translations/force-destroy/{uuid}', 'backend_geocountries_translations_force_destroy')->middleware(['permission:geo-countries-translations.force_destroy'])->name('backend.geocountries.translation.force_destroy');
+
+            // Routes pour : Gestion des Types de Division Géographique
+            Route::controller(V1GeoDivisionTypeController::class)->group(function () {
+                Route::get('/backend/geo-division-types/index', 'backend_geodivisiontypes_index')->middleware(['permission:geo-division-types.index'])->name('backend.geodivisiontypes.index');
+                Route::get('/backend/geo-division-types/create', 'backend_geodivisiontypes_create')->middleware(['permission:geo-division-types.create'])->name('backend.geodivisiontypes.create');
+                Route::post('/backend/geo-division-types/store', 'backend_geodivisiontypes_store')->middleware(['permission:geo-division-types.store'])->name('backend.geodivisiontypes.store');
+                Route::get('/backend/geo-division-types/show/{geoDivisionType}/{slug}', 'backend_geodivisiontypes_show')->middleware(['permission:geo-division-types.show'])->name('backend.geodivisiontypes.show');
+                Route::get('/backend/geo-division-types/audits/{geoDivisionType}', 'backend_geodivisiontypes_audits')->middleware(['permission:geo-division-types.audits'])->name('backend.geodivisiontypes.audits');
+                Route::get('/backend/geo-division-types/activity-logs/{geoDivisionType}', 'backend_geodivisiontypes_activity_logs')->middleware(['permission:geo-division-types.activity_logs'])->name('backend.geodivisiontypes.activity-logs');
+                Route::get('/backend/geo-division-types/edit/{geoDivisionType}', 'backend_geodivisiontypes_edit')->middleware(['permission:geo-division-types.edit'])->name('backend.geodivisiontypes.edit');
+                Route::put('/backend/geo-division-types/update/{geoDivisionType}', 'backend_geodivisiontypes_update')->middleware(['permission:geo-division-types.update'])->name('backend.geodivisiontypes.update');
+                Route::patch('/backend/geo-division-types/activate/{geoDivisionType}', 'backend_geodivisiontypes_activate')->middleware(['permission:geo-division-types.activate'])->name('backend.geodivisiontypes.activate');
+                Route::patch('/backend/geo-division-types/deactivate/{geoDivisionType}', 'backend_geodivisiontypes_deactivate')->middleware(['permission:geo-division-types.deactivate'])->name('backend.geodivisiontypes.deactivate');
+                Route::delete('/backend/geo-division-types/destroy/{geoDivisionType}', 'backend_geodivisiontypes_destroy')->middleware(['permission:geo-division-types.destroy'])->name('backend.geodivisiontypes.destroy');
+                Route::get('/backend/geo-division-types/trashed', 'backend_geodivisiontypes_trashed')->middleware(['permission:geo-division-types.trashed'])->name('backend.geodivisiontypes.trashed');
+                Route::patch('/backend/geo-division-types/restore/{uuid}', 'backend_geodivisiontypes_restore')->middleware(['permission:geo-division-types.restore'])->name('backend.geodivisiontypes.restore');
+                Route::delete('/backend/geo-division-types/force-destroy/{uuid}', 'backend_geodivisiontypes_force_destroy')->middleware(['permission:geo-division-types.force_destroy'])->name('backend.geodivisiontypes.force-destroy');
+            });
+            Route::controller(V1GeoDivisionTypeTranslationController::class)->group(function () {
+                Route::delete('/backend/geo-division-type-translations/destroy/{geoDivisionTypeTranslation}', 'backend_geodivisiontypes_translations_destroy')->middleware(['permission:geo-division-type-translations.destroy'])->name('backend.geodivisiontypes.translation.destroy');
+                Route::get('/backend/geo-division-type-translations/trashed/{geoDivisionType}', 'backend_geodivisiontypes_translations_trashed')->middleware(['permission:geo-division-type-translations.trashed'])->name('backend.geodivisiontypes.translation.trashed')->withTrashed();
+                Route::patch('/backend/geo-division-type-translations/restore/{uuid}', 'backend_geodivisiontypes_translations_restore')->middleware(['permission:geo-division-type-translations.restore'])->name('backend.geodivisiontypes.translation.restore');
+                Route::delete('/backend/geo-division-type-translations/force-destroy/{uuid}', 'backend_geodivisiontypes_translations_force_destroy')->middleware(['permission:geo-division-type-translations.force_destroy'])->name('backend.geodivisiontypes.translation.force_destroy');
+            });
 
             // Routes pour : Gestion des Devises
             Route::controller(V1CurrencyController::class)->group(function () {

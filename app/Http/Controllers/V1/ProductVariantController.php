@@ -39,7 +39,7 @@ class ProductVariantController extends Controller
                 'cloudFiles',
                 'attributeValues.translations',
             ])
-                ->withCount(['audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
                 ->orderByDesc('created_at')
                 ->get();
 
@@ -207,7 +207,7 @@ class ProductVariantController extends Controller
             // Les compteurs alimentent les badges de navigation (_show-navigation).
             $productVariant->loadCount(['audits', 'activityLogs']);
 
-            $audits = $productVariant->audits()
+            $audits = $productVariant->auditsWithTranslations()
                 ->orderByDesc('created_at')
                 ->get();
 
@@ -570,7 +570,7 @@ class ProductVariantController extends Controller
                     'cloudFiles',
                     'attributeValues.translations',
                 ])
-                ->withCount(['audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
                 ->orderByDesc('deleted_at')
                 ->get();
 

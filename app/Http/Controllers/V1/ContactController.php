@@ -34,7 +34,7 @@ class ContactController extends Controller
         try {
 
             // Récupère tous les contacts avec leur utilisateur, triés par date de création décroissante
-            $contacts = Contact::withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $contacts = Contact::withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.contacts.index', context: ['count' => $contacts->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -89,7 +89,7 @@ class ContactController extends Controller
             // Contact résolu par binding implicite ({contact}) avec ses compteurs
             $contact = $contact->loadCount(['audits', 'activityLogs']);
 
-            $audits = $contact->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $contact->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.contacts.audits', context: ['contact_uuid' => $contact->uuid, 'contact_fullname' => $contact->fullname], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $contact->fullname]), is_success: true, loggable: $contact);
 
@@ -241,7 +241,7 @@ class ContactController extends Controller
         try {
 
             // Récupère tous les contacts supprimés, triés par date de suppression décroissante
-            $contacts = Contact::onlyTrashed()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $contacts = Contact::onlyTrashed()->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des contacts supprimés réussie
             $this->logActivity(type: 'info', action: 'backend.contacts.trashed', context: ['count' => $contacts->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

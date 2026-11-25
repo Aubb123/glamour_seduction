@@ -41,7 +41,7 @@ class ProductBrandController extends Controller
         try {
 
             // ✅ Récupère toutes les marques avec leurs traductions et les fichiers cloud, triées par sort_order décroissant
-            $brands = ProductBrand::with(['cloudFiles'])->withActiveTranslation()->withCount(['products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
+            $brands = ProductBrand::with(['cloudFiles'])->withActiveTranslation()->withAuditsCountTotal()->withCount(['products', 'audits', 'activityLogs'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'accès à la liste des marques
             $this->logActivity(type: 'info', action: 'backend.product-brands.index', context: ['count' => $brands->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -197,7 +197,7 @@ class ProductBrandController extends Controller
             $brandName = $brand->active_translation?->name ?? '';
 
             // $audits récupère tous les audits de la marque, avec les relations user et auditable, triés par date de création décroissante
-            $audits = $brand->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $brand->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation des audits d'une marque
             $this->logActivity(type: 'info', action: 'backend.product-brands.audits', context: ['brand_uuid' => $brand->uuid, 'brand_name' => $brandName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $brandName]), is_success: true, loggable: $brand);
@@ -264,7 +264,7 @@ class ProductBrandController extends Controller
             $brand->loadCount(['products', 'audits', 'activityLogs']);
 
             // Produits rattachés à la marque (mêmes relations que la liste des produits)
-            $products = $brand->products()->withActiveTranslation()->with(['category', 'brand', 'currency', 'tags'])->withCount(['variants', 'audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $products = $brand->products()->withActiveTranslation()->with(['category', 'brand', 'currency', 'tags'])->withAuditsCountTotal()->withCount(['variants', 'audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             // $brandName est utilisé pour le logging et l'affichage, avec un fallback si le nom n'est pas disponible
             $brandName = $brand->active_translation?->name ?? '';
@@ -481,7 +481,7 @@ class ProductBrandController extends Controller
         try {
 
             // $brands récupère toutes les marques supprimées (soft deleted) avec leurs traductions actives et les fichiers cloud, triées par date de suppression décroissante
-            $brands = ProductBrand::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withCount(['products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $brands = ProductBrand::onlyTrashed()->withTrashedActiveTranslation()->with(['cloudFiles'])->withAuditsCountTotal()->withCount(['products', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des marques
             $this->logActivity(type: 'info', action: 'backend.product-brands.trashed', context: ['count' => $brands->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

@@ -38,7 +38,7 @@ class ProductWarehouseController extends Controller
             // Récupère tous les entrepôts avec leur traduction active, leur pays et le nombre d'audits/logs
             $warehouses = ProductWarehouse::withActiveTranslation()
                 ->with(['country'])
-                ->withCount(['audits', 'activityLogs', 'locations'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'locations'])
                 ->orderBy('sort_order', 'desc')
                 ->get();
 
@@ -175,7 +175,7 @@ class ProductWarehouseController extends Controller
 
             $warehouseName = $warehouse->active_translation?->name ?? '';
 
-            $audits = $warehouse->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $warehouse->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.audits', context: ['warehouse_uuid' => $warehouse->uuid], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $warehouseName]), is_success: true, loggable: $warehouse);
 
@@ -233,7 +233,7 @@ class ProductWarehouseController extends Controller
             $locations = $warehouse->locations()
                 ->withActiveTranslation()
                 ->with(['warehouse', 'parent'])
-                ->withCount(['audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
                 ->orderBy('sort_order')
                 ->get();
 
@@ -418,7 +418,7 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouses = ProductWarehouse::onlyTrashed()->withTrashedActiveTranslation()->with(['country'])->withCount(['audits', 'activityLogs', 'locations'])->orderBy('deleted_at', 'desc')->get();
+            $warehouses = ProductWarehouse::onlyTrashed()->withTrashedActiveTranslation()->with(['country'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'locations'])->orderBy('deleted_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.trashed', context: ['count' => $warehouses->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 

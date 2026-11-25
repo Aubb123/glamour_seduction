@@ -36,7 +36,7 @@ class BlogPostCommentController extends Controller
         try {
 
             // Récupère tous les commentaires avec leurs relations et compteurs, triés par date de création décroissante
-            $comments = BlogPostComment::withCount(['audits', 'activityLogs', 'replies'])->orderBy('created_at', 'desc')->get();
+            $comments = BlogPostComment::withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'replies'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.blog-post-comments.index', context: ['count' => $comments->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -129,7 +129,7 @@ class BlogPostCommentController extends Controller
 
             $commentContent = $comment->content;
 
-            $audits = $comment->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $comment->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.blog-post-comments.audits', context: ['comment_uuid' => $comment->uuid, 'comment_content' => $commentContent], message: null, activity: __("{$this->backendLangPath}.audits.success", ['content' => $commentContent]), is_success: true, loggable: $comment);
 
@@ -276,7 +276,7 @@ class BlogPostCommentController extends Controller
         try {
 
             // Récupère tous les commentaires supprimés, triés par date de suppression décroissante
-            $comments = BlogPostComment::onlyTrashed()->withCount(['audits', 'activityLogs', 'replies'])->orderBy('deleted_at', 'desc')->get();
+            $comments = BlogPostComment::onlyTrashed()->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'replies'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.blog-post-comments.trashed', context: ['count' => $comments->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

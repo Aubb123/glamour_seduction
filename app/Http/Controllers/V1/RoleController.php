@@ -37,7 +37,7 @@ class RoleController extends Controller
         try {
 
             // ✅ Récupère toutes les roles avec leurs traductions, triées par date de création décroissante
-            $roles = Role::withCount(['audits', 'activityLogs', 'users', 'permissions'])->withActiveTranslation()->orderBy('created_at', 'desc')->get();
+            $roles = Role::withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'users', 'permissions'])->withActiveTranslation()->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des roles
             $this->logActivity(type: 'info', action: 'backend.roles.index', context: ['count' => $roles->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -139,7 +139,7 @@ class RoleController extends Controller
 
             $role->loadCount(['audits', 'activityLogs', 'users', 'permissions']);
 
-            $users = $role->users()->withCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies'])->orderBy('created_at', 'desc')->get();
+            $users = $role->users()->withAuditsCountTotal()->withCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.roles.users', context: ['role_uuid' => $role->uuid, 'users_count' => $users->count()], message: null, activity: __("{$this->backendLangPath}.users.success", ['name' => $role->active_translation?->label ?? $role->name]), is_success: true, loggable: $role);
 
@@ -164,7 +164,7 @@ class RoleController extends Controller
 
             $role->loadCount(['audits', 'activityLogs', 'users', 'permissions']);
 
-            $audits = $role->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $role->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.roles.audits', context: ['role_uuid' => $role->uuid, 'role_slug' => $role->slug], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $role->active_translation?->label ?? $role->name]), is_success: true, loggable: $role);
 
@@ -335,7 +335,7 @@ class RoleController extends Controller
     {
         try {
 
-            $roles = Role::onlyTrashed()->withTrashedActiveTranslation()->withCount(['audits', 'activityLogs', 'users', 'permissions'])->orderBy('deleted_at', 'desc')->get();
+            $roles = Role::onlyTrashed()->withTrashedActiveTranslation()->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'users', 'permissions'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de la consultation de la corbeille des roles
             $this->logActivity(type: 'info', action: 'backend.roles.trashed', context: ['count' => $roles->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

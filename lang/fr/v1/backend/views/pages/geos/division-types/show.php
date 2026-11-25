@@ -1,0 +1,32 @@
+<?php
+
+return [
+    // show.blade.php
+    'pageTitle' => 'Détail du type de division',
+    'informationsGenerales' => 'Informations générales',
+    'traductions' => 'Traductions',
+    'metadonnees' => 'Métadonnées',
+    'details' => 'Détails',
+    'code' => 'Code',
+    'niveau' => 'Niveau',
+    'ordre' => 'Ordre d\'affichage',
+    'statut' => 'Statut',
+    'activation' => 'Activation',
+    'utilisableDansApp' => 'Utilisable dans l\'application',
+    'actif' => 'Actif',
+    'inactif' => 'Inactif',
+    'corbeille' => 'Corbeille',
+    'libelle' => 'Libellé',
+    'slug' => 'Slug',
+    'description' => 'Description',
+    'actions' => 'Actions',
+    'supprimer' => 'Supprimer',
+    'confirmerSuppressionTraduction' => 'Confirmer la suppression de cette traduction ?',
+    'aucuneTraductionDisponible' => 'Aucune traduction disponible pour cette langue.',
+    'corbeilleDesTraductions' => 'Corbeille des traductions',
+    'aucuneTraductionSupprimee' => 'Aucune traduction supprimée.',
+    'uuid' => 'UUID',
+    'creeLe' => 'Créé le',
+    'modifieLe' => 'Modifié le',
+    'supprimeLe' => 'Supprimé le',
+];

@@ -39,7 +39,7 @@ class FaqController extends Controller
         try {
 
             // Récupère toutes les FAQs avec leur traduction active, triées par ordre
-            $faqs = Faq::withCount(['audits', 'activityLogs'])->with('user')->withActiveTranslation()->orderBy('sort_order', 'desc')->get();
+            $faqs = Faq::withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->with('user')->withActiveTranslation()->orderBy('sort_order', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.faqs.index', context: ['count' => $faqs->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -190,7 +190,7 @@ class FaqController extends Controller
 
             $faqName = $faq->active_translation?->question ?? '';
 
-            $audits = $faq->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $faq->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.faqs.audits', context: ['faq_uuid' => $faq->uuid, 'faq_question' => $faqName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $faqName]), is_success: true, loggable: $faq);
 
@@ -393,7 +393,7 @@ class FaqController extends Controller
         try {
 
             // Récupère toutes les FAQs supprimées avec leur traduction active, triées par date de suppression décroissante
-            $faqs = Faq::onlyTrashed()->withTrashedActiveTranslation()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $faqs = Faq::onlyTrashed()->withTrashedActiveTranslation()->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des FAQs supprimées réussie
             $this->logActivity(type: 'info', action: 'backend.faqs.trashed', context: ['count' => $faqs->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

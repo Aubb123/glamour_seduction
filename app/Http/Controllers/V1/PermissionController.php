@@ -39,7 +39,7 @@ class PermissionController extends Controller
         try {
 
             // ✅ Récupère toutes les permissions, triées par date de création décroissante
-            $permissions = Permission::withCount(['roles', 'audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
+            $permissions = Permission::withAuditsCountTotal()->withCount(['roles', 'audits', 'activityLogs'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des permissions
             $this->logActivity(type: 'info', action: 'backend.permissions.index', context: ['count' => $permissions->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -198,7 +198,7 @@ class PermissionController extends Controller
 
             $permission->loadCount(['roles', 'audits', 'activityLogs']);
 
-            $audits = $permission->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $permission->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.permissions.audits', context: ['permission_uuid' => $permission->uuid, 'permission_name' => $permission->name], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $permission->name]), is_success: true, loggable: $permission);
 
@@ -440,7 +440,7 @@ class PermissionController extends Controller
     public function backend_permissions_trashed(): View
     {
         try {
-            $permissions = Permission::onlyTrashed()->withCount(['roles', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $permissions = Permission::onlyTrashed()->withAuditsCountTotal()->withCount(['roles', 'audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.permissions.trashed', context: ['count' => $permissions->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 

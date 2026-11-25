@@ -35,7 +35,7 @@ class UserController extends Controller
         try {
 
             // ✅ Récupère tous les utilisateurs avec leur pays et leurs rôles, triés par date de création décroissante
-            $users = User::with(['cloudFiles'])->withCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies'])->orderBy('created_at', 'desc')->get();
+            $users = User::with(['cloudFiles'])->withAuditsCountTotal()->withCount(['activityLogs', 'galleries', 'subscribes', 'audits', 'blogPosts', 'blogPostComments', 'blogPostCommentReplies'])->orderBy('created_at', 'desc')->get();
 
             // Log de l'accès à la liste des utilisateurs
             $this->logActivity(type: 'info', action: 'backend.users.index', context: ['count' => $users->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -256,7 +256,7 @@ class UserController extends Controller
 
             $userName = $user->first_name.' '.$user->last_name;
 
-            $audits = $user->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $user->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             // Log de la consultation du journal d'audit d'un utilisateur
             $this->logActivity(type: 'info', action: 'backend.users.audits', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $userName]), is_success: true, loggable: $user);

@@ -39,7 +39,7 @@ class GalleryController extends Controller
         try {
 
             // Récupère toutes les galeries avec leur traduction active, triées par ordre
-            $galleries = Gallery::withCount(['audits', 'activityLogs'])->withActiveTranslation()->with(['user', 'cloudFiles'])->orderBy('sort_order', 'desc')->get();
+            $galleries = Gallery::withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->withActiveTranslation()->with(['user', 'cloudFiles'])->orderBy('sort_order', 'desc')->get();
 
             // Log de l'activité
             $this->logActivity(type: 'info', action: 'backend.galleries.index', context: ['count' => $galleries->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
@@ -190,7 +190,7 @@ class GalleryController extends Controller
 
             $galleryName = $gallery->active_translation?->title ?? '';
 
-            $audits = $gallery->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $gallery->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.galleries.audits', context: ['gallery_uuid' => $gallery->uuid, 'gallery_title' => $galleryName], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $galleryName]), is_success: true, loggable: $gallery);
 
@@ -393,7 +393,7 @@ class GalleryController extends Controller
         try {
 
             // Récupère toutes les galeries supprimées avec leur traduction active, triées par date de suppression décroissante
-            $galleries = Gallery::onlyTrashed()->withTrashedActiveTranslation()->with(['user', 'cloudFiles'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $galleries = Gallery::onlyTrashed()->withTrashedActiveTranslation()->with(['user', 'cloudFiles'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             // Log de l'activité d'affichage de la liste des galeries supprimées réussie
             $this->logActivity(type: 'info', action: 'backend.galleries.trashed', context: ['count' => $galleries->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);

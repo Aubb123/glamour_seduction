@@ -38,7 +38,7 @@ class ProductWarehouseLocationController extends Controller
             // leur parent et le nombre d'audits/logs
             $locations = ProductWarehouseLocation::withActiveTranslation()
                 ->with(['warehouse', 'parent'])
-                ->withCount(['audits', 'activityLogs'])
+                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
                 ->orderBy('warehouse_id')
                 ->orderBy('sort_order')
                 ->get();
@@ -161,7 +161,7 @@ class ProductWarehouseLocationController extends Controller
 
             $locationName = $location->active_translation?->name ?? '';
 
-            $audits = $location->audits()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $location->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-locations.audits', context: ['location_uuid' => $location->uuid], message: null, activity: __("{$this->backendLangPath}.audits.success", ['name' => $locationName]), is_success: true, loggable: $location);
 
@@ -394,7 +394,7 @@ class ProductWarehouseLocationController extends Controller
     {
         try {
 
-            $locations = ProductWarehouseLocation::onlyTrashed()->withTrashedActiveTranslation()->with(['warehouse', 'parent'])->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
+            $locations = ProductWarehouseLocation::onlyTrashed()->withTrashedActiveTranslation()->with(['warehouse', 'parent'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderBy('deleted_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-locations.trashed', context: ['count' => $locations->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 
