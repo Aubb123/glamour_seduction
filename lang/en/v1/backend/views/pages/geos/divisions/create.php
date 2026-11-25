@@ -1,0 +1,33 @@
+<?php
+
+return [
+    // create.blade.php
+    'pageTitle' => 'Create a division',
+    'creerUneDivision' => 'Create a division',
+    'retour' => 'Back',
+    'informationsGenerales' => 'General information',
+    'traductions' => 'Translations',
+    'confirmation' => 'Confirmation',
+    'pays' => 'Country',
+    'paysAide' => 'Country the division belongs to (immutable after creation).',
+    'typeDeDivision' => 'Division type',
+    'typeAide' => 'Administrative type of the division (department, commune, ...).',
+    'parent' => 'Parent division',
+    'parentAide' => 'Leave empty to create a first-level division.',
+    'niveau' => 'Level',
+    'niveauAide' => 'Computed automatically from the parent division.',
+    'statut' => 'Status',
+    'actif' => 'Active',
+    'inactif' => 'Inactive',
+    'notes' => 'Notes',
+    'notesPlaceholder' => 'Optional internal notes...',
+    'nom' => 'Name',
+    'nomPlaceholder' => 'e.g. Department, Commune...',
+    'description' => 'Description',
+    'descriptionPlaceholder' => 'Optional description of the division...',
+    'recapitulatif' => 'Summary',
+    'recapitulatifAide' => 'Check the information before saving.',
+    'precedent' => 'Previous',
+    'suivant' => 'Next',
+    'enregistrer' => 'Save',
+];

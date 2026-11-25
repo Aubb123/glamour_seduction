@@ -531,6 +531,7 @@ class BackendHelper
                             ['label' => 'Continents', 'route' => 'backend.geocontinents.index', 'patterns' => ['backend.geocontinents.*']],
                             ['label' => 'Pays', 'route' => 'backend.geocountries.index', 'patterns' => ['backend.geocountries.*']],
                             ['label' => 'Types de division', 'route' => 'backend.geodivisiontypes.index', 'patterns' => ['backend.geodivisiontypes.*']],
+                            ['label' => 'Divisions', 'route' => 'backend.geodivisions.index', 'patterns' => ['backend.geodivisions.*']],
                             ['label' => 'Devises', 'route' => 'backend.currencies.index', 'patterns' => ['backend.currencies.*', 'backend.currency-translations.*']],
                         ],
                     ],
@@ -673,6 +674,12 @@ class BackendHelper
                 'icon' => 'ti ti-category',
                 'route' => 'backend.geodivisiontypes.create',
                 'permission' => 'geo-division-types.create',
+            ],
+            [
+                'label' => __('Division'),
+                'icon' => 'ti ti-map-2',
+                'route' => 'backend.geodivisions.create',
+                'permission' => 'geo-divisions.create',
             ],
             [
                 'label' => __('Catégorie produit'),

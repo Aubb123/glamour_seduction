@@ -1,0 +1,33 @@
+<?php
+
+return [
+    // create.blade.php
+    'pageTitle' => 'Créer une division',
+    'creerUneDivision' => 'Créer une division',
+    'retour' => 'Retour',
+    'informationsGenerales' => 'Informations générales',
+    'traductions' => 'Traductions',
+    'confirmation' => 'Confirmation',
+    'pays' => 'Pays',
+    'paysAide' => 'Pays de rattachement de la division (immuable après création).',
+    'typeDeDivision' => 'Type de division',
+    'typeAide' => 'Type administratif de la division (département, commune, ...).',
+    'parent' => 'Division parente',
+    'parentAide' => 'Laissez vide pour créer une division de premier niveau.',
+    'niveau' => 'Niveau',
+    'niveauAide' => 'Calculé automatiquement selon la division parente.',
+    'statut' => 'Statut',
+    'actif' => 'Actif',
+    'inactif' => 'Inactif',
+    'notes' => 'Notes',
+    'notesPlaceholder' => 'Notes internes optionnelles...',
+    'nom' => 'Nom',
+    'nomPlaceholder' => 'ex : Département, Commune...',
+    'description' => 'Description',
+    'descriptionPlaceholder' => 'Description optionnelle de la division...',
+    'recapitulatif' => 'Récapitulatif',
+    'recapitulatifAide' => 'Vérifiez les informations avant d\'enregistrer.',
+    'precedent' => 'Précédent',
+    'suivant' => 'Suivant',
+    'enregistrer' => 'Enregistrer',
+];

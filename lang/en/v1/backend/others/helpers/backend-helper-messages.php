@@ -6,6 +6,7 @@ return [
     'entityLabels' => [
         'country' => 'country',
         'divisionType' => 'division type',
+        'division' => 'division',
         'continent' => 'continent',
         'currency' => 'currency',
         'category' => 'category',
@@ -70,6 +71,13 @@ return [
             ],
             'GeoDivisionType' => [
                 'label' => 'division type',
+                'demonstrative' => 'this',
+                'pronoun' => 'it',
+                'participle' => 'linked',
+                'object' => 'it',
+            ],
+            'GeoDivision' => [
+                'label' => 'division',
                 'demonstrative' => 'this',
                 'pronoun' => 'it',
                 'participle' => 'linked',
@@ -170,6 +178,9 @@ return [
             'histories' => 'histories',
             'shopUsers' => 'staff',
 
+            'GeoDivision' => [
+                'children' => 'sub-divisions',
+            ],
             'ProductCategory' => [
                 'products' => 'products',
                 'children' => 'subcategories',

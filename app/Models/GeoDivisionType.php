@@ -24,14 +24,7 @@ class GeoDivisionType extends Model
 
     // Relations enfants dont la présence bloquera la suppression de ce type
     // (un type utilisé par des divisions ne peut pas être supprimé).
-    //
-    // ⚠️ `divisions` n'est volontairement PAS listé ici pour l'instant : le modèle
-    // GeoDivision n'existe pas encore. BackendHelper::assertNoDependentChildren()
-    // appelle $entity->divisions() (instanciation du modèle lié) et lèverait une
-    // \Error « Class not found » non attrapable par catch (\Exception).
-    // Le verrou métier est appliqué explicitement dans GeoDivisionTypeService::destroy(),
-    // puis cette ligne sera réactivée lors du branchement du module geo_divisions.
-    protected array $dependentRelations = [];
+    protected array $dependentRelations = ['divisions'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [

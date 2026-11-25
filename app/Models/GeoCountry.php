@@ -25,7 +25,7 @@ class GeoCountry extends Model
     protected string $translationModel = GeoCountryTranslation::class;
 
     // Relations enfants dont la présence bloque la suppression de ce pays (delete / force_delete) lors d'une supression temporaire (BackendHelper::destroy_function) ou définitive (BackendHelper::force_destroy_function)
-    protected array $dependentRelations = ['territories', 'users'];
+    protected array $dependentRelations = ['territories', 'users', 'divisions'];
 
     // Attributs autorisés pour l'assignation de masse
     protected $fillable = [
@@ -93,6 +93,14 @@ class GeoCountry extends Model
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'country_id');
+    }
+
+    /**
+     * Relation : un pays a plusieurs divisions géographiques.
+     */
+    public function divisions(): HasMany
+    {
+        return $this->hasMany(GeoDivision::class, 'country_id');
     }
 
     /**

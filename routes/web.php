@@ -29,6 +29,8 @@ use App\Http\Controllers\V1\GeoCountryController as V1GeoCountryController;
 use App\Http\Controllers\V1\GeoCountryTranslationController as V1GeoCountryTranslationController;
 use App\Http\Controllers\V1\GeoDivisionTypeController as V1GeoDivisionTypeController;
 use App\Http\Controllers\V1\GeoDivisionTypeTranslationController as V1GeoDivisionTypeTranslationController;
+use App\Http\Controllers\V1\GeoDivisionController as V1GeoDivisionController;
+use App\Http\Controllers\V1\GeoDivisionTranslationController as V1GeoDivisionTranslationController;
 use App\Http\Controllers\V1\LangController as V1LangController;
 use App\Http\Controllers\V1\PermissionController as V1PermissionController;
 use App\Http\Controllers\V1\PlatformVersionController as V1PlatformVersionController;
@@ -216,6 +218,31 @@ if ($version && $version->code === 'v1') {
                 Route::get('/backend/geo-division-type-translations/trashed/{geoDivisionType}', 'backend_geodivisiontypes_translations_trashed')->middleware(['permission:geo-division-type-translations.trashed'])->name('backend.geodivisiontypes.translation.trashed')->withTrashed();
                 Route::patch('/backend/geo-division-type-translations/restore/{uuid}', 'backend_geodivisiontypes_translations_restore')->middleware(['permission:geo-division-type-translations.restore'])->name('backend.geodivisiontypes.translation.restore');
                 Route::delete('/backend/geo-division-type-translations/force-destroy/{uuid}', 'backend_geodivisiontypes_translations_force_destroy')->middleware(['permission:geo-division-type-translations.force_destroy'])->name('backend.geodivisiontypes.translation.force_destroy');
+            });
+
+            // Routes pour : Gestion des Divisions Géographiques
+            Route::controller(V1GeoDivisionController::class)->group(function () {
+                Route::get('/backend/geo-divisions/index', 'backend_geodivisions_index')->middleware(['permission:geo-divisions.index'])->name('backend.geodivisions.index');
+                Route::get('/backend/geo-divisions/create', 'backend_geodivisions_create')->middleware(['permission:geo-divisions.create'])->name('backend.geodivisions.create');
+                Route::post('/backend/geo-divisions/store', 'backend_geodivisions_store')->middleware(['permission:geo-divisions.store'])->name('backend.geodivisions.store');
+                Route::get('/backend/geo-divisions/show/{geoDivision}/{slug}', 'backend_geodivisions_show')->middleware(['permission:geo-divisions.show'])->name('backend.geodivisions.show');
+                Route::get('/backend/geo-divisions/children/{geoDivision}/{slug}', 'backend_geodivisions_children')->middleware(['permission:geo-divisions.show'])->name('backend.geodivisions.children');
+                Route::get('/backend/geo-divisions/audits/{geoDivision}/{slug}', 'backend_geodivisions_audits')->middleware(['permission:geo-divisions.audits'])->name('backend.geodivisions.audits');
+                Route::get('/backend/geo-divisions/activity-logs/{geoDivision}/{slug}', 'backend_geodivisions_activity_logs')->middleware(['permission:geo-divisions.activity_logs'])->name('backend.geodivisions.activity-logs');
+                Route::get('/backend/geo-divisions/edit/{geoDivision}', 'backend_geodivisions_edit')->middleware(['permission:geo-divisions.edit'])->name('backend.geodivisions.edit');
+                Route::put('/backend/geo-divisions/update/{geoDivision}', 'backend_geodivisions_update')->middleware(['permission:geo-divisions.update'])->name('backend.geodivisions.update');
+                Route::patch('/backend/geo-divisions/activate/{geoDivision}', 'backend_geodivisions_activate')->middleware(['permission:geo-divisions.activate'])->name('backend.geodivisions.activate');
+                Route::patch('/backend/geo-divisions/deactivate/{geoDivision}', 'backend_geodivisions_deactivate')->middleware(['permission:geo-divisions.deactivate'])->name('backend.geodivisions.deactivate');
+                Route::delete('/backend/geo-divisions/destroy/{geoDivision}', 'backend_geodivisions_destroy')->middleware(['permission:geo-divisions.destroy'])->name('backend.geodivisions.destroy');
+                Route::get('/backend/geo-divisions/trashed', 'backend_geodivisions_trashed')->middleware(['permission:geo-divisions.trashed'])->name('backend.geodivisions.trashed');
+                Route::patch('/backend/geo-divisions/restore/{uuid}', 'backend_geodivisions_restore')->middleware(['permission:geo-divisions.restore'])->name('backend.geodivisions.restore');
+                Route::delete('/backend/geo-divisions/force-destroy/{uuid}', 'backend_geodivisions_force_destroy')->middleware(['permission:geo-divisions.force_destroy'])->name('backend.geodivisions.force-destroy');
+            });
+            Route::controller(V1GeoDivisionTranslationController::class)->group(function () {
+                Route::delete('/backend/geo-division-translations/destroy/{geoDivisionTranslation}', 'backend_geodivisions_translations_destroy')->middleware(['permission:geo-division-translations.destroy'])->name('backend.geodivisions.translation.destroy');
+                Route::get('/backend/geo-division-translations/trashed/{geoDivision}', 'backend_geodivisions_translations_trashed')->middleware(['permission:geo-division-translations.trashed'])->name('backend.geodivisions.translation.trashed')->withTrashed();
+                Route::patch('/backend/geo-division-translations/restore/{uuid}', 'backend_geodivisions_translations_restore')->middleware(['permission:geo-division-translations.restore'])->name('backend.geodivisions.translation.restore');
+                Route::delete('/backend/geo-division-translations/force-destroy/{uuid}', 'backend_geodivisions_translations_force_destroy')->middleware(['permission:geo-division-translations.force_destroy'])->name('backend.geodivisions.translation.force_destroy');
             });
 
             // Routes pour : Gestion des Devises

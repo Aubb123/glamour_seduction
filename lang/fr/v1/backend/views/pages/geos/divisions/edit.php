@@ -1,0 +1,32 @@
+<?php
+
+return [
+    // edit.blade.php
+    'pageTitle' => 'Modifier une division',
+    'modifierLaDivision' => 'Modifier la division',
+    'retour' => 'Retour',
+    'informationsGenerales' => 'Informations générales',
+    'traductions' => 'Traductions',
+    'confirmation' => 'Confirmation',
+    'pays' => 'Pays',
+    'paysImmuable' => 'Le pays est immuable.',
+    'typeDeDivision' => 'Type de division',
+    'typeAide' => 'Type administratif de la division (département, commune, ...).',
+    'parent' => 'Division parente',
+    'parentAide' => 'Laissez vide pour créer une division de premier niveau.',
+    'niveau' => 'Niveau',
+    'niveauAide' => 'Recalculé automatiquement selon la division parente.',
+    'statut' => 'Statut',
+    'actif' => 'Actif',
+    'inactif' => 'Inactif',
+    'notes' => 'Notes',
+    'notesPlaceholder' => 'Notes internes optionnelles...',
+    'nom' => 'Nom',
+    'description' => 'Description',
+    'descriptionOptionnelle' => 'Description optionnelle de la division...',
+    'recapitulatif' => 'Récapitulatif',
+    'recapitulatifAide' => 'Vérifiez les informations avant de mettre à jour.',
+    'precedent' => 'Précédent',
+    'suivant' => 'Suivant',
+    'mettreAJour' => 'Mettre à jour',
+];

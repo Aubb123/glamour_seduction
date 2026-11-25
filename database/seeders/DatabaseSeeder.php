@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             GeoCountryTranslationSeeder::class,
             GeoDivisionTypeSeeder::class,
             GeoDivisionTypeTranslationSeeder::class,
+            GeoDivisionSeeder::class,
+            GeoDivisionTranslationSeeder::class,
             RoleSeeder::class,
             RoleTranslationSeeder::class,
             PermissionSeeder::class,

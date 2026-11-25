@@ -1,0 +1,32 @@
+<?php
+
+return [
+    // edit.blade.php
+    'pageTitle' => 'Edit a division',
+    'modifierLaDivision' => 'Edit the division',
+    'retour' => 'Back',
+    'informationsGenerales' => 'General information',
+    'traductions' => 'Translations',
+    'confirmation' => 'Confirmation',
+    'pays' => 'Country',
+    'paysImmuable' => 'The country is immutable.',
+    'typeDeDivision' => 'Division type',
+    'typeAide' => 'Administrative type of the division (department, commune, ...).',
+    'parent' => 'Parent division',
+    'parentAide' => 'Leave empty to make this a first-level division.',
+    'niveau' => 'Level',
+    'niveauAide' => 'Recomputed automatically from the parent division.',
+    'statut' => 'Status',
+    'actif' => 'Active',
+    'inactif' => 'Inactive',
+    'notes' => 'Notes',
+    'notesPlaceholder' => 'Optional internal notes...',
+    'nom' => 'Name',
+    'description' => 'Description',
+    'descriptionOptionnelle' => 'Optional description of the division...',
+    'recapitulatif' => 'Summary',
+    'recapitulatifAide' => 'Check the information before updating.',
+    'precedent' => 'Previous',
+    'suivant' => 'Next',
+    'mettreAJour' => 'Update',
+];
