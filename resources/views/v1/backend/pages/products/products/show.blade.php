@@ -91,7 +91,7 @@
                                     <div class="row mb-3 align-items-center">
                                         <div class="col-4 text-muted fw-semibold">{{ __('Prix de base') }}</div>
                                         <div class="col-8 fw-bold">
-                                            {{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}
+                                            {{ displayPrice((float) $product->base_price, $product->currency) }}
                                             @if ($product->currency)
                                                 <a href="{{ route('backend.currencies.show', ['currency' => $product->currency->uuid, 'slug' => $product->currency->active_translation?->slug ?? $product->currency->code]) }}"
                                                    class="text-muted fw-normal small ms-1 text-decoration-none">
@@ -105,7 +105,7 @@
                                         <div class="col-4 text-muted fw-semibold">{{ __('Prix barré') }}</div>
                                         <div class="col-8">
                                             @if ($product->compare_at_price)
-                                                <del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}</del>
+                                                <del>{{ displayPrice((float) $product->compare_at_price, $product->currency) }}</del>
                                             @else
                                                 <span class="text-muted">—</span>
                                             @endif
@@ -248,7 +248,7 @@
                                                     <div class="col-2 text-muted fw-semibold">{{ __('Actions') }}</div>
                                                     <div class="col-9">
                                                         @if($translation && !$translation->trashed())
-                                                            <form action="{{ route('backend.product-translations.destroy', ['uuid' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
+                                                            <form action="{{ route('backend.product-translations.destroy', ['productTranslation' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', '{{ __('Supprimer') }}', 'warning')">

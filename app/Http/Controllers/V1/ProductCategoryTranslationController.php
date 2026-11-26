@@ -27,12 +27,12 @@ class ProductCategoryTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function backend_product_category_translations_destroy(string $uuid): RedirectResponse
+    public function backend_product_category_translations_destroy(ProductCategoryTranslation $productCategoryTranslation): RedirectResponse
     {
         try {
 
-            // $translation récupère la traduction de catégorie de produit par son UUID, ou échoue si elle n'existe pas
-            $translation = ProductCategoryTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {productCategoryTranslation})
+            $translation = $productCategoryTranslation;
 
             // Suppression via le service (soft delete)
             $this->productCategoryTranslationService->backend_product_category_translations_destroy($translation);
@@ -43,18 +43,10 @@ class ProductCategoryTranslationController extends Controller
             // Redirection vers la page précédente avec un message de succès
             return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur de non-trouvabilité de la traduction à supprimer
-            $this->logActivity(type: 'warning', action: 'backend.product-category-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            // Redirection vers la page précédente avec un message d'erreur de non-trouvabilité
-            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors de la suppression de la traduction
-            $this->logActivity(type: 'warning', action: 'backend.product-category-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-category-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage());
@@ -62,7 +54,7 @@ class ProductCategoryTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la suppression de la traduction
-            $this->logActivity(type: 'error', action: 'backend.product-category-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-category-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
@@ -72,34 +64,26 @@ class ProductCategoryTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_product_category_translations_trashed(string $category_uuid): View|RedirectResponse
+    public function backend_product_category_translations_trashed(ProductCategory $productCategory): View|RedirectResponse
     {
         try {
 
-            // $category récupère la catégorie de produit par son UUID, même si elle est supprimée (soft deleted)
-            $category = ProductCategory::withTrashed()->where('uuid', $category_uuid)->firstOrFail();
+            // Catégorie résolue par le binding implicite sur uuid (route {productCategory} avec ->withTrashed())
+            $category = $productCategory;
 
             // Récupération des traductions supprimées (soft deleted) pour cette catégorie
             $trashedTranslations = ProductCategoryTranslation::onlyTrashed()->where('category_id', $category->id)->get();
 
             // Log de l'accès à la liste des traductions supprimées
-            $this->logActivity(type: 'info', action: 'backend.product-category-translations.trashed', context: ['count' => $trashedTranslations->count(), 'category_uuid' => $category_uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $category->active_translation?->name ?? $category_uuid]), is_success: true, loggable: $category);
+            $this->logActivity(type: 'info', action: 'backend.product-category-translations.trashed', context: ['count' => $trashedTranslations->count(), 'category_uuid' => $category->uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $category->active_translation?->name ?? $category->uuid]), is_success: true, loggable: $category);
 
             // Retourne la vue avec les traductions supprimées et la catégorie
             return view('v1.backend.pages.products.categories.translations.trashed', compact('trashedTranslations', 'category'));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur de non-trouvabilité de la catégorie pour laquelle on veut voir les traductions supprimées
-            $this->logActivity(type: 'warning', action: 'backend.product-category-translations.trashed', context: ['category_uuid' => $category_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $category_uuid]), is_success: false);
-
-            // Redirection vers la page précédente avec un message d'erreur de non-trouvabilité
-            return back()->with('error', __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $category_uuid]));
-
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de l'accès à la liste des traductions supprimées pour la catégorie
-            $this->logActivity(type: 'error', action: 'backend.product-category-translations.trashed', context: ['category_uuid' => $category_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $category_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-category-translations.trashed', context: ['category_uuid' => $category->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $category->uuid]), is_success: false);
 
             // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->backendLangPath}.trashed.error", ['uuid' => $category_uuid]));

@@ -23,9 +23,9 @@ return [
             'required' => 'Le statut est obligatoire.',
             'in' => 'Le statut sélectionné est invalide.',
         ],
-        'country_id' => [
-            'required' => 'Le pays est obligatoire.',
-            'exists' => 'Le pays sélectionné n\'existe pas.',
+        'division_id' => [
+            'required' => 'Le champ division est obligatoire.',
+            'exists' => 'La division sélectionnée n\'existe pas.',
         ],
         'password' => [
             'string' => 'Le mot de passe doit être une chaîne de caractères.',

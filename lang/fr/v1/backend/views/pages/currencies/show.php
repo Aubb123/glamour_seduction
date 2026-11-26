@@ -11,6 +11,7 @@ return [
     'code' => 'Code',
     'codeNumerique' => 'Code numérique (ISO 4217)',
     'decimales' => 'Décimales',
+    'tauxDeChange' => 'Taux de change',
     'deviseParDefaut' => 'Devise par défaut',
     'oui' => 'Oui',
     'non' => 'Non',

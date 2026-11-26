@@ -27,10 +27,10 @@ use App\Http\Controllers\V1\GeoContinentController as V1GeoContinentController;
 use App\Http\Controllers\V1\GeoContinentTranslationController as V1GeoContinentTranslationController;
 use App\Http\Controllers\V1\GeoCountryController as V1GeoCountryController;
 use App\Http\Controllers\V1\GeoCountryTranslationController as V1GeoCountryTranslationController;
-use App\Http\Controllers\V1\GeoDivisionTypeController as V1GeoDivisionTypeController;
-use App\Http\Controllers\V1\GeoDivisionTypeTranslationController as V1GeoDivisionTypeTranslationController;
 use App\Http\Controllers\V1\GeoDivisionController as V1GeoDivisionController;
 use App\Http\Controllers\V1\GeoDivisionTranslationController as V1GeoDivisionTranslationController;
+use App\Http\Controllers\V1\GeoDivisionTypeController as V1GeoDivisionTypeController;
+use App\Http\Controllers\V1\GeoDivisionTypeTranslationController as V1GeoDivisionTypeTranslationController;
 use App\Http\Controllers\V1\LangController as V1LangController;
 use App\Http\Controllers\V1\PermissionController as V1PermissionController;
 use App\Http\Controllers\V1\PlatformVersionController as V1PlatformVersionController;
@@ -260,6 +260,8 @@ if ($version && $version->code === 'v1') {
                 Route::get('/backend/currencies/trashed', 'backend_currencies_trashed')->middleware(['permission:currencies.trashed'])->name('backend.currencies.trashed');
                 Route::patch('/backend/currencies/restore/{uuid}', 'backend_currencies_restore')->middleware(['permission:currencies.restore'])->name('backend.currencies.restore');
                 Route::delete('/backend/currencies/force-destroy/{uuid}', 'backend_currencies_force_destroy')->middleware(['permission:currencies.force_destroy'])->name('backend.currencies.force_destroy');
+                // Sélecteur de devise du dashboard (Module 10) — pas de permission requise
+                Route::get('/backend/currency/{currency}', 'backend_currencies_switch')->name('backend.currency.switch');
             });
             Route::controller(V1CurrencyTranslationController::class)->group(function () {
                 Route::delete('/backend/currency-translations/destroy/{currencyTranslation}', 'backend_currencies_translations_destroy')->middleware(['permission:currency-translations.destroy'])->name('backend.currencies.translation.destroy');
@@ -352,8 +354,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-categories/force-destroy/{uuid}', 'backend_product_categories_force_destroy')->middleware(['permission:product-categories.force_destroy'])->name('backend.product-categories.force_destroy');
         });
         Route::controller(V1ProductCategoryTranslationController::class)->group(function () {
-            Route::delete('/backend/product-category-translations/destroy/{uuid}', 'backend_product_category_translations_destroy')->middleware(['permission:product-category-translations.destroy'])->name('backend.product-category-translations.destroy');
-            Route::get('/backend/product-category-translations/trashed/{category_uuid}', 'backend_product_category_translations_trashed')->middleware(['permission:product-category-translations.trashed'])->name('backend.product-category-translations.trashed');
+            Route::delete('/backend/product-category-translations/destroy/{productCategoryTranslation}', 'backend_product_category_translations_destroy')->middleware(['permission:product-category-translations.destroy'])->name('backend.product-category-translations.destroy');
+            Route::get('/backend/product-category-translations/trashed/{productCategory}', 'backend_product_category_translations_trashed')->middleware(['permission:product-category-translations.trashed'])->name('backend.product-category-translations.trashed')->withTrashed();
             Route::patch('/backend/product-category-translations/restore/{uuid}', 'backend_product_category_translations_restore')->middleware(['permission:product-category-translations.restore'])->name('backend.product-category-translations.restore');
             Route::delete('/backend/product-category-translations/force-destroy/{uuid}', 'backend_product_category_translations_force_destroy')->middleware(['permission:product-category-translations.force_destroy'])->name('backend.product-category-translations.force_destroy');
         });
@@ -377,8 +379,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-brands/force-destroy/{uuid}', 'backend_product_brands_force_destroy')->middleware(['permission:product-brands.force_destroy'])->name('backend.product-brands.force_destroy');
         });
         Route::controller(V1ProductBrandTranslationController::class)->group(function () {
-            Route::delete('/backend/product-brand-translations/destroy/{uuid}', 'backend_product_brand_translations_destroy')->middleware(['permission:product-brand-translations.destroy'])->name('backend.product-brand-translations.destroy');
-            Route::get('/backend/product-brand-translations/trashed/{brand_uuid}', 'backend_product_brand_translations_trashed')->middleware(['permission:product-brand-translations.trashed'])->name('backend.product-brand-translations.trashed');
+            Route::delete('/backend/product-brand-translations/destroy/{productBrandTranslation}', 'backend_product_brand_translations_destroy')->middleware(['permission:product-brand-translations.destroy'])->name('backend.product-brand-translations.destroy');
+            Route::get('/backend/product-brand-translations/trashed/{productBrand}', 'backend_product_brand_translations_trashed')->middleware(['permission:product-brand-translations.trashed'])->name('backend.product-brand-translations.trashed')->withTrashed();
             Route::patch('/backend/product-brand-translations/restore/{uuid}', 'backend_product_brand_translations_restore')->middleware(['permission:product-brand-translations.restore'])->name('backend.product-brand-translations.restore');
             Route::delete('/backend/product-brand-translations/force-destroy/{uuid}', 'backend_product_brand_translations_force_destroy')->middleware(['permission:product-brand-translations.force_destroy'])->name('backend.product-brand-translations.force_destroy');
         });
@@ -402,8 +404,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-tags/force-destroy/{uuid}', 'backend_product_tags_force_destroy')->middleware(['permission:product-tags.force_destroy'])->name('backend.product-tags.force_destroy');
         });
         Route::controller(V1ProductTagTranslationController::class)->group(function () {
-            Route::delete('/backend/product-tag-translations/destroy/{uuid}', 'backend_product_tag_translations_destroy')->middleware(['permission:product-tag-translations.destroy'])->name('backend.product-tag-translations.destroy');
-            Route::get('/backend/product-tag-translations/trashed/{tag_uuid}', 'backend_product_tag_translations_trashed')->middleware(['permission:product-tag-translations.trashed'])->name('backend.product-tag-translations.trashed');
+            Route::delete('/backend/product-tag-translations/destroy/{productTagTranslation}', 'backend_product_tag_translations_destroy')->middleware(['permission:product-tag-translations.destroy'])->name('backend.product-tag-translations.destroy');
+            Route::get('/backend/product-tag-translations/trashed/{productTag}', 'backend_product_tag_translations_trashed')->middleware(['permission:product-tag-translations.trashed'])->name('backend.product-tag-translations.trashed')->withTrashed();
             Route::patch('/backend/product-tag-translations/restore/{uuid}', 'backend_product_tag_translations_restore')->middleware(['permission:product-tag-translations.restore'])->name('backend.product-tag-translations.restore');
             Route::delete('/backend/product-tag-translations/force-destroy/{uuid}', 'backend_product_tag_translations_force_destroy')->middleware(['permission:product-tag-translations.force_destroy'])->name('backend.product-tag-translations.force_destroy');
         });
@@ -428,8 +430,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-attributes/force-destroy/{uuid}', 'backend_product_attributes_force_destroy')->middleware(['permission:product-attributes.force_destroy'])->name('backend.product-attributes.force_destroy');
         });
         Route::controller(V1ProductAttributeTranslationController::class)->group(function () {
-            Route::delete('/backend/product-attribute-translations/destroy/{uuid}', 'backend_product_attribute_translations_destroy')->middleware(['permission:product-attribute-translations.destroy'])->name('backend.product-attribute-translations.destroy');
-            Route::get('/backend/product-attribute-translations/trashed/{attribute_uuid}', 'backend_product_attribute_translations_trashed')->middleware(['permission:product-attribute-translations.trashed'])->name('backend.product-attribute-translations.trashed');
+            Route::delete('/backend/product-attribute-translations/destroy/{productAttributeTranslation}', 'backend_product_attribute_translations_destroy')->middleware(['permission:product-attribute-translations.destroy'])->name('backend.product-attribute-translations.destroy');
+            Route::get('/backend/product-attribute-translations/trashed/{productAttribute}', 'backend_product_attribute_translations_trashed')->middleware(['permission:product-attribute-translations.trashed'])->name('backend.product-attribute-translations.trashed')->withTrashed();
             Route::patch('/backend/product-attribute-translations/restore/{uuid}', 'backend_product_attribute_translations_restore')->middleware(['permission:product-attribute-translations.restore'])->name('backend.product-attribute-translations.restore');
             Route::delete('/backend/product-attribute-translations/force-destroy/{uuid}', 'backend_product_attribute_translations_force_destroy')->middleware(['permission:product-attribute-translations.force_destroy'])->name('backend.product-attribute-translations.force_destroy');
         });
@@ -453,8 +455,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-attribute-values/force-destroy/{uuid}', 'backend_product_attribute_values_force_destroy')->middleware(['permission:product-attribute-values.force_destroy'])->name('backend.product-attribute-values.force_destroy');
         });
         Route::controller(V1ProductAttributeValueTranslationController::class)->group(function () {
-            Route::delete('/backend/product-attribute-value-translations/destroy/{uuid}', 'backend_product_attribute_value_translations_destroy')->middleware(['permission:product-attribute-value-translations.destroy'])->name('backend.product-attribute-value-translations.destroy');
-            Route::get('/backend/product-attribute-value-translations/trashed/{attribute_value_uuid}', 'backend_product_attribute_value_translations_trashed')->middleware(['permission:product-attribute-value-translations.trashed'])->name('backend.product-attribute-value-translations.trashed');
+            Route::delete('/backend/product-attribute-value-translations/destroy/{productAttributeValueTranslation}', 'backend_product_attribute_value_translations_destroy')->middleware(['permission:product-attribute-value-translations.destroy'])->name('backend.product-attribute-value-translations.destroy');
+            Route::get('/backend/product-attribute-value-translations/trashed/{productAttributeValue}', 'backend_product_attribute_value_translations_trashed')->middleware(['permission:product-attribute-value-translations.trashed'])->name('backend.product-attribute-value-translations.trashed')->withTrashed();
             Route::patch('/backend/product-attribute-value-translations/restore/{uuid}', 'backend_product_attribute_value_translations_restore')->middleware(['permission:product-attribute-value-translations.restore'])->name('backend.product-attribute-value-translations.restore');
             Route::delete('/backend/product-attribute-value-translations/force-destroy/{uuid}', 'backend_product_attribute_value_translations_force_destroy')->middleware(['permission:product-attribute-value-translations.force_destroy'])->name('backend.product-attribute-value-translations.force_destroy');
         });
@@ -483,8 +485,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/products/force-destroy/{uuid}', 'backend_products_force_destroy')->middleware(['permission:products.force_destroy'])->name('backend.products.force_destroy');
         });
         Route::controller(V1ProductTranslationController::class)->group(function () {
-            Route::delete('/backend/product-translations/destroy/{uuid}', 'backend_product_translations_destroy')->middleware(['permission:product-translations.destroy'])->name('backend.product-translations.destroy');
-            Route::get('/backend/product-translations/trashed/{product_uuid}', 'backend_product_translations_trashed')->middleware(['permission:product-translations.trashed'])->name('backend.product-translations.trashed');
+            Route::delete('/backend/product-translations/destroy/{productTranslation}', 'backend_product_translations_destroy')->middleware(['permission:product-translations.destroy'])->name('backend.product-translations.destroy');
+            Route::get('/backend/product-translations/trashed/{product}', 'backend_product_translations_trashed')->middleware(['permission:product-translations.trashed'])->name('backend.product-translations.trashed')->withTrashed();
             Route::patch('/backend/product-translations/restore/{uuid}', 'backend_product_translations_restore')->middleware(['permission:product-translations.restore'])->name('backend.product-translations.restore');
             Route::delete('/backend/product-translations/force-destroy/{uuid}', 'backend_product_translations_force_destroy')->middleware(['permission:product-translations.force_destroy'])->name('backend.product-translations.force_destroy');
         });
@@ -527,8 +529,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-warehouses/force-destroy/{uuid}', 'backend_product_warehouses_force_destroy')->middleware(['permission:product-warehouses.force_destroy'])->name('backend.product-warehouses.force_destroy');
         });
         Route::controller(V1ProductWarehouseTranslationController::class)->group(function () {
-            Route::delete('/backend/product-warehouse-translations/destroy/{uuid}', 'backend_product_warehouse_translations_destroy')->middleware(['permission:product-warehouse-translations.destroy'])->name('backend.product-warehouse-translations.destroy');
-            Route::get('/backend/product-warehouse-translations/trashed/{warehouse_uuid}', 'backend_product_warehouse_translations_trashed')->middleware(['permission:product-warehouse-translations.trashed'])->name('backend.product-warehouse-translations.trashed');
+            Route::delete('/backend/product-warehouse-translations/destroy/{productWarehouseTranslation}', 'backend_product_warehouse_translations_destroy')->middleware(['permission:product-warehouse-translations.destroy'])->name('backend.product-warehouse-translations.destroy');
+            Route::get('/backend/product-warehouse-translations/trashed/{productWarehouse}', 'backend_product_warehouse_translations_trashed')->middleware(['permission:product-warehouse-translations.trashed'])->name('backend.product-warehouse-translations.trashed')->withTrashed();
             Route::patch('/backend/product-warehouse-translations/restore/{uuid}', 'backend_product_warehouse_translations_restore')->middleware(['permission:product-warehouse-translations.restore'])->name('backend.product-warehouse-translations.restore');
             Route::delete('/backend/product-warehouse-translations/force-destroy/{uuid}', 'backend_product_warehouse_translations_force_destroy')->middleware(['permission:product-warehouse-translations.force_destroy'])->name('backend.product-warehouse-translations.force_destroy');
         });
@@ -553,8 +555,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/product-warehouse-locations/force-destroy/{uuid}', 'backend_product_warehouse_locations_force_destroy')->middleware(['permission:product-warehouse-locations.force_destroy'])->name('backend.product-warehouse-locations.force_destroy');
         });
         Route::controller(V1ProductWarehouseLocationTranslationController::class)->group(function () {
-            Route::delete('/backend/product-warehouse-location-translations/destroy/{uuid}', 'backend_product_warehouse_location_translations_destroy')->middleware(['permission:product-warehouse-location-translations.destroy'])->name('backend.product-warehouse-location-translations.destroy');
-            Route::get('/backend/product-warehouse-location-translations/trashed/{location_uuid}', 'backend_product_warehouse_location_translations_trashed')->middleware(['permission:product-warehouse-location-translations.trashed'])->name('backend.product-warehouse-location-translations.trashed');
+            Route::delete('/backend/product-warehouse-location-translations/destroy/{productWarehouseLocationTranslation}', 'backend_product_warehouse_location_translations_destroy')->middleware(['permission:product-warehouse-location-translations.destroy'])->name('backend.product-warehouse-location-translations.destroy');
+            Route::get('/backend/product-warehouse-location-translations/trashed/{productWarehouseLocation}', 'backend_product_warehouse_location_translations_trashed')->middleware(['permission:product-warehouse-location-translations.trashed'])->name('backend.product-warehouse-location-translations.trashed')->withTrashed();
             Route::patch('/backend/product-warehouse-location-translations/restore/{uuid}', 'backend_product_warehouse_location_translations_restore')->middleware(['permission:product-warehouse-location-translations.restore'])->name('backend.product-warehouse-location-translations.restore');
             Route::delete('/backend/product-warehouse-location-translations/force-destroy/{uuid}', 'backend_product_warehouse_location_translations_force_destroy')->middleware(['permission:product-warehouse-location-translations.force_destroy'])->name('backend.product-warehouse-location-translations.force_destroy');
         });
@@ -578,8 +580,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/blog-categories/force-destroy/{uuid}', 'backend_blog_categories_force_destroy')->middleware(['permission:blog-categories.force_destroy'])->name('backend.blog-categories.force_destroy');
         });
         Route::controller(V1BlogCategoryTranslationController::class)->group(function () {
-            Route::delete('/backend/blog-category-translations/destroy/{uuid}', 'backend_blog_category_translations_destroy')->middleware(['permission:blog-category-translations.destroy'])->name('backend.blog-category-translations.destroy');
-            Route::get('/backend/blog-category-translations/trashed/{category_uuid}', 'backend_blog_category_translations_trashed')->middleware(['permission:blog-category-translations.trashed'])->name('backend.blog-category-translations.trashed');
+            Route::delete('/backend/blog-category-translations/destroy/{blogCategoryTranslation}', 'backend_blog_category_translations_destroy')->middleware(['permission:blog-category-translations.destroy'])->name('backend.blog-category-translations.destroy');
+            Route::get('/backend/blog-category-translations/trashed/{blogCategory}', 'backend_blog_category_translations_trashed')->middleware(['permission:blog-category-translations.trashed'])->name('backend.blog-category-translations.trashed')->withTrashed();
             Route::patch('/backend/blog-category-translations/restore/{uuid}', 'backend_blog_category_translations_restore')->middleware(['permission:blog-category-translations.restore'])->name('backend.blog-category-translations.restore');
             Route::delete('/backend/blog-category-translations/force-destroy/{uuid}', 'backend_blog_category_translations_force_destroy')->middleware(['permission:blog-category-translations.force_destroy'])->name('backend.blog-category-translations.force_destroy');
         });
@@ -603,8 +605,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/blog-tags/force-destroy/{uuid}', 'backend_blog_tags_force_destroy')->middleware(['permission:blog-tags.force_destroy'])->name('backend.blog-tags.force_destroy');
         });
         Route::controller(V1BlogTagTranslationController::class)->group(function () {
-            Route::delete('/backend/blog-tag-translations/destroy/{uuid}', 'backend_blog_tag_translations_destroy')->middleware(['permission:blog-tag-translations.destroy'])->name('backend.blog-tag-translations.destroy');
-            Route::get('/backend/blog-tag-translations/trashed/{tag_uuid}', 'backend_blog_tag_translations_trashed')->middleware(['permission:blog-tag-translations.trashed'])->name('backend.blog-tag-translations.trashed');
+            Route::delete('/backend/blog-tag-translations/destroy/{blogTagTranslation}', 'backend_blog_tag_translations_destroy')->middleware(['permission:blog-tag-translations.destroy'])->name('backend.blog-tag-translations.destroy');
+            Route::get('/backend/blog-tag-translations/trashed/{blogTag}', 'backend_blog_tag_translations_trashed')->middleware(['permission:blog-tag-translations.trashed'])->name('backend.blog-tag-translations.trashed')->withTrashed();
             Route::patch('/backend/blog-tag-translations/restore/{uuid}', 'backend_blog_tag_translations_restore')->middleware(['permission:blog-tag-translations.restore'])->name('backend.blog-tag-translations.restore');
             Route::delete('/backend/blog-tag-translations/force-destroy/{uuid}', 'backend_blog_tag_translations_force_destroy')->middleware(['permission:blog-tag-translations.force_destroy'])->name('backend.blog-tag-translations.force_destroy');
         });
@@ -626,8 +628,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/blog-posts/force-destroy/{uuid}', 'backend_blog_posts_force_destroy')->middleware(['permission:blog-posts.force_destroy'])->name('backend.blog-posts.force_destroy');
         });
         Route::controller(V1BlogPostTranslationController::class)->group(function () {
-            Route::delete('/backend/blog-post-translations/destroy/{uuid}', 'backend_blog_post_translations_destroy')->middleware(['permission:blog-post-translations.destroy'])->name('backend.blog-post-translations.destroy');
-            Route::get('/backend/blog-post-translations/trashed/{post_uuid}', 'backend_blog_post_translations_trashed')->middleware(['permission:blog-post-translations.trashed'])->name('backend.blog-post-translations.trashed');
+            Route::delete('/backend/blog-post-translations/destroy/{blogPostTranslation}', 'backend_blog_post_translations_destroy')->middleware(['permission:blog-post-translations.destroy'])->name('backend.blog-post-translations.destroy');
+            Route::get('/backend/blog-post-translations/trashed/{blogPost}', 'backend_blog_post_translations_trashed')->middleware(['permission:blog-post-translations.trashed'])->name('backend.blog-post-translations.trashed')->withTrashed();
             Route::patch('/backend/blog-post-translations/restore/{uuid}', 'backend_blog_post_translations_restore')->middleware(['permission:blog-post-translations.restore'])->name('backend.blog-post-translations.restore');
             Route::delete('/backend/blog-post-translations/force-destroy/{uuid}', 'backend_blog_post_translations_force_destroy')->middleware(['permission:blog-post-translations.force_destroy'])->name('backend.blog-post-translations.force_destroy');
         });
@@ -678,8 +680,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/galleries/force-destroy/{uuid}', 'backend_galleries_force_destroy')->middleware(['permission:galleries.force_destroy'])->name('backend.galleries.force_destroy');
         });
         Route::controller(V1GalleryTranslationController::class)->group(function () {
-            Route::delete('/backend/gallery-translations/destroy/{uuid}', 'backend_gallery_translations_destroy')->middleware(['permission:gallery-translations.destroy'])->name('backend.gallery-translations.destroy');
-            Route::get('/backend/gallery-translations/trashed/{gallery_uuid}', 'backend_gallery_translations_trashed')->middleware(['permission:gallery-translations.trashed'])->name('backend.gallery-translations.trashed');
+            Route::delete('/backend/gallery-translations/destroy/{galleryTranslation}', 'backend_gallery_translations_destroy')->middleware(['permission:gallery-translations.destroy'])->name('backend.gallery-translations.destroy');
+            Route::get('/backend/gallery-translations/trashed/{gallery}', 'backend_gallery_translations_trashed')->middleware(['permission:gallery-translations.trashed'])->name('backend.gallery-translations.trashed')->withTrashed();
             Route::patch('/backend/gallery-translations/restore/{uuid}', 'backend_gallery_translations_restore')->middleware(['permission:gallery-translations.restore'])->name('backend.gallery-translations.restore');
             Route::delete('/backend/gallery-translations/force-destroy/{uuid}', 'backend_gallery_translations_force_destroy')->middleware(['permission:gallery-translations.force_destroy'])->name('backend.gallery-translations.force_destroy');
         });
@@ -701,8 +703,8 @@ if ($version && $version->code === 'v1') {
             Route::delete('/backend/faqs/force-destroy/{uuid}', 'backend_faqs_force_destroy')->middleware(['permission:faqs.force_destroy'])->name('backend.faqs.force_destroy');
         });
         Route::controller(V1FaqTranslationController::class)->group(function () {
-            Route::delete('/backend/faq-translations/destroy/{uuid}', 'backend_faq_translations_destroy')->middleware(['permission:faq-translations.destroy'])->name('backend.faq-translations.destroy');
-            Route::get('/backend/faq-translations/trashed/{faq_uuid}', 'backend_faq_translations_trashed')->middleware(['permission:faq-translations.trashed'])->name('backend.faq-translations.trashed');
+            Route::delete('/backend/faq-translations/destroy/{faqTranslation}', 'backend_faq_translations_destroy')->middleware(['permission:faq-translations.destroy'])->name('backend.faq-translations.destroy');
+            Route::get('/backend/faq-translations/trashed/{faq}', 'backend_faq_translations_trashed')->middleware(['permission:faq-translations.trashed'])->name('backend.faq-translations.trashed')->withTrashed();
             Route::patch('/backend/faq-translations/restore/{uuid}', 'backend_faq_translations_restore')->middleware(['permission:faq-translations.restore'])->name('backend.faq-translations.restore');
             Route::delete('/backend/faq-translations/force-destroy/{uuid}', 'backend_faq_translations_force_destroy')->middleware(['permission:faq-translations.force_destroy'])->name('backend.faq-translations.force_destroy');
         });

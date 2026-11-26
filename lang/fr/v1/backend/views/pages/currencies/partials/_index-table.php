@@ -16,6 +16,7 @@ return [
     'code' => 'Code',
     'codeNumerique' => 'Code numérique',
     'decimales' => 'Décimales',
+    'tauxDechange' => 'Taux de change',
     'paysUtilisent' => 'Pays',
     'ordre' => 'Ordre',
     'defaut' => 'Défaut',

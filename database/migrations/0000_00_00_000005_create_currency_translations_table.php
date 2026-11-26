@@ -20,7 +20,7 @@ return new class extends Migration
             //
             $table->string('name', 100); // Nom de la devise dans la langue de traduction (Euro, Dollar, Franc CFA...)
             $table->string('slug'); // Slug SEO-friendly
-            $table->string('description')->nullable(); // Description optionnelle de la devise
+            $table->text('description'); // Description obligatoire de la devise
             //
             $table->timestamps();
             $table->softDeletes();

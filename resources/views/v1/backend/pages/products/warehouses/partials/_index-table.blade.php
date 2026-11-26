@@ -86,7 +86,7 @@
                                 <th scope="col">{{ __('Ordre') }}</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Ville</th>
-                                <th scope="col">Pays</th>
+                                <th scope="col">Division</th>
                                 <th scope="col">{{ __('Emplacements') }}</th>
                                 <th scope="col">Défaut</th>
                                 <th scope="col">Statut</th>
@@ -125,10 +125,10 @@
                                     <td>{{ $warehouse->city ?? '—' }}</td>
 
                                     <td>
-                                        @if($warehouse->country)
-                                            <a href="{{ route('backend.geocountries.show', ['geoCountry' => $warehouse->country->uuid, 'slug' => $warehouse->country->active_translation?->slug ?? 'null']) }}"
+                                        @if($warehouse->division)
+                                            <a href="{{ route('backend.geodivisions.show', ['geoDivision' => $warehouse->division->uuid, 'slug' => $warehouse->division->active_translation?->slug ?? 'null']) }}"
                                                class="badge badge-soft-primary text-decoration-none">
-                                                {{ $warehouse->country->active_translation?->name ?? '—' }}
+                                                {{ $warehouse->division->active_translation?->name ?? '—' }}
                                             </a>
                                         @else
                                             <span class="badge badge-soft-primary">—</span>

@@ -3,19 +3,22 @@
 declare(strict_types=1);
 
 use App\Models\CloudPlatform;
+use App\Models\Currency;
 use App\Models\GeoCountry;
 use App\Models\Lang;
+use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\User;
 use Database\Seeders\CloudFolderSeeder;
 use Database\Seeders\CloudPlatformSeeder;
+use Database\Seeders\CurrencySeeder;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
-use Database\Seeders\SettingSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\SettingSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 
@@ -329,14 +332,14 @@ it('affiche les liens vers les sous-catégories et les produits de chaque catég
 
 it('affiche la page des produits d\'une catégorie', function () {
     $admin = productCategoryAdmin();
-    $this->seed(\Database\Seeders\CurrencySeeder::class);
+    $this->seed(CurrencySeeder::class);
 
     $setup = productCategoryFixture();
     $langFr = Lang::where('code', 'fr')->firstOrFail();
 
-    $product = \App\Models\Product::create([
+    $product = Product::create([
         'category_id' => $setup['category']->id,
-        'currency_id' => \App\Models\Currency::where('is_default', true)->firstOrFail()->id,
+        'currency_id' => Currency::where('is_default', true)->firstOrFail()->id,
         'status' => 'draft',
         'base_price' => 9990,
     ]);

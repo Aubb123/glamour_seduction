@@ -28,34 +28,26 @@ class GalleryTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY (soft delete d'une traduction)
     // ─────────────────────────────────────────────
-    public function backend_gallery_translations_destroy(string $uuid): RedirectResponse
+    public function backend_gallery_translations_destroy(GalleryTranslation $galleryTranslation): RedirectResponse
     {
         try {
 
-            // Récupère la traduction de la galerie par UUID ou échoue si non trouvée
-            $translation = GalleryTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {galleryTranslation})
+            $translation = $galleryTranslation;
 
             // Suppression via le service (soft delete) — le service vérifie si c'est la dernière traduction
             $this->galleryTranslationService->backend_galleries_translations_destroy($translation);
 
             // Log de la suppression réussie
-            $this->logActivity(type: 'info', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.translations.destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'info', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->backendLangPath}.translations.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression
             return back()->with('success', __("{$this->backendLangPath}.translations.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur lors de la tentative de suppression d'une traduction non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            // Redirige vers la page précédente avec un message flash d'erreur pour la traduction introuvable
-            return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning_meta", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return back()->with('error', $e->getMessage());
@@ -63,7 +55,7 @@ class GalleryTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.gallery-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression
             return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_error"));
@@ -73,12 +65,11 @@ class GalleryTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED (Corbeille des traductions d'une galerie)
     // ─────────────────────────────────────────────
-    public function backend_gallery_translations_trashed(string $gallery_uuid): View
+    public function backend_gallery_translations_trashed(Gallery $gallery): View
     {
         try {
 
-            // Récupère la galerie par UUID ou échoue si non trouvée, y compris les galeries supprimées (soft deleted)
-            $gallery = Gallery::withTrashed()->where('uuid', $gallery_uuid)->firstOrFail();
+            // Galerie résolue par le binding implicite sur uuid (route {gallery} avec ->withTrashed())
 
             $galleryName = $gallery->active_translation?->title ?? ''; // Récupère le titre de la galerie pour les logs et les messages flash
 
@@ -91,17 +82,10 @@ class GalleryTranslationController extends Controller
             // Retourne la vue avec les traductions supprimées et la galerie correspondante
             return view('v1.backend.pages.galleries.translations.trashed', compact('gallery', 'galleryTranslations'));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur lors de la tentative d'accès à la corbeille des traductions pour une galerie non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.gallery-translations.trashed', context: ['gallery_uuid' => $gallery_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.not_found", ['uuid' => $gallery_uuid]), is_success: false);
-
-            abort(404);
-
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative d'accès à la corbeille des traductions pour une galerie avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.gallery-translations.trashed', context: ['gallery_uuid' => $gallery_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.error", ['uuid' => $gallery_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.gallery-translations.trashed', context: ['gallery_uuid' => $gallery->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.error", ['uuid' => $gallery->uuid]), is_success: false);
 
             abort(500);
         }

@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\GeoCountry;
+use App\Models\GeoDivision;
+use App\Models\GeoDivisionType;
 use App\Models\Lang;
 use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseTranslation;
@@ -15,8 +16,11 @@ class ProductWarehouseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Pays utilisé pour localiser les entrepôts (Bénin)
-        $benin = GeoCountry::where('code', 'BEN')->first();
+        // Commune utilisée pour localiser les entrepôts (Cotonou, Bénin)
+        $communeType = GeoDivisionType::where('code', 'commune')->first();
+        $cotonou = GeoDivision::where('division_type_id', $communeType?->id)
+            ->whereHas('translations', fn ($query) => $query->where('name', 'Cotonou'))
+            ->first();
 
         $warehouses = [
             [
@@ -103,7 +107,7 @@ class ProductWarehouseSeeder extends Seeder
                 'code' => $data['code'],
                 'sort_order' => $data['sort_order'],
                 'type' => $data['type'],
-                'country_id' => $benin?->id,
+                'division_id' => $cotonou?->id,
                 'city' => $data['city'],
                 'address' => $data['address'],
                 'latitude' => $data['latitude'],

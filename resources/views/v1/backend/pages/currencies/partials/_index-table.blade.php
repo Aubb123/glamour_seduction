@@ -84,6 +84,7 @@
                                 <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_index-table.code') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_index-table.codeNumerique') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_index-table.decimales') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_index-table.tauxDechange') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_index-table.paysUtilisent') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_index-table.ordre') }}</th>
                                 <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_index-table.defaut') }}</th>
@@ -124,6 +125,14 @@
 
                                     <td>
                                         {{ $currency->decimal_places }}
+                                    </td>
+
+                                    <td>
+                                        @if ($currency->exchange_rate !== null)
+                                            <span class="badge badge-soft-info">{{ number_format((float) $currency->exchange_rate, 6, ',', ' ') }}</span>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
                                     </td>
 
                                     <td class="text-center">
@@ -238,7 +247,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ request()->routeIs('backend.currencies.trashed') ? 16 : 15 }}" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.currencies.trashed') ? 17 : 16 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         {{ __('v1/backend/views/pages/currencies/partials/_index-table.aucuneDeviseTrouvee') }}
                                     </td>

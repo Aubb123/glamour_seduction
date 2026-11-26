@@ -23,9 +23,9 @@ return [
             'required' => 'The status is required.',
             'in' => 'The selected status is invalid.',
         ],
-        'country_id' => [
-            'required' => 'The country field is required.',
-            'exists' => 'The selected country does not exist.',
+        'division_id' => [
+            'required' => 'The division field is required.',
+            'exists' => 'The selected division does not exist.',
         ],
         'password' => [
             'string' => 'The password must be a string.',

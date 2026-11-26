@@ -28,11 +28,12 @@ class ProductAttributeValueTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_value_translations_destroy(string $uuid): RedirectResponse
+    public function backend_product_attribute_value_translations_destroy(ProductAttributeValueTranslation $productAttributeValueTranslation): RedirectResponse
     {
         try {
 
-            $translation = ProductAttributeValueTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {productAttributeValueTranslation})
+            $translation = $productAttributeValueTranslation;
 
             // Supprime la traduction de façon réversible via le service
             $this->productAttributeValueTranslationService->backend_product_attribute_value_translations_destroy($translation);
@@ -41,21 +42,15 @@ class ProductAttributeValueTranslationController extends Controller
 
             return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.product-attribute-value-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-attribute-value-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-attribute-value-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-attribute-value-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-attribute-value-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
@@ -64,30 +59,24 @@ class ProductAttributeValueTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_value_translations_trashed(string $attribute_value_uuid): View|RedirectResponse
+    public function backend_product_attribute_value_translations_trashed(ProductAttributeValue $productAttributeValue): View|RedirectResponse
     {
         try {
 
-            // Récupère la valeur d'attribut supprimée ou active à partir de son UUID
-            $value = ProductAttributeValue::withTrashed()->where('uuid', $attribute_value_uuid)->firstOrFail();
+            // Valeur d'attribut résolue par le binding implicite sur uuid (route {productAttributeValue} avec ->withTrashed())
+            $value = $productAttributeValue;
 
             // Récupère les traductions supprimées de cette valeur d'attribut
             $trashedTranslations = ProductAttributeValueTranslation::onlyTrashed()->where('attribute_value_id', $value->id)->get();
 
             // Journalise l'accès à la corbeille des traductions de cette valeur d'attribut
-            $this->logActivity(type: 'info', action: 'backend.product-attribute-value-translations.trashed', context: ['count' => $trashedTranslations->count(), 'attribute_value_uuid' => $attribute_value_uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $value->active_translation?->label ?? $attribute_value_uuid]), is_success: true, loggable: $value);
+            $this->logActivity(type: 'info', action: 'backend.product-attribute-value-translations.trashed', context: ['count' => $trashedTranslations->count(), 'attribute_value_uuid' => $value->uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $value->active_translation?->label ?? $value->uuid]), is_success: true, loggable: $value);
 
             return view('v1.backend.pages.products.attribute-values.translations.trashed', compact('trashedTranslations', 'value'));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.product-attribute-value-translations.trashed', context: ['attribute_value_uuid' => $attribute_value_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $attribute_value_uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $attribute_value_uuid]));
-
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-attribute-value-translations.trashed', context: ['attribute_value_uuid' => $attribute_value_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $attribute_value_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-attribute-value-translations.trashed', context: ['attribute_value_uuid' => $value->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $value->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.trashed.error", ['uuid' => $attribute_value_uuid]));
         }

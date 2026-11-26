@@ -16,7 +16,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 // Attributs de masse assignables
-#[Fillable(['country_id', 'first_name', 'last_name', 'email', 'gender', 'phone', 'password', 'status'])]
+#[Fillable(['division_id', 'first_name', 'last_name', 'email', 'gender', 'phone', 'password', 'status'])]
 
 // Attributs à cacher lors de la sérialisation
 #[Hidden(['password', 'remember_token'])]
@@ -91,11 +91,12 @@ class User extends Authenticatable
     // ─────────────────────────────────────────────
 
     /**
-     * Relation vers le pays de l'utilisateur.
+     * Relation vers la division de rattachement de l'utilisateur
+     * (dernier niveau administratif : commune, état, région, province…).
      */
-    public function country(): BelongsTo
+    public function division(): BelongsTo
     {
-        return $this->belongsTo(GeoCountry::class, 'country_id');
+        return $this->belongsTo(GeoDivision::class, 'division_id');
     }
 
     /**

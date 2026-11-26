@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\User\UpdateUserRequest;
 use App\Models\GeoCountry;
+use App\Models\GeoDivision;
 use App\Models\Role;
 use App\Models\User;
 use App\Services\V1\Controllers\UserService;
@@ -367,15 +368,24 @@ class UserController extends Controller
     {
         try {
 
-            // Récupère la liste des rôles et des pays pour les sélecteurs du formulaire
+            // Récupère la liste des rôles, des pays et de toutes les divisions pour les
+            // sélecteurs du formulaire : le pays et le dernier niveau sont filtrés côté JS.
+            // Tri : par pays puis par nom de traduction active (ordre alphabétique lisible).
             $roles = Role::orderBy('name', 'asc')->get();
             $countries = GeoCountry::withActiveTranslation()->orderBy('sort_order', 'asc')->get();
+            $divisions = GeoDivision::withActiveTranslation()
+                ->withCount('children')
+                ->orderBy('id')
+                ->get()
+                ->sortBy(fn ($division) => $division->active_translation?->name ?? '')
+                ->sortBy(fn ($division) => $division->country_id)
+                ->values();
 
             // Log de l'accès à la page de modification d'un utilisateur
             $this->logActivity(type: 'info', action: 'backend.users.edit', context: ['user_uuid' => $user->uuid, 'user_email' => $user->email], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $user->first_name.' '.$user->last_name]), is_success: true, loggable: $user);
 
             // Retourne la vue d'édition de l'utilisateur avec les données nécessaires
-            return view('v1.backend.pages.users.edit', compact('user', 'roles', 'countries'));
+            return view('v1.backend.pages.users.edit', compact('user', 'roles', 'countries', 'divisions'));
 
         } catch (\Exception $e) {
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id(); // Clé primaire auto-incrémentée
             $table->uuid('uuid')->unique(); // UUID pour une identification universelle unique
             //
-            $table->foreignId('country_id')->constrained('geo_countries')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table geo_countries
+            $table->foreignId('division_id')->constrained('geo_divisions')->cascadeOnUpdate()->cascadeOnDelete(); // Division de rattachement (dernier niveau : commune, état, région…)
             $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table currencies
             //
             $table->string('first_name'); // Prénom de l'utilisateur
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             // Index pour les filtres courants
-            $table->index(['country_id', 'status', 'deleted_at']); // Index pour les filtres courants
+            $table->index(['division_id', 'status', 'deleted_at']); // Index pour les filtres courants
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

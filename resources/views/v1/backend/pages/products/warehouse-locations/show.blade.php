@@ -197,7 +197,7 @@
                                                 <div class="col-2 text-muted fw-semibold">{{ __('Actions') }}</div>
                                                 <div class="col-9">
                                                     @if($translation && ! $translation->trashed())
-                                                        <form action="{{ route('backend.product-warehouse-location-translations.destroy', ['uuid' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
+                                                        <form action="{{ route('backend.product-warehouse-location-translations.destroy', ['productWarehouseLocationTranslation' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">

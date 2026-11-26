@@ -4,7 +4,7 @@
 
                 <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <h5 class="card-title mb-0">
-                        {{ __('v1/backend/views/pages/currencies/partials/_show-start.devise') }} — <span class="text-muted">{{ $currency->active_translation?->name ?? $currency->code }}</span>
+                        {{ __('v1/backend/views/pages/currencies/partials/_show-start.devise') }} — {{ $currency->active_translation?->name ?? $currency->code }}
                     </h5>
 
                     <div class="hstack gap-2 flex-wrap">
@@ -34,7 +34,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <button type="button" class="dropdown-item" onclick="confirmAction('deactivate-form-{{ $currency->uuid }}', '{{ __('v1/backend/views/pages/currencies/partials/_show-start.desactiverCetteDevise') }}', '{{ __('v1/backend/views/pages/currencies/partials/_show-start.desactiver') }}', 'warning')">
-                                                <i class="bx bx-pause me-2 text-warning"></i> {{ __('v1/backend/views/pages/currencies/partials/_show-start.desactiver') }}
+                                                <i class="bx bx-toggle-left me-2 text-warning"></i> {{ __('v1/backend/views/pages/currencies/partials/_show-start.desactiver') }}
                                             </button>
                                         </form>
                                     </li>
@@ -44,7 +44,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <button type="button" class="dropdown-item" onclick="confirmAction('activate-form-{{ $currency->uuid }}', '{{ __('v1/backend/views/pages/currencies/partials/_show-start.activerCetteDevise') }}', '{{ __('v1/backend/views/pages/currencies/partials/_show-start.activer') }}', 'success')">
-                                                <i class="bx bx-play me-2 text-success"></i> {{ __('v1/backend/views/pages/currencies/partials/_show-start.activer') }}
+                                                <i class="bx bx-toggle-right me-2 text-success"></i> {{ __('v1/backend/views/pages/currencies/partials/_show-start.activer') }}
                                             </button>
                                         </form>
                                     </li>

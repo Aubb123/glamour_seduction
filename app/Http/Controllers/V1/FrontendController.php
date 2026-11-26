@@ -42,27 +42,17 @@ class FrontendController extends Controller
     public function frontend_currencies_switch(Request $request): RedirectResponse
     {
         $request->validate([
-            // Code devise ISO 4217 : doit exister et être active
             'currency' => ['required', 'string', 'size:3'],
         ]);
 
         $currency = Currency::where('code', strtoupper($request->input('currency')))->where('status', 'active')->first();
 
         if (! $currency) {
-            return back()->with('error', __('Devise introuvable ou inactive.'));
+            return back()->with('error', __('v1/backend/views/pages/currencies/messages/currencies-messages-controller.currencies.switch.warning'));
         }
 
-        $user = $request->user();
+        session(['currency' => $currency->code]);
 
-        if ($user) {
-            // Utilisateur connecté : la préférence est persistée sur son compte
-            $user->currency()->associate($currency);
-            $user->save();
-        } else {
-            // Visiteur : la préférence est stockée en session
-            session(['currency' => $currency->code]);
-        }
-
-        return back()->with('success', __('Devise d\'affichage mise à jour : :code', ['code' => $currency->code]));
+        return back()->with('success', __('v1/backend/views/pages/currencies/messages/currencies-messages-controller.currencies.switch.success', ['code' => $currency->code]));
     }
 }

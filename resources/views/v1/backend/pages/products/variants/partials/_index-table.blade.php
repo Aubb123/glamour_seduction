@@ -109,7 +109,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php($defaultCurrency = \App\Models\Currency::where('is_default', true)->first())
                             @forelse ($variants as $variant)
                                 @php($firstImage = $variant->displayImages()->first())
                                 <tr>
@@ -159,9 +158,9 @@
                                     </td>
                                     <td>
                                         @if ($variant->price)
-                                            <span class="fw-bold">{{ number_format((float) $variant->price, 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
+                                            <span class="fw-bold">{{ displayPrice((float) $variant->price, $variant->product?->currency) }}</span>
                                         @else
-                                            <span class="text-muted" title="{{ __('Hérite du produit') }}">{{ number_format((float) ($variant->product?->base_price ?? 0), 2, ',', ' ') }}{{ $defaultCurrency?->symbol ? ' '.$defaultCurrency->symbol : '' }}</span>
+                                            <span class="text-muted" title="{{ __('v1/backend/views/pages/products/variants/messages/variants-messages-controller.variants.inherit') }}">{{ displayPrice((float) ($variant->product?->base_price ?? 0), $variant->product?->currency) }}</span>
                                         @endif
                                     </td>
                                     <td>

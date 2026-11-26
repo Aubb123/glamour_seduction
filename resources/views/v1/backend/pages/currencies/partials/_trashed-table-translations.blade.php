@@ -1,92 +1,126 @@
-<div class="table-responsive">
-    <table class="table table-centered text-nowrap" id="currency-translations-table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.langue') }}</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.nom') }}</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.slug') }}</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.description') }}</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.creeLe') }}</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.modifieLe') }}</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.supprimeLe') }}</th>
-                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.actions') }}</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($currencyTranslations as $translation)
-                <tr>
+@push('styles')
+    <link rel="stylesheet" type="text/css" href="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery.dataTables.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.dataTables.min.css') }}">
+    <style>
+        .dataTables_paginate .paginate_button {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+    </style>
+@endpush
 
-                    <td>
-                        {{ $loop->iteration }}
-                    </td>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
 
-                    <td>
-                        <span class="badge badge-soft-primary">
-                            {{ $translation->lang?->code ?? '—' }}
-                        </span>
-                    </td>
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="card-title mb-0">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.traductionsSupprimees') }}</h5>
+            </div>
 
-                    <td class="fw-bold">
-                        {{ $translation->name ?? '—' }}
-                    </td>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-centered text-nowrap" id="currency-translations-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.langue') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.nom') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.slug') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.description') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.creeLe') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.modifieLe') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.supprimeLe') }}</th>
+                                <th scope="col">{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.actions') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($currencyTranslations as $translation)
+                                <tr>
+                                    <td>
+                                        {{ $loop->iteration }}
+                                    </td>
 
-                    <td class="text-muted">
-                        <code>{{ $translation->slug ?? '—' }}</code>
-                    </td>
+                                    <td>
+                                        <span class="badge badge-soft-primary">
+                                            {{ $translation->lang?->code ?? '—' }}
+                                        </span>
+                                    </td>
 
-                    <td class="text-muted">
-                        {{ Str::limit($translation->description ?? '—', 50) }}
-                    </td>
+                                    <td class="fw-bold">
+                                        {{ $translation->name ?? '—' }}
+                                    </td>
 
-                    <td class="text-muted">
-                        @formatDate($translation->created_at, 'D MMMM YYYY - HH:mm:ss')
-                    </td>
+                                    <td class="text-muted">
+                                        <code>{{ $translation->slug ?? '—' }}</code>
+                                    </td>
 
-                    <td class="text-muted">
-                        @formatDate($translation->updated_at, 'D MMMM YYYY - HH:mm:ss')
-                    </td>
+                                    <td class="text-muted">
+                                        {{ Str::limit($translation->description ?? '—', 50) }}
+                                    </td>
 
-                    <td class="text-muted">
-                        @formatDate($translation->deleted_at, 'D MMMM YYYY - HH:mm:ss')
-                    </td>
+                                    <td class="text-muted">
+                                        @formatDate($translation->created_at, 'D MMMM YYYY - HH:mm:ss')
+                                    </td>
 
-                    <td>
-                        <div class="hstack gap-2 fs-15">
+                                    <td class="text-muted">
+                                        @formatDate($translation->updated_at, 'D MMMM YYYY - HH:mm:ss')
+                                    </td>
 
-                            <form action="{{ route('backend.currencies.translation.restore', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $translation->uuid }}">
-                                @csrf
-                                @method('PATCH')
-                                <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.restaurerCetteTraduction') }}', '{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.restaurer') }}', 'success')">
-                                    <i class="bx bx-undo"></i>
-                                </button>
-                            </form>
+                                    <td class="text-muted">
+                                        @formatDate($translation->deleted_at, 'D MMMM YYYY - HH:mm:ss')
+                                    </td>
 
-                            <form action="{{ route('backend.currencies.translation.force_destroy', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $translation->uuid }}">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.supprimerDefinitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmDelete('{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.confirmerSuppressionDefinitive') }}')">
-                                    <i class="bx bx-trash"></i>
-                                </button>
-                            </form>
+                                    <td>
+                                        <div class="hstack gap-2 fs-15">
 
-                        </div>
-                    </td>
+                                            <form action="{{ route('backend.currencies.translation.restore', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="restore-form-{{ $translation->uuid }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.restaurer') }}" onclick="confirmAction('restore-form-{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.restaurerCetteTraduction') }}', '{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.restaurer') }}', 'success')" style="width: 32px; height: 32px; padding: 0; overflow: hidden;">
+                                                    <i class="bx bx-undo"></i>
+                                                </button>
+                                            </form>
 
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="9" class="text-center text-muted py-5">
-                        <i class="bx bx-archive fs-3 d-block mb-2"></i>
-                        {{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.aucuneTraductionTrouvee') }}
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+                                            <form action="{{ route('backend.currencies.translation.force_destroy', ['uuid' => $translation->uuid]) }}" method="POST" style="display:inline-block" id="delete-form-{{ $translation->uuid }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.supprimerDefinitivement') }}" style="width: 32px; height: 32px; padding: 0; overflow: hidden;" onclick="confirmAction('delete-form-{{ $translation->uuid }}', '{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.confirmerSuppressionDefinitive') }}', '{{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.supprimerDefinitivement') }}', 'danger')">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="text-center text-muted py-5">
+                                        <i class="bx bx-archive fs-3 d-block mb-2"></i>
+                                        {{ __('v1/backend/views/pages/currencies/partials/_trashed-table-translations.aucuneTraductionTrouvee') }}
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 @push('scripts')
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/jszip.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/pdfmake.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/vfs_fonts.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset(getEnvFolder() . 'others/backend/datatables/buttons.print.min.js') }}"></script>
+
     <script>
         $(document).ready(function() {
             $('#currency-translations-table').DataTable({

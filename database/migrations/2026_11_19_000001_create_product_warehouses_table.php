@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('code', 30)->unique(); // Référence interne unique de l'entrepôt (ex : COT-01)
             $table->enum('type', ['storage', 'returns', 'transit'])->default('storage'); // Type d'entrepôt : stockage, retours ou transit
             //
-            $table->foreignId('country_id')->nullable()->constrained('geo_countries')->cascadeOnUpdate()->cascadeOnDelete(); // Pays de l'entrepôt (optionnel)
+            $table->foreignId('division_id')->constrained('geo_divisions')->cascadeOnUpdate()->cascadeOnDelete(); // Division de rattachement de l'entrepôt (obligatoire)
             $table->string('city')->nullable(); // Ville de l'entrepôt
             $table->string('address')->nullable(); // Adresse complète de l'entrepôt
             $table->decimal('latitude', 10, 7)->nullable(); // Latitude GPS (entre -90 et 90)
@@ -40,7 +40,7 @@ return new class extends Migration
             $table->softDeletes();
             // Index pour les filtres courants
             $table->index(['status', 'type', 'deleted_at']); // Index pour les filtres courants
-            $table->index(['country_id', 'city']); // Retrouve rapidement les entrepôts d'un pays ou d'une ville
+            $table->index(['division_id', 'city']); // Retrouve rapidement les entrepôts d'une division ou d'une ville
         });
     }
 

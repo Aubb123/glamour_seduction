@@ -27,11 +27,12 @@ class ProductWarehouseTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY (soft delete d'une traduction)
     // ─────────────────────────────────────────────
-    public function backend_product_warehouse_translations_destroy(string $uuid): RedirectResponse
+    public function backend_product_warehouse_translations_destroy(ProductWarehouseTranslation $productWarehouseTranslation): RedirectResponse
     {
         try {
 
-            $translation = ProductWarehouseTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {productWarehouseTranslation})
+            $translation = $productWarehouseTranslation;
 
             $this->productWarehouseTranslationService->backend_product_warehouse_translations_destroy($translation);
 
@@ -39,22 +40,15 @@ class ProductWarehouseTranslationController extends Controller
 
             return back()->with('success', __("{$this->backendLangPath}.translations.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur : traduction d'entrepôt introuvable
-            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning_meta", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_error"));
         }
@@ -63,11 +57,12 @@ class ProductWarehouseTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED (Corbeille des traductions d'un entrepôt)
     // ─────────────────────────────────────────────
-    public function backend_product_warehouse_translations_trashed(string $warehouse_uuid): View|RedirectResponse
+    public function backend_product_warehouse_translations_trashed(ProductWarehouse $productWarehouse): View|RedirectResponse
     {
         try {
 
-            $warehouse = ProductWarehouse::where('uuid', $warehouse_uuid)->firstOrFail();
+            // Entrepôt résolu par le binding implicite sur uuid (route {productWarehouse} avec ->withTrashed())
+            $warehouse = $productWarehouse;
 
             $warehouseTitle = $warehouse->active_translation?->name ?? $warehouse->code;
 
@@ -77,15 +72,9 @@ class ProductWarehouseTranslationController extends Controller
 
             return view('v1.backend.pages.products.warehouses.translations.trashed', compact('warehouse', 'productWarehouseTranslations'));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-translations.trashed', context: ['warehouse_uuid' => $warehouse_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.warning", ['uuid' => $warehouse_uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->backendLangPath}.translations.trashed.flash_warning"));
-
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-translations.trashed', context: ['warehouse_uuid' => $warehouse_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.error", ['uuid' => $warehouse_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-translations.trashed', context: ['warehouse_uuid' => $warehouse->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.error", ['uuid' => $warehouse->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.translations.trashed.flash_error"));
         }

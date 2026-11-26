@@ -28,9 +28,10 @@ return [
             'storage_required' => 'Un entrepôt par défaut doit obligatoirement être de type « stockage ».',
             'active_required' => 'Un entrepôt par défaut doit obligatoirement être actif.',
         ],
-        'country_id' => [
-            'integer' => 'Le pays doit être un identifiant valide.',
-            'exists' => 'Le pays sélectionné n\'existe pas.',
+        'division_id' => [
+            'required' => 'Le champ division est obligatoire.',
+            'integer' => 'La division doit être un identifiant valide.',
+            'exists' => 'La division sélectionnée n\'existe pas.',
         ],
         'city' => [
             'string' => 'La ville doit être une chaîne de caractères.',

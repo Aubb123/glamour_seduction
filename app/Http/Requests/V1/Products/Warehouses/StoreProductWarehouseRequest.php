@@ -44,7 +44,7 @@ class StoreProductWarehouseRequest extends FormRequest
             'status' => ['required', Rule::in(ProductWarehouseStatus::values())],
             'is_default' => ['nullable', 'boolean'],
 
-            'country_id' => ['nullable', 'integer', 'exists:geo_countries,id'],
+            'division_id' => ['required', 'integer', 'exists:geo_divisions,id'],
             'city' => ['nullable', 'string', 'max:150'],
             'address' => ['nullable', 'string', 'max:255'],
             'latitude' => ['nullable', 'numeric', 'between:-90,90', 'required_with:longitude'],
@@ -175,8 +175,9 @@ class StoreProductWarehouseRequest extends FormRequest
 
             'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),
 
-            'country_id.integer' => __("{$this->backendLangPath}.country_id.integer"),
-            'country_id.exists' => __("{$this->backendLangPath}.country_id.exists"),
+            'division_id.required' => __("{$this->backendLangPath}.division_id.required"),
+            'division_id.integer' => __("{$this->backendLangPath}.division_id.integer"),
+            'division_id.exists' => __("{$this->backendLangPath}.division_id.exists"),
 
             'city.string' => __("{$this->backendLangPath}.city.string"),
             'city.max' => __("{$this->backendLangPath}.city.max"),

@@ -35,7 +35,7 @@ class ProductWarehouse extends Model
         'sort_order',
         'code',
         'type',
-        'country_id',
+        'division_id',
         'city',
         'address',
         'latitude',
@@ -68,11 +68,12 @@ class ProductWarehouse extends Model
     }
 
     /**
-     * Relation vers le pays de l'entrepôt.
+     * Relation vers la division de rattachement de l'entrepôt
+     * (dernier niveau administratif : commune, état, région, province…).
      */
-    public function country(): BelongsTo
+    public function division(): BelongsTo
     {
-        return $this->belongsTo(GeoCountry::class, 'country_id');
+        return $this->belongsTo(GeoDivision::class, 'division_id');
     }
 
     /**

@@ -184,6 +184,16 @@ return [
             ],
         ],
 
+        // ─────────────────────────────────────────────
+        // SWITCH (dashboard currency selector)
+        // ─────────────────────────────────────────────
+        'switch' => [
+            'title' => 'Display currency',
+            'success' => 'Display currency updated: :code',
+            'warning' => 'Currency not found or inactive.',
+            'error' => 'Error while switching currency.',
+        ],
+
     ],
 
 ];

@@ -81,7 +81,7 @@
                                 <th scope="col">{{ __('Photo') }}</th>
                                 <th scope="col">{{ __('Nom') }}</th>
                                 <th scope="col">{{ __('Email') }}</th>
-                                <th scope="col">{{ __('Pays') }}</th>
+                                <th scope="col">{{ __('Division') }}</th>
                                 <th scope="col">{{ __('Rôles') }}</th>
                                 <th scope="col">{{ __('Statut') }}</th>
                                 <th scope="col">{{ __('Abonnements') }}</th>
@@ -113,8 +113,8 @@
                                     
                                     <td>
                                         <span class="badge bg-outline-secondary">
-                                            <a href="{{ $user->country ? route('backend.geocountries.show', ['geoCountry' => $user->country->uuid, 'slug' => $user->country->active_translation?->slug ?? 'null']) : '#' }}">
-                                                {{ $user->country?->active_translation?->name ?? 'null' }}
+                                            <a href="{{ $user->division ? route('backend.geodivisions.show', ['geoDivision' => $user->division->uuid, 'slug' => $user->division->active_translation?->slug ?? 'null']) : '#' }}">
+                                                {{ $user->division?->active_translation?->name ?? 'null' }}
                                             </a>
                                         </span>
                                     </td>

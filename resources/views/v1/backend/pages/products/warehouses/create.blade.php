@@ -138,18 +138,36 @@
                         {{-- STEP 3 --}}
                         <div class="step-content d-none" data-step-content="3">
 
+                            @php
+                                $selectedDivisionId = old('division_id');
+                                $selectedCountryId = $divisions->firstWhere('id', $selectedDivisionId)?->country_id;
+                            @endphp
+
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="country_id" class="form-label">{{ __('Pays') }}</label>
-                                    <select name="country_id" id="country_id" class="form-select @error('country_id') is-invalid @enderror">
+                                    <select id="country_id" class="form-select">
                                         <option value="">{{ __('Sélectionner un pays') }}</option>
                                         @foreach ($countries as $country)
-                                            <option value="{{ $country->id }}" {{ (string) old('country_id') === (string) $country->id ? 'selected' : '' }}>
+                                            <option value="{{ $country->id }}" {{ (int) $selectedCountryId === (int) $country->id ? 'selected' : '' }}>
                                                 {{ $country->active_translation?->name ?? $country->code }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('country_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                    <small class="text-muted">{{ __('Sélectionnez un pays pour afficher ses divisions.') }}</small>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="division_id" class="form-label">{{ __('Division') }}</label>
+                                    <select name="division_id" id="division_id" class="form-select @error('division_id') is-invalid @enderror">
+                                        <option value="">{{ __('Sélectionner une division') }}</option>
+                                        @foreach ($divisions as $division)
+                                            <option value="{{ $division->id }}" data-country="{{ $division->country_id }}" data-has-children="{{ $division->children_count > 0 ? '1' : '0' }}" {{ (string) $selectedDivisionId === (string) $division->id ? 'selected' : '' }}>
+                                                {{ $division->active_translation?->name ?? $division->uuid }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('division_id') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -223,6 +241,7 @@
 
 @push('scripts')
     @include('v1.backend.layouts.partials._stepper-script', ['formId' => 'create-warehouse-form'])
+    @include('v1.backend.layouts.partials._country-division-filter-script')
 @endpush
 
 @push('styles')

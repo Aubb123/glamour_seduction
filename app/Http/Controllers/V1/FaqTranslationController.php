@@ -28,34 +28,26 @@ class FaqTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY (soft delete d'une traduction)
     // ─────────────────────────────────────────────
-    public function backend_faq_translations_destroy(string $uuid): RedirectResponse
+    public function backend_faq_translations_destroy(FaqTranslation $faqTranslation): RedirectResponse
     {
         try {
 
-            // Récupère la traduction de la FAQ par UUID ou échoue si non trouvée
-            $translation = FaqTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {faqTranslation})
+            $translation = $faqTranslation;
 
             // Suppression via le service (soft delete) — le service vérifie si c'est la dernière traduction
             $this->faqTranslationService->backend_faqs_translations_destroy($translation);
 
             // Log de la suppression réussie
-            $this->logActivity(type: 'info', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: null, activity: __("{$this->backendLangPath}.translations.destroy.success", ['uuid' => $uuid]), is_success: true, loggable: $translation);
+            $this->logActivity(type: 'info', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: null, activity: __("{$this->backendLangPath}.translations.destroy.success", ['uuid' => $translation->uuid]), is_success: true, loggable: $translation);
 
             // Redirige vers la page précédente avec un message flash de succès pour la suppression
             return back()->with('success', __("{$this->backendLangPath}.translations.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur lors de la tentative de suppression d'une traduction non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            // Redirige vers la page précédente avec un message flash d'erreur pour la traduction introuvable
-            return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur lors de la tentative de suppression avec un message d'avertissement spécifique
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.warning_meta", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'erreur métier
             return back()->with('error', $e->getMessage());
@@ -63,7 +55,7 @@ class FaqTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative de suppression avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.faq-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirige vers la page précédente avec un message flash d'erreur pour l'échec de la suppression
             return back()->with('error', __("{$this->backendLangPath}.translations.destroy.flash_error"));
@@ -73,12 +65,11 @@ class FaqTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED (Corbeille des traductions d'une FAQ)
     // ─────────────────────────────────────────────
-    public function backend_faq_translations_trashed(string $faq_uuid): View
+    public function backend_faq_translations_trashed(Faq $faq): View
     {
         try {
 
-            // Récupère la FAQ par UUID ou échoue si non trouvée, y compris les FAQs supprimées (soft deleted)
-            $faq = Faq::withTrashed()->where('uuid', $faq_uuid)->firstOrFail();
+            // FAQ résolue par le binding implicite sur uuid (route {faq} avec ->withTrashed())
 
             $faqName = $faq->active_translation?->question ?? ''; // Récupère la question de la FAQ pour les logs et les messages flash
 
@@ -91,17 +82,10 @@ class FaqTranslationController extends Controller
             // Retourne la vue avec les traductions supprimées et la FAQ correspondante
             return view('v1.backend.pages.faqs.translations.trashed', compact('faq', 'faqTranslations'));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur lors de la tentative d'accès à la corbeille des traductions pour une FAQ non trouvée
-            $this->logActivity(type: 'warning', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.not_found", ['uuid' => $faq_uuid]), is_success: false);
-
-            abort(404);
-
         } catch (\Exception $e) {
 
             // Log de l'erreur lors de la tentative d'accès à la corbeille des traductions pour une FAQ avec un message d'erreur
-            $this->logActivity(type: 'error', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.error", ['uuid' => $faq_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.faq-translations.trashed', context: ['faq_uuid' => $faq->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.translations.trashed.error", ['uuid' => $faq->uuid]), is_success: false);
 
             abort(500);
         }

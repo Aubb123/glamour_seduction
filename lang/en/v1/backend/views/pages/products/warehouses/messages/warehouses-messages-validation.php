@@ -28,9 +28,10 @@ return [
             'storage_required' => 'A default warehouse must be of the "storage" type.',
             'active_required' => 'A default warehouse must be active.',
         ],
-        'country_id' => [
-            'integer' => 'The country must be a valid identifier.',
-            'exists' => 'The selected country does not exist.',
+        'division_id' => [
+            'required' => 'The division field is required.',
+            'integer' => 'The division must be a valid identifier.',
+            'exists' => 'The selected division does not exist.',
         ],
         'city' => [
             'string' => 'The city must be a string.',

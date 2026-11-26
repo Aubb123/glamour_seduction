@@ -161,7 +161,7 @@
                                                     <div class="col-2 text-muted fw-semibold">{{ __('v1/backend/views/pages/faqs/show.actions') }}</div>
                                                     <div class="col-9">
                                                         @if(getTranslation($faq, $lang->id) && !getTranslation($faq, $lang->id)->trashed())
-                                                            <form action="{{ route('backend.faq-translations.destroy', ['uuid' => getTranslation($faq, $lang->id)->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($faq, $lang->id)->uuid }}" class="d-inline">
+                                                            <form action="{{ route('backend.faq-translations.destroy', ['faqTranslation' => getTranslation($faq, $lang->id)->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($faq, $lang->id)->uuid }}" class="d-inline">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ getTranslation($faq, $lang->id)->uuid }}', '{{ __('v1/backend/views/pages/faqs/show.supprimerCetteTraduction') }}', '{{ __('v1/backend/views/pages/faqs/show.supprimer') }}', 'warning')">

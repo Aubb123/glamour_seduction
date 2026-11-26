@@ -30,7 +30,7 @@
 
     <form action="{{ route('frontend.currencies.switch') }}" method="POST" style="margin: 10px 0;">
         @csrf
-        <label for="currency">{{ __('Devise d\'affichage') }}</label>
+        <label for="currency">{{ __('v1/backend/views/pages/currencies/messages/currencies-messages-controller.currencies.switch.title') }}</label>
         <select name="currency" id="currency" required>
             @foreach ($currencies as $currency)
                 <option value="{{ $currency->code }}" @selected($displayCurrency?->code === $currency->code)>

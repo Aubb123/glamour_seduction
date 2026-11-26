@@ -38,9 +38,16 @@ class CurrencyService
 
             // Garde métier (Module 10) : la devise par défaut est la base de saisie des prix
             // → son taux de change reste toujours fixé à 1.000000.
-            $exchangeRate = (float) ($data['exchange_rate'] ?? $currency->exchange_rate ?? 1);
+            // Si le taux n'est pas fourni et que la devise n'est pas par défaut, on le laisse à null.
+            $exchangeRate = null;
 
-            if ($isDefault && abs($exchangeRate - 1.0) > 0.0000005) {
+            if (isset($data['exchange_rate']) && $data['exchange_rate'] !== '') {
+                $exchangeRate = (float) $data['exchange_rate'];
+            } elseif ($currency->exchange_rate !== null) {
+                $exchangeRate = (float) $currency->exchange_rate;
+            }
+
+            if ($isDefault && $exchangeRate !== null && abs($exchangeRate - 1.0) > 0.0000005) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.exchange_rate_default_forbidden"));
             }
 
@@ -245,8 +252,7 @@ class CurrencyService
                 // automatiquement (avec garantie d'unicité par langue) si le nom change.
                 $existingTranslation->update([
                     'name' => $translation['name'],
-                    // La description est optionnelle
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
 
             } else {
@@ -255,7 +261,7 @@ class CurrencyService
                     'currency_id' => $currency->id,
                     'lang_id' => $langId,
                     'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
             }
         }

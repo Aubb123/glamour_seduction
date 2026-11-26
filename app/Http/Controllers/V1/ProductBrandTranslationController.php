@@ -28,12 +28,12 @@ class ProductBrandTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function backend_product_brand_translations_destroy(string $uuid): RedirectResponse
+    public function backend_product_brand_translations_destroy(ProductBrandTranslation $productBrandTranslation): RedirectResponse
     {
         try {
 
-            // Récupération de la traduction par son UUID ou échoue
-            $translation = ProductBrandTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {productBrandTranslation})
+            $translation = $productBrandTranslation;
 
             // Suppression via le service (soft delete)
             $this->productBrandTranslationService->backend_product_brand_translations_destroy($translation);
@@ -44,18 +44,10 @@ class ProductBrandTranslationController extends Controller
             // Redirection vers la page précédente avec un message de succès
             return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur de non-trouvabilité de la traduction à supprimer
-            $this->logActivity(type: 'warning', action: 'backend.product-brand-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            // Redirection vers la page précédente avec un message d'erreur de non-trouvabilité
-            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
             // Log de l'erreur métier lors de la suppression de la traduction
-            $this->logActivity(type: 'warning', action: 'backend.product-brand-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-brand-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirection vers la page précédente avec un message d'erreur métier explicite
             return back()->with('error', $e->getMessage());
@@ -63,7 +55,7 @@ class ProductBrandTranslationController extends Controller
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de la suppression de la traduction
-            $this->logActivity(type: 'error', action: 'backend.product-brand-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-brand-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
@@ -73,34 +65,26 @@ class ProductBrandTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_product_brand_translations_trashed(string $brand_uuid): View|RedirectResponse
+    public function backend_product_brand_translations_trashed(ProductBrand $productBrand): View|RedirectResponse
     {
         try {
 
-            // $brand récupère la marque de produit, y compris celles qui sont supprimées (soft deleted)
-            $brand = ProductBrand::withTrashed()->where('uuid', $brand_uuid)->firstOrFail();
+            // Marque résolue par le binding implicite sur uuid (route {productBrand} avec ->withTrashed())
+            $brand = $productBrand;
 
             // $trashedTranslations récupère toutes les traductions supprimées (soft deleted) associées à la marque
             $trashedTranslations = ProductBrandTranslation::onlyTrashed()->where('brand_id', $brand->id)->get();
 
             // Log de l'accès à la liste des traductions supprimées pour la marque spécifiée
-            $this->logActivity(type: 'info', action: 'backend.product-brand-translations.trashed', context: ['count' => $trashedTranslations->count(), 'brand_uuid' => $brand_uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $brand->active_translation?->name ?? $brand_uuid]), is_success: true, loggable: $brand);
+            $this->logActivity(type: 'info', action: 'backend.product-brand-translations.trashed', context: ['count' => $trashedTranslations->count(), 'brand_uuid' => $brand->uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $brand->active_translation?->name ?? $brand->uuid]), is_success: true, loggable: $brand);
 
             // Retourne la vue avec les traductions supprimées et la marque associée
             return view('v1.backend.pages.products.brands.translations.trashed', compact('trashedTranslations', 'brand'));
 
-        } catch (ModelNotFoundException $e) {
-
-            // Log de l'erreur de non-trouvabilité de la marque pour laquelle on tente d'accéder aux traductions supprimées
-            $this->logActivity(type: 'warning', action: 'backend.product-brand-translations.trashed', context: ['brand_uuid' => $brand_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $brand_uuid]), is_success: false);
-
-            // Redirection vers la page précédente avec un message d'erreur de non-trouvabilité
-            return back()->with('error', __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $brand_uuid]));
-
         } catch (\Exception $e) {
 
             // Log de l'erreur serveur lors de l'accès aux traductions supprimées pour la marque spécifiée
-            $this->logActivity(type: 'error', action: 'backend.product-brand-translations.trashed', context: ['brand_uuid' => $brand_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $brand_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-brand-translations.trashed', context: ['brand_uuid' => $brand->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $brand->uuid]), is_success: false);
 
             // Redirection vers la page précédente avec un message d'erreur générique
             return back()->with('error', __("{$this->backendLangPath}.trashed.error", ['uuid' => $brand_uuid]));

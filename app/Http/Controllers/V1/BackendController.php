@@ -94,7 +94,7 @@ class BackendController extends Controller
         // ─── Derniers utilisateurs inscrits ───────────────────────
         $latestItemsLimit = (int) getRequiredSettingValue('dashboard_latest_items_limit', app()->getLocale());
 
-        $latestUsers = User::with(['country'])
+        $latestUsers = User::with(['division'])
             ->orderBy('created_at', 'desc')
             ->limit($latestItemsLimit)
             ->get();

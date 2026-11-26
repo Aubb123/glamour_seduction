@@ -5,9 +5,11 @@ namespace App\Helpers\Web\Backend;
 use App\Enums\Clouds\Platforms\CloudPlatformStatus;
 use App\Models\CloudFile;
 use App\Models\CloudPlatform;
+use App\Models\Currency;
 use App\Models\Lang;
 use App\Models\Setting;
 use App\Services\Cloud\CloudStorageService;
+use App\Services\V1\PricingService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +45,23 @@ class BackendHelper
         return [
             'langs' => $langs,
             'currentLang' => $currentLang,
+        ];
+    }
+
+    // Fonction getActiveCurrencies() qui récupère les devises actives sur la plateforme
+    // et la devise courante d'affichage (selon la cascade users.currency_id → session → pays → défaut)
+    public static function getActiveCurrencies()
+    {
+        $currencies = Currency::active()->orderBy('sort_order')->get();
+        $currentCurrency = app(PricingService::class)->resolveDisplayCurrency(auth()->user());
+
+        if (! $currentCurrency) {
+            $currentCurrency = Currency::where('is_default', true)->first() ?? Currency::query()->first();
+        }
+
+        return [
+            'currencies' => $currencies,
+            'currentCurrency' => $currentCurrency,
         ];
     }
 

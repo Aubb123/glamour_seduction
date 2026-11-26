@@ -153,7 +153,7 @@
                                                                 <div class="row align-items-start">
                                                                     <div class="col-3 text-muted fw-semibold">{{ __('Actions') }}</div>
                                                                     <div class="col-9">
-                                                                        <form action="{{ route('backend.blog-tag-translations.destroy', ['uuid' => getTranslation($tag, $lang->id)->uuid]) }}" method="POST" id="delete-translation-form-{{ getTranslation($tag, $lang->id)->uuid }}" class="d-inline">
+                                                                        <form action="{{ route('backend.blog-tag-translations.destroy', ['blogTagTranslation' => getTranslation($tag, $lang->id)->uuid]) }}" method="POST" id="delete-translation-form-{{ getTranslation($tag, $lang->id)->uuid }}" class="d-inline">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-translation-form-{{ getTranslation($tag, $lang->id)->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">

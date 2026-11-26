@@ -3,6 +3,7 @@
 return [
     // _trashed-table-translations.blade.php
     'traductions' => 'Translations',
+    'traductionsSupprimees' => 'Deleted translations',
     'langue' => 'Language',
     'nom' => 'Name',
     'slug' => 'Slug',

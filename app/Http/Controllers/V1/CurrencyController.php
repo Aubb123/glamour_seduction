@@ -49,6 +49,23 @@ class CurrencyController extends Controller
     }
 
     // ─────────────────────────────────────────────
+    // ─────────────────────────────────────────────
+    // CURRENCY SWITCH (dashboard) — change la devise d'affichage
+    // Simple : stocke le code en session
+    // ─────────────────────────────────────────────
+    public function backend_currencies_switch(Currency $currency): RedirectResponse
+    {
+        if (! $currency->status || $currency->status->value !== 'active') {
+            return back()->with('error', __("{$this->backendLangPath}.switch.warning"));
+        }
+
+        session(['currency' => $currency->code]);
+
+        return back()->with('success', __("{$this->backendLangPath}.switch.success", ['code' => $currency->code]));
+
+        // return redirect()->route('backend.index')->with('success', __("{$this->backendLangPath}.switch.success", ['code' => $currency->code]));
+    }
+
     // SHOW
     // ─────────────────────────────────────────────
     public function backend_currencies_show(Currency $currency, string $slug): View|RedirectResponse

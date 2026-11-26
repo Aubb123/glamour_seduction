@@ -10,31 +10,14 @@ use Illuminate\Database\Seeder;
 class CurrencySeeder extends Seeder
 {
     /**
-     * Taux de change indicatifs par rapport à la devise par défaut (EUR) —
-     * maintenables manuellement via le back-office (champ « Taux de change »).
-     * Les devises absentes de cette table partent du défaut 1.000000.
+     * Taux de change par rapport à la devise par défaut (XOF).
+     * Seules les 3 devises supportées ont un taux : XOF, EUR, USD.
+     * Les autres devises (inactives) n'ont pas de taux configuré.
      */
     protected array $exchangeRates = [
-        'EUR' => 1.000000,
-        'USD' => 1.080000,
-        'GBP' => 0.920000,
-        'CHF' => 0.960000,
-        'CAD' => 1.470000,
-        'JPY' => 168.000000,
-        'MAD' => 10.850000,
-        'DZD' => 145.000000,
-        'TND' => 3.350000,
-        'XOF' => 655.957000,
-        'XAF' => 655.957000,
-        'XPF' => 119.331742,
-        'BIF' => 3100.000000,
-        'CDF' => 2800.000000,
-        'GNF' => 9250.000000,
-        'RWF' => 1350.000000,
-        'KMF' => 492.000000,
-        'MGA' => 4650.000000,
-        'MUR' => 49.000000,
-        'SCR' => 15.000000,
+        'XOF' => 1.000000,
+        'EUR' => 655.957000,
+        'USD' => 606.835000,
     ];
 
     /**
@@ -51,10 +34,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '784',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dirham des Émirats arabes unis', 'slug' => 'dirham-des-emirats-arabes-unis', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'UAE Dirham', 'slug' => 'uae-dirham', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dirham des Émirats arabes unis', 'slug' => 'dirham-des-emirats-arabes-unis', 'description' => 'Monnaie officielle des Émirats arabes unis (AED).'],
+                    ['lang_code' => 'en', 'name' => 'UAE Dirham', 'slug' => 'uae-dirham', 'description' => 'Official currency of the United Arab Emirates (AED).'],
                 ],
             ],
             [
@@ -63,10 +46,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '971',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Afghani afghan', 'slug' => 'afghani-afghan', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Afghan Afghani', 'slug' => 'afghan-afghani', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Afghani afghan', 'slug' => 'afghani-afghan', 'description' => 'Monnaie officielle de l\'Afghanistan (AFN).'],
+                    ['lang_code' => 'en', 'name' => 'Afghan Afghani', 'slug' => 'afghan-afghani', 'description' => 'Official currency of Afghanistan (AFN).'],
                 ],
             ],
             [
@@ -75,10 +58,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '008',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Lek albanais', 'slug' => 'lek-albanais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Albanian Lek', 'slug' => 'albanian-lek', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Lek albanais', 'slug' => 'lek-albanais', 'description' => 'Monnaie officielle de l\'Albanie (ALL).'],
+                    ['lang_code' => 'en', 'name' => 'Albanian Lek', 'slug' => 'albanian-lek', 'description' => 'Official currency of Albania (ALL).'],
                 ],
             ],
             [
@@ -87,10 +70,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '051',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dram arménien', 'slug' => 'dram-armenien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Armenian Dram', 'slug' => 'armenian-dram', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dram arménien', 'slug' => 'dram-armenien', 'description' => 'Monnaie officielle de l\'Arménie (AMD).'],
+                    ['lang_code' => 'en', 'name' => 'Armenian Dram', 'slug' => 'armenian-dram', 'description' => 'Official currency of Armenia (AMD).'],
                 ],
             ],
             [
@@ -99,10 +82,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '532',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Florin des Antilles néerlandaises', 'slug' => 'florin-des-antilles-neerlandaises', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Netherlands Antillean Guilder', 'slug' => 'netherlands-antillean-guilder', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Florin des Antilles néerlandaises', 'slug' => 'florin-des-antilles-neerlandaises', 'description' => 'Monnaie des Antilles néerlandaises (ANG).'],
+                    ['lang_code' => 'en', 'name' => 'Netherlands Antillean Guilder', 'slug' => 'netherlands-antillean-guilder', 'description' => 'Currency of the Netherlands Antilles (ANG).'],
                 ],
             ],
             [
@@ -111,10 +94,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '973',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Kwanza angolais', 'slug' => 'kwanza-angolais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Angolan Kwanza', 'slug' => 'angolan-kwanza', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Kwanza angolais', 'slug' => 'kwanza-angolais', 'description' => 'Monnaie officielle de l\'Angola (AOA).'],
+                    ['lang_code' => 'en', 'name' => 'Angolan Kwanza', 'slug' => 'angolan-kwanza', 'description' => 'Official currency of Angola (AOA).'],
                 ],
             ],
             [
@@ -123,10 +106,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '032',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso argentin', 'slug' => 'peso-argentin', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Argentine Peso', 'slug' => 'argentine-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso argentin', 'slug' => 'peso-argentin', 'description' => 'Monnaie officielle de l\'Argentine (ARS).'],
+                    ['lang_code' => 'en', 'name' => 'Argentine Peso', 'slug' => 'argentine-peso', 'description' => 'Official currency of Argentina (ARS).'],
                 ],
             ],
             [
@@ -135,10 +118,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '036',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar australien', 'slug' => 'dollar-australien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Australian Dollar', 'slug' => 'australian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar australien', 'slug' => 'dollar-australien', 'description' => 'Monnaie officielle de l\'Australie (AUD).'],
+                    ['lang_code' => 'en', 'name' => 'Australian Dollar', 'slug' => 'australian-dollar', 'description' => 'Official currency of Australia (AUD).'],
                 ],
             ],
             [
@@ -147,10 +130,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '533',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Florin arubais', 'slug' => 'florin-arubais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Aruban Florin', 'slug' => 'aruban-florin', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Florin arubais', 'slug' => 'florin-arubais', 'description' => 'Monnaie officielle d\'Aruba (AWG).'],
+                    ['lang_code' => 'en', 'name' => 'Aruban Florin', 'slug' => 'aruban-florin', 'description' => 'Official currency of Aruba (AWG).'],
                 ],
             ],
             [
@@ -159,10 +142,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '944',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Manat azerbaïdjanais', 'slug' => 'manat-azerbaidjanais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Azerbaijani Manat', 'slug' => 'azerbaijani-manat', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Manat azerbaïdjanais', 'slug' => 'manat-azerbaidjanais', 'description' => 'Monnaie officielle de l\'Azerbaïdjan (AZN).'],
+                    ['lang_code' => 'en', 'name' => 'Azerbaijani Manat', 'slug' => 'azerbaijani-manat', 'description' => 'Official currency of Azerbaijan (AZN).'],
                 ],
             ],
             [
@@ -171,10 +154,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '977',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Mark convertible de Bosnie-Herzégovine', 'slug' => 'mark-convertible-de-bosnie-herzegovine', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bosnia-Herzegovina Convertible Mark', 'slug' => 'bosnia-herzegovina-convertible-mark', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Mark convertible de Bosnie-Herzégovine', 'slug' => 'mark-convertible-de-bosnie-herzegovine', 'description' => 'Monnaie de Bosnie-Herzégovine (BAM).'],
+                    ['lang_code' => 'en', 'name' => 'Bosnia-Herzegovina Convertible Mark', 'slug' => 'bosnia-herzegovina-convertible-mark', 'description' => 'Currency of Bosnia-Herzegovina (BAM).'],
                 ],
             ],
             [
@@ -183,10 +166,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '052',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar barbadien', 'slug' => 'dollar-barbadien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Barbadian Dollar', 'slug' => 'barbadian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar barbadien', 'slug' => 'dollar-barbadien', 'description' => 'Monnaie officielle de la Barbade (BBD).'],
+                    ['lang_code' => 'en', 'name' => 'Barbadian Dollar', 'slug' => 'barbadian-dollar', 'description' => 'Official currency of Barbados (BBD).'],
                 ],
             ],
             [
@@ -195,10 +178,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '050',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Taka bangladais', 'slug' => 'taka-bangladais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bangladeshi Taka', 'slug' => 'bangladeshi-taka', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Taka bangladais', 'slug' => 'taka-bangladais', 'description' => 'Monnaie officielle du Bangladesh (BDT).'],
+                    ['lang_code' => 'en', 'name' => 'Bangladeshi Taka', 'slug' => 'bangladeshi-taka', 'description' => 'Official currency of Bangladesh (BDT).'],
                 ],
             ],
             [
@@ -207,10 +190,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '975',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Lev bulgare', 'slug' => 'lev-bulgare', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bulgarian Lev', 'slug' => 'bulgarian-lev', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Lev bulgare', 'slug' => 'lev-bulgare', 'description' => 'Monnaie officielle de la Bulgarie (BGN).'],
+                    ['lang_code' => 'en', 'name' => 'Bulgarian Lev', 'slug' => 'bulgarian-lev', 'description' => 'Official currency of Bulgaria (BGN).'],
                 ],
             ],
             [
@@ -219,10 +202,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '048',
                 'decimal_places' => 3,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar bahreïni', 'slug' => 'dinar-bahreini', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bahraini Dinar', 'slug' => 'bahraini-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar bahreïni', 'slug' => 'dinar-bahreini', 'description' => 'Monnaie officielle de Bahreïn (BHD).'],
+                    ['lang_code' => 'en', 'name' => 'Bahraini Dinar', 'slug' => 'bahraini-dinar', 'description' => 'Official currency of Bahrain (BHD).'],
                 ],
             ],
             [
@@ -231,10 +214,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '108',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc burundais', 'slug' => 'franc-burundais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Burundian Franc', 'slug' => 'burundian-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc burundais', 'slug' => 'franc-burundais', 'description' => 'Monnaie officielle du Burundi (BIF).'],
+                    ['lang_code' => 'en', 'name' => 'Burundian Franc', 'slug' => 'burundian-franc', 'description' => 'Official currency of Burundi (BIF).'],
                 ],
             ],
             [
@@ -243,10 +226,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '060',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar bermudien', 'slug' => 'dollar-bermudien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bermudian Dollar', 'slug' => 'bermudian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar bermudien', 'slug' => 'dollar-bermudien', 'description' => 'Monnaie officielle des Bermudes (BMD).'],
+                    ['lang_code' => 'en', 'name' => 'Bermudian Dollar', 'slug' => 'bermudian-dollar', 'description' => 'Official currency of Bermuda (BMD).'],
                 ],
             ],
             [
@@ -255,10 +238,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '096',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar brunéien', 'slug' => 'dollar-bruneien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Brunei Dollar', 'slug' => 'brunei-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar brunéien', 'slug' => 'dollar-bruneien', 'description' => 'Monnaie officielle du Brunei (BND).'],
+                    ['lang_code' => 'en', 'name' => 'Brunei Dollar', 'slug' => 'brunei-dollar', 'description' => 'Official currency of Brunei (BND).'],
                 ],
             ],
             [
@@ -267,10 +250,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '068',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Boliviano bolivien', 'slug' => 'boliviano-bolivien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bolivian Boliviano', 'slug' => 'bolivian-boliviano', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Boliviano bolivien', 'slug' => 'boliviano-bolivien', 'description' => 'Monnaie officielle de la Bolivie (BOB).'],
+                    ['lang_code' => 'en', 'name' => 'Bolivian Boliviano', 'slug' => 'bolivian-boliviano', 'description' => 'Official currency of Bolivia (BOB).'],
                 ],
             ],
             [
@@ -279,10 +262,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '986',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Réal brésilien', 'slug' => 'real-bresilien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Brazilian Real', 'slug' => 'brazilian-real', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Réal brésilien', 'slug' => 'real-bresilien', 'description' => 'Monnaie officielle du Brésil (BRL).'],
+                    ['lang_code' => 'en', 'name' => 'Brazilian Real', 'slug' => 'brazilian-real', 'description' => 'Official currency of Brazil (BRL).'],
                 ],
             ],
             [
@@ -291,10 +274,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '044',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar bahaméen', 'slug' => 'dollar-bahameen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bahamian Dollar', 'slug' => 'bahamian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar bahaméen', 'slug' => 'dollar-bahameen', 'description' => 'Monnaie officielle des Bahamas (BSD).'],
+                    ['lang_code' => 'en', 'name' => 'Bahamian Dollar', 'slug' => 'bahamian-dollar', 'description' => 'Official currency of Bahamas (BSD).'],
                 ],
             ],
             [
@@ -303,10 +286,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '064',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Ngultrum bhoutanais', 'slug' => 'ngultrum-bhoutanais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Bhutanese Ngultrum', 'slug' => 'bhutanese-ngultrum', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Ngultrum bhoutanais', 'slug' => 'ngultrum-bhoutanais', 'description' => 'Monnaie officielle du Bhoutan (BTN).'],
+                    ['lang_code' => 'en', 'name' => 'Bhutanese Ngultrum', 'slug' => 'bhutanese-ngultrum', 'description' => 'Official currency of Bhutan (BTN).'],
                 ],
             ],
             [
@@ -315,10 +298,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '072',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Pula botswanais', 'slug' => 'pula-botswanais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Botswana Pula', 'slug' => 'botswana-pula', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Pula botswanais', 'slug' => 'pula-botswanais', 'description' => 'Monnaie officielle du Botswana (BWP).'],
+                    ['lang_code' => 'en', 'name' => 'Botswana Pula', 'slug' => 'botswana-pula', 'description' => 'Official currency of Botswana (BWP).'],
                 ],
             ],
             [
@@ -327,10 +310,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '933',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rouble biélorusse', 'slug' => 'rouble-bielorusse', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Belarusian Ruble', 'slug' => 'belarusian-ruble', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rouble biélorusse', 'slug' => 'rouble-bielorusse', 'description' => 'Monnaie officielle de la Biélorussie (BYN).'],
+                    ['lang_code' => 'en', 'name' => 'Belarusian Ruble', 'slug' => 'belarusian-ruble', 'description' => 'Official currency of Belarus (BYN).'],
                 ],
             ],
             [
@@ -339,10 +322,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '084',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar bélizéen', 'slug' => 'dollar-belizeen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Belize Dollar', 'slug' => 'belize-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar bélizéen', 'slug' => 'dollar-belizeen', 'description' => 'Monnaie officielle du Belize (BZD).'],
+                    ['lang_code' => 'en', 'name' => 'Belize Dollar', 'slug' => 'belize-dollar', 'description' => 'Official currency of Belize (BZD).'],
                 ],
             ],
             [
@@ -351,10 +334,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '124',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar canadien', 'slug' => 'dollar-canadien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Canadian Dollar', 'slug' => 'canadian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar canadien', 'slug' => 'dollar-canadien', 'description' => 'Monnaie officielle du Canada (CAD).'],
+                    ['lang_code' => 'en', 'name' => 'Canadian Dollar', 'slug' => 'canadian-dollar', 'description' => 'Official currency of Canada (CAD).'],
                 ],
             ],
             [
@@ -363,10 +346,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '976',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc congolais', 'slug' => 'franc-congolais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Congolese Franc', 'slug' => 'congolese-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc congolais', 'slug' => 'franc-congolais', 'description' => 'Monnaie officielle de la République démocratique du Congo (CDF).'],
+                    ['lang_code' => 'en', 'name' => 'Congolese Franc', 'slug' => 'congolese-franc', 'description' => 'Official currency of the Democratic Republic of Congo (CDF).'],
                 ],
             ],
             [
@@ -375,10 +358,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '756',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc suisse', 'slug' => 'franc-suisse', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Swiss Franc', 'slug' => 'swiss-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc suisse', 'slug' => 'franc-suisse', 'description' => 'Monnaie officielle de la Suisse (CHF).'],
+                    ['lang_code' => 'en', 'name' => 'Swiss Franc', 'slug' => 'swiss-franc', 'description' => 'Official currency of Switzerland (CHF).'],
                 ],
             ],
             [
@@ -387,10 +370,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '152',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso chilien', 'slug' => 'peso-chilien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Chilean Peso', 'slug' => 'chilean-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso chilien', 'slug' => 'peso-chilien', 'description' => 'Monnaie officielle du Chili (CLP).'],
+                    ['lang_code' => 'en', 'name' => 'Chilean Peso', 'slug' => 'chilean-peso', 'description' => 'Official currency of Chile (CLP).'],
                 ],
             ],
             [
@@ -399,10 +382,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '156',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Yuan renminbi chinois', 'slug' => 'yuan-renminbi-chinois', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Chinese Yuan Renminbi', 'slug' => 'chinese-yuan-renminbi', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Yuan renminbi chinois', 'slug' => 'yuan-renminbi-chinois', 'description' => 'Monnaie officielle de la Chine (CNY).'],
+                    ['lang_code' => 'en', 'name' => 'Chinese Yuan Renminbi', 'slug' => 'chinese-yuan-renminbi', 'description' => 'Official currency of China (CNY).'],
                 ],
             ],
             [
@@ -411,10 +394,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '170',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso colombien', 'slug' => 'peso-colombien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Colombian Peso', 'slug' => 'colombian-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso colombien', 'slug' => 'peso-colombien', 'description' => 'Monnaie officielle de la Colombie (COP).'],
+                    ['lang_code' => 'en', 'name' => 'Colombian Peso', 'slug' => 'colombian-peso', 'description' => 'Official currency of Colombia (COP).'],
                 ],
             ],
             [
@@ -423,10 +406,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '188',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Colón costaricien', 'slug' => 'col-n-costaricien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Costa Rican Colón', 'slug' => 'costa-rican-col-n', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Colón costaricien', 'slug' => 'col-n-costaricien', 'description' => 'Monnaie officielle du Costa Rica (CRC).'],
+                    ['lang_code' => 'en', 'name' => 'Costa Rican Colón', 'slug' => 'costa-rican-col-n', 'description' => 'Official currency of Costa Rica (CRC).'],
                 ],
             ],
             [
@@ -435,10 +418,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '192',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso cubain', 'slug' => 'peso-cubain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Cuban Peso', 'slug' => 'cuban-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso cubain', 'slug' => 'peso-cubain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Cuban Peso', 'slug' => 'cuban-peso', 'description' => ''],
                 ],
             ],
             [
@@ -447,10 +430,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '132',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Escudo cap-verdien', 'slug' => 'escudo-cap-verdien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Cape Verdean Escudo', 'slug' => 'cape-verdean-escudo', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Escudo cap-verdien', 'slug' => 'escudo-cap-verdien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Cape Verdean Escudo', 'slug' => 'cape-verdean-escudo', 'description' => ''],
                 ],
             ],
             [
@@ -459,10 +442,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '203',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Couronne tchèque', 'slug' => 'couronne-tcheque', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Czech Koruna', 'slug' => 'czech-koruna', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Couronne tchèque', 'slug' => 'couronne-tcheque', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Czech Koruna', 'slug' => 'czech-koruna', 'description' => ''],
                 ],
             ],
             [
@@ -471,10 +454,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '262',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc djiboutien', 'slug' => 'franc-djiboutien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Djiboutian Franc', 'slug' => 'djiboutian-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc djiboutien', 'slug' => 'franc-djiboutien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Djiboutian Franc', 'slug' => 'djiboutian-franc', 'description' => ''],
                 ],
             ],
             [
@@ -483,10 +466,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '208',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Couronne danoise', 'slug' => 'couronne-danoise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Danish Krone', 'slug' => 'danish-krone', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Couronne danoise', 'slug' => 'couronne-danoise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Danish Krone', 'slug' => 'danish-krone', 'description' => ''],
                 ],
             ],
             [
@@ -495,10 +478,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '214',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso dominicain', 'slug' => 'peso-dominicain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Dominican Peso', 'slug' => 'dominican-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso dominicain', 'slug' => 'peso-dominicain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Dominican Peso', 'slug' => 'dominican-peso', 'description' => ''],
                 ],
             ],
             [
@@ -507,10 +490,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '012',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar algérien', 'slug' => 'dinar-algerien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Algerian Dinar', 'slug' => 'algerian-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar algérien', 'slug' => 'dinar-algerien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Algerian Dinar', 'slug' => 'algerian-dinar', 'description' => ''],
                 ],
             ],
             [
@@ -519,10 +502,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '818',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre égyptienne', 'slug' => 'livre-egyptienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Egyptian Pound', 'slug' => 'egyptian-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre égyptienne', 'slug' => 'livre-egyptienne', 'description' => 'Monnaie officielle de l\'Égypte (EGP).'],
+                    ['lang_code' => 'en', 'name' => 'Egyptian Pound', 'slug' => 'egyptian-pound', 'description' => 'Official currency of Egypt (EGP).'],
                 ],
             ],
             [
@@ -531,10 +514,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '232',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Nakfa érythréen', 'slug' => 'nakfa-erythreen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Eritrean Nakfa', 'slug' => 'eritrean-nakfa', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Nakfa érythréen', 'slug' => 'nakfa-erythreen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Eritrean Nakfa', 'slug' => 'eritrean-nakfa', 'description' => ''],
                 ],
             ],
             [
@@ -543,10 +526,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '230',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Birr éthiopien', 'slug' => 'birr-ethiopien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Ethiopian Birr', 'slug' => 'ethiopian-birr', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Birr éthiopien', 'slug' => 'birr-ethiopien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Ethiopian Birr', 'slug' => 'ethiopian-birr', 'description' => ''],
                 ],
             ],
             [
@@ -554,11 +537,11 @@ class CurrencySeeder extends Seeder
                 'symbol' => '€',
                 'numeric_code' => '978',
                 'decimal_places' => 2,
-                'is_default' => true,
+                'is_default' => false,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Euro', 'slug' => 'euro', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Euro', 'slug' => 'euro', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Euro', 'slug' => 'euro', 'description' => 'Monnaie officielle de la zone euro. Utilisée par 20 pays de l\'Union européenne.'],
+                    ['lang_code' => 'en', 'name' => 'Euro', 'slug' => 'euro', 'description' => 'Official currency of the eurozone. Used by 20 European Union countries.'],
                 ],
             ],
             [
@@ -567,10 +550,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '242',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar fidjien', 'slug' => 'dollar-fidjien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Fijian Dollar', 'slug' => 'fijian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar fidjien', 'slug' => 'dollar-fidjien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Fijian Dollar', 'slug' => 'fijian-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -579,10 +562,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '238',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre des îles Falkland', 'slug' => 'livre-des-iles-falkland', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Falkland Islands Pound', 'slug' => 'falkland-islands-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre des îles Falkland', 'slug' => 'livre-des-iles-falkland', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Falkland Islands Pound', 'slug' => 'falkland-islands-pound', 'description' => ''],
                 ],
             ],
             [
@@ -591,10 +574,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '826',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre sterling', 'slug' => 'livre-sterling', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'British Pound Sterling', 'slug' => 'british-pound-sterling', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre sterling', 'slug' => 'livre-sterling', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'British Pound Sterling', 'slug' => 'british-pound-sterling', 'description' => ''],
                 ],
             ],
             [
@@ -603,10 +586,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '981',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Lari géorgien', 'slug' => 'lari-georgien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Georgian Lari', 'slug' => 'georgian-lari', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Lari géorgien', 'slug' => 'lari-georgien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Georgian Lari', 'slug' => 'georgian-lari', 'description' => ''],
                 ],
             ],
             [
@@ -615,10 +598,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '936',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Cedi ghanéen', 'slug' => 'cedi-ghaneen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Ghanaian Cedi', 'slug' => 'ghanaian-cedi', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Cedi ghanéen', 'slug' => 'cedi-ghaneen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Ghanaian Cedi', 'slug' => 'ghanaian-cedi', 'description' => ''],
                 ],
             ],
             [
@@ -627,10 +610,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '292',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre de Gibraltar', 'slug' => 'livre-de-gibraltar', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Gibraltar Pound', 'slug' => 'gibraltar-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre de Gibraltar', 'slug' => 'livre-de-gibraltar', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Gibraltar Pound', 'slug' => 'gibraltar-pound', 'description' => ''],
                 ],
             ],
             [
@@ -639,10 +622,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '270',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dalasi gambien', 'slug' => 'dalasi-gambien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Gambian Dalasi', 'slug' => 'gambian-dalasi', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dalasi gambien', 'slug' => 'dalasi-gambien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Gambian Dalasi', 'slug' => 'gambian-dalasi', 'description' => ''],
                 ],
             ],
             [
@@ -651,10 +634,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '324',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc guinéen', 'slug' => 'franc-guineen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Guinean Franc', 'slug' => 'guinean-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc guinéen', 'slug' => 'franc-guineen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Guinean Franc', 'slug' => 'guinean-franc', 'description' => ''],
                 ],
             ],
             [
@@ -663,10 +646,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '320',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Quetzal guatémaltèque', 'slug' => 'quetzal-guatemalteque', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Guatemalan Quetzal', 'slug' => 'guatemalan-quetzal', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Quetzal guatémaltèque', 'slug' => 'quetzal-guatemalteque', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Guatemalan Quetzal', 'slug' => 'guatemalan-quetzal', 'description' => ''],
                 ],
             ],
             [
@@ -675,10 +658,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '328',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar guyanien', 'slug' => 'dollar-guyanien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Guyanese Dollar', 'slug' => 'guyanese-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar guyanien', 'slug' => 'dollar-guyanien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Guyanese Dollar', 'slug' => 'guyanese-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -687,10 +670,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '344',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar de Hong Kong', 'slug' => 'dollar-de-hong-kong', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Hong Kong Dollar', 'slug' => 'hong-kong-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar de Hong Kong', 'slug' => 'dollar-de-hong-kong', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Hong Kong Dollar', 'slug' => 'hong-kong-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -699,10 +682,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '340',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Lempira hondurien', 'slug' => 'lempira-hondurien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Honduran Lempira', 'slug' => 'honduran-lempira', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Lempira hondurien', 'slug' => 'lempira-hondurien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Honduran Lempira', 'slug' => 'honduran-lempira', 'description' => ''],
                 ],
             ],
             [
@@ -711,10 +694,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '332',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Gourde haïtienne', 'slug' => 'gourde-haitienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Haitian Gourde', 'slug' => 'haitian-gourde', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Gourde haïtienne', 'slug' => 'gourde-haitienne', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Haitian Gourde', 'slug' => 'haitian-gourde', 'description' => ''],
                 ],
             ],
             [
@@ -723,10 +706,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '348',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Forint hongrois', 'slug' => 'forint-hongrois', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Hungarian Forint', 'slug' => 'hungarian-forint', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Forint hongrois', 'slug' => 'forint-hongrois', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Hungarian Forint', 'slug' => 'hungarian-forint', 'description' => ''],
                 ],
             ],
             [
@@ -735,10 +718,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '360',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Roupie indonésienne', 'slug' => 'roupie-indonesienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Indonesian Rupiah', 'slug' => 'indonesian-rupiah', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Roupie indonésienne', 'slug' => 'roupie-indonesienne', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Indonesian Rupiah', 'slug' => 'indonesian-rupiah', 'description' => ''],
                 ],
             ],
             [
@@ -747,10 +730,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '376',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Shekel israélien', 'slug' => 'shekel-israelien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Israeli New Shekel', 'slug' => 'israeli-new-shekel', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Shekel israélien', 'slug' => 'shekel-israelien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Israeli New Shekel', 'slug' => 'israeli-new-shekel', 'description' => ''],
                 ],
             ],
             [
@@ -759,10 +742,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '356',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Roupie indienne', 'slug' => 'roupie-indienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Indian Rupee', 'slug' => 'indian-rupee', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Roupie indienne', 'slug' => 'roupie-indienne', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Indian Rupee', 'slug' => 'indian-rupee', 'description' => ''],
                 ],
             ],
             [
@@ -771,10 +754,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '368',
                 'decimal_places' => 3,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar irakien', 'slug' => 'dinar-irakien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Iraqi Dinar', 'slug' => 'iraqi-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar irakien', 'slug' => 'dinar-irakien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Iraqi Dinar', 'slug' => 'iraqi-dinar', 'description' => ''],
                 ],
             ],
             [
@@ -783,10 +766,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '364',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rial iranien', 'slug' => 'rial-iranien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Iranian Rial', 'slug' => 'iranian-rial', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rial iranien', 'slug' => 'rial-iranien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Iranian Rial', 'slug' => 'iranian-rial', 'description' => ''],
                 ],
             ],
             [
@@ -795,10 +778,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '352',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Couronne islandaise', 'slug' => 'couronne-islandaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Icelandic Króna', 'slug' => 'icelandic-kr-na', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Couronne islandaise', 'slug' => 'couronne-islandaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Icelandic Króna', 'slug' => 'icelandic-kr-na', 'description' => ''],
                 ],
             ],
             [
@@ -807,10 +790,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '388',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar jamaïcain', 'slug' => 'dollar-jamaicain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Jamaican Dollar', 'slug' => 'jamaican-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar jamaïcain', 'slug' => 'dollar-jamaicain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Jamaican Dollar', 'slug' => 'jamaican-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -819,10 +802,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '400',
                 'decimal_places' => 3,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar jordanien', 'slug' => 'dinar-jordanien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Jordanian Dinar', 'slug' => 'jordanian-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar jordanien', 'slug' => 'dinar-jordanien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Jordanian Dinar', 'slug' => 'jordanian-dinar', 'description' => ''],
                 ],
             ],
             [
@@ -831,10 +814,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '392',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Yen japonais', 'slug' => 'yen-japonais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Japanese Yen', 'slug' => 'japanese-yen', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Yen japonais', 'slug' => 'yen-japonais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Japanese Yen', 'slug' => 'japanese-yen', 'description' => ''],
                 ],
             ],
             [
@@ -843,10 +826,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '404',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Shilling kényan', 'slug' => 'shilling-kenyan', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Kenyan Shilling', 'slug' => 'kenyan-shilling', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Shilling kényan', 'slug' => 'shilling-kenyan', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Kenyan Shilling', 'slug' => 'kenyan-shilling', 'description' => ''],
                 ],
             ],
             [
@@ -855,10 +838,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '417',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Som kirghize', 'slug' => 'som-kirghize', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Kyrgyzstani Som', 'slug' => 'kyrgyzstani-som', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Som kirghize', 'slug' => 'som-kirghize', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Kyrgyzstani Som', 'slug' => 'kyrgyzstani-som', 'description' => ''],
                 ],
             ],
             [
@@ -867,10 +850,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '116',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Riel cambodgien', 'slug' => 'riel-cambodgien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Cambodian Riel', 'slug' => 'cambodian-riel', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Riel cambodgien', 'slug' => 'riel-cambodgien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Cambodian Riel', 'slug' => 'cambodian-riel', 'description' => ''],
                 ],
             ],
             [
@@ -879,10 +862,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '174',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc comorien', 'slug' => 'franc-comorien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Comorian Franc', 'slug' => 'comorian-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc comorien', 'slug' => 'franc-comorien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Comorian Franc', 'slug' => 'comorian-franc', 'description' => ''],
                 ],
             ],
             [
@@ -891,10 +874,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '408',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Won nord-coréen', 'slug' => 'won-nord-coreen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'North Korean Won', 'slug' => 'north-korean-won', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Won nord-coréen', 'slug' => 'won-nord-coreen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'North Korean Won', 'slug' => 'north-korean-won', 'description' => ''],
                 ],
             ],
             [
@@ -903,10 +886,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '410',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Won sud-coréen', 'slug' => 'won-sud-coreen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'South Korean Won', 'slug' => 'south-korean-won', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Won sud-coréen', 'slug' => 'won-sud-coreen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'South Korean Won', 'slug' => 'south-korean-won', 'description' => ''],
                 ],
             ],
             [
@@ -915,10 +898,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '414',
                 'decimal_places' => 3,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar koweïtien', 'slug' => 'dinar-koweitien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Kuwaiti Dinar', 'slug' => 'kuwaiti-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar koweïtien', 'slug' => 'dinar-koweitien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Kuwaiti Dinar', 'slug' => 'kuwaiti-dinar', 'description' => ''],
                 ],
             ],
             [
@@ -927,10 +910,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '136',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar des îles Caïmans', 'slug' => 'dollar-des-iles-caimans', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Cayman Islands Dollar', 'slug' => 'cayman-islands-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar des îles Caïmans', 'slug' => 'dollar-des-iles-caimans', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Cayman Islands Dollar', 'slug' => 'cayman-islands-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -939,10 +922,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '398',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Tenge kazakh', 'slug' => 'tenge-kazakh', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Kazakhstani Tenge', 'slug' => 'kazakhstani-tenge', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Tenge kazakh', 'slug' => 'tenge-kazakh', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Kazakhstani Tenge', 'slug' => 'kazakhstani-tenge', 'description' => ''],
                 ],
             ],
             [
@@ -951,10 +934,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '418',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Kip laotien', 'slug' => 'kip-laotien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Lao Kip', 'slug' => 'lao-kip', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Kip laotien', 'slug' => 'kip-laotien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Lao Kip', 'slug' => 'lao-kip', 'description' => ''],
                 ],
             ],
             [
@@ -963,10 +946,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '422',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre libanaise', 'slug' => 'livre-libanaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Lebanese Pound', 'slug' => 'lebanese-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre libanaise', 'slug' => 'livre-libanaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Lebanese Pound', 'slug' => 'lebanese-pound', 'description' => ''],
                 ],
             ],
             [
@@ -975,10 +958,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '144',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Roupie srilankaise', 'slug' => 'roupie-srilankaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Sri Lankan Rupee', 'slug' => 'sri-lankan-rupee', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Roupie srilankaise', 'slug' => 'roupie-srilankaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Sri Lankan Rupee', 'slug' => 'sri-lankan-rupee', 'description' => ''],
                 ],
             ],
             [
@@ -987,10 +970,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '430',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar libérien', 'slug' => 'dollar-liberien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Liberian Dollar', 'slug' => 'liberian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar libérien', 'slug' => 'dollar-liberien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Liberian Dollar', 'slug' => 'liberian-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -999,10 +982,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '426',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Loti lesothan', 'slug' => 'loti-lesothan', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Lesotho Loti', 'slug' => 'lesotho-loti', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Loti lesothan', 'slug' => 'loti-lesothan', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Lesotho Loti', 'slug' => 'lesotho-loti', 'description' => ''],
                 ],
             ],
             [
@@ -1011,10 +994,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '434',
                 'decimal_places' => 3,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar libyen', 'slug' => 'dinar-libyen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Libyan Dinar', 'slug' => 'libyan-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar libyen', 'slug' => 'dinar-libyen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Libyan Dinar', 'slug' => 'libyan-dinar', 'description' => ''],
                 ],
             ],
             [
@@ -1023,10 +1006,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '504',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dirham marocain', 'slug' => 'dirham-marocain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Moroccan Dirham', 'slug' => 'moroccan-dirham', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dirham marocain', 'slug' => 'dirham-marocain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Moroccan Dirham', 'slug' => 'moroccan-dirham', 'description' => ''],
                 ],
             ],
             [
@@ -1035,10 +1018,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '498',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Leu moldave', 'slug' => 'leu-moldave', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Moldovan Leu', 'slug' => 'moldovan-leu', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Leu moldave', 'slug' => 'leu-moldave', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Moldovan Leu', 'slug' => 'moldovan-leu', 'description' => ''],
                 ],
             ],
             [
@@ -1047,10 +1030,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '969',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Ariary malgache', 'slug' => 'ariary-malgache', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Malagasy Ariary', 'slug' => 'malagasy-ariary', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Ariary malgache', 'slug' => 'ariary-malgache', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Malagasy Ariary', 'slug' => 'malagasy-ariary', 'description' => ''],
                 ],
             ],
             [
@@ -1059,10 +1042,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '807',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Denar macédonien', 'slug' => 'denar-macedonien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Macedonian Denar', 'slug' => 'macedonian-denar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Denar macédonien', 'slug' => 'denar-macedonien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Macedonian Denar', 'slug' => 'macedonian-denar', 'description' => ''],
                 ],
             ],
             [
@@ -1071,10 +1054,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '104',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Kyat birman', 'slug' => 'kyat-birman', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Myanmar Kyat', 'slug' => 'myanmar-kyat', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Kyat birman', 'slug' => 'kyat-birman', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Myanmar Kyat', 'slug' => 'myanmar-kyat', 'description' => ''],
                 ],
             ],
             [
@@ -1083,10 +1066,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '496',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Tugrik mongol', 'slug' => 'tugrik-mongol', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Mongolian Tugrik', 'slug' => 'mongolian-tugrik', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Tugrik mongol', 'slug' => 'tugrik-mongol', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Mongolian Tugrik', 'slug' => 'mongolian-tugrik', 'description' => ''],
                 ],
             ],
             [
@@ -1095,10 +1078,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '446',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Pataca macanaise', 'slug' => 'pataca-macanaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Macanese Pataca', 'slug' => 'macanese-pataca', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Pataca macanaise', 'slug' => 'pataca-macanaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Macanese Pataca', 'slug' => 'macanese-pataca', 'description' => ''],
                 ],
             ],
             [
@@ -1107,10 +1090,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '929',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Ouguiya mauritanien', 'slug' => 'ouguiya-mauritanien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Mauritanian Ouguiya', 'slug' => 'mauritanian-ouguiya', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Ouguiya mauritanien', 'slug' => 'ouguiya-mauritanien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Mauritanian Ouguiya', 'slug' => 'mauritanian-ouguiya', 'description' => ''],
                 ],
             ],
             [
@@ -1119,10 +1102,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '480',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Roupie mauricienne', 'slug' => 'roupie-mauricienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Mauritian Rupee', 'slug' => 'mauritian-rupee', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Roupie mauricienne', 'slug' => 'roupie-mauricienne', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Mauritian Rupee', 'slug' => 'mauritian-rupee', 'description' => ''],
                 ],
             ],
             [
@@ -1131,10 +1114,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '462',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rufiyaa maldivien', 'slug' => 'rufiyaa-maldivien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Maldivian Rufiyaa', 'slug' => 'maldivian-rufiyaa', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rufiyaa maldivien', 'slug' => 'rufiyaa-maldivien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Maldivian Rufiyaa', 'slug' => 'maldivian-rufiyaa', 'description' => ''],
                 ],
             ],
             [
@@ -1143,10 +1126,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '454',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Kwacha malawite', 'slug' => 'kwacha-malawite', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Malawian Kwacha', 'slug' => 'malawian-kwacha', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Kwacha malawite', 'slug' => 'kwacha-malawite', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Malawian Kwacha', 'slug' => 'malawian-kwacha', 'description' => ''],
                 ],
             ],
             [
@@ -1155,10 +1138,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '484',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso mexicain', 'slug' => 'peso-mexicain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Mexican Peso', 'slug' => 'mexican-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso mexicain', 'slug' => 'peso-mexicain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Mexican Peso', 'slug' => 'mexican-peso', 'description' => ''],
                 ],
             ],
             [
@@ -1167,10 +1150,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '458',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Ringgit malaisien', 'slug' => 'ringgit-malaisien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Malaysian Ringgit', 'slug' => 'malaysian-ringgit', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Ringgit malaisien', 'slug' => 'ringgit-malaisien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Malaysian Ringgit', 'slug' => 'malaysian-ringgit', 'description' => ''],
                 ],
             ],
             [
@@ -1179,10 +1162,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '943',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Metical mozambicain', 'slug' => 'metical-mozambicain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Mozambican Metical', 'slug' => 'mozambican-metical', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Metical mozambicain', 'slug' => 'metical-mozambicain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Mozambican Metical', 'slug' => 'mozambican-metical', 'description' => ''],
                 ],
             ],
             [
@@ -1191,10 +1174,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '516',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar namibien', 'slug' => 'dollar-namibien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Namibian Dollar', 'slug' => 'namibian-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar namibien', 'slug' => 'dollar-namibien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Namibian Dollar', 'slug' => 'namibian-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1203,10 +1186,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '566',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Naira nigérian', 'slug' => 'naira-nigerian', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Nigerian Naira', 'slug' => 'nigerian-naira', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Naira nigérian', 'slug' => 'naira-nigerian', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Nigerian Naira', 'slug' => 'nigerian-naira', 'description' => ''],
                 ],
             ],
             [
@@ -1215,10 +1198,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '558',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Córdoba nicaraguayen', 'slug' => 'c-rdoba-nicaraguayen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Nicaraguan Córdoba', 'slug' => 'nicaraguan-c-rdoba', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Córdoba nicaraguayen', 'slug' => 'c-rdoba-nicaraguayen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Nicaraguan Córdoba', 'slug' => 'nicaraguan-c-rdoba', 'description' => ''],
                 ],
             ],
             [
@@ -1227,10 +1210,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '578',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Couronne norvégienne', 'slug' => 'couronne-norvegienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Norwegian Krone', 'slug' => 'norwegian-krone', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Couronne norvégienne', 'slug' => 'couronne-norvegienne', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Norwegian Krone', 'slug' => 'norwegian-krone', 'description' => ''],
                 ],
             ],
             [
@@ -1239,10 +1222,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '524',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Roupie népalaise', 'slug' => 'roupie-nepalaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Nepalese Rupee', 'slug' => 'nepalese-rupee', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Roupie népalaise', 'slug' => 'roupie-nepalaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Nepalese Rupee', 'slug' => 'nepalese-rupee', 'description' => ''],
                 ],
             ],
             [
@@ -1251,10 +1234,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '554',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar néo-zélandais', 'slug' => 'dollar-neo-zelandais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'New Zealand Dollar', 'slug' => 'new-zealand-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar néo-zélandais', 'slug' => 'dollar-neo-zelandais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'New Zealand Dollar', 'slug' => 'new-zealand-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1263,10 +1246,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '512',
                 'decimal_places' => 3,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rial omanais', 'slug' => 'rial-omanais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Omani Rial', 'slug' => 'omani-rial', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rial omanais', 'slug' => 'rial-omanais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Omani Rial', 'slug' => 'omani-rial', 'description' => ''],
                 ],
             ],
             [
@@ -1275,10 +1258,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '590',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Balboa panaméen', 'slug' => 'balboa-panameen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Panamanian Balboa', 'slug' => 'panamanian-balboa', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Balboa panaméen', 'slug' => 'balboa-panameen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Panamanian Balboa', 'slug' => 'panamanian-balboa', 'description' => ''],
                 ],
             ],
             [
@@ -1287,10 +1270,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '604',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Sol péruvien', 'slug' => 'sol-peruvien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Peruvian Sol', 'slug' => 'peruvian-sol', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Sol péruvien', 'slug' => 'sol-peruvien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Peruvian Sol', 'slug' => 'peruvian-sol', 'description' => ''],
                 ],
             ],
             [
@@ -1299,10 +1282,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '598',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Kina papou', 'slug' => 'kina-papou', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Papua New Guinean Kina', 'slug' => 'papua-new-guinean-kina', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Kina papou', 'slug' => 'kina-papou', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Papua New Guinean Kina', 'slug' => 'papua-new-guinean-kina', 'description' => ''],
                 ],
             ],
             [
@@ -1311,10 +1294,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '608',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso philippin', 'slug' => 'peso-philippin', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Philippine Peso', 'slug' => 'philippine-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso philippin', 'slug' => 'peso-philippin', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Philippine Peso', 'slug' => 'philippine-peso', 'description' => ''],
                 ],
             ],
             [
@@ -1323,10 +1306,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '586',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Roupie pakistanaise', 'slug' => 'roupie-pakistanaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Pakistani Rupee', 'slug' => 'pakistani-rupee', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Roupie pakistanaise', 'slug' => 'roupie-pakistanaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Pakistani Rupee', 'slug' => 'pakistani-rupee', 'description' => ''],
                 ],
             ],
             [
@@ -1335,10 +1318,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '985',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Zloty polonais', 'slug' => 'zloty-polonais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Polish Zloty', 'slug' => 'polish-zloty', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Zloty polonais', 'slug' => 'zloty-polonais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Polish Zloty', 'slug' => 'polish-zloty', 'description' => ''],
                 ],
             ],
             [
@@ -1347,10 +1330,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '600',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Guaraní paraguayen', 'slug' => 'guaran-paraguayen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Paraguayan Guarani', 'slug' => 'paraguayan-guarani', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Guaraní paraguayen', 'slug' => 'guaran-paraguayen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Paraguayan Guarani', 'slug' => 'paraguayan-guarani', 'description' => ''],
                 ],
             ],
             [
@@ -1359,10 +1342,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '634',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rial qatarien', 'slug' => 'rial-qatarien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Qatari Riyal', 'slug' => 'qatari-riyal', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rial qatarien', 'slug' => 'rial-qatarien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Qatari Riyal', 'slug' => 'qatari-riyal', 'description' => ''],
                 ],
             ],
             [
@@ -1371,10 +1354,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '946',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Leu roumain', 'slug' => 'leu-roumain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Romanian Leu', 'slug' => 'romanian-leu', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Leu roumain', 'slug' => 'leu-roumain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Romanian Leu', 'slug' => 'romanian-leu', 'description' => ''],
                 ],
             ],
             [
@@ -1383,10 +1366,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '941',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar serbe', 'slug' => 'dinar-serbe', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Serbian Dinar', 'slug' => 'serbian-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar serbe', 'slug' => 'dinar-serbe', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Serbian Dinar', 'slug' => 'serbian-dinar', 'description' => ''],
                 ],
             ],
             [
@@ -1395,10 +1378,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '643',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rouble russe', 'slug' => 'rouble-russe', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Russian Ruble', 'slug' => 'russian-ruble', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rouble russe', 'slug' => 'rouble-russe', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Russian Ruble', 'slug' => 'russian-ruble', 'description' => ''],
                 ],
             ],
             [
@@ -1407,10 +1390,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '646',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc rwandais', 'slug' => 'franc-rwandais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Rwandan Franc', 'slug' => 'rwandan-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc rwandais', 'slug' => 'franc-rwandais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Rwandan Franc', 'slug' => 'rwandan-franc', 'description' => ''],
                 ],
             ],
             [
@@ -1419,10 +1402,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '682',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Riyal saoudien', 'slug' => 'riyal-saoudien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Saudi Riyal', 'slug' => 'saudi-riyal', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Riyal saoudien', 'slug' => 'riyal-saoudien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Saudi Riyal', 'slug' => 'saudi-riyal', 'description' => ''],
                 ],
             ],
             [
@@ -1431,10 +1414,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '090',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar des îles Salomon', 'slug' => 'dollar-des-iles-salomon', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Solomon Islands Dollar', 'slug' => 'solomon-islands-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar des îles Salomon', 'slug' => 'dollar-des-iles-salomon', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Solomon Islands Dollar', 'slug' => 'solomon-islands-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1443,10 +1426,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '690',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Roupie seychelloise', 'slug' => 'roupie-seychelloise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Seychellois Rupee', 'slug' => 'seychellois-rupee', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Roupie seychelloise', 'slug' => 'roupie-seychelloise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Seychellois Rupee', 'slug' => 'seychellois-rupee', 'description' => ''],
                 ],
             ],
             [
@@ -1455,10 +1438,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '938',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre soudanaise', 'slug' => 'livre-soudanaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Sudanese Pound', 'slug' => 'sudanese-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre soudanaise', 'slug' => 'livre-soudanaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Sudanese Pound', 'slug' => 'sudanese-pound', 'description' => ''],
                 ],
             ],
             [
@@ -1467,10 +1450,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '752',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Couronne suédoise', 'slug' => 'couronne-suedoise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Swedish Krona', 'slug' => 'swedish-krona', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Couronne suédoise', 'slug' => 'couronne-suedoise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Swedish Krona', 'slug' => 'swedish-krona', 'description' => ''],
                 ],
             ],
             [
@@ -1479,10 +1462,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '702',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar singapourien', 'slug' => 'dollar-singapourien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Singapore Dollar', 'slug' => 'singapore-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar singapourien', 'slug' => 'dollar-singapourien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Singapore Dollar', 'slug' => 'singapore-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1491,10 +1474,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '654',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre de Sainte-Hélène', 'slug' => 'livre-de-sainte-helene', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Saint Helena Pound', 'slug' => 'saint-helena-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre de Sainte-Hélène', 'slug' => 'livre-de-sainte-helene', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Saint Helena Pound', 'slug' => 'saint-helena-pound', 'description' => ''],
                 ],
             ],
             [
@@ -1503,10 +1486,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '694',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Leone sierra-léonais', 'slug' => 'leone-sierra-leonais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Sierra Leonean Leone', 'slug' => 'sierra-leonean-leone', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Leone sierra-léonais', 'slug' => 'leone-sierra-leonais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Sierra Leonean Leone', 'slug' => 'sierra-leonean-leone', 'description' => ''],
                 ],
             ],
             [
@@ -1515,10 +1498,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '706',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Shilling somalien', 'slug' => 'shilling-somalien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Somali Shilling', 'slug' => 'somali-shilling', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Shilling somalien', 'slug' => 'shilling-somalien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Somali Shilling', 'slug' => 'somali-shilling', 'description' => ''],
                 ],
             ],
             [
@@ -1527,10 +1510,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '968',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar surinamais', 'slug' => 'dollar-surinamais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Surinamese Dollar', 'slug' => 'surinamese-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar surinamais', 'slug' => 'dollar-surinamais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Surinamese Dollar', 'slug' => 'surinamese-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1539,10 +1522,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '728',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre sud-soudanaise', 'slug' => 'livre-sud-soudanaise', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'South Sudanese Pound', 'slug' => 'south-sudanese-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre sud-soudanaise', 'slug' => 'livre-sud-soudanaise', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'South Sudanese Pound', 'slug' => 'south-sudanese-pound', 'description' => ''],
                 ],
             ],
             [
@@ -1551,10 +1534,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '930',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dobra santoméen', 'slug' => 'dobra-santomeen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'São Tomé and Príncipe Dobra', 'slug' => 's-o-tome-and-pr-ncipe-dobra', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dobra santoméen', 'slug' => 'dobra-santomeen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'São Tomé and Príncipe Dobra', 'slug' => 's-o-tome-and-pr-ncipe-dobra', 'description' => ''],
                 ],
             ],
             [
@@ -1563,10 +1546,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '760',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre syrienne', 'slug' => 'livre-syrienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Syrian Pound', 'slug' => 'syrian-pound', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre syrienne', 'slug' => 'livre-syrienne', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Syrian Pound', 'slug' => 'syrian-pound', 'description' => ''],
                 ],
             ],
             [
@@ -1575,10 +1558,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '748',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Lilangeni swazi', 'slug' => 'lilangeni-swazi', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Swazi Lilangeni', 'slug' => 'swazi-lilangeni', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Lilangeni swazi', 'slug' => 'lilangeni-swazi', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Swazi Lilangeni', 'slug' => 'swazi-lilangeni', 'description' => ''],
                 ],
             ],
             [
@@ -1587,10 +1570,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '764',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Baht thaïlandais', 'slug' => 'baht-thailandais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Thai Baht', 'slug' => 'thai-baht', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Baht thaïlandais', 'slug' => 'baht-thailandais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Thai Baht', 'slug' => 'thai-baht', 'description' => ''],
                 ],
             ],
             [
@@ -1599,10 +1582,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '972',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Somoni tadjik', 'slug' => 'somoni-tadjik', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Tajikistani Somoni', 'slug' => 'tajikistani-somoni', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Somoni tadjik', 'slug' => 'somoni-tadjik', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Tajikistani Somoni', 'slug' => 'tajikistani-somoni', 'description' => ''],
                 ],
             ],
             [
@@ -1611,10 +1594,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '934',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Manat turkmène', 'slug' => 'manat-turkmene', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Turkmenistani Manat', 'slug' => 'turkmenistani-manat', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Manat turkmène', 'slug' => 'manat-turkmene', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Turkmenistani Manat', 'slug' => 'turkmenistani-manat', 'description' => ''],
                 ],
             ],
             [
@@ -1623,10 +1606,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '788',
                 'decimal_places' => 3,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dinar tunisien', 'slug' => 'dinar-tunisien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Tunisian Dinar', 'slug' => 'tunisian-dinar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dinar tunisien', 'slug' => 'dinar-tunisien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Tunisian Dinar', 'slug' => 'tunisian-dinar', 'description' => ''],
                 ],
             ],
             [
@@ -1635,10 +1618,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '776',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Pa\'anga tongien', 'slug' => 'paanga-tongien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Tongan Paʻanga', 'slug' => 'tongan-pa-anga', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Pa\'anga tongien', 'slug' => 'paanga-tongien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Tongan Paʻanga', 'slug' => 'tongan-pa-anga', 'description' => ''],
                 ],
             ],
             [
@@ -1647,10 +1630,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '949',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Livre turque', 'slug' => 'livre-turque', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Turkish Lira', 'slug' => 'turkish-lira', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Livre turque', 'slug' => 'livre-turque', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Turkish Lira', 'slug' => 'turkish-lira', 'description' => ''],
                 ],
             ],
             [
@@ -1659,10 +1642,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '780',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar trinidadien', 'slug' => 'dollar-trinidadien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Trinidad and Tobago Dollar', 'slug' => 'trinidad-and-tobago-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar trinidadien', 'slug' => 'dollar-trinidadien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Trinidad and Tobago Dollar', 'slug' => 'trinidad-and-tobago-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1671,10 +1654,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '901',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar taïwanais', 'slug' => 'dollar-taiwanais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'New Taiwan Dollar', 'slug' => 'new-taiwan-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar taïwanais', 'slug' => 'dollar-taiwanais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'New Taiwan Dollar', 'slug' => 'new-taiwan-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1683,10 +1666,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '834',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Shilling tanzanien', 'slug' => 'shilling-tanzanien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Tanzanian Shilling', 'slug' => 'tanzanian-shilling', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Shilling tanzanien', 'slug' => 'shilling-tanzanien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Tanzanian Shilling', 'slug' => 'tanzanian-shilling', 'description' => ''],
                 ],
             ],
             [
@@ -1695,10 +1678,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '980',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Hryvnia ukrainienne', 'slug' => 'hryvnia-ukrainienne', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Ukrainian Hryvnia', 'slug' => 'ukrainian-hryvnia', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Hryvnia ukrainienne', 'slug' => 'hryvnia-ukrainienne', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Ukrainian Hryvnia', 'slug' => 'ukrainian-hryvnia', 'description' => ''],
                 ],
             ],
             [
@@ -1707,10 +1690,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '800',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Shilling ougandais', 'slug' => 'shilling-ougandais', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Ugandan Shilling', 'slug' => 'ugandan-shilling', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Shilling ougandais', 'slug' => 'shilling-ougandais', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Ugandan Shilling', 'slug' => 'ugandan-shilling', 'description' => ''],
                 ],
             ],
             [
@@ -1721,8 +1704,8 @@ class CurrencySeeder extends Seeder
                 'is_default' => false,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar américain', 'slug' => 'dollar-americain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'US Dollar', 'slug' => 'us-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar américain', 'slug' => 'dollar-americain', 'description' => 'Monnaie officielle des États-Unis d\'Amérique. Première devise de réserve mondiale.'],
+                    ['lang_code' => 'en', 'name' => 'US Dollar', 'slug' => 'us-dollar', 'description' => 'Official currency of the United States of America. World\'s primary reserve currency.'],
                 ],
             ],
             [
@@ -1731,10 +1714,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '858',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Peso uruguayen', 'slug' => 'peso-uruguayen', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Uruguayan Peso', 'slug' => 'uruguayan-peso', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Peso uruguayen', 'slug' => 'peso-uruguayen', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Uruguayan Peso', 'slug' => 'uruguayan-peso', 'description' => ''],
                 ],
             ],
             [
@@ -1743,10 +1726,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '860',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Som ouzbek', 'slug' => 'som-ouzbek', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Uzbekistani Som', 'slug' => 'uzbekistani-som', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Som ouzbek', 'slug' => 'som-ouzbek', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Uzbekistani Som', 'slug' => 'uzbekistani-som', 'description' => ''],
                 ],
             ],
             [
@@ -1755,10 +1738,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '937',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Bolívar souverain', 'slug' => 'bol-var-souverain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Venezuelan Bolívar', 'slug' => 'venezuelan-bol-var', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Bolívar souverain', 'slug' => 'bol-var-souverain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Venezuelan Bolívar', 'slug' => 'venezuelan-bol-var', 'description' => ''],
                 ],
             ],
             [
@@ -1767,10 +1750,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '704',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dông vietnamien', 'slug' => 'dong-vietnamien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Vietnamese Đồng', 'slug' => 'vietnamese-ng', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dông vietnamien', 'slug' => 'dong-vietnamien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Vietnamese Đồng', 'slug' => 'vietnamese-ng', 'description' => ''],
                 ],
             ],
             [
@@ -1779,10 +1762,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '548',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Vatu vanuatuan', 'slug' => 'vatu-vanuatuan', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Vanuatu Vatu', 'slug' => 'vanuatu-vatu', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Vatu vanuatuan', 'slug' => 'vatu-vanuatuan', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Vanuatu Vatu', 'slug' => 'vanuatu-vatu', 'description' => ''],
                 ],
             ],
             [
@@ -1791,10 +1774,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '882',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Tala samoan', 'slug' => 'tala-samoan', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Samoan Tala', 'slug' => 'samoan-tala', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Tala samoan', 'slug' => 'tala-samoan', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Samoan Tala', 'slug' => 'samoan-tala', 'description' => ''],
                 ],
             ],
             [
@@ -1803,10 +1786,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '950',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc CFA (CEMAC)', 'slug' => 'franc-cfa-cemac', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Central African CFA Franc', 'slug' => 'central-african-cfa-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc CFA (CEMAC)', 'slug' => 'franc-cfa-cemac', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Central African CFA Franc', 'slug' => 'central-african-cfa-franc', 'description' => ''],
                 ],
             ],
             [
@@ -1815,10 +1798,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '951',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar des Caraïbes orientales', 'slug' => 'dollar-des-caraibes-orientales', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'East Caribbean Dollar', 'slug' => 'east-caribbean-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar des Caraïbes orientales', 'slug' => 'dollar-des-caraibes-orientales', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'East Caribbean Dollar', 'slug' => 'east-caribbean-dollar', 'description' => ''],
                 ],
             ],
             [
@@ -1826,11 +1809,11 @@ class CurrencySeeder extends Seeder
                 'symbol' => 'Fr',
                 'numeric_code' => '952',
                 'decimal_places' => 0,
-                'is_default' => false,
+                'is_default' => true,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc CFA (UEMOA)', 'slug' => 'franc-cfa-uemoa', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'West African CFA Franc', 'slug' => 'west-african-cfa-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc CFA (UEMOA)', 'slug' => 'franc-cfa-uemoa', 'description' => 'Franc CFA de l\'Union Économique et Monétaire Ouest-Africaine (UEMOA). Devise utilisée par 8 pays d\'Afrique de l\'Ouest.'],
+                    ['lang_code' => 'en', 'name' => 'West African CFA Franc', 'slug' => 'west-african-cfa-franc', 'description' => 'CFA Franc of the West African Economic and Monetary Union (UEMOA). Currency used by 8 West African countries.'],
                 ],
             ],
             [
@@ -1839,10 +1822,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '953',
                 'decimal_places' => 0,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Franc CFP', 'slug' => 'franc-cfp', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'CFP Franc', 'slug' => 'cfp-franc', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Franc CFP', 'slug' => 'franc-cfp', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'CFP Franc', 'slug' => 'cfp-franc', 'description' => ''],
                 ],
             ],
             [
@@ -1851,10 +1834,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '886',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rial yéménite', 'slug' => 'rial-yemenite', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Yemeni Rial', 'slug' => 'yemeni-rial', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rial yéménite', 'slug' => 'rial-yemenite', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Yemeni Rial', 'slug' => 'yemeni-rial', 'description' => ''],
                 ],
             ],
             [
@@ -1863,10 +1846,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '710',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Rand sud-africain', 'slug' => 'rand-sud-africain', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'South African Rand', 'slug' => 'south-african-rand', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Rand sud-africain', 'slug' => 'rand-sud-africain', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'South African Rand', 'slug' => 'south-african-rand', 'description' => ''],
                 ],
             ],
             [
@@ -1875,10 +1858,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '967',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Kwacha zambien', 'slug' => 'kwacha-zambien', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Zambian Kwacha', 'slug' => 'zambian-kwacha', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Kwacha zambien', 'slug' => 'kwacha-zambien', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Zambian Kwacha', 'slug' => 'zambian-kwacha', 'description' => ''],
                 ],
             ],
             [
@@ -1887,10 +1870,10 @@ class CurrencySeeder extends Seeder
                 'numeric_code' => '932',
                 'decimal_places' => 2,
                 'is_default' => false,
-                'status' => 'active',
+                'status' => 'inactive',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Dollar zimbabwéen', 'slug' => 'dollar-zimbabween', 'description' => null],
-                    ['lang_code' => 'en', 'name' => 'Zimbabwean Dollar', 'slug' => 'zimbabwean-dollar', 'description' => null],
+                    ['lang_code' => 'fr', 'name' => 'Dollar zimbabwéen', 'slug' => 'dollar-zimbabween', 'description' => ''],
+                    ['lang_code' => 'en', 'name' => 'Zimbabwean Dollar', 'slug' => 'zimbabwean-dollar', 'description' => ''],
                 ],
             ],
         ];
@@ -1921,12 +1904,18 @@ class CurrencySeeder extends Seeder
                     continue;
                 }
 
+                // Description : utilise la description fournie ou en génère une
+                $description = $translation['description'];
+                if (empty($description)) {
+                    $description = $translation['name'] . ' — ' . $currency->code . ' (' . $currency->symbol . ')';
+                }
+
                 CurrencyTranslation::updateOrCreate(
                     ['currency_id' => $currency->id, 'lang_id' => $lang->id],
                     [
                         'name' => $translation['name'],
                         'slug' => $translation['slug'],
-                        'description' => $translation['description'],
+                        'description' => $description,
                     ]
                 );
             }

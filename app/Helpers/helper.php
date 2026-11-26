@@ -45,6 +45,14 @@ if (! function_exists('getActiveLangs')) {
     }
 }
 
+// Function getActiveCurrencies()
+if (! function_exists('getActiveCurrencies')) {
+    function getActiveCurrencies()
+    {
+        return BackendHelper::getActiveCurrencies();
+    }
+}
+
 // Function deleteOldCloudFiles()
 if (! function_exists('deleteOldCloudFiles')) {
     function deleteOldCloudFiles($entity, $fileType)
@@ -178,27 +186,24 @@ if (! function_exists('getMaxImageSizeMb')) {
 // Module 10 — Prix multi-devise (pont vers PricingService)
 // ─────────────────────────────────────────────
 
-// Function getDisplayCurrency : devise d'affichage (users.currency_id → session → pays → défaut)
+// Function getDisplayCurrency : devise d'affichage (session → défaut)
 if (! function_exists('getDisplayCurrency')) {
-    function getDisplayCurrency($user = null): Currency
+    function getDisplayCurrency(): Currency
     {
-        return app(PricingService::class)->resolveDisplayCurrency($user);
+        return app(PricingService::class)->resolveDisplayCurrency();
     }
 }
 
-// Function convertPrice : montant × taux cible / taux source
-if (! function_exists('convertPrice')) {
-    function convertPrice(float $amount, ?Currency $source = null, ?Currency $target = null): float
+// Function displayPrice : convertit et formate un prix en une seule ligne
+// Usage : displayPrice($product->base_price, $product->currency)
+if (! function_exists('displayPrice')) {
+    function displayPrice(float $amount, ?Currency $source = null): string
     {
-        return app(PricingService::class)->convertPrice($amount, $source, $target);
-    }
-}
+        $service = app(PricingService::class);
+        $target = $service->resolveDisplayCurrency();
+        $converted = $service->convertPrice($amount, $source, $target);
 
-// Function formatPrice : arrondi selon decimal_places, symbole, locale
-if (! function_exists('formatPrice')) {
-    function formatPrice(float $amount, ?Currency $currency = null): string
-    {
-        return app(PricingService::class)->formatPrice($amount, $currency);
+        return $service->formatPrice($converted, $target);
     }
 }
 

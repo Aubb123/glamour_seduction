@@ -74,8 +74,8 @@ class UpdateCurrencyRequest extends FormRequest
             'sort_order' => ['required', 'integer', 'min:0', Rule::unique('currencies', 'sort_order')->ignore($this->currencyId)],
 
             // Taux de change par rapport à la devise par défaut (Module 10 : prix multi-devise)
-            // — obligatoire, décimal strictement positif (ex: 1.000000 pour EUR, 655.957 pour XOF)
-            'exchange_rate' => ['required', 'numeric', 'min:0.000001'],
+            // — optionnel, décimal strictement positif si renseigné (ex: 1.000000 pour EUR, 655.957 pour XOF)
+            'exchange_rate' => ['nullable', 'numeric', 'min:0.000001'],
 
             // Devise par défaut de la plateforme — optionnelle (case à cocher)
             'is_default' => ['nullable', 'boolean'],
@@ -92,8 +92,8 @@ class UpdateCurrencyRequest extends FormRequest
             // Nom de la devise dans la langue concernée — obligatoire
             'translations.*.name' => ['required', 'string', 'max:100'],
 
-            // Description de la devise dans la langue concernée — optionnelle
-            'translations.*.description' => ['nullable', 'string'],
+            // Description de la devise dans la langue concernée — obligatoire
+            'translations.*.description' => ['required', 'string'],
         ];
 
         // Règle d'unicité dynamique par langue sur le nom

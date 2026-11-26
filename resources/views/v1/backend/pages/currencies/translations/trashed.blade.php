@@ -7,7 +7,7 @@
     @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __('v1/backend/views/pages/currencies/translations/trashed.pageTitle')])
 
     @include('v1.backend.pages.currencies.partials._trashed-table-translations', [
-        'currencyTranslations' => $currencyTranslations,
+        'currencyTranslations' => $trashedTranslations,
         'currency' => $currency
     ])
 

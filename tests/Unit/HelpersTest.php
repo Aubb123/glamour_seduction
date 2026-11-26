@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 it('tous les helpers applicatifs sont déclarés', function () {
     $helpers = [
-        'getEnvFolder', 'getDateTime', 'formatDate', 'getActiveLangs',
+        'getEnvFolder', 'getDateTime', 'formatDate', 'getActiveLangs', 'getActiveCurrencies',
         'deleteOldCloudFiles', 'assertTranslationUniqueness',
         'assertTranslationRestore', 'destroy_function', 'restore_function',
         'force_destroy_function', 'getTranslation', 'getArchitectureCloud',

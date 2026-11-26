@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
             'last_name' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'status' => ['required', Rule::in(UserStatus::values())],
-            'country_id' => 'required|exists:geo_countries,id',
+            'division_id' => 'required|exists:geo_divisions,id',
             'password' => 'nullable|string|min:'.(int) getRequiredSettingValue('min_password_length', app()->getLocale()),
             'roles' => 'required|array',
             'roles.*' => 'exists:roles,id',
@@ -54,8 +54,8 @@ class UpdateUserRequest extends FormRequest
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
 
-            'country_id.required' => __("{$this->backendLangPath}.country_id.required"),
-            'country_id.exists' => __("{$this->backendLangPath}.country_id.exists"),
+            'division_id.required' => __("{$this->backendLangPath}.division_id.required"),
+            'division_id.exists' => __("{$this->backendLangPath}.division_id.exists"),
 
             'password.min' => __("{$this->backendLangPath}.password.min"),
             'password.string' => __("{$this->backendLangPath}.password.string"),

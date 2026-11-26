@@ -40,7 +40,7 @@ class ProductWarehouseService
                 'sort_order' => $data['sort_order'],
                 'code' => $data['code'],
                 'type' => $type,
-                'country_id' => $data['country_id'] ?? null,
+                'division_id' => $data['division_id'] ?? null,
                 'city' => $data['city'] ?? null,
                 'address' => $data['address'] ?? null,
                 'latitude' => $data['latitude'] ?? null,
@@ -68,7 +68,7 @@ class ProductWarehouseService
             $updateData = [];
 
             // Le code n'est jamais mis à jour (immuable après création)
-            foreach (['sort_order', 'type', 'country_id', 'city', 'address', 'latitude', 'longitude', 'phone', 'email', 'notes'] as $field) {
+            foreach (['sort_order', 'type', 'division_id', 'city', 'address', 'latitude', 'longitude', 'phone', 'email', 'notes'] as $field) {
                 if (array_key_exists($field, $data)) {
                     $updateData[$field] = $data[$field];
                 }

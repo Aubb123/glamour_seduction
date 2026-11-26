@@ -26,11 +26,12 @@ class BlogTagTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function backend_blog_tag_translations_destroy(string $uuid): RedirectResponse
+    public function backend_blog_tag_translations_destroy(BlogTagTranslation $blogTagTranslation): RedirectResponse
     {
         try {
 
-            $translation = BlogTagTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {blogTagTranslation})
+            $translation = $blogTagTranslation;
 
             $this->blogTagTranslationService->backend_blog_tag_translations_destroy($translation);
 
@@ -38,21 +39,15 @@ class BlogTagTranslationController extends Controller
 
             return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.blog-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.blog-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.last_translation_forbidden", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.blog-tag-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.last_translation_forbidden", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-tag-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-tag-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
@@ -61,27 +56,22 @@ class BlogTagTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_blog_tag_translations_trashed(string $tag_uuid): View
+    public function backend_blog_tag_translations_trashed(BlogTag $blogTag): View
     {
         try {
 
-            $tag = BlogTag::withTrashed()->where('uuid', $tag_uuid)->firstOrFail();
+            // Tag résolu par le binding implicite sur uuid (route {blogTag} avec ->withTrashed())
+            $tag = $blogTag;
 
             $trashedTranslations = BlogTagTranslation::onlyTrashed()->where('tag_id', $tag->id)->get();
 
-            $this->logActivity(type: 'info', action: 'backend.blog-tag-translations.trashed', context: ['count' => $trashedTranslations->count(), 'tag_uuid' => $tag_uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $tag->active_translation?->name ?? '']), is_success: true);
+            $this->logActivity(type: 'info', action: 'backend.blog-tag-translations.trashed', context: ['count' => $trashedTranslations->count(), 'tag_uuid' => $tag->uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $tag->active_translation?->name ?? '']), is_success: true);
 
             return view('v1.backend.pages.blogs.tags.translations.trashed', compact('trashedTranslations', 'tag'));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.blog-tag-translations.trashed', context: ['tag_uuid' => $tag_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $tag_uuid]), is_success: false);
-
-            abort(404);
-
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.blog-tag-translations.trashed', context: ['tag_uuid' => $tag_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $tag_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.blog-tag-translations.trashed', context: ['tag_uuid' => $tag->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $tag->uuid]), is_success: false);
 
             return abort(500);
         }

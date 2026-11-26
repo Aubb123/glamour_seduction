@@ -28,6 +28,22 @@ use App\Models\Lang;
 use App\Models\Permission;
 use App\Models\PlatformVersion;
 use App\Models\PlatformVersionTranslation;
+use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeTranslation;
+use App\Models\ProductAttributeValue;
+use App\Models\ProductAttributeValueTranslation;
+use App\Models\ProductBrand;
+use App\Models\ProductBrandTranslation;
+use App\Models\ProductCategory;
+use App\Models\ProductCategoryTranslation;
+use App\Models\ProductTag;
+use App\Models\ProductTagTranslation;
+use App\Models\ProductTranslation;
+use App\Models\ProductWarehouse;
+use App\Models\ProductWarehouseLocation;
+use App\Models\ProductWarehouseLocationTranslation;
+use App\Models\ProductWarehouseTranslation;
 use App\Models\Role;
 use App\Models\RoleTranslation;
 use App\Models\Subscribe;
@@ -222,6 +238,70 @@ class ActivityLogger
             RoleTranslation::class => [
                 'backend.roles.translations',
                 'v1/backend/views/pages/roles/messages/role-messages-controller.roles.translations.not_found',
+            ],
+            Product::class => [
+                'backend.products',
+                'v1/backend/views/pages/products/products/messages/products-messages-controller.products.not_found',
+            ],
+            ProductCategory::class => [
+                'backend.product-categories',
+                'v1/backend/views/pages/products/categories/messages/categories-messages-controller.productCategories.not_found',
+            ],
+            ProductBrand::class => [
+                'backend.product-brands',
+                'v1/backend/views/pages/products/brands/messages/brands-messages-controller.productBrands.not_found',
+            ],
+            ProductTag::class => [
+                'backend.product-tags',
+                'v1/backend/views/pages/products/tags/messages/tags-messages-controller.productTags.not_found',
+            ],
+            ProductAttribute::class => [
+                'backend.product-attributes',
+                'v1/backend/views/pages/products/attributes/messages/attributes-messages-controller.productAttributes.not_found',
+            ],
+            ProductAttributeValue::class => [
+                'backend.product-attribute-values',
+                'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-controller.productAttributeValues.not_found',
+            ],
+            ProductWarehouse::class => [
+                'backend.product-warehouses',
+                'v1/backend/views/pages/products/warehouses/messages/warehouses-messages-controller.warehouses.not_found',
+            ],
+            ProductWarehouseLocation::class => [
+                'backend.product-warehouse-locations',
+                'v1/backend/views/pages/products/warehouse-locations/messages/warehouse-locations-messages-controller.warehouseLocations.not_found',
+            ],
+            ProductTranslation::class => [
+                'backend.product-translations',
+                'v1/backend/views/pages/products/products/messages/products-messages-controller.products.translations.not_found',
+            ],
+            ProductCategoryTranslation::class => [
+                'backend.product-category-translations',
+                'v1/backend/views/pages/products/categories/messages/categories-messages-controller.productCategories.translations.not_found',
+            ],
+            ProductBrandTranslation::class => [
+                'backend.product-brand-translations',
+                'v1/backend/views/pages/products/brands/messages/brands-messages-controller.productBrands.translations.not_found',
+            ],
+            ProductTagTranslation::class => [
+                'backend.product-tag-translations',
+                'v1/backend/views/pages/products/tags/messages/tags-messages-controller.productTags.translations.not_found',
+            ],
+            ProductAttributeTranslation::class => [
+                'backend.product-attribute-translations',
+                'v1/backend/views/pages/products/attributes/messages/attributes-messages-controller.productAttributes.translations.not_found',
+            ],
+            ProductAttributeValueTranslation::class => [
+                'backend.product-attribute-value-translations',
+                'v1/backend/views/pages/products/attribute-values/messages/attribute-values-messages-controller.productAttributeValues.translations.not_found',
+            ],
+            ProductWarehouseTranslation::class => [
+                'backend.product-warehouse-translations',
+                'v1/backend/views/pages/products/warehouses/messages/warehouses-messages-controller.warehouses.translations.not_found',
+            ],
+            ProductWarehouseLocationTranslation::class => [
+                'backend.product-warehouse-location-translations',
+                'v1/backend/views/pages/products/warehouse-locations/messages/warehouse-locations-messages-controller.warehouseLocations.translations.not_found',
             ],
             Permission::class => [
                 'backend.permissions',

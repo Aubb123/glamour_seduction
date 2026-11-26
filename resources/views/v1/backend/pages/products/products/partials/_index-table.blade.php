@@ -139,11 +139,11 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="fw-bold">{{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}</span>
+                                        <span class="fw-bold">{{ displayPrice((float) $product->base_price, $product->currency) }}</span>
                                     </td>
                                     <td data-compare-price="{{ $product->compare_at_price ?? 'null' }}">
                                         @if ($product->compare_at_price)
-                                            <span class="text-muted"><del>{{ number_format((float) $product->compare_at_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}</del></span>
+                                            <span class="text-muted"><del>{{ displayPrice((float) $product->compare_at_price, $product->currency) }}</del></span>
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif

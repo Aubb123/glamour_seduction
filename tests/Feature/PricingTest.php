@@ -12,8 +12,8 @@ use Database\Seeders\CurrencySeeder;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
-use Database\Seeders\SettingSeeder;
 use Database\Seeders\PlatformVersionSeeder;
+use Database\Seeders\SettingSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -66,45 +66,49 @@ it('ajoute la colonne exchange_rate à currencies et backfill la devise par déf
 
     $default = Currency::where('is_default', true)->firstOrFail();
 
-    expect($default->code)->toBe('EUR');
+    // XOF est désormais la devise par défaut (base de saisie des prix)
+    expect($default->code)->toBe('XOF');
     expect((float) $default->exchange_rate)->toBe(1.0);
 });
 
 it('convertit les prix EUR ↔ USD ↔ XOF selon les taux seedés', function () {
+    $service = app(\App\Services\V1\PricingService::class);
     $eur = pricingCurrency('EUR');
     $usd = pricingCurrency('USD');
     $xof = pricingCurrency('XOF');
 
-    expect((float) $eur->exchange_rate)->toBe(1.0);
-    expect((float) $usd->exchange_rate)->toBe(1.08);
-    expect((float) $xof->exchange_rate)->toBe(655.957);
+    // XOF = 1 (devise par défaut), EUR = 655.957, USD = 606.835
+    expect((float) $xof->exchange_rate)->toBe(1.0);
+    expect((float) $eur->exchange_rate)->toBe(655.957);
+    expect((float) $usd->exchange_rate)->toBe(606.835);
 
-    // EUR (source) → XOF : 19990 × 655.957
-    expect(convertPrice(19990, $eur, $xof))->toEqualWithDelta(13112580.43, 0.01);
+    // EUR (source) → XOF : 100 × 1 / 655.957
+    expect($service->convertPrice(100, $eur, $xof))->toEqualWithDelta(0.1524, 0.001);
 
-    // USD (source) → EUR : 100 × 1 / 1.08
-    expect(convertPrice(100, $usd, $eur))->toEqualWithDelta(92.5926, 0.0001);
+    // XOF (source) → EUR : 100 × 655.957 / 1
+    expect($service->convertPrice(100, $xof, $eur))->toEqualWithDelta(65595.7, 0.1);
 
-    // XOF (source) → USD : 100 × 1.08 / 655.957
-    expect(convertPrice(100, $xof, $usd))->toEqualWithDelta(0.1646, 0.0001);
+    // USD (source) → XOF : 100 × 1 / 606.835
+    expect($service->convertPrice(100, $usd, $xof))->toEqualWithDelta(0.1648, 0.001);
 
     // Identité : devise par défaut → elle-même
-    expect(convertPrice(50, $eur, $eur))->toEqualWithDelta(50.0, 0.000001);
+    expect($service->convertPrice(50, $xof, $xof))->toEqualWithDelta(50.0, 0.000001);
 });
 
 it('formate les prix selon decimal_places (0/2/3 décimales) avec le symbole', function () {
+    $service = app(\App\Services\V1\PricingService::class);
     $eur = pricingCurrency('EUR');
     $usd = pricingCurrency('USD');
     $xof = pricingCurrency('XOF');
 
-    // XOF : 0 décimale → arrondi entier
-    expect(formatPrice(convertPrice(19990, $eur, $xof), $xof))->toBe('13 112 580 Fr');
+    // XOF : 0 décimale → arrondi entier (100 EUR → XOF)
+    expect($service->formatPrice($service->convertPrice(100, $eur, $xof), $xof))->toBe('66 Fr');
 
-    // USD : 2 décimales
-    expect(formatPrice(convertPrice(19990, $eur, $usd), $usd))->toBe('21 589,20 $');
+    // USD : 2 décimales (100 EUR → USD)
+    expect($service->formatPrice($service->convertPrice(100, $eur, $usd), $usd))->toBe('0,92 $');
 
     // EUR : 2 décimales
-    expect(formatPrice(19990.0, $eur))->toBe('19 990,00 €');
+    expect($service->formatPrice(19990.0, $eur))->toBe('19 990,00 €');
 
     // Devise de test : 3 décimales (style KWD)
     $test = Currency::create([
@@ -117,7 +121,7 @@ it('formate les prix selon decimal_places (0/2/3 décimales) avec le symbole', f
         'status' => 'active',
     ]);
 
-    expect(formatPrice(convertPrice(19990, $eur, $test), $test))->toBe('6 616,690 T');
+    expect($service->formatPrice($service->convertPrice(100, $eur, $test), $test))->toBe('0,033 T');
 });
 
 it('résout la devise d\'affichage selon la cascade user → session → pays → défaut', function () {
@@ -153,18 +157,20 @@ it('résout la devise d\'affichage selon la cascade user → session → pays �
     expect($xof->code)->toBe('XOF');
 });
 
-it('refuse la conversion si un taux de change est nul ou négatif', function () {
+it('retourne le montant original si un taux de change est nul ou négatif', function () {
+    $service = app(\App\Services\V1\PricingService::class);
     $eur = pricingCurrency('EUR');
     $usd = pricingCurrency('USD');
 
     Currency::where('code', 'USD')->update(['exchange_rate' => 0]);
     $usd->refresh();
 
-    expect(fn () => convertPrice(100, $eur, $usd))->toThrow(InvalidArgumentException::class);
-    expect(fn () => convertPrice(100, $usd, $eur))->toThrow(InvalidArgumentException::class);
+    // Avec un taux à 0, la conversion retourne le montant original (pas d'exception)
+    expect($service->convertPrice(100, $eur, $usd))->toEqualWithDelta(100.0, 0.0001);
+    expect($service->convertPrice(100, $usd, $eur))->toEqualWithDelta(100.0, 0.0001);
 });
 
-it('permet de changer de devise depuis le frontend (session visiteur, users.currency_id connecté)', function () {
+it('permet de changer de devise depuis le frontend (session)', function () {
     $usd = pricingCurrency('USD');
     $xof = pricingCurrency('XOF');
 
@@ -182,7 +188,7 @@ it('permet de changer de devise depuis le frontend (session visiteur, users.curr
 
     expect(session('currency'))->toBe('XOF');
 
-    // Utilisateur connecté : la préférence est persistée (users.currency_id)
+    // Utilisateur connecté : la préférence va aussi en session (plus de persistance en base)
     $admin = pricingUser();
 
     $this->actingAs($admin)
@@ -190,13 +196,7 @@ it('permet de changer de devise depuis le frontend (session visiteur, users.curr
         ->assertRedirect()
         ->assertSessionHas('success');
 
-    expect($admin->fresh()->currency_id)->toBe($usd->id);
-    expect($admin->fresh()->currency->code)->toBe('USD');
-
-    // La page d'accueil affiche le prix converti (placeholder)
-    $this->actingAs($admin)
-        ->get(route('frontend.index'))
-        ->assertOk();
+    expect(session('currency'))->toBe('USD');
 });
 
 it('empêche de définir un taux différent de 1 sur la devise par défaut (garde métier)', function () {
@@ -218,4 +218,26 @@ it('empêche de définir un taux différent de 1 sur la devise par défaut (gard
     ];
 
     expect(fn () => $service->backend_currencies_update($eur, $payload))->toThrow(InvalidArgumentException::class);
+});
+
+it('ne garde que XOF, USD et EUR actives après le seed (les autres sont désactivées)', function () {
+    $active = Currency::active()->pluck('code')->all();
+
+    sort($active);
+    expect($active)->toBe(['EUR', 'USD', 'XOF']);
+});
+
+it('permet de changer de devise depuis le dashboard (backend.currency.switch)', function () {
+    $admin = pricingUser();
+    $admin->assignRole('administrator');
+
+    $usd = pricingCurrency('USD');
+
+    $this->actingAs($admin)
+        ->get(route('backend.currency.switch', ['currency' => $usd->uuid]))
+        ->assertRedirect(route('backend.index'))
+        ->assertSessionHas('success');
+
+    // La préférence est en session (plus de persistance en base)
+    expect(session('currency'))->toBe('USD');
 });

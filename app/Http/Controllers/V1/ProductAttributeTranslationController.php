@@ -28,11 +28,12 @@ class ProductAttributeTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_translations_destroy(string $uuid): RedirectResponse
+    public function backend_product_attribute_translations_destroy(ProductAttributeTranslation $productAttributeTranslation): RedirectResponse
     {
         try {
 
-            $translation = ProductAttributeTranslation::where('uuid', $uuid)->firstOrFail();
+            // Traduction résolue par le binding implicite sur uuid (route {productAttributeTranslation})
+            $translation = $productAttributeTranslation;
 
             // Supprime la traduction de façon réversible via le service
             $this->productAttributeTranslationService->backend_product_attribute_translations_destroy($translation);
@@ -41,21 +42,15 @@ class ProductAttributeTranslationController extends Controller
 
             return back()->with('success', __("{$this->backendLangPath}.destroy.flash_success"));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.product-attribute-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning", ['uuid' => $uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->backendLangPath}.destroy.flash_warning"));
-
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-attribute-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-attribute-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', $e->getMessage());
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-attribute-translations.destroy', context: ['translation_uuid' => $uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-attribute-translations.destroy', context: ['translation_uuid' => $translation->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $translation->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
@@ -64,30 +59,24 @@ class ProductAttributeTranslationController extends Controller
     // ─────────────────────────────────────────────
     // TRASHED
     // ─────────────────────────────────────────────
-    public function backend_product_attribute_translations_trashed(string $attribute_uuid): View|RedirectResponse
+    public function backend_product_attribute_translations_trashed(ProductAttribute $productAttribute): View|RedirectResponse
     {
         try {
 
-            // Récupère l'attribut de produit correspondant à l'UUID de la route
-            $attribute = ProductAttribute::withTrashed()->where('uuid', $attribute_uuid)->firstOrFail();
+            // Attribut résolu par le binding implicite sur uuid (route {productAttribute} avec ->withTrashed())
+            $attribute = $productAttribute;
 
             // Récupère les traductions supprimées de cet attribut de produit
             $trashedTranslations = ProductAttributeTranslation::onlyTrashed()->where('attribute_id', $attribute->id)->get();
 
             // Journalise l'accès à la corbeille des traductions de cet attribut de produit
-            $this->logActivity(type: 'info', action: 'backend.product-attribute-translations.trashed', context: ['count' => $trashedTranslations->count(), 'attribute_uuid' => $attribute_uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $attribute->active_translation?->name ?? $attribute_uuid]), is_success: true, loggable: $attribute);
+            $this->logActivity(type: 'info', action: 'backend.product-attribute-translations.trashed', context: ['count' => $trashedTranslations->count(), 'attribute_uuid' => $attribute->uuid], message: null, activity: __("{$this->backendLangPath}.trashed.accessed", ['name' => $attribute->active_translation?->name ?? $attribute->uuid]), is_success: true, loggable: $attribute);
 
             return view('v1.backend.pages.products.attributes.translations.trashed', compact('trashedTranslations', 'attribute'));
 
-        } catch (ModelNotFoundException $e) {
-
-            $this->logActivity(type: 'warning', action: 'backend.product-attribute-translations.trashed', context: ['attribute_uuid' => $attribute_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $attribute_uuid]), is_success: false);
-
-            return back()->with('error', __("{$this->backendLangPath}.trashed.not_found", ['uuid' => $attribute_uuid]));
-
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-attribute-translations.trashed', context: ['attribute_uuid' => $attribute_uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $attribute_uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-attribute-translations.trashed', context: ['attribute_uuid' => $attribute->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.trashed.error", ['uuid' => $attribute->uuid]), is_success: false);
 
             return back()->with('error', __("{$this->backendLangPath}.trashed.error", ['uuid' => $attribute_uuid]));
         }

@@ -65,7 +65,7 @@
                             <li><hr class="dropdown-divider"></li>
 
                             <li>
-                                <a href="{{ route('backend.faq-translations.trashed', ['faq_uuid' => $faq->uuid]) }}"
+                                <a href="{{ route('backend.faq-translations.trashed', ['faq' => $faq->uuid]) }}"
                                     class="dropdown-item text-warning">
                                     <i class="bx bx-trash me-2"></i> {{ __('v1/backend/views/pages/faqs/partials/_show-start.corbeilleDesTraductions') }}
                                 </a>

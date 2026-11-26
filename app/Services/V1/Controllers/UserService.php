@@ -37,8 +37,8 @@ class UserService
             if (isset($data['status'])) {
                 $updateData['status'] = UserStatus::tryFrom($data['status']) ?? $user->status;
             }
-            if (isset($data['country_id'])) {
-                $updateData['country_id'] = $data['country_id'];
+            if (isset($data['division_id'])) {
+                $updateData['division_id'] = $data['division_id'];
             }
             if (isset($data['password']) && ! empty($data['password'])) {
                 // Hashé automatiquement par le cast 'hashed' du modèle User

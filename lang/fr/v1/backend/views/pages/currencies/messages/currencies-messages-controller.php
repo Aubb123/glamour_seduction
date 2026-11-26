@@ -184,6 +184,16 @@ return [
             ],
         ],
 
+        // ─────────────────────────────────────────────
+        // SWITCH (sélecteur de devise du dashboard)
+        // ─────────────────────────────────────────────
+        'switch' => [
+            'title' => 'Devise d\'affichage',
+            'success' => 'Devise d\'affichage mise à jour : :code',
+            'warning' => 'Devise introuvable ou inactive.',
+            'error' => 'Erreur lors du changement de devise.',
+        ],
+
     ],
 
 ];

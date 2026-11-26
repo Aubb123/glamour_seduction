@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Products\Warehouses\StoreProductWarehouseRequest;
 use App\Http\Requests\V1\Products\Warehouses\UpdateProductWarehouseRequest;
 use App\Models\GeoCountry;
+use App\Models\GeoDivision;
 use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseTranslation;
 use App\Services\V1\Controllers\ProductWarehouseService;
@@ -35,9 +36,9 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            // Récupère tous les entrepôts avec leur traduction active, leur pays et le nombre d'audits/logs
+            // Récupère tous les entrepôts avec leur traduction active, leur division et le nombre d'audits/logs
             $warehouses = ProductWarehouse::withActiveTranslation()
-                ->with(['country'])
+                ->with(['division'])
                 ->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'locations'])
                 ->orderBy('sort_order', 'desc')
                 ->get();
@@ -61,15 +62,24 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            // Langues actives et pays pour le formulaire
+            // Langues actives, pays et toutes les divisions pour le formulaire
+            // (le pays et le dernier niveau sont filtrés côté JS).
+            // Tri : par pays puis par nom de traduction active (ordre alphabétique lisible).
             $langs = getActiveLangs()['langs'];
-            $countries = GeoCountry::withActiveTranslation()->orderBy('code')->get();
+            $countries = GeoCountry::withActiveTranslation()->orderBy('sort_order', 'asc')->get();
+            $divisions = GeoDivision::withActiveTranslation()
+                ->withCount('children')
+                ->orderBy('id')
+                ->get()
+                ->sortBy(fn ($division) => $division->active_translation?->name ?? '')
+                ->sortBy(fn ($division) => $division->country_id)
+                ->values();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.create', context: [], message: null, activity: __("{$this->backendLangPath}.create.success"), is_success: true);
 
             $lastSortOrder = getLastSortOrder(ProductWarehouse::class);
 
-            return view('v1.backend.pages.products.warehouses.create', compact('langs', 'countries', 'lastSortOrder'));
+            return view('v1.backend.pages.products.warehouses.create', compact('langs', 'countries', 'divisions', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -138,7 +148,7 @@ class ProductWarehouseController extends Controller
 
             $warehouse->load([
                 'translations' => fn ($query) => $query->whereNull('deleted_at')->with('lang'),
-                'country',
+                'division',
             ])->loadCount(['audits', 'activityLogs', 'locations']);
 
             $langs = getActiveLangs()['langs'];
@@ -259,15 +269,22 @@ class ProductWarehouseController extends Controller
         try {
 
             $langs = getActiveLangs()['langs'];
-            $countries = GeoCountry::withActiveTranslation()->orderBy('code')->get();
+            $countries = GeoCountry::withActiveTranslation()->orderBy('sort_order', 'asc')->get();
+            $divisions = GeoDivision::withActiveTranslation()
+                ->withCount('children')
+                ->orderBy('id')
+                ->get()
+                ->sortBy(fn ($division) => $division->active_translation?->name ?? '')
+                ->sortBy(fn ($division) => $division->country_id)
+                ->values();
 
-            $warehouse = $productWarehouse->load(['translations.lang', 'country']);
+            $warehouse = $productWarehouse->load(['translations.lang', 'division']);
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.edit', context: ['warehouse_uuid' => $warehouse->uuid], message: null, activity: __("{$this->backendLangPath}.edit.success", ['name' => $warehouse->active_translation?->name ?? $warehouse->code]), is_success: true, loggable: $warehouse);
 
             $lastSortOrder = getLastSortOrder(ProductWarehouse::class);
 
-            return view('v1.backend.pages.products.warehouses.edit', compact('warehouse', 'langs', 'countries', 'lastSortOrder'));
+            return view('v1.backend.pages.products.warehouses.edit', compact('warehouse', 'langs', 'countries', 'divisions', 'lastSortOrder'));
 
         } catch (\Exception $e) {
 
@@ -418,7 +435,7 @@ class ProductWarehouseController extends Controller
     {
         try {
 
-            $warehouses = ProductWarehouse::onlyTrashed()->withTrashedActiveTranslation()->with(['country'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'locations'])->orderBy('deleted_at', 'desc')->get();
+            $warehouses = ProductWarehouse::onlyTrashed()->withTrashedActiveTranslation()->with(['division'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs', 'locations'])->orderBy('deleted_at', 'desc')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouses.trashed', context: ['count' => $warehouses->count()], message: null, activity: __("{$this->backendLangPath}.trashed.success"), is_success: true);
 

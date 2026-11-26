@@ -111,7 +111,7 @@ class UpdateSettingRequest extends FormRequest
                     : is_numeric($value);
 
                 if (! $isValid) {
-                    $validator->errors()->add("settings.{$uuid}.value", __("{$this->backendLangPath}.value.{$type}",['key' => $setting->key]
+                    $validator->errors()->add("settings.{$uuid}.value", __("{$this->backendLangPath}.value.{$type}", ['key' => $setting->key]
                     ));
 
                     continue;

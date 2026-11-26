@@ -5,10 +5,10 @@ declare(strict_types=1);
 use App\Models\GeoCountry;
 use App\Models\User;
 use Database\Seeders\LangSeeder;
-use Database\Seeders\SettingSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\SettingSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

@@ -10,10 +10,10 @@ use App\Services\V1\ActivityLogger;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
 use Database\Seeders\LangSeeder;
-use Database\Seeders\SettingSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\SettingSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

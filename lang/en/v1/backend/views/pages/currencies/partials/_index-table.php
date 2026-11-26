@@ -16,6 +16,7 @@ return [
     'code' => 'Code',
     'codeNumerique' => 'Numeric code',
     'decimales' => 'Decimals',
+    'tauxDechange' => 'Exchange rate',
     'paysUtilisent' => 'Countries',
     'ordre' => 'Sort order',
     'defaut' => 'Default',

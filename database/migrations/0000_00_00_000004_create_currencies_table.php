@@ -24,7 +24,8 @@ return new class extends Migration
             $table->enum('status', ['active', 'inactive'])->default('inactive'); // Indique si la devise est active
             // Taux de change par rapport à la devise par défaut de la boutique
             // 1 devise par défaut = exchange_rate devise
-            $table->decimal('exchange_rate', 10, 6)->default(1.000000);
+            // Nullable : les devises non configurées n'ont pas de taux
+            $table->decimal('exchange_rate', 10, 6)->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->index(['status', 'is_default', 'deleted_at']); // Index pour les filtres courants

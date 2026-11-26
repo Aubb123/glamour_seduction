@@ -63,10 +63,10 @@
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">{{ __('Pays') }}</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Division') }}</div>
                                     <div class="col-8">
-                                        <a class="text-primary" href="{{ route('backend.geocountries.show', ['geoCountry' => $user->country->uuid, 'slug' => $user->country?->active_translation?->slug ?? 'null']) }}">
-                                            {{ $user->country?->active_translation?->name ?? '-' }}
+                                        <a class="text-primary" href="{{ $user->division ? route('backend.geodivisions.show', ['geoDivision' => $user->division->uuid, 'slug' => $user->division?->active_translation?->slug ?? 'null']) : '#' }}">
+                                            {{ $user->division?->active_translation?->name ?? '-' }}
                                         </a>
                                     </div>
                                 </div>

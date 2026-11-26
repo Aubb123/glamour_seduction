@@ -55,6 +55,28 @@
                     </div>
                 </div>
 
+                {{-- Sélecteur de devise (getActiveCurrencies) --}}
+                <div class="dropdown topbar-item">
+                    <button type="button" class="topbar-button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{{ __('v1/backend/views/pages/currencies/messages/currencies-messages-controller.currencies.switch.title') }}">
+                        @php($currentCurrency = getActiveCurrencies()['currentCurrency'] ?? null)
+                        @if ($currentCurrency)
+                            <span class="fw-bold">{{ $currentCurrency->symbol }}</span>
+                        @else
+                            <i class="bx bx-money fs-24 align-middle"></i>
+                        @endif
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-lg p-1">
+                        @foreach (getActiveCurrencies()['currencies'] as $currency)
+                            <a class="dropdown-item {{ (getActiveCurrencies()['currentCurrency']->code ?? null) === $currency->code ? 'active' : '' }}"
+                               href="{{ route('backend.currency.switch', ['currency' => $currency->uuid]) }}">
+                                <span class="me-2 fw-bold">{{ $currency->symbol }}</span>
+                                {{ $currency->active_translation?->name ?? $currency->code }}
+                                <small class="text-muted ms-1">{{ $currency->code }}</small>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+
                 {{-- Thème clair/sombre --}}
                 <div class="topbar-item">
                     <button type="button" class="topbar-button" id="light-dark-mode">

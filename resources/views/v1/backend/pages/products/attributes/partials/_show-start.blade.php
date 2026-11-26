@@ -65,7 +65,7 @@
                                 <li><hr class="dropdown-divider"></li>
 
                                 <li>
-                                    <a href="{{ route('backend.product-attribute-translations.trashed', ['attribute_uuid' => $attribute->uuid]) }}"
+                                    <a href="{{ route('backend.product-attribute-translations.trashed', ['productAttribute' => $attribute->uuid]) }}"
                                         class="dropdown-item text-warning">
                                         <i class="bx bx-trash me-2"></i> {{ __('Corbeille des traductions') }}
                                     </a>

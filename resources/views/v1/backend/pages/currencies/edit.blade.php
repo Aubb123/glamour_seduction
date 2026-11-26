@@ -1,7 +1,7 @@
 @extends('v1.backend.layouts.app')
 
 @section('title')
-    {{ __('v1/backend/views/pages/currencies/edit.pageTitle') }}
+    {{ __('v1/backend/views/pages/currencies/edit.pageTitle') }} — <code>{{ $currency->active_translation?->name ?? $currency->code }}</code>
 @endsection
 
 @section('content')
@@ -14,7 +14,7 @@
 
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5 class="card-title mb-0">
-                        {{ __('v1/backend/views/pages/currencies/edit.modifier') }} — <span class="text-muted">{{ $currency->code }}</span>
+                        {{ __('v1/backend/views/pages/currencies/edit.modifier') }} — <code>{{ $currency->active_translation?->name ?? $currency->code }}</code>
                     </h5>
                     <a href="{{ route('backend.currencies.index') }}" class="btn btn-secondary btn-sm">
                         <i class="bx bx-arrow-back me-1"></i> {{ __('v1/backend/views/pages/currencies/edit.retour') }}
@@ -23,6 +23,7 @@
 
                 <div class="card-body">
 
+                    {{-- Stepper Nav --}}
                     <div class="d-flex align-items-center mb-4 gap-3">
                         <div class="step-item" data-step="1">
                             <span class="step-badge">1</span>
@@ -35,10 +36,13 @@
                         </div>
                     </div>
 
-                    <form id="edit-currency-form" action="{{ route('backend.currencies.update', ['currency' => $currency->uuid]) }}" method="POST">
+                    <form id="edit-currency-form"
+                          action="{{ route('backend.currencies.update', ['currency' => $currency->uuid]) }}"
+                          method="POST">
                         @csrf
                         @method('PUT')
 
+                        {{-- STEP 1 --}}
                         <div class="step-content" data-step-content="1">
 
                             <div class="row mb-3">
@@ -72,14 +76,14 @@
                                     <label for="sort_order" class="form-label">{{ __('v1/backend/views/pages/currencies/edit.ordreAffichage') }} <span class="text-danger">*</span></label>
                                     <input type="number" name="sort_order" id="sort_order" required class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $currency->sort_order) }}" min="0" />
                                     @error('sort_order') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                    @include('v1.backend.layouts.partials._last-sort-order')
+                                        @include('v1.backend.layouts.partials._last-sort-order')
                                     <small class="text-muted">{{ __('v1/backend/views/pages/currencies/edit.utiliseDansListesSelects') }}</small>
                                 </div>
                                 <div class="col-md-4">
                                     <label for="status" class="form-label">{{ __('v1/backend/views/pages/currencies/edit.statut') }} <span class="text-danger">*</span></label>
                                     <select name="status" id="status" required class="form-select @error('status') is-invalid @enderror">
-                                        <option value="active" {{ old('status', $currency->status?->value ?? 'inactive') === 'active' ? 'selected' : '' }}>{{ __('Actif') }}</option>
-                                        <option value="inactive" {{ old('status', $currency->status?->value ?? 'inactive') === 'inactive' ? 'selected' : '' }}>{{ __('Inactif') }}</option>
+                                        <option value="active" {{ old('status', $currency->status?->value ?? 'inactive') === 'active' ? 'selected' : '' }}>{{ __('v1/backend/views/pages/currencies/edit.actif') }}</option>
+                                        <option value="inactive" {{ old('status', $currency->status?->value ?? 'inactive') === 'inactive' ? 'selected' : '' }}>{{ __('v1/backend/views/pages/currencies/edit.inactif') }}</option>
                                     </select>
                                     @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 </div>
@@ -87,8 +91,8 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="exchange_rate" class="form-label">{{ __('v1/backend/views/pages/currencies/edit.tauxDeChange') }} <span class="text-danger">*</span></label>
-                                    <input type="number" name="exchange_rate" id="exchange_rate" step="0.000001" min="0.000001" required class="form-control @error('exchange_rate') is-invalid @enderror" placeholder="ex : 655.957000" value="{{ old('exchange_rate', $currency->exchange_rate) }}" />
+                                    <label for="exchange_rate" class="form-label">{{ __('v1/backend/views/pages/currencies/edit.tauxDeChange') }}</label>
+                                    <input type="number" name="exchange_rate" id="exchange_rate" step="0.000001" min="0.000001" class="form-control @error('exchange_rate') is-invalid @enderror" placeholder="ex : 655.957000" value="{{ old('exchange_rate', $currency->exchange_rate) }}" />
                                     @error('exchange_rate') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     <small class="text-muted">{{ __('v1/backend/views/pages/currencies/edit.tauxDeChangeAide') }}</small>
                                 </div>
@@ -101,17 +105,19 @@
                                     </div>
                                     <small class="text-muted">{{ __('v1/backend/views/pages/currencies/edit.deviseParDefautAide') }}</small>
                                 </div>
-                                </div>
                             </div>
 
                         </div>
 
+                        {{-- STEP 2 --}}
                         <div class="step-content d-none" data-step-content="2">
 
                             <ul class="nav nav-tabs mb-3">
                                 @foreach ($langs as $index => $lang)
                                     <li class="nav-item">
-                                        <a class="nav-link {{ $index === 0 ? 'active' : '' }}" data-bs-toggle="tab" href="#tab_lang_{{ $lang->code }}">
+                                        <a class="nav-link {{ $index === 0 ? 'active' : '' }}"
+                                           data-bs-toggle="tab"
+                                           href="#tab_lang_{{ $lang->code }}">
                                             {{ $lang->name }}
                                             @error('translations.' . $lang->code . '.name')
                                                 <span class="text-danger ms-1">•</span>
@@ -126,18 +132,18 @@
                                     <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
                                          id="tab_lang_{{ $lang->code }}">
 
-                                        <input type="hidden" name="translations[{{ $lang->code }}][lang_id]" value="{{ $lang->id }}" required />
+                                        <input type="hidden" name="translations[{{ $lang->code }}][lang_id]" value="{{ $lang->id }}" />
 
                                         <div class="mb-3">
                                             <label for="name_{{ $lang->code }}" class="form-label">
-                                                {{ __('v1/backend/views/pages/currencies/edit.nom') }}
+                                                {{ __('v1/backend/views/pages/currencies/edit.nom') }} <span class="text-danger">*</span>
                                                 <span class="text-muted">({{ $lang->name }})</span>
-                                                <span class="text-danger">*</span>
                                             </label>
-                                            <input type="text" name="translations[{{ $lang->code }}][name]" id="name_{{ $lang->code }}" required class="form-control @error('translations.' . $lang->code . '.name') is-invalid @enderror" placeholder="{{ __('v1/backend/views/pages/currencies/edit.exDevise') }}" value="{{ old('translations.' . $lang->code . '.name', getTranslation($currency, $lang->id)?->name) }}" maxlength="100" />
+                                            <input type="text" name="translations[{{ $lang->code }}][name]" id="name_{{ $lang->code }}" class="form-control @error('translations.' . $lang->code . '.name') is-invalid @enderror" value="{{ old('translations.' . $lang->code . '.name', getTranslation($currency, $lang->id)?->name ?? '') }}" required />
                                             @error('translations.' . $lang->code . '.name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+                                            <small class="text-muted">{{ __('v1/backend/views/pages/currencies/edit.slugGenereAutomatiquement') }}</small>
                                         </div>
 
                                         <div class="mb-3">
@@ -145,7 +151,7 @@
                                                 {{ __('v1/backend/views/pages/currencies/edit.description') }}
                                                 <span class="text-muted">({{ $lang->name }})</span>
                                             </label>
-                                            <textarea name="translations[{{ $lang->code }}][description]" id="description_{{ $lang->code }}" class="form-control @error('translations.' . $lang->code . '.description') is-invalid @enderror" rows="3" placeholder="{{ __('v1/backend/views/pages/currencies/edit.descriptionOptionnelleDeLaDevise') }}">{{ old('translations.' . $lang->code . '.description', getTranslation($currency, $lang->id)?->description) }}</textarea>
+                                            <textarea name="translations[{{ $lang->code }}][description]" id="description_{{ $lang->code }}" class="form-control @error('translations.' . $lang->code . '.description') is-invalid @enderror" rows="3" placeholder="{{ __('v1/backend/views/pages/currencies/edit.descriptionOptionnelleDeLaDevise') }}">{{ old('translations.' . $lang->code . '.description', getTranslation($currency, $lang->id)?->description ?? '') }}</textarea>
                                             @error('translations.' . $lang->code . '.description')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -157,6 +163,7 @@
 
                         </div>
 
+                        {{-- Boutons navigation --}}
                         <div class="d-flex justify-content-between mt-4">
                             <button type="button" class="btn btn-secondary d-none" id="btn-prev">
                                 <i class="bx bx-arrow-back me-1"></i> {{ __('v1/backend/views/pages/currencies/edit.precedent') }}
@@ -181,76 +188,81 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('edit-currency-form');
-        const totalSteps = 2;
-        let currentStep  = 1;
+    const form = document.getElementById('edit-currency-form');
+    const totalSteps = 2;
+    let currentStep = 1;
 
-        const stepContents = document.querySelectorAll('[data-step-content]');
-        const stepItems    = document.querySelectorAll('[data-step]');
-        const btnPrev      = document.getElementById('btn-prev');
-        const btnNext      = document.getElementById('btn-next');
-        const btnSubmit    = document.getElementById('btn-submit');
+    const stepContents = document.querySelectorAll('[data-step-content]');
+    const stepItems    = document.querySelectorAll('[data-step]');
+    const btnPrev      = document.getElementById('btn-prev');
+    const btnNext      = document.getElementById('btn-next');
+    const btnSubmit    = document.getElementById('btn-submit');
 
-        function goToStep(step) {
-            stepContents.forEach(el => el.classList.add('d-none'));
-            document.querySelector(`[data-step-content="${step}"]`).classList.remove('d-none');
+    function goToStep(step) {
+        stepContents.forEach(el => el.classList.add('d-none'));
+        document.querySelector(`[data-step-content="${step}"]`).classList.remove('d-none');
 
-            stepItems.forEach(el => {
-                el.classList.remove('active', 'done');
-                const s = parseInt(el.dataset.step);
-                if (s < step)   el.classList.add('done');
-                if (s === step) el.classList.add('active');
-            });
-
-            btnPrev.classList.toggle('d-none', step === 1);
-            btnNext.classList.toggle('d-none', step === totalSteps);
-            btnSubmit.classList.toggle('d-none', step !== totalSteps);
-
-            currentStep = step;
-        }
-
-        function validateStep(step) {
-            const stepContent = document.querySelector(`[data-step-content="${step}"]`);
-            const fields = stepContent.querySelectorAll('input, textarea, select');
-            const invalidField = Array.from(fields).find((field) => field.willValidate && !field.disabled && !field.checkValidity());
-
-            if (invalidField) {
-                invalidField.reportValidity();
-                invalidField.focus();
-                return false;
-            }
-
-            return true;
-        }
-
-        function findFirstInvalidField() {
-            return form.querySelector(':invalid');
-        }
-
-        btnNext.addEventListener('click', () => { if (currentStep < totalSteps && validateStep(currentStep)) goToStep(currentStep + 1); });
-        btnPrev.addEventListener('click', () => { if (currentStep > 1) goToStep(currentStep - 1); });
-
-        form.addEventListener('submit', (event) => {
-            if (!form.reportValidity()) {
-                event.preventDefault();
-                const invalidField = findFirstInvalidField();
-
-                if (invalidField) {
-                    const invalidStep = invalidField.closest('[data-step-content]');
-
-                    if (invalidStep) {
-                        const step = parseInt(invalidStep.dataset.stepContent);
-                        goToStep(step);
-                    }
-
-                    invalidField.focus();
-                }
-            }
+        stepItems.forEach(el => {
+            el.classList.remove('active', 'done');
+            const s = parseInt(el.dataset.step);
+            if (s < step)  el.classList.add('done');
+            if (s === step) el.classList.add('active');
         });
 
-        goToStep(1);
+        btnPrev.classList.toggle('d-none', step === 1);
+        btnNext.classList.toggle('d-none', step === totalSteps);
+        btnSubmit.classList.toggle('d-none', step !== totalSteps);
+
+        currentStep = step;
+    }
+
+    function validateStep(step) {
+        const stepContent = document.querySelector(`[data-step-content="${step}"]`);
+        const fields = stepContent.querySelectorAll('input, textarea, select');
+        const invalidField = Array.from(fields).find((field) => field.willValidate && !field.disabled && !field.checkValidity());
+
+        if (invalidField) {
+            invalidField.reportValidity();
+            invalidField.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function findFirstInvalidField() {
+        return form.querySelector(':invalid');
+    }
+
+    btnNext.addEventListener('click', () => {
+        if (currentStep < totalSteps && validateStep(currentStep)) {
+            goToStep(currentStep + 1);
+        }
     });
+
+    btnPrev.addEventListener('click', () => {
+        if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    form.addEventListener('submit', (event) => {
+        if (!form.reportValidity()) {
+            event.preventDefault();
+            const invalidField = findFirstInvalidField();
+
+            if (invalidField) {
+                const invalidStep = invalidField.closest('[data-step-content]');
+
+                if (invalidStep) {
+                    const step = parseInt(invalidStep.dataset.stepContent);
+                    goToStep(step);
+                }
+
+                invalidField.focus();
+            }
+        }
+    });
+
+    goToStep(1);
 </script>
 @endpush
 
@@ -271,7 +283,7 @@
         font-weight: 600; font-size: 13px;
     }
     .step-item.active .step-badge { background: #0c0c0c; color: #fff; }
-    .step-item.done .step-badge   { background: green;   color: #fff; }
+    .step-item.done .step-badge   { background: green; color: #fff; }
     .step-divider {
         flex: 1; height: 2px;
         background: #e9ecef;

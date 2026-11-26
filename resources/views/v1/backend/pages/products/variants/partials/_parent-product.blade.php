@@ -34,7 +34,7 @@
                         <span class="badge {{ $product->status->badgeClass() }}">{{ $product->status->label() }}</span>
                     @endif
                     <small class="text-muted d-block mt-1">
-                        {{ number_format((float) $product->base_price, 2, ',', ' ') }}{{ $product->currency?->symbol ? ' '.$product->currency->symbol : '' }}
+                        {{ displayPrice((float) $product->base_price, $product->currency) }}
                     </small>
                 </div>
 

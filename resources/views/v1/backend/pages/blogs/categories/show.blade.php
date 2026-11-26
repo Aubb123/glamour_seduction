@@ -168,7 +168,7 @@
                                                                 <div class="col-3 text-muted fw-semibold">{{ __('Actions') }}</div>
                                                                 <div class="col-9">
                                                                     @if(getTranslation($category, $lang->id) && !getTranslation($category, $lang->id)->trashed())
-                                                                        <form action="{{ route('backend.blog-category-translations.destroy', ['uuid' => getTranslation($category, $lang->id)->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($category, $lang->id)->uuid }}" class="d-inline">
+                                                                        <form action="{{ route('backend.blog-category-translations.destroy', ['blogCategoryTranslation' => getTranslation($category, $lang->id)->uuid]) }}" method="POST" id="delete-form-{{ getTranslation($category, $lang->id)->uuid }}" class="d-inline">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ getTranslation($category, $lang->id)->uuid }}', '{{ __('Supprimer cette traduction ?') }}', 'Supprimer', 'warning')">

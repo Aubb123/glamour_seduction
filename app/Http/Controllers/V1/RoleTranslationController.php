@@ -25,11 +25,12 @@ class RoleTranslationController extends Controller
     // ─────────────────────────────────────────────
     // DESTROY
     // ─────────────────────────────────────────────
-    public function backend_roles_translations_destroy(RoleTranslation $translation): RedirectResponse
+    public function backend_roles_translations_destroy(RoleTranslation $roleTranslation): RedirectResponse
     {
         try {
 
-            // Traduction résolue par le binding implicite sur uuid (404 automatique si introuvable)
+            // Traduction résolue par le binding implicite sur uuid (route {roleTranslation}, 404 automatique si introuvable)
+            $translation = $roleTranslation;
 
             $this->roleTranslationService->backend_roles_translations_destroy($translation);
 

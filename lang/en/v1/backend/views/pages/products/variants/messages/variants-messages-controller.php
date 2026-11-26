@@ -3,6 +3,7 @@
 return [
     'productVariants' => [
         'not_found' => 'Attempt to access a missing product variant (UUID: :uuid).',
+        'inherit' => 'Inherits from product',
         'index' => [
             'success' => 'Displaying the product variants list',
             'error' => 'Error while displaying the product variants list',

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\GeoDivision;
+use App\Models\GeoDivisionType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +16,12 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Commune de rattachement des utilisateurs (Cotonou, Bénin)
+        $communeType = GeoDivisionType::where('code', 'commune')->first();
+        $cotonou = GeoDivision::where('division_type_id', $communeType?->id)
+            ->whereHas('translations', fn ($query) => $query->where('name', 'Cotonou'))
+            ->first();
+
         // -----------------------------------------------------------------------
         // Rôles utilisés (basés sur la table role_translations)
         // -----------------------------------------------------------------------
@@ -25,7 +33,7 @@ class UserSeeder extends Seeder
             // -------------------------
             [
                 // 'role_id'           => 1,
-                'country_id' => 1,
+                'division_id' => $cotonou?->id,
                 'first_name' => 'Alice',
                 'last_name' => 'Martin',
                 'email' => 'admin@site.com',
@@ -42,7 +50,7 @@ class UserSeeder extends Seeder
             // -------------------------
             [
                 // 'role_id'           => 2,
-                'country_id' => 1,
+                'division_id' => $cotonou?->id,
                 'first_name' => 'Thomas',
                 'last_name' => 'Dupont',
                 'email' => 'developer@site.com',
@@ -59,7 +67,7 @@ class UserSeeder extends Seeder
             // -------------------------
             [
                 // 'role_id'           => 3,
-                'country_id' => 1,
+                'division_id' => $cotonou?->id,
                 'first_name' => 'Hugo',
                 'last_name' => 'Petit',
                 'email' => 'moderator@site.com',
@@ -76,7 +84,7 @@ class UserSeeder extends Seeder
             // -------------------------
             [
                 // 'role_id'           => 9,
-                'country_id' => 1,
+                'division_id' => $cotonou?->id,
                 'first_name' => 'Camille',
                 'last_name' => 'Simon',
                 'email' => 'support@site.com',
@@ -93,7 +101,7 @@ class UserSeeder extends Seeder
             // -------------------------
             [
                 // 'role_id'           => 10,
-                'country_id' => 1,
+                'division_id' => $cotonou?->id,
                 'first_name' => 'Léa',
                 'last_name' => 'Fontaine',
                 'email' => 'user@site.com',
@@ -125,7 +133,7 @@ class UserSeeder extends Seeder
             $user = User::create(
                 [
                     // // 'role_id'   => $data['role_id'],
-                    'country_id' => $data['country_id'],
+                    'division_id' => $data['division_id'],
                     'first_name' => $data['first_name'],
                     'last_name' => $data['last_name'],
                     'email' => $data['email'],

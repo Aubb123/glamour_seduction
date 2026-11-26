@@ -72,11 +72,11 @@
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
-                                    <div class="col-4 text-muted fw-semibold">{{ __('Pays') }}</div>
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Division') }}</div>
                                     <div class="col-8">
-                                        @if($warehouse->country)
-                                            <a href="{{ route('backend.geocountries.show', ['geoCountry' => $warehouse->country->uuid, 'slug' => $warehouse->country->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
-                                                {{ $warehouse->country->active_translation?->name ?? '—' }}
+                                        @if($warehouse->division)
+                                            <a href="{{ route('backend.geodivisions.show', ['geoDivision' => $warehouse->division->uuid, 'slug' => $warehouse->division->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                                {{ $warehouse->division->active_translation?->name ?? '—' }}
                                             </a>
                                         @else
                                             <span class="text-muted">—</span>
@@ -219,7 +219,7 @@
                                                 <div class="col-2 text-muted fw-semibold">{{ __('Actions') }}</div>
                                                 <div class="col-9">
                                                     @if($translation && ! $translation->trashed())
-                                                        <form action="{{ route('backend.product-warehouse-translations.destroy', ['uuid' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
+                                                        <form action="{{ route('backend.product-warehouse-translations.destroy', ['productWarehouseTranslation' => $translation->uuid]) }}" method="POST" id="delete-form-{{ $translation->uuid }}" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $translation->uuid }}', 'Supprimer cette traduction ?', 'Supprimer', 'warning')">
