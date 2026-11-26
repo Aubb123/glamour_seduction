@@ -20,40 +20,40 @@ class ProductTagSeeder extends Seeder
                 'sort_order' => 1,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Nouveau',  'slug' => 'nouveau',  'description' => 'Tag attribué aux derniers produits ajoutés au catalogue.'],
-                    ['lang_code' => 'en', 'name' => 'New',      'slug' => 'new-en',   'description' => 'Tag assigned to the latest products added to the catalog.'],
+                    ['lang_code' => 'fr', 'name' => 'Nouveau',  'description' => 'Tag attribué aux derniers produits ajoutés au catalogue.'],
+                    ['lang_code' => 'en', 'name' => 'New',      'description' => 'Tag assigned to the latest products added to the catalog.'],
                 ],
             ],
             [
                 'sort_order' => 2,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Promotion', 'slug' => 'promotion', 'description' => 'Produits actuellement en promotion ou à prix réduit.'],
-                    ['lang_code' => 'en', 'name' => 'Sale',       'slug' => 'sale-en',   'description' => 'Products currently on sale or at a reduced price.'],
+                    ['lang_code' => 'fr', 'name' => 'Promotion', 'description' => 'Produits actuellement en promotion ou à prix réduit.'],
+                    ['lang_code' => 'en', 'name' => 'Sale',       'description' => 'Products currently on sale or at a reduced price.'],
                 ],
             ],
             [
                 'sort_order' => 3,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Best-seller', 'slug' => 'best-seller', 'description' => 'Les produits les plus vendus et plébiscités par nos clients.'],
-                    ['lang_code' => 'en', 'name' => 'Best-seller', 'slug' => 'best-seller-en', 'description' => 'The best-selling and most popular products with our customers.'],
+                    ['lang_code' => 'fr', 'name' => 'Best-seller', 'description' => 'Les produits les plus vendus et plébiscités par nos clients.'],
+                    ['lang_code' => 'en', 'name' => 'Best-seller', 'description' => 'The best-selling and most popular products with our customers.'],
                 ],
             ],
             [
                 'sort_order' => 4,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Idée cadeau', 'slug' => 'idee-cadeau', 'description' => 'Sélection de produits parfaits à offrir pour toutes les occasions.'],
-                    ['lang_code' => 'en', 'name' => 'Gift idea',   'slug' => 'gift-idea-en', 'description' => 'A selection of perfect products to offer for any occasion.'],
+                    ['lang_code' => 'fr', 'name' => 'Idée cadeau', 'description' => 'Sélection de produits parfaits à offrir pour toutes les occasions.'],
+                    ['lang_code' => 'en', 'name' => 'Gift idea',   'description' => 'A selection of perfect products to offer for any occasion.'],
                 ],
             ],
             [
                 'sort_order' => 5,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Édition limitée', 'slug' => 'edition-limitee', 'description' => 'Produits disponibles en quantité limitée, une fois épuisés ils ne reviendront pas.'],
-                    ['lang_code' => 'en', 'name' => 'Limited edition', 'slug' => 'limited-edition-en', 'description' => 'Products available in limited quantity, once sold out they will not return.'],
+                    ['lang_code' => 'fr', 'name' => 'Édition limitée', 'description' => 'Produits disponibles en quantité limitée, une fois épuisés ils ne reviendront pas.'],
+                    ['lang_code' => 'en', 'name' => 'Limited edition', 'description' => 'Products available in limited quantity, once sold out they will not return.'],
                 ],
             ],
         ];
@@ -84,7 +84,6 @@ class ProductTagSeeder extends Seeder
                     'tag_id' => $tag->id,
                     'lang_id' => $lang->id,
                     'name' => $translation['name'],
-                    'slug' => $translation['slug'],
                     'description' => $translation['description'],
                 ]);
             }

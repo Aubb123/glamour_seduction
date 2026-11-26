@@ -20,40 +20,40 @@ class BlogCategorySeeder extends Seeder
                 'sort_order' => 1,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Technologie',      'slug' => 'technologie',      'description' => 'Articles sur les dernières innovations technologiques et le numérique.'],
-                    ['lang_code' => 'en', 'name' => 'Technology',        'slug' => 'technology',       'description' => 'Articles about the latest technological innovations and digital trends.'],
+                    ['lang_code' => 'fr', 'name' => 'Technologie',      'description' => 'Articles sur les dernières innovations technologiques et le numérique.'],
+                    ['lang_code' => 'en', 'name' => 'Technology',        'description' => 'Articles about the latest technological innovations and digital trends.'],
                 ],
             ],
             [
                 'sort_order' => 2,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Santé & Bien-être', 'slug' => 'sante-bien-etre',  'description' => 'Conseils et actualités sur la santé, le sport et le bien-être au quotidien.'],
-                    ['lang_code' => 'en', 'name' => 'Health & Wellness', 'slug' => 'health-wellness',  'description' => 'Tips and news on health, sports and everyday well-being.'],
+                    ['lang_code' => 'fr', 'name' => 'Santé & Bien-être', 'description' => 'Conseils et actualités sur la santé, le sport et le bien-être au quotidien.'],
+                    ['lang_code' => 'en', 'name' => 'Health & Wellness', 'description' => 'Tips and news on health, sports and everyday well-being.'],
                 ],
             ],
             [
                 'sort_order' => 3,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Voyage',            'slug' => 'voyage',            'description' => 'Découvrez des destinations, des conseils de voyage et des récits d\'aventure.'],
-                    ['lang_code' => 'en', 'name' => 'Travel',            'slug' => 'travel',            'description' => 'Discover destinations, travel tips and adventure stories from around the world.'],
+                    ['lang_code' => 'fr', 'name' => 'Voyage',            'description' => 'Découvrez des destinations, des conseils de voyage et des récits d\'aventure.'],
+                    ['lang_code' => 'en', 'name' => 'Travel',            'description' => 'Discover destinations, travel tips and adventure stories from around the world.'],
                 ],
             ],
             [
                 'sort_order' => 4,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Éducation',         'slug' => 'education',         'description' => 'Ressources, guides et actualités sur l\'éducation et la formation professionnelle.'],
-                    ['lang_code' => 'en', 'name' => 'Education',         'slug' => 'education',         'description' => 'Resources, guides and news on education and professional training.'],
+                    ['lang_code' => 'fr', 'name' => 'Éducation',         'description' => 'Ressources, guides et actualités sur l\'éducation et la formation professionnelle.'],
+                    ['lang_code' => 'en', 'name' => 'Education',         'description' => 'Resources, guides and news on education and professional training.'],
                 ],
             ],
             [
                 'sort_order' => 5,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Business',          'slug' => 'business',          'description' => 'Actualités économiques, conseils entrepreneuriaux et stratégies de croissance.'],
-                    ['lang_code' => 'en', 'name' => 'Business',          'slug' => 'business',          'description' => 'Economic news, entrepreneurial advice and growth strategies for professionals.'],
+                    ['lang_code' => 'fr', 'name' => 'Business',          'description' => 'Actualités économiques, conseils entrepreneuriaux et stratégies de croissance.'],
+                    ['lang_code' => 'en', 'name' => 'Business',          'description' => 'Economic news, entrepreneurial advice and growth strategies for professionals.'],
                 ],
             ],
         ];
@@ -84,7 +84,6 @@ class BlogCategorySeeder extends Seeder
                     'category_id' => $category->id,
                     'lang_id' => $lang->id,
                     'name' => $translation['name'],
-                    'slug' => $translation['slug'],
                     'description' => $translation['description'],
                 ]);
             }

@@ -21,24 +21,24 @@ class ProductCategorySeeder extends Seeder
                 'sort_order' => 1,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Lingerie',     'slug' => 'lingerie',     'description' => 'Lingerie fine, confortable et élégante pour toutes les occasions.'],
-                    ['lang_code' => 'en', 'name' => 'Lingerie',     'slug' => 'lingerie-en',  'description' => 'Fine, comfortable and elegant lingerie for all occasions.'],
+                    ['lang_code' => 'fr', 'name' => 'Lingerie',     'description' => 'Lingerie fine, confortable et élégante pour toutes les occasions.'],
+                    ['lang_code' => 'en', 'name' => 'Lingerie',     'description' => 'Fine, comfortable and elegant lingerie for all occasions.'],
                 ],
                 'children' => [
                     [
                         'sort_order' => 11,
                         'status' => 'active',
                         'translations' => [
-                            ['lang_code' => 'fr', 'name' => 'Lingerie de jour',   'slug' => 'lingerie-de-jour',   'description' => 'Lingerie quotidienne alliant confort et discrétion.'],
-                            ['lang_code' => 'en', 'name' => 'Everyday Lingerie',  'slug' => 'everyday-lingerie',  'description' => 'Everyday lingerie combining comfort and discretion.'],
+                            ['lang_code' => 'fr', 'name' => 'Lingerie de jour',   'description' => 'Lingerie quotidienne alliant confort et discrétion.'],
+                            ['lang_code' => 'en', 'name' => 'Everyday Lingerie',  'description' => 'Everyday lingerie combining comfort and discretion.'],
                         ],
                     ],
                     [
                         'sort_order' => 12,
                         'status' => 'active',
                         'translations' => [
-                            ['lang_code' => 'fr', 'name' => 'Lingerie de nuit', 'slug' => 'lingerie-de-nuit', 'description' => 'Nuisettes, pyjamas et peignoirs pour des nuits douces.'],
-                            ['lang_code' => 'en', 'name' => 'Nightwear',        'slug' => 'nightwear',        'description' => 'Nightdresses, pyjamas and robes for gentle nights.'],
+                            ['lang_code' => 'fr', 'name' => 'Lingerie de nuit', 'description' => 'Nuisettes, pyjamas et peignoirs pour des nuits douces.'],
+                            ['lang_code' => 'en', 'name' => 'Nightwear',        'description' => 'Nightdresses, pyjamas and robes for gentle nights.'],
                         ],
                     ],
                 ],
@@ -47,16 +47,16 @@ class ProductCategorySeeder extends Seeder
                 'sort_order' => 2,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Accessoires',  'slug' => 'accessoires',  'description' => 'Accessoires de charme et de séduction pour sublimer chaque instant.'],
-                    ['lang_code' => 'en', 'name' => 'Accessories',  'slug' => 'accessories',  'description' => 'Charm and seduction accessories to enhance every moment.'],
+                    ['lang_code' => 'fr', 'name' => 'Accessoires',  'description' => 'Accessoires de charme et de séduction pour sublimer chaque instant.'],
+                    ['lang_code' => 'en', 'name' => 'Accessories',  'description' => 'Charm and seduction accessories to enhance every moment.'],
                 ],
                 'children' => [
                     [
                         'sort_order' => 21,
                         'status' => 'active',
                         'translations' => [
-                            ['lang_code' => 'fr', 'name' => 'Collants & Bas', 'slug' => 'collants-bas', 'description' => 'Collants, bas et mitaines pour un look raffiné.'],
-                            ['lang_code' => 'en', 'name' => 'Tights & Stockings', 'slug' => 'tights-stockings', 'description' => 'Tights, stockings and gloves for a refined look.'],
+                            ['lang_code' => 'fr', 'name' => 'Collants & Bas', 'description' => 'Collants, bas et mitaines pour un look raffiné.'],
+                            ['lang_code' => 'en', 'name' => 'Tights & Stockings', 'description' => 'Tights, stockings and gloves for a refined look.'],
                         ],
                     ],
                 ],
@@ -65,8 +65,8 @@ class ProductCategorySeeder extends Seeder
                 'sort_order' => 3,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Bien-être & Beauté', 'slug' => 'bien-etre-beaute', 'description' => 'Produits de soin et de bien-être pour prendre soin de soi.'],
-                    ['lang_code' => 'en', 'name' => 'Wellness & Beauty',  'slug' => 'wellness-beauty',  'description' => 'Care and wellness products to take care of yourself.'],
+                    ['lang_code' => 'fr', 'name' => 'Bien-être & Beauté', 'description' => 'Produits de soin et de bien-être pour prendre soin de soi.'],
+                    ['lang_code' => 'en', 'name' => 'Wellness & Beauty',  'description' => 'Care and wellness products to take care of yourself.'],
                 ],
                 'children' => null,
             ],
@@ -105,7 +105,6 @@ class ProductCategorySeeder extends Seeder
                 'category_id' => $category->id,
                 'lang_id' => $lang->id,
                 'name' => $translation['name'],
-                'slug' => $translation['slug'],
                 'description' => $translation['description'],
             ]);
         }

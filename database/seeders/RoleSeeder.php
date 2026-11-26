@@ -22,8 +22,8 @@ class RoleSeeder extends Seeder
                 'name' => 'administrator', // ← requis par Spatie (slug unique)
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'slug' => 'administrateur', 'label' => 'Administrateur', 'description' => 'Le rôle est attribué aux administrateurs du site, leur permettant de gérer les utilisateurs, les rôles, les permissions et d\'administrer le contenu du site.'],
-                    ['lang_code' => 'en', 'slug' => 'administrator', 'label' => 'Administrator',  'description' => 'The role is assigned to site administrators, allowing them to manage users, roles, permissions and administer the site\'s content.'],
+                    ['lang_code' => 'fr', 'label' => 'Administrateur', 'description' => 'Le rôle est attribué aux administrateurs du site, leur permettant de gérer les utilisateurs, les rôles, les permissions et d\'administrer le contenu du site.'],
+                    ['lang_code' => 'en', 'label' => 'Administrator',  'description' => 'The role is assigned to site administrators, allowing them to manage users, roles, permissions and administer the site\'s content.'],
                 ],
             ],
 
@@ -32,8 +32,8 @@ class RoleSeeder extends Seeder
                 'name' => 'developer',
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'slug' => 'developpeur', 'label' => 'Développeur', 'description' => 'Le rôle est attribué aux développeurs du site, leur permettant de gérer le code, les fonctionnalités et les performances du site.'],
-                    ['lang_code' => 'en', 'slug' => 'developer', 'label' => 'Developer',   'description' => 'The role is assigned to site developers, allowing them to manage the code, features and performance of the site.'],
+                    ['lang_code' => 'fr', 'label' => 'Développeur', 'description' => 'Le rôle est attribué aux développeurs du site, leur permettant de gérer le code, les fonctionnalités et les performances du site.'],
+                    ['lang_code' => 'en', 'label' => 'Developer',   'description' => 'The role is assigned to site developers, allowing them to manage the code, features and performance of the site.'],
                 ],
             ],
 
@@ -42,8 +42,8 @@ class RoleSeeder extends Seeder
                 'name' => 'moderator',
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'slug' => 'moderateur', 'label' => 'Modérateur', 'description' => 'Le rôle est attribué aux modérateurs du site, leur permettant de gérer les contenus et les utilisateurs de manière approfondie.'],
-                    ['lang_code' => 'en', 'slug' => 'moderator', 'label' => 'Moderator',  'description' => 'The role is assigned to site moderators, allowing them to manage content and users in depth.'],
+                    ['lang_code' => 'fr', 'label' => 'Modérateur', 'description' => 'Le rôle est attribué aux modérateurs du site, leur permettant de gérer les contenus et les utilisateurs de manière approfondie.'],
+                    ['lang_code' => 'en', 'label' => 'Moderator',  'description' => 'The role is assigned to site moderators, allowing them to manage content and users in depth.'],
                 ],
             ],
 
@@ -87,8 +87,8 @@ class RoleSeeder extends Seeder
                 'name' => 'support',
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'slug' => 'support', 'label' => 'Support', 'description' => 'Le rôle est attribué aux membres de l\'équipe de support, leur permettant de répondre aux demandes des utilisateurs.'],
-                    ['lang_code' => 'en', 'slug' => 'support', 'label' => 'Support', 'description' => 'The role is assigned to members of the support team, allowing them to respond to user requests and provide technical assistance.'],
+                    ['lang_code' => 'fr', 'label' => 'Support', 'description' => 'Le rôle est attribué aux membres de l\'équipe de support, leur permettant de répondre aux demandes des utilisateurs.'],
+                    ['lang_code' => 'en', 'label' => 'Support', 'description' => 'The role is assigned to members of the support team, allowing them to respond to user requests and provide technical assistance.'],
                 ],
             ],
 
@@ -97,8 +97,8 @@ class RoleSeeder extends Seeder
                 'name' => 'user',
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'slug' => 'utilisateur', 'label' => 'Utilisateur', 'description' => 'Le rôle est attribué aux visiteurs ou aux utilisateurs du site, leur permettant de consulter le contenu sans avoir accès aux fonctionnalités d\'administration.'],
-                    ['lang_code' => 'en', 'slug' => 'user', 'label' => 'User', 'description' => 'The role is assigned to visitors or users of the site, allowing them to browse content without access to administration features.'],
+                    ['lang_code' => 'fr', 'label' => 'Utilisateur', 'description' => 'Le rôle est attribué aux visiteurs ou aux utilisateurs du site, leur permettant de consulter le contenu sans avoir accès aux fonctionnalités d\'administration.'],
+                    ['lang_code' => 'en', 'label' => 'User', 'description' => 'The role is assigned to visitors or users of the site, allowing them to browse content without access to administration features.'],
                 ],
             ],
 
@@ -130,7 +130,6 @@ class RoleSeeder extends Seeder
                 RoleTranslation::create([
                     'role_id' => $role->id,
                     'lang_id' => $lang->id,
-                    'slug' => $translation['slug'],
                     'label' => $translation['label'],
                     'description' => $translation['description'],
                 ]);

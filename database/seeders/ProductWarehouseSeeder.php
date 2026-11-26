@@ -37,8 +37,8 @@ class ProductWarehouseSeeder extends Seeder
                 'status' => 'active',
                 'is_default' => true,
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Entrepôt principal Cotonou', 'slug' => 'entrepot-principal-cotonou', 'description' => 'Entrepôt principal de la boutique, situé à Cotonou. Il centralise la réception, le stockage et la préparation des commandes.'],
-                    ['lang_code' => 'en', 'name' => 'Cotonou Main Warehouse', 'slug' => 'cotonou-main-warehouse', 'description' => 'Main store warehouse located in Cotonou. It handles receiving, storage and order preparation.'],
+                    ['lang_code' => 'fr', 'name' => 'Entrepôt principal Cotonou', 'description' => 'Entrepôt principal de la boutique, situé à Cotonou. Il centralise la réception, le stockage et la préparation des commandes.'],
+                    ['lang_code' => 'en', 'name' => 'Cotonou Main Warehouse', 'description' => 'Main store warehouse located in Cotonou. It handles receiving, storage and order preparation.'],
                 ],
             ],
             [
@@ -55,8 +55,8 @@ class ProductWarehouseSeeder extends Seeder
                 'status' => 'active',
                 'is_default' => false,
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Entrepôt Porto-Novo', 'slug' => 'entrepot-porto-novo', 'description' => 'Entrepôt secondaire desservant la zone est du Bénin.'],
-                    ['lang_code' => 'en', 'name' => 'Porto-Novo Warehouse', 'slug' => 'porto-novo-warehouse', 'description' => 'Secondary warehouse serving the eastern part of Benin.'],
+                    ['lang_code' => 'fr', 'name' => 'Entrepôt Porto-Novo', 'description' => 'Entrepôt secondaire desservant la zone est du Bénin.'],
+                    ['lang_code' => 'en', 'name' => 'Porto-Novo Warehouse', 'description' => 'Secondary warehouse serving the eastern part of Benin.'],
                 ],
             ],
             [
@@ -73,8 +73,8 @@ class ProductWarehouseSeeder extends Seeder
                 'status' => 'active',
                 'is_default' => false,
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Entrepôt des retours', 'slug' => 'entrepot-des-retours', 'description' => 'Entrepôt dédié au contrôle, au reconditionnement et à la remise en stock des retours clients.'],
-                    ['lang_code' => 'en', 'name' => 'Returns Warehouse', 'slug' => 'returns-warehouse', 'description' => 'Dedicated warehouse for inspecting, refurbishing and restocking customer returns.'],
+                    ['lang_code' => 'fr', 'name' => 'Entrepôt des retours', 'description' => 'Entrepôt dédié au contrôle, au reconditionnement et à la remise en stock des retours clients.'],
+                    ['lang_code' => 'en', 'name' => 'Returns Warehouse', 'description' => 'Dedicated warehouse for inspecting, refurbishing and restocking customer returns.'],
                 ],
             ],
             [
@@ -91,8 +91,8 @@ class ProductWarehouseSeeder extends Seeder
                 'status' => 'inactive',
                 'is_default' => false,
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Entrepôt de transit', 'slug' => 'entrepot-de-transit', 'description' => 'Entrepôt de transit utilisé pour les réassorts et les expéditions groupées.'],
-                    ['lang_code' => 'en', 'name' => 'Transit Warehouse', 'slug' => 'transit-warehouse', 'description' => 'Transit warehouse used for restocking and bulk shipments.'],
+                    ['lang_code' => 'fr', 'name' => 'Entrepôt de transit', 'description' => 'Entrepôt de transit utilisé pour les réassorts et les expéditions groupées.'],
+                    ['lang_code' => 'en', 'name' => 'Transit Warehouse', 'description' => 'Transit warehouse used for restocking and bulk shipments.'],
                 ],
             ],
         ];
@@ -134,7 +134,6 @@ class ProductWarehouseSeeder extends Seeder
                     'warehouse_id' => $warehouse->id,
                     'lang_id' => $lang->id,
                     'name' => $translation['name'],
-                    'slug' => $translation['slug'],
                     'description' => $translation['description'],
                 ]);
             }

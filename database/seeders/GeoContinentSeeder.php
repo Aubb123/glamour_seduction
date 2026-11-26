@@ -23,8 +23,8 @@ class GeoContinentSeeder extends Seeder
                 'sort_order' => 1,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Afrique',          'slug' => 'afrique',         'description' => 'Le deuxième plus grand continent du monde.'],
-                    ['lang_code' => 'en', 'name' => 'Africa',           'slug' => 'africa',           'description' => 'The second largest continent in the world.'],
+                    ['lang_code' => 'fr', 'name' => 'Afrique',          'description' => 'Le deuxième plus grand continent du monde.'],
+                    ['lang_code' => 'en', 'name' => 'Africa',           'description' => 'The second largest continent in the world.'],
                 ],
             ],
             [
@@ -35,8 +35,8 @@ class GeoContinentSeeder extends Seeder
                 'sort_order' => 2,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Antarctique',      'slug' => 'antarctique',      'description' => 'Le continent le plus austral, recouvert de glace.'],
-                    ['lang_code' => 'en', 'name' => 'Antarctica',       'slug' => 'antarctica',       'description' => 'The southernmost continent, covered in ice.'],
+                    ['lang_code' => 'fr', 'name' => 'Antarctique',      'description' => 'Le continent le plus austral, recouvert de glace.'],
+                    ['lang_code' => 'en', 'name' => 'Antarctica',       'description' => 'The southernmost continent, covered in ice.'],
                 ],
             ],
             [
@@ -47,8 +47,8 @@ class GeoContinentSeeder extends Seeder
                 'sort_order' => 3,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Asie',             'slug' => 'asie',             'description' => 'Le plus grand et le plus peuplé des continents.'],
-                    ['lang_code' => 'en', 'name' => 'Asia',             'slug' => 'asia',             'description' => 'The largest and most populous continent.'],
+                    ['lang_code' => 'fr', 'name' => 'Asie',             'description' => 'Le plus grand et le plus peuplé des continents.'],
+                    ['lang_code' => 'en', 'name' => 'Asia',             'description' => 'The largest and most populous continent.'],
                 ],
             ],
             [
@@ -59,8 +59,8 @@ class GeoContinentSeeder extends Seeder
                 'sort_order' => 4,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Europe',           'slug' => 'europe',           'description' => 'Un continent riche en histoire et en diversité culturelle.'],
-                    ['lang_code' => 'en', 'name' => 'Europe',           'slug' => 'europe',           'description' => 'A continent rich in history and cultural diversity.'],
+                    ['lang_code' => 'fr', 'name' => 'Europe',           'description' => 'Un continent riche en histoire et en diversité culturelle.'],
+                    ['lang_code' => 'en', 'name' => 'Europe',           'description' => 'A continent rich in history and cultural diversity.'],
                 ],
             ],
             [
@@ -71,8 +71,8 @@ class GeoContinentSeeder extends Seeder
                 'sort_order' => 5,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Amérique du Nord', 'slug' => 'amerique-du-nord', 'description' => 'Le troisième plus grand continent, au nord de l\'Amérique.'],
-                    ['lang_code' => 'en', 'name' => 'North America',   'slug' => 'north-america',    'description' => 'The third largest continent, in the northern hemisphere.'],
+                    ['lang_code' => 'fr', 'name' => 'Amérique du Nord', 'description' => 'Le troisième plus grand continent, au nord de l\'Amérique.'],
+                    ['lang_code' => 'en', 'name' => 'North America',   'description' => 'The third largest continent, in the northern hemisphere.'],
                 ],
             ],
             [
@@ -83,8 +83,8 @@ class GeoContinentSeeder extends Seeder
                 'sort_order' => 6,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Océanie',          'slug' => 'oceanie',          'description' => 'Une région composée d\'îles et de l\'Australie.'],
-                    ['lang_code' => 'en', 'name' => 'Oceania',          'slug' => 'oceania',          'description' => 'A region made up of islands and Australia.'],
+                    ['lang_code' => 'fr', 'name' => 'Océanie',          'description' => 'Une région composée d\'îles et de l\'Australie.'],
+                    ['lang_code' => 'en', 'name' => 'Oceania',          'description' => 'A region made up of islands and Australia.'],
                 ],
             ],
             [
@@ -95,8 +95,8 @@ class GeoContinentSeeder extends Seeder
                 'sort_order' => 7,
                 'status' => 'active',
                 'translations' => [
-                    ['lang_code' => 'fr', 'name' => 'Amérique du Sud',  'slug' => 'amerique-du-sud',  'description' => 'Le quatrième plus grand continent, riche en biodiversité.'],
-                    ['lang_code' => 'en', 'name' => 'South America',   'slug' => 'south-america',    'description' => 'The fourth largest continent, rich in biodiversity.'],
+                    ['lang_code' => 'fr', 'name' => 'Amérique du Sud',  'description' => 'Le quatrième plus grand continent, riche en biodiversité.'],
+                    ['lang_code' => 'en', 'name' => 'South America',   'description' => 'The fourth largest continent, rich in biodiversity.'],
                 ],
             ],
         ];
@@ -131,7 +131,6 @@ class GeoContinentSeeder extends Seeder
                     'continent_id' => $continent->id,
                     'lang_id' => $lang->id,
                     'name' => $translation['name'],
-                    'slug' => $translation['slug'],
                     'description' => $translation['description'],
                 ]);
             }
