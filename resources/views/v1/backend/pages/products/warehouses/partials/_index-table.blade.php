@@ -85,6 +85,7 @@
                                 <th scope="col">Nom</th>
                                 <th scope="col">{{ __('Ordre') }}</th>
                                 <th scope="col">Type</th>
+                                <th scope="col">{{ __('Suivi du stock') }}</th>
                                 <th scope="col">Ville</th>
                                 <th scope="col">Division</th>
                                 <th scope="col">{{ __('Emplacements') }}</th>
@@ -119,6 +120,12 @@
                                     <td>
                                         <span class="{{ $warehouse->type?->badgeClass() ?? 'badge badge-soft-secondary' }}">
                                             {{ $warehouse->type?->label() ?? '—' }}
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="{{ $warehouse->stock_tracking_mode?->badgeClass() ?? 'badge badge-soft-secondary' }}">
+                                            {{ $warehouse->stock_tracking_mode?->label() ?? '—' }}
                                         </span>
                                     </td>
 
@@ -257,7 +264,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="{{ request()->routeIs('backend.product-warehouses.trashed') ? 15 : 14 }}" class="text-center text-muted py-5">
+                                    <td colspan="{{ request()->routeIs('backend.product-warehouses.trashed') ? 16 : 15 }}" class="text-center text-muted py-5">
                                         <i class="bx bx-archive fs-3 d-block mb-2"></i>
                                         Aucun entrepôt trouvé.
                                     </td>

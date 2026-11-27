@@ -19,6 +19,10 @@ return [
             'required' => 'The warehouse type is required.',
             'in' => 'The selected type is invalid.',
         ],
+        'stock_tracking_mode' => [
+            'required' => 'The stock tracking mode is required.',
+            'in' => 'The selected stock tracking mode is invalid.',
+        ],
         'status' => [
             'required' => 'The warehouse status is required.',
             'in' => 'The selected status is invalid.',

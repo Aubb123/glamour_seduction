@@ -71,6 +71,17 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
+                                    <label for="stock_tracking_mode" class="form-label">{{ __('Mode de suivi du stock') }} <span class="text-danger">*</span></label>
+                                    <select name="stock_tracking_mode" id="stock_tracking_mode" class="form-select @error('stock_tracking_mode') is-invalid @enderror" required>
+                                        @foreach (\App\Enums\Products\Warehouses\ProductWarehouseStockTrackingMode::cases() as $mode)
+                                            <option value="{{ $mode->value }}" {{ old('stock_tracking_mode', 'warehouse') === $mode->value ? 'selected' : '' }}>{{ $mode->label() }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted">{{ __('Global par entrepôt ou détaillé par emplacement à l\'intérieur de l\'entrepôt.') }}</small>
+                                    @error('stock_tracking_mode') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
                                     <label for="status" class="form-label">{{ __('Statut') }} <span class="text-danger">*</span></label>
                                     <select name="status" id="status" class="form-select @error('status') is-invalid @enderror" required>
                                         <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>{{ __('Actif') }}</option>

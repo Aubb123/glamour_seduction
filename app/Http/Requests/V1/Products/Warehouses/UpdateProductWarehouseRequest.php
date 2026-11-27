@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Products\Warehouses;
 
 use App\Enums\Products\Warehouses\ProductWarehouseStatus;
+use App\Enums\Products\Warehouses\ProductWarehouseStockTrackingMode;
 use App\Enums\Products\Warehouses\ProductWarehouseType;
 use App\Models\ProductWarehouseTranslation;
 use Illuminate\Foundation\Http\FormRequest;
@@ -47,6 +48,7 @@ class UpdateProductWarehouseRequest extends FormRequest
             'sort_order' => ['required', 'integer', 'min:0', Rule::unique('product_warehouses', 'sort_order')->ignore($warehouseId)],
 
             'type' => ['required', Rule::in(ProductWarehouseType::values())],
+            'stock_tracking_mode' => ['required', Rule::in(ProductWarehouseStockTrackingMode::values())],
             'status' => ['required', Rule::in(ProductWarehouseStatus::values())],
             'is_default' => ['nullable', 'boolean'],
 
@@ -173,6 +175,8 @@ class UpdateProductWarehouseRequest extends FormRequest
 
             'type.required' => __("{$this->backendLangPath}.type.required"),
             'type.in' => __("{$this->backendLangPath}.type.in"),
+            'stock_tracking_mode.required' => __("{$this->backendLangPath}.stock_tracking_mode.required"),
+            'stock_tracking_mode.in' => __("{$this->backendLangPath}.stock_tracking_mode.in"),
             'status.required' => __("{$this->backendLangPath}.status.required"),
             'status.in' => __("{$this->backendLangPath}.status.in"),
             'is_default.boolean' => __("{$this->backendLangPath}.is_default.boolean"),

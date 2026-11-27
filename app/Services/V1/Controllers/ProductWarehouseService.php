@@ -3,6 +3,7 @@
 namespace App\Services\V1\Controllers;
 
 use App\Enums\Products\Warehouses\ProductWarehouseStatus;
+use App\Enums\Products\Warehouses\ProductWarehouseStockTrackingMode;
 use App\Enums\Products\Warehouses\ProductWarehouseType;
 use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseTranslation;
@@ -26,6 +27,7 @@ class ProductWarehouseService
         return DB::transaction(function () use ($data) {
 
             $type = ProductWarehouseType::tryFrom($data['type'] ?? '') ?? ProductWarehouseType::Storage;
+            $stockTrackingMode = ProductWarehouseStockTrackingMode::tryFrom($data['stock_tracking_mode'] ?? '') ?? ProductWarehouseStockTrackingMode::Warehouse;
             $status = ProductWarehouseStatus::tryFrom($data['status'] ?? '') ?? ProductWarehouseStatus::Inactive;
             $isDefault = (bool) ($data['is_default'] ?? false);
 
@@ -40,6 +42,7 @@ class ProductWarehouseService
                 'sort_order' => $data['sort_order'],
                 'code' => $data['code'],
                 'type' => $type,
+                'stock_tracking_mode' => $stockTrackingMode,
                 'division_id' => $data['division_id'] ?? null,
                 'city' => $data['city'] ?? null,
                 'address' => $data['address'] ?? null,
@@ -68,7 +71,7 @@ class ProductWarehouseService
             $updateData = [];
 
             // Le code n'est jamais mis à jour (immuable après création)
-            foreach (['sort_order', 'type', 'division_id', 'city', 'address', 'latitude', 'longitude', 'phone', 'email', 'notes'] as $field) {
+            foreach (['sort_order', 'type', 'stock_tracking_mode', 'division_id', 'city', 'address', 'latitude', 'longitude', 'phone', 'email', 'notes'] as $field) {
                 if (array_key_exists($field, $data)) {
                     $updateData[$field] = $data[$field];
                 }

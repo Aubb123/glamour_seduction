@@ -67,6 +67,15 @@
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
+                                    <div class="col-4 text-muted fw-semibold">{{ __('Mode de suivi du stock') }}</div>
+                                    <div class="col-8">
+                                        <span class="{{ $warehouse->stock_tracking_mode?->badgeClass() ?? 'badge badge-soft-secondary' }}">
+                                            {{ $warehouse->stock_tracking_mode?->label() ?? '—' }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+                                <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Ville') }}</div>
                                     <div class="col-8">{{ $warehouse->city ?? '—' }}</div>
                                 </div>

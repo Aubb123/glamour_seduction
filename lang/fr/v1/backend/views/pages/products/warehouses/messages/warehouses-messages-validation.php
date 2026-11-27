@@ -19,6 +19,10 @@ return [
             'required' => 'Le type de l\'entrepôt est obligatoire.',
             'in' => 'Le type sélectionné n\'est pas valide.',
         ],
+        'stock_tracking_mode' => [
+            'required' => 'Le mode de suivi du stock est obligatoire.',
+            'in' => 'Le mode de suivi du stock sélectionné n\'est pas valide.',
+        ],
         'status' => [
             'required' => 'Le statut de l\'entrepôt est obligatoire.',
             'in' => 'Le statut sélectionné n\'est pas valide.',

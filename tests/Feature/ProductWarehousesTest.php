@@ -3,12 +3,15 @@
 declare(strict_types=1);
 
 use App\Models\GeoCountry;
+use App\Models\GeoDivision;
 use App\Models\Lang;
 use App\Models\ProductWarehouse;
 use App\Models\ProductWarehouseTranslation;
 use App\Models\User;
 use Database\Seeders\GeoContinentSeeder;
 use Database\Seeders\GeoCountrySeeder;
+use Database\Seeders\GeoDivisionSeeder;
+use Database\Seeders\GeoDivisionTypeSeeder;
 use Database\Seeders\LangSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\PlatformVersionSeeder;
@@ -27,6 +30,8 @@ beforeEach(function () {
     $this->seed(PlatformVersionSeeder::class);
     $this->seed(GeoContinentSeeder::class);
     $this->seed(GeoCountrySeeder::class);
+    $this->seed(GeoDivisionTypeSeeder::class);
+    $this->seed(GeoDivisionSeeder::class);
     $this->seed(RoleSeeder::class);
     $this->seed(PermissionSeeder::class);
     bootV1WebRoutes();
@@ -36,8 +41,11 @@ function warehousesAdmin(): User
 {
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
 
+    $division = GeoDivision::where('country_id', $country->id)->firstOrFail();
+
     $admin = User::create([
         'country_id' => $country->id,
+        'division_id' => $division->id,
         'first_name' => 'Alice', 'last_name' => 'Martin',
         'email' => 'admin@site.com', 'gender' => 'female',
         'phone' => '+22900000000', 'password' => 'password',
@@ -58,8 +66,11 @@ function warehousesModerator(): User
 {
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
 
+    $division = GeoDivision::where('country_id', $country->id)->firstOrFail();
+
     $moderator = User::create([
         'country_id' => $country->id,
+        'division_id' => $division->id,
         'first_name' => 'Marc', 'last_name' => 'Dupont',
         'email' => 'moderator@site.com', 'gender' => 'male',
         'phone' => '+22900000001', 'password' => 'password',
@@ -81,15 +92,18 @@ function warehousePayload(array $overrides = []): array
     $langFr = Lang::where('code', 'fr')->firstOrFail();
     $langEn = Lang::where('code', 'en')->firstOrFail();
     $country = GeoCountry::where('code', 'BEN')->firstOrFail();
+    $division = GeoDivision::where('country_id', $country->id)->firstOrFail();
     $uid = strtoupper(uniqid());
 
     return array_merge([
         'code' => 'WH-'.substr($uid, -8),
         'sort_order' => random_int(1, 1000000000),
         'type' => 'storage',
+        'stock_tracking_mode' => 'warehouse',
         'status' => 'inactive',
         'is_default' => false,
         'country_id' => $country->id,
+        'division_id' => $division->id,
         'city' => 'Cotonou',
         'address' => 'Zone industrielle, Cotonou',
         'latitude' => '6.3653600',
@@ -150,6 +164,35 @@ it('crée un entrepôt avec ses traductions', function () {
     expect($warehouse->status->value)->toBe('inactive');
     expect($warehouse->is_default)->toBeFalse();
     expect($warehouse->active_translation?->slug)->not->toBeNull();
+});
+
+it('accepte le mode de suivi du stock « warehouse » et « location »', function () {
+    $admin = warehousesAdmin();
+
+    $warehouse = createWarehouse($this, $admin, ['stock_tracking_mode' => 'warehouse', 'code' => 'STM-WH']);
+    expect($warehouse->fresh()->stock_tracking_mode->value)->toBe('warehouse');
+
+    $location = createWarehouse($this, $admin, ['stock_tracking_mode' => 'location', 'code' => 'STM-LOC']);
+    expect($location->fresh()->stock_tracking_mode->value)->toBe('location');
+});
+
+it('rejette un mode de suivi du stock invalide', function () {
+    $admin = warehousesAdmin();
+
+    $this->actingAs($admin)
+        ->from(route('backend.product-warehouses.create'))
+        ->post(route('backend.product-warehouses.store'), warehousePayload(['stock_tracking_mode' => 'invalid']))
+        ->assertSessionHasErrors(['stock_tracking_mode']);
+
+    expect(ProductWarehouse::count())->toBe(0);
+});
+
+it('utilise « warehouse » par défaut pour le mode de suivi du stock', function () {
+    $admin = warehousesAdmin();
+
+    $warehouse = createWarehouse($this, $admin, ['code' => 'STM-DEF']);
+
+    expect($warehouse->fresh()->stock_tracking_mode->value)->toBe('warehouse');
 });
 
 it('refuse un code en doublon ou invalide', function () {

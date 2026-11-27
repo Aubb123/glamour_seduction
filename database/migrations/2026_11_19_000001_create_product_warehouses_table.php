@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('sort_order')->unique(); // Ordre d'affichage de l'entrepôt dans les listes : 0 en premier
             $table->string('code', 30)->unique(); // Référence interne unique de l'entrepôt (ex : COT-01)
             $table->enum('type', ['storage', 'returns', 'transit'])->default('storage'); // Type d'entrepôt : stockage, retours ou transit
+            $table->enum('stock_tracking_mode', ['warehouse', 'location'])->default('warehouse'); // Mode de suivi du stock : global par entrepôt ou détaillé par emplacement
             //
             $table->foreignId('division_id')->constrained('geo_divisions')->cascadeOnUpdate()->cascadeOnDelete(); // Division de rattachement de l'entrepôt (obligatoire)
             $table->string('city')->nullable(); // Ville de l'entrepôt

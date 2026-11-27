@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Products\Warehouses\ProductWarehouseStatus;
+use App\Enums\Products\Warehouses\ProductWarehouseStockTrackingMode;
 use App\Enums\Products\Warehouses\ProductWarehouseType;
 use App\Traits\HasModelBehaviors;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,6 +36,7 @@ class ProductWarehouse extends Model
         'sort_order',
         'code',
         'type',
+        'stock_tracking_mode',
         'division_id',
         'city',
         'address',
@@ -52,6 +54,7 @@ class ProductWarehouse extends Model
     protected $casts = [
         'sort_order' => 'integer',
         'type' => ProductWarehouseType::class,
+        'stock_tracking_mode' => ProductWarehouseStockTrackingMode::class,
         'status' => ProductWarehouseStatus::class,
         'is_default' => 'boolean',
         'latitude' => 'decimal:7',
