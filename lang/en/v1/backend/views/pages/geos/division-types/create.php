@@ -20,7 +20,7 @@ return [
     'libelle' => 'Label',
     'libellePlaceholder' => 'e.g. Department',
     'description' => 'Description',
-    'descriptionPlaceholder' => 'Optional description of the type...',
+    'descriptionPlaceholder' => 'Description of the type...',
     'recapitulatif' => 'Summary',
     'recapitulatifAide' => 'Check the information before saving.',
     'precedent' => 'Previous',

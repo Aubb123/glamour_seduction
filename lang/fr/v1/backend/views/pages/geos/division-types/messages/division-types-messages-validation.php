@@ -46,6 +46,7 @@ return [
         ],
 
         'description' => [
+            'required' => 'La description du type de division est obligatoire.',
             'string' => 'La description doit être une chaîne de caractères.',
         ],
 

@@ -20,7 +20,7 @@ return [
     'libelle' => 'Libellé',
     'libellePlaceholder' => 'ex : Département',
     'description' => 'Description',
-    'descriptionPlaceholder' => 'Description optionnelle du type...',
+    'descriptionPlaceholder' => 'Description du type...',
     'recapitulatif' => 'Récapitulatif',
     'recapitulatifAide' => 'Vérifiez les informations avant d\'enregistrer.',
     'precedent' => 'Précédent',

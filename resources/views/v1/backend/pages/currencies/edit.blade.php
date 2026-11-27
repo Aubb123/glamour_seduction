@@ -148,10 +148,10 @@
 
                                         <div class="mb-3">
                                             <label for="description_{{ $lang->code }}" class="form-label">
-                                                {{ __('v1/backend/views/pages/currencies/edit.description') }}
+                                                {{ __('v1/backend/views/pages/currencies/edit.description') }} <span class="text-danger">*</span>
                                                 <span class="text-muted">({{ $lang->name }})</span>
                                             </label>
-                                            <textarea name="translations[{{ $lang->code }}][description]" id="description_{{ $lang->code }}" class="form-control @error('translations.' . $lang->code . '.description') is-invalid @enderror" rows="3" placeholder="{{ __('v1/backend/views/pages/currencies/edit.descriptionOptionnelleDeLaDevise') }}">{{ old('translations.' . $lang->code . '.description', getTranslation($currency, $lang->id)?->description ?? '') }}</textarea>
+                                            <textarea name="translations[{{ $lang->code }}][description]" id="description_{{ $lang->code }}" required class="form-control @error('translations.' . $lang->code . '.description') is-invalid @enderror" rows="3" placeholder="{{ __('v1/backend/views/pages/currencies/edit.descriptionPlaceholder') }}">{{ old('translations.' . $lang->code . '.description', getTranslation($currency, $lang->id)?->description ?? '') }}</textarea>
                                             @error('translations.' . $lang->code . '.description')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

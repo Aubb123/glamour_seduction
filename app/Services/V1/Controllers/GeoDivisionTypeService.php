@@ -205,7 +205,7 @@ class GeoDivisionTypeService
 
                 $existingTranslation->update([
                     'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
 
             } else {
@@ -214,7 +214,7 @@ class GeoDivisionTypeService
                     'division_type_id' => $divisionType->id,
                     'lang_id' => $translation['lang_id'],
                     'name' => $translation['name'],
-                    'description' => $translation['description'] ?? null,
+                    'description' => $translation['description'],
                 ]);
             }
         }

@@ -19,7 +19,7 @@ return [
     'inactif' => 'Inactif',
     'nom' => 'Libellé',
     'description' => 'Description',
-    'descriptionOptionnelle' => 'Description optionnelle du type...',
+    'descriptionPlaceholder' => 'Description du type...',
     'recapitulatif' => 'Récapitulatif',
     'recapitulatifAide' => 'Vérifiez les informations avant de mettre à jour.',
     'precedent' => 'Précédent',

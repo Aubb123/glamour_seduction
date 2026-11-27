@@ -19,7 +19,7 @@ return [
     'inactif' => 'Inactive',
     'nom' => 'Label',
     'description' => 'Description',
-    'descriptionOptionnelle' => 'Optional description of the type...',
+    'descriptionPlaceholder' => 'Description of the type...',
     'recapitulatif' => 'Summary',
     'recapitulatifAide' => 'Check the information before updating.',
     'precedent' => 'Previous',

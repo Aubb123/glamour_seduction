@@ -46,6 +46,7 @@ return [
         ],
 
         'description' => [
+            'required' => 'The division type description is required.',
             'string' => 'The description must be a string.',
         ],
 

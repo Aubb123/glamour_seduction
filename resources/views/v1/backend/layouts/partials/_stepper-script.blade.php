@@ -35,7 +35,34 @@
     function validateStep(step) {
         const stepContent = document.querySelector(`[data-step-content="${step}"]`);
         const fields = stepContent.querySelectorAll('input, textarea, select');
-        const invalidField = Array.from(fields).find((field) => field.willValidate && !field.disabled && !field.checkValidity());
+
+        // 1. Champs SummerNote (textarea masqué par l'éditeur riche) : validation manuelle
+        //    car le navigateur ne peut pas valider un textarea caché (display:none).
+        const summernoteInvalid = Array.from(fields).find((field) => {
+            if (field.tagName !== 'TEXTAREA' || !field.id.startsWith('summernote-')) {
+                return false;
+            }
+            // Nettoyage d'une éventuelle erreur précédente
+            clearSummernoteError(field);
+            if (field.required && field.value.trim() === '') {
+                showSummernoteError(field);
+                return true;
+            }
+            return false;
+        });
+
+        if (summernoteInvalid) {
+            summernoteInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+
+        // 2. Champs natifs (input, select, textarea non-SummerNote)
+        const invalidField = Array.from(fields).find((field) => {
+            if (field.tagName === 'TEXTAREA' && field.id.startsWith('summernote-')) {
+                return false; // déjà géré ci-dessus
+            }
+            return field.willValidate && !field.disabled && !field.checkValidity();
+        });
 
         if (invalidField) {
             invalidField.reportValidity();
@@ -44,6 +71,31 @@
         }
 
         return true;
+    }
+
+    // Affiche un message d'erreur visible sous l'éditeur SummerNote
+    function showSummernoteError(textarea) {
+        const wrapper = textarea.closest('.note-editor, .note-frame, .summernote-wrapper') || textarea.parentElement;
+        if (!wrapper) return;
+        let feedback = wrapper.querySelector('.summernote-invalid-feedback');
+        if (!feedback) {
+            feedback = document.createElement('div');
+            feedback.className = 'summernote-invalid-feedback text-danger small mt-1';
+            wrapper.appendChild(feedback);
+        }
+        feedback.textContent = 'Veuillez renseigner ce champ.';
+        textarea.classList.add('is-invalid');
+    }
+
+    // Supprime le message d'erreur d'un champ SummerNote
+    function clearSummernoteError(textarea) {
+        const wrapper = textarea.closest('.note-editor, .note-frame, .summernote-wrapper') || textarea.parentElement;
+        if (!wrapper) return;
+        const feedback = wrapper.querySelector('.summernote-invalid-feedback');
+        if (feedback) {
+            feedback.remove();
+        }
+        textarea.classList.remove('is-invalid');
     }
 
     // Trouver le premier champ invalide dans le formulaire
@@ -65,6 +117,29 @@
 
     // Gestion de l'événement pour la soumission du formulaire
     form.addEventListener('submit', (event) => {
+        // Validation manuelle des champs SummerNote avant la soumission
+        const summernoteFields = form.querySelectorAll('textarea[id^="summernote-"]');
+        let summernoteInvalid = null;
+        summernoteFields.forEach((field) => {
+            clearSummernoteError(field);
+            if (field.required && field.value.trim() === '') {
+                showSummernoteError(field);
+                if (!summernoteInvalid) {
+                    summernoteInvalid = field;
+                }
+            }
+        });
+
+        if (summernoteInvalid) {
+            event.preventDefault();
+            const invalidStep = summernoteInvalid.closest('[data-step-content]');
+            if (invalidStep) {
+                goToStep(parseInt(invalidStep.dataset.stepContent));
+            }
+            summernoteInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
         if (!form.reportValidity()) {
             event.preventDefault();
             const invalidField = findFirstInvalidField();

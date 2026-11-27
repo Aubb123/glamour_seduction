@@ -28,7 +28,7 @@ return [
     'exDevise' => 'e.g., Euro, US Dollar, CFA Franc...',
     'slugGenereAutomatiquement' => 'The slug will be generated automatically.',
     'description' => 'Description',
-    'descriptionOptionnelleDeLaDevise' => 'Optional currency description...',
+    'descriptionPlaceholder' => 'Currency description...',
     'precedent' => 'Previous',
     'suivant' => 'Next',
     'mettreAJour' => 'Update',

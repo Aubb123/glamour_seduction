@@ -105,7 +105,7 @@ function createDivisionType(array $overrides = []): GeoDivisionType
                 'division_type_id' => $type->id,
                 'lang_id' => $langs[$langCode],
                 'name' => $name,
-                'description' => null,
+                'description' => 'Description '.$name,
             ]);
         }
     }
@@ -189,6 +189,21 @@ it('refuse un libellé déjà utilisé pour la même langue', function () {
     $this->actingAs($admin)
         ->post(route('backend.geodivisiontypes.store'), $payload)
         ->assertSessionHasErrors('translations.0.name');
+});
+
+it('refuse une description manquante', function () {
+    $admin = geoDivisionTypeAdmin();
+
+    $payload = geoDivisionTypePayload('mike');
+    $payload['translations'][0]['description'] = '';
+    unset($payload['translations'][1]['description']);
+
+    $this->actingAs($admin)
+        ->post(route('backend.geodivisiontypes.store'), $payload)
+        ->assertSessionHasErrors([
+            'translations.0.description',
+            'translations.1.description',
+        ]);
 });
 
 it('le code est immuable en update', function () {

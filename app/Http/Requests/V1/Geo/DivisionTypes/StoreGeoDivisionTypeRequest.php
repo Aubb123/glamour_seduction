@@ -47,8 +47,8 @@ class StoreGeoDivisionTypeRequest extends FormRequest
             // Nom du type dans la langue concernée — obligatoire
             'translations.*.name' => ['required', 'string', 'max:100'],
 
-            // Description du type dans la langue concernée — optionnelle
-            'translations.*.description' => ['nullable', 'string'],
+            // Description du type dans la langue concernée — obligatoire
+            'translations.*.description' => ['required', 'string'],
         ];
     }
 
@@ -127,6 +127,7 @@ class StoreGeoDivisionTypeRequest extends FormRequest
             'translations.*.name.string' => __($this->backendLangPath.'.translations.name.string'),
             'translations.*.name.max' => __($this->backendLangPath.'.translations.name.max'),
 
+            'translations.*.description.required' => __($this->backendLangPath.'.translations.description.required'),
             'translations.*.description.string' => __($this->backendLangPath.'.translations.description.string'),
         ];
     }

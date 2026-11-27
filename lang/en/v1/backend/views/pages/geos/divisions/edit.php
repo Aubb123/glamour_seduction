@@ -23,7 +23,7 @@ return [
     'notesPlaceholder' => 'Optional internal notes...',
     'nom' => 'Name',
     'description' => 'Description',
-    'descriptionOptionnelle' => 'Optional description of the division...',
+    'descriptionPlaceholder' => 'Description of the division...',
     'recapitulatif' => 'Summary',
     'recapitulatifAide' => 'Check the information before updating.',
     'precedent' => 'Previous',

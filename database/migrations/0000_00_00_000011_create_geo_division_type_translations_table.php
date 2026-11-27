@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('lang_id')->constrained('langs')->cascadeOnUpdate()->cascadeOnDelete(); // Clé étrangère vers la table langs fr, en, ar, es, pt, zh, de
             //
             $table->string('name', 100); // Libellé du type dans la langue de traduction (ex : Département)
-            $table->text('description')->nullable(); // Description optionnelle du type
+            $table->text('description'); // Description obligatoire du type
             $table->string('slug'); // Slug SEO-friendly
             //
             $table->timestamps();

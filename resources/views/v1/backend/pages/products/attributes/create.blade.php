@@ -97,8 +97,8 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="description_{{ $lang->code }}" class="form-label">{{ __('Description') }} <span class="text-muted">({{ $lang->name }})</span></label>
-                                            <textarea name="translations[{{ $lang->code }}][description]" id="description_{{ $lang->code }}" class="form-control @error('translations.' . $lang->code . '.description') is-invalid @enderror" rows="5" placeholder="{{ __('Description de l\'attribut...') }}">{{ old('translations.' . $lang->code . '.description') }}</textarea>
+                                            <label for="description_{{ $lang->code }}" class="form-label">{{ __('Description') }} <span class="text-danger">*</span> <span class="text-muted">({{ $lang->name }})</span></label>
+                                            <textarea name="translations[{{ $lang->code }}][description]" id="description_{{ $lang->code }}" required class="form-control @error('translations.' . $lang->code . '.description') is-invalid @enderror" rows="5" placeholder="{{ __('Description de l\'attribut...') }}">{{ old('translations.' . $lang->code . '.description') }}</textarea>
                                             @error('translations.' . $lang->code . '.description') <div class="invalid-feedback">{{ ucfirst($lang->name) }} : {{ $message }}</div> @enderror
                                         </div>
                                     </div>
