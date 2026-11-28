@@ -10,6 +10,8 @@ return [
             'default_release_forbidden' => 'Cannot remove the default warehouse role until another warehouse has been set as default.',
             'default_deactivate_forbidden' => 'Cannot deactivate the default warehouse until another warehouse takes its place.',
             'default_type_forbidden' => 'Cannot change the default warehouse type until another warehouse takes its place.',
+            'stock_mode_switch_has_global_stock' => 'Cannot switch this warehouse to "location" mode: it already has global stocks. Please remove them first.',
+            'stock_mode_switch_has_location_stock' => 'Cannot switch this warehouse to "warehouse" mode: it already has location stocks. Please remove them first.',
         ],
         'change_status' => [
             'default_deactivate_forbidden' => 'Cannot deactivate the default warehouse. Please set another default warehouse first.',

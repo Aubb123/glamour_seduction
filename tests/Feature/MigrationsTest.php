@@ -40,6 +40,8 @@ it('crée toutes les tables du schéma de base', function () {
         'products', 'product_translations', 'product_tag',
         'product_variants', 'product_variant_attribute_value',
         'product_warehouses', 'product_warehouse_translations',
+        'product_warehouse_stocks',
+        'product_warehouse_location_stocks',
     ];
 
     $actualTables = Schema::getTableListing(null, false);

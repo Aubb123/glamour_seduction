@@ -583,6 +583,8 @@ class BackendHelper
                             ['label' => 'Variantes', 'route' => 'backend.product-variants.index', 'patterns' => ['backend.product-variants.*']],
                             ['label' => 'Entrepôts', 'route' => 'backend.product-warehouses.index', 'patterns' => ['backend.product-warehouses.*', 'backend.product-warehouse-translations.*']],
                             ['label' => 'Emplacements', 'route' => 'backend.product-warehouse-locations.index', 'patterns' => ['backend.product-warehouse-locations.*', 'backend.product-warehouse-location-translations.*']],
+                            ['label' => 'Stocks', 'route' => 'backend.product-warehouse-stocks.index', 'patterns' => ['backend.product-warehouse-stocks.*']],
+                            ['label' => 'Stocks par emplacement', 'route' => 'backend.product-warehouse-location-stocks.index', 'patterns' => ['backend.product-warehouse-location-stocks.*']],
 
                         ],
                     ],

@@ -50,7 +50,9 @@ use App\Http\Controllers\V1\ProductTranslationController as V1ProductTranslation
 use App\Http\Controllers\V1\ProductVariantController as V1ProductVariantController;
 use App\Http\Controllers\V1\ProductWarehouseController as V1ProductWarehouseController;
 use App\Http\Controllers\V1\ProductWarehouseLocationController as V1ProductWarehouseLocationController;
+use App\Http\Controllers\V1\ProductWarehouseLocationStockController as V1ProductWarehouseLocationStockController;
 use App\Http\Controllers\V1\ProductWarehouseLocationTranslationController as V1ProductWarehouseLocationTranslationController;
+use App\Http\Controllers\V1\ProductWarehouseStockController as V1ProductWarehouseStockController;
 use App\Http\Controllers\V1\ProductWarehouseTranslationController as V1ProductWarehouseTranslationController;
 use App\Http\Controllers\V1\RoleController as V1RoleController;
 use App\Http\Controllers\V1\RoleTranslationController as V1RoleTranslationController;
@@ -559,6 +561,40 @@ if ($version && $version->code === 'v1') {
             Route::get('/backend/product-warehouse-location-translations/trashed/{productWarehouseLocation}', 'backend_product_warehouse_location_translations_trashed')->middleware(['permission:product-warehouse-location-translations.trashed'])->name('backend.product-warehouse-location-translations.trashed')->withTrashed();
             Route::patch('/backend/product-warehouse-location-translations/restore/{uuid}', 'backend_product_warehouse_location_translations_restore')->middleware(['permission:product-warehouse-location-translations.restore'])->name('backend.product-warehouse-location-translations.restore');
             Route::delete('/backend/product-warehouse-location-translations/force-destroy/{uuid}', 'backend_product_warehouse_location_translations_force_destroy')->middleware(['permission:product-warehouse-location-translations.force_destroy'])->name('backend.product-warehouse-location-translations.force_destroy');
+        });
+
+        // Routes pour : Gestion des Stocks par Entrepôt (module Boutique)
+        // NB : un solde courant ne se supprime pas logiquement (pas de corbeille).
+        Route::controller(V1ProductWarehouseStockController::class)->group(function () {
+            Route::get('/backend/product-warehouse-stocks/index', 'backend_product_warehouse_stocks_index')->middleware(['permission:product-warehouse-stocks.index'])->name('backend.product-warehouse-stocks.index');
+            Route::get('/backend/product-warehouse-stocks/create', 'backend_product_warehouse_stocks_create')->middleware(['permission:product-warehouse-stocks.create'])->name('backend.product-warehouse-stocks.create');
+            Route::post('/backend/product-warehouse-stocks/store', 'backend_product_warehouse_stocks_store')->middleware(['permission:product-warehouse-stocks.store'])->name('backend.product-warehouse-stocks.store');
+            Route::get('/backend/product-warehouse-stocks/show/{productWarehouseStock}', 'backend_product_warehouse_stocks_show')->middleware(['permission:product-warehouse-stocks.show'])->name('backend.product-warehouse-stocks.show');
+            Route::get('/backend/product-warehouse-stocks/audits/{productWarehouseStock}', 'backend_product_warehouse_stocks_audits')->middleware(['permission:product-warehouse-stocks.audits'])->name('backend.product-warehouse-stocks.audits');
+            Route::get('/backend/product-warehouse-stocks/activity-logs/{productWarehouseStock}', 'backend_product_warehouse_stocks_activity_logs')->middleware(['permission:product-warehouse-stocks.activity_logs'])->name('backend.product-warehouse-stocks.activity-logs');
+            Route::get('/backend/product-warehouse-stocks/edit/{productWarehouseStock}', 'backend_product_warehouse_stocks_edit')->middleware(['permission:product-warehouse-stocks.edit'])->name('backend.product-warehouse-stocks.edit');
+            Route::put('/backend/product-warehouse-stocks/update/{productWarehouseStock}', 'backend_product_warehouse_stocks_update')->middleware(['permission:product-warehouse-stocks.update'])->name('backend.product-warehouse-stocks.update');
+            Route::delete('/backend/product-warehouse-stocks/destroy/{productWarehouseStock}', 'backend_product_warehouse_stocks_destroy')->middleware(['permission:product-warehouse-stocks.destroy'])->name('backend.product-warehouse-stocks.destroy');
+            Route::get('/backend/product-warehouse-stocks/trashed', 'backend_product_warehouse_stocks_trashed')->middleware(['permission:product-warehouse-stocks.trashed'])->name('backend.product-warehouse-stocks.trashed');
+            Route::patch('/backend/product-warehouse-stocks/restore/{uuid}', 'backend_product_warehouse_stocks_restore')->middleware(['permission:product-warehouse-stocks.restore'])->name('backend.product-warehouse-stocks.restore');
+            Route::delete('/backend/product-warehouse-stocks/force-destroy/{uuid}', 'backend_product_warehouse_stocks_force_destroy')->middleware(['permission:product-warehouse-stocks.force_destroy'])->name('backend.product-warehouse-stocks.force_destroy');
+        });
+
+        // Routes pour : Gestion des Stocks par Emplacement (module Boutique)
+        // NB : un solde courant ne se supprime pas logiquement (pas de corbeille).
+        Route::controller(V1ProductWarehouseLocationStockController::class)->group(function () {
+            Route::get('/backend/product-warehouse-location-stocks/index', 'backend_product_warehouse_location_stocks_index')->middleware(['permission:product-warehouse-location-stocks.index'])->name('backend.product-warehouse-location-stocks.index');
+            Route::get('/backend/product-warehouse-location-stocks/create', 'backend_product_warehouse_location_stocks_create')->middleware(['permission:product-warehouse-location-stocks.create'])->name('backend.product-warehouse-location-stocks.create');
+            Route::post('/backend/product-warehouse-location-stocks/store', 'backend_product_warehouse_location_stocks_store')->middleware(['permission:product-warehouse-location-stocks.store'])->name('backend.product-warehouse-location-stocks.store');
+            Route::get('/backend/product-warehouse-location-stocks/show/{productWarehouseLocationStock}', 'backend_product_warehouse_location_stocks_show')->middleware(['permission:product-warehouse-location-stocks.show'])->name('backend.product-warehouse-location-stocks.show');
+            Route::get('/backend/product-warehouse-location-stocks/audits/{productWarehouseLocationStock}', 'backend_product_warehouse_location_stocks_audits')->middleware(['permission:product-warehouse-location-stocks.audits'])->name('backend.product-warehouse-location-stocks.audits');
+            Route::get('/backend/product-warehouse-location-stocks/activity-logs/{productWarehouseLocationStock}', 'backend_product_warehouse_location_stocks_activity_logs')->middleware(['permission:product-warehouse-location-stocks.activity_logs'])->name('backend.product-warehouse-location-stocks.activity-logs');
+            Route::get('/backend/product-warehouse-location-stocks/edit/{productWarehouseLocationStock}', 'backend_product_warehouse_location_stocks_edit')->middleware(['permission:product-warehouse-location-stocks.edit'])->name('backend.product-warehouse-location-stocks.edit');
+            Route::put('/backend/product-warehouse-location-stocks/update/{productWarehouseLocationStock}', 'backend_product_warehouse_location_stocks_update')->middleware(['permission:product-warehouse-location-stocks.update'])->name('backend.product-warehouse-location-stocks.update');
+            Route::delete('/backend/product-warehouse-location-stocks/destroy/{productWarehouseLocationStock}', 'backend_product_warehouse_location_stocks_destroy')->middleware(['permission:product-warehouse-location-stocks.destroy'])->name('backend.product-warehouse-location-stocks.destroy');
+            Route::get('/backend/product-warehouse-location-stocks/trashed', 'backend_product_warehouse_location_stocks_trashed')->middleware(['permission:product-warehouse-location-stocks.trashed'])->name('backend.product-warehouse-location-stocks.trashed');
+            Route::patch('/backend/product-warehouse-location-stocks/restore/{uuid}', 'backend_product_warehouse_location_stocks_restore')->middleware(['permission:product-warehouse-location-stocks.restore'])->name('backend.product-warehouse-location-stocks.restore');
+            Route::delete('/backend/product-warehouse-location-stocks/force-destroy/{uuid}', 'backend_product_warehouse_location_stocks_force_destroy')->middleware(['permission:product-warehouse-location-stocks.force_destroy'])->name('backend.product-warehouse-location-stocks.force_destroy');
         });
 
         // Routes pour : Gestion des Catégories de Blog

@@ -6,6 +6,8 @@ use App\Enums\Products\Warehouses\ProductWarehouseStatus;
 use App\Enums\Products\Warehouses\ProductWarehouseStockTrackingMode;
 use App\Enums\Products\Warehouses\ProductWarehouseType;
 use App\Models\ProductWarehouse;
+use App\Models\ProductWarehouseLocationStock;
+use App\Models\ProductWarehouseStock;
 use App\Models\ProductWarehouseTranslation;
 use Illuminate\Support\Facades\DB;
 
@@ -82,6 +84,16 @@ class ProductWarehouseService
 
             $updateData['type'] = $newType;
             $updateData['status'] = $newStatus;
+
+            // Empêche un changement de mode de suivi du stock incompatible avec les soldes existants.
+            if (array_key_exists('stock_tracking_mode', $data)) {
+
+                $newMode = ProductWarehouseStockTrackingMode::tryFrom($data['stock_tracking_mode']) ?? $warehouse->stock_tracking_mode;
+
+                if ($newMode !== $warehouse->stock_tracking_mode) {
+                    $this->assertStockModeSwitchIsSafe($warehouse, $newMode);
+                }
+            }
 
             if ($warehouse->is_default) {
 
@@ -209,6 +221,34 @@ class ProductWarehouseService
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.force_destroy.not_trashed_forbidden"));
             }
         });
+    }
+
+    // ─────────────────────────────────────────────
+    // ASSERT STOCK MODE SWITCH IS SAFE (privé)
+    // ─────────────────────────────────────────────
+    private function assertStockModeSwitchIsSafe(ProductWarehouse $warehouse, ProductWarehouseStockTrackingMode $newMode): void
+    {
+        // Passage en mode « location » : aucun stock global ne doit exister.
+        if ($newMode === ProductWarehouseStockTrackingMode::Location) {
+
+            $hasGlobalStock = ProductWarehouseStock::where('warehouse_id', $warehouse->id)->exists();
+
+            if ($hasGlobalStock) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.stock_mode_switch_has_global_stock"));
+            }
+        }
+
+        // Passage en mode « warehouse » : aucun stock par emplacement ne doit exister.
+        if ($newMode === ProductWarehouseStockTrackingMode::Warehouse) {
+
+            $locationIds = $warehouse->locations()->pluck('id');
+
+            $hasLocationStock = ProductWarehouseLocationStock::whereIn('location_id', $locationIds)->exists();
+
+            if ($hasLocationStock) {
+                throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.stock_mode_switch_has_location_stock"));
+            }
+        }
     }
 
     // ─────────────────────────────────────────────

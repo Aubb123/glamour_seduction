@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 /**
@@ -51,6 +52,22 @@ class ProductVariant extends Model
     public function attributeValues(): BelongsToMany
     {
         return $this->belongsToMany(ProductAttributeValue::class, 'product_variant_attribute_value', 'product_variant_id', 'attribute_value_id');
+    }
+
+    /**
+     * Relation vers les soldes de stock globaux de cette variante (par entrepôt).
+     */
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseStock::class, 'product_variant_id');
+    }
+
+    /**
+     * Relation vers les soldes de stock détaillés de cette variante (par emplacement).
+     */
+    public function locationStocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseLocationStock::class, 'product_variant_id');
     }
 
     /**

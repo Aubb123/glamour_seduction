@@ -10,6 +10,8 @@ return [
             'default_release_forbidden' => 'Impossible de retirer le rôle d\'entrepôt par défaut tant qu\'un autre entrepôt n\'a pas été défini par défaut.',
             'default_deactivate_forbidden' => 'Impossible de désactiver l\'entrepôt par défaut tant qu\'un autre entrepôt n\'a pas pris sa place.',
             'default_type_forbidden' => 'Impossible de changer le type de l\'entrepôt par défaut tant qu\'un autre entrepôt n\'a pas pris sa place.',
+            'stock_mode_switch_has_global_stock' => 'Impossible de passer cet entrepôt en mode « location » : il possède déjà des stocks globaux. Veuillez d\'abord les supprimer.',
+            'stock_mode_switch_has_location_stock' => 'Impossible de passer cet entrepôt en mode « warehouse » : il possède déjà des stocks par emplacement. Veuillez d\'abord les supprimer.',
         ],
         'change_status' => [
             'default_deactivate_forbidden' => 'Impossible de désactiver l\'entrepôt par défaut. Définissez d\'abord un autre entrepôt par défaut.',

@@ -81,6 +81,14 @@ class ProductWarehouseLocation extends Model
     }
 
     /**
+     * Relation vers les soldes de stock détaillés rattachés à cet emplacement.
+     */
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseLocationStock::class, 'location_id');
+    }
+
+    /**
      * Scope pour récupérer uniquement les emplacements actifs.
      */
     public function scopeActive($query): Builder

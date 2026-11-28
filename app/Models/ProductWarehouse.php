@@ -88,6 +88,14 @@ class ProductWarehouse extends Model
     }
 
     /**
+     * Relation vers les soldes de stock globaux rattachés à cet entrepôt.
+     */
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(ProductWarehouseStock::class, 'warehouse_id');
+    }
+
+    /**
      * Scope pour récupérer uniquement les entrepôts actifs.
      */
     public function scopeActive($query): Builder
