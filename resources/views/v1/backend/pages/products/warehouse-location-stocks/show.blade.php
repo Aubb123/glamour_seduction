@@ -1,14 +1,14 @@
 @extends('v1.backend.layouts.app')
 
 @section('title')
-    {{ __("Détail du stock par emplacement") }} — <code>{{ $stock->variant?->sku ?? '' }}</code>
+    {{ __("Détail du stock par emplacement") }} — <code>{{ $productWarehouseLocationStock->variant?->sku ?? '' }}</code>
 @endsection
 
 @section('content')
 
     @include('v1.backend.layouts.includes._toolbar', ['pageTitle' => __("Détail du stock par emplacement")])
 
-    @include('v1.backend.pages.products.warehouse-location-stocks.partials._show-start', ['stock' => $stock])
+    @include('v1.backend.pages.products.warehouse-location-stocks.partials._show-start', ['productWarehouseLocationStock' => $productWarehouseLocationStock])
 
         <ul class="nav nav-tabs mb-4">
             <li class="nav-item">
@@ -39,27 +39,37 @@
                             <div class="card-body">
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Variante') }}</div>
-                                    <div class="col-8 fw-bold">{{ $stock->variant?->sku ?? '—' }}</div>
+                                    <div class="col-8 fw-bold">
+                                        <a href="{{ route('backend.product-variants.show', ['productVariant' => $productWarehouseLocationStock->variant?->uuid]) }}" class="text-decoration-none">
+                                            {{ $productWarehouseLocationStock->variant?->sku ?? '—' }}
+                                        </a>
+                                    </div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Produit') }}</div>
-                                    <div class="col-8">{{ $stock->variant?->product?->active_translation?->name ?? '—' }}</div>
+                                    <div class="col-8">
+                                        <a href="{{ route('backend.products.show', ['product' => $productWarehouseLocationStock->variant?->product?->uuid, 'slug' => $productWarehouseLocationStock->variant?->product?->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                            {{ $productWarehouseLocationStock->variant?->product?->active_translation?->name ?? '—' }}
+                                        </a>
+                                    </div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Emplacement') }}</div>
                                     <div class="col-8">
-                                        <span class="badge badge-soft-primary">{{ $stock->location?->code ?? '—' }}</span>
+                                        <a href="{{ route('backend.product-warehouse-locations.show', ['productWarehouseLocation' => $productWarehouseLocationStock->location?->uuid]) }}" class="text-decoration-none">
+                                            <span class="badge badge-soft-primary">{{ $productWarehouseLocationStock->location?->code ?? '—' }}</span>
+                                        </a>
                                     </div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Entrepôt') }}</div>
                                     <div class="col-8">
-                                        @if($stock->location?->warehouse)
-                                            <a href="{{ route('backend.product-warehouses.show', ['productWarehouse' => $stock->location->warehouse->uuid, 'slug' => $stock->location->warehouse->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
-                                                <span class="badge badge-soft-primary">{{ $stock->location->warehouse->active_translation?->name ?? $stock->location->warehouse->code }}</span>
+                                        @if($productWarehouseLocationStock->location?->warehouse)
+                                            <a href="{{ route('backend.product-warehouses.show', ['productWarehouse' => $productWarehouseLocationStock->location->warehouse->uuid, 'slug' => $productWarehouseLocationStock->location->warehouse->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                                <span class="badge badge-soft-primary">{{ $productWarehouseLocationStock->location->warehouse->active_translation?->name ?? $productWarehouseLocationStock->location->warehouse->code }}</span>
                                             </a>
                                         @else
                                             <span class="text-muted">—</span>
@@ -70,7 +80,7 @@
                                 <div class="row align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Quantité') }}</div>
                                     <div class="col-8">
-                                        <span class="badge badge-soft-secondary fs-6">{{ number_format((int) $stock->quantity, 0, '.', ' ') }}</span>
+                                        <span class="badge badge-soft-secondary fs-6">{{ number_format((int) $productWarehouseLocationStock->quantity, 0, '.', ' ') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -90,18 +100,18 @@
                                     <div>
                                         <div class="fw-semibold">{{ __('Mode de suivi') }}</div>
                                         <small class="text-muted">
-                                            {{ $stock->location?->warehouse?->stock_tracking_mode?->label() ?? '—' }}
+                                            {{ $productWarehouseLocationStock->location?->warehouse?->stock_tracking_mode?->label() ?? '—' }}
                                         </small>
                                     </div>
-                                    <span class="{{ $stock->location?->warehouse?->stock_tracking_mode?->badgeClass() ?? 'badge badge-soft-secondary' }} px-3 py-2">
-                                        {{ $stock->location?->warehouse?->stock_tracking_mode?->label() ?? '—' }}
+                                    <span class="{{ $productWarehouseLocationStock->location?->warehouse?->stock_tracking_mode?->badgeClass() ?? 'badge badge-soft-secondary' }} px-3 py-2">
+                                        {{ $productWarehouseLocationStock->location?->warehouse?->stock_tracking_mode?->label() ?? '—' }}
                                     </span>
                                 </div>
 
                                 <div class="p-3 rounded" style="background: #f5f7fa">
                                     <div class="fw-semibold mb-1">{{ __('Repère') }}</div>
-                                    <div class="small text-muted">{{ __('Variante') }} : {{ $stock->variant?->sku ?? '—' }}</div>
-                                    <div class="small text-muted">{{ __('Emplacement') }} : {{ $stock->location?->code ?? '—' }}</div>
+                                    <div class="small text-muted">{{ __('Variante') }} : {{ $productWarehouseLocationStock->variant?->sku ?? '—' }}</div>
+                                    <div class="small text-muted">{{ __('Emplacement') }} : {{ $productWarehouseLocationStock->location?->code ?? '—' }}</div>
                                 </div>
 
                             </div>
@@ -124,24 +134,24 @@
                             <div class="card-body">
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('UUID') }}</div>
-                                    <div class="col-8"><code>{{ $stock->uuid }}</code></div>
+                                    <div class="col-8"><code>{{ $productWarehouseLocationStock->uuid }}</code></div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Créé le') }}</div>
-                                    <div class="col-8">@formatDate($stock->created_at, 'D MMMM YYYY - HH:mm:ss')</div>
+                                    <div class="col-8">@formatDate($productWarehouseLocationStock->created_at, 'D MMMM YYYY - HH:mm:ss')</div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row mb-3 align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Modifié le') }}</div>
-                                    <div class="col-8">@formatDate($stock->updated_at, 'D MMMM YYYY - HH:mm:ss')</div>
+                                    <div class="col-8">@formatDate($productWarehouseLocationStock->updated_at, 'D MMMM YYYY - HH:mm:ss')</div>
                                 </div>
                                 <hr class="my-2">
                                 <div class="row align-items-center">
                                     <div class="col-4 text-muted fw-semibold">{{ __('Supprimé le') }}</div>
                                     <div class="col-8">
-                                        @if ($stock->deleted_at)
-                                            @formatDate($stock->deleted_at, 'D MMMM YYYY - HH:mm:ss')
+                                        @if ($productWarehouseLocationStock->deleted_at)
+                                            @formatDate($productWarehouseLocationStock->deleted_at, 'D MMMM YYYY - HH:mm:ss')
                                         @else
                                             <span class="text-muted">—</span>
                                         @endif
@@ -155,6 +165,6 @@
 
         </div>
 
-    @include('v1.backend.pages.products.warehouse-location-stocks.partials._show-end', ['stock' => $stock])
+    @include('v1.backend.pages.products.warehouse-location-stocks.partials._show-end', ['productWarehouseLocationStock' => $productWarehouseLocationStock])
 
 @endsection

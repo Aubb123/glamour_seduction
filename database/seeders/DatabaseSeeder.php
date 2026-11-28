@@ -75,6 +75,9 @@ class DatabaseSeeder extends Seeder
 
             ProductWarehouseLocationSeeder::class,
             ProductWarehouseLocationTranslationSeeder::class,
+
+            ProductWarehouseStockSeeder::class,
+            ProductWarehouseLocationStockSeeder::class,
         ]);
 
     }

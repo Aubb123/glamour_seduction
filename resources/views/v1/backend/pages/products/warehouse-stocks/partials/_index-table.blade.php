@@ -51,54 +51,62 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($stocks as $stock)
+                            @forelse ($stocks as $productWarehouseStock)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
 
-                                    <td class="fw-bold">{{ $stock->variant?->sku ?? '—' }}</td>
-
-                                    <td>{{ $stock->variant?->product?->active_translation?->name ?? '—' }}</td>
-
-                                    <td>
-                                        <a href="{{ route('backend.product-warehouses.show', ['productWarehouse' => $stock->warehouse?->uuid, 'slug' => $stock->warehouse?->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
-                                            <span class="badge badge-soft-primary">{{ $stock->warehouse?->active_translation?->name ?? $stock->warehouse?->code ?? '—' }}</span>
+                                    <td class="fw-bold">
+                                        <a href="{{ route('backend.product-variants.show', ['productVariant' => $productWarehouseStock->variant?->uuid]) }}" class="text-decoration-none">
+                                            {{ $productWarehouseStock->variant?->sku ?? '—' }}
                                         </a>
                                     </td>
 
                                     <td>
-                                        <span class="badge badge-soft-secondary">{{ number_format((int) $stock->quantity, 0, '.', ' ') }}</span>
+                                        <a href="{{ route('backend.products.show', ['product' => $productWarehouseStock->variant?->product?->uuid, 'slug' => $productWarehouseStock->variant?->product?->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                            {{ $productWarehouseStock->variant?->product?->active_translation?->name ?? '—' }}
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ route('backend.product-warehouses.show', ['productWarehouse' => $productWarehouseStock->warehouse?->uuid, 'slug' => $productWarehouseStock->warehouse?->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                            <span class="badge badge-soft-primary">{{ $productWarehouseStock->warehouse?->active_translation?->name ?? $productWarehouseStock->warehouse?->code ?? '—' }}</span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge badge-soft-secondary">{{ number_format((int) $productWarehouseStock->quantity, 0, '.', ' ') }}</span>
                                     </td>
 
                                     <td>
                                         <span class="badge badge-soft-primary">
-                                            <i class="bx bx-file me-1"></i> {{ $stock->audits_count ?? 0 }}
+                                            <i class="bx bx-file me-1"></i> {{ $productWarehouseStock->audits_count ?? 0 }}
                                         </span>
                                     </td>
 
                                     <td>
                                         <span class="badge badge-soft-info">
-                                            <i class="bx bx-pulse me-1"></i> {{ $stock->activity_logs_count ?? 0 }}
+                                            <i class="bx bx-pulse me-1"></i> {{ $productWarehouseStock->activity_logs_count ?? 0 }}
                                         </span>
                                     </td>
 
                                     <td class="text-muted">
-                                        @formatDate($stock->created_at, 'D MMMM YYYY - HH:mm:ss')
+                                        @formatDate($productWarehouseStock->created_at, 'D MMMM YYYY - HH:mm:ss')
                                     </td>
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
-                                            <a href="{{ route('backend.product-warehouse-stocks.show', ['productWarehouseStock' => $stock->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
+                                            <a href="{{ route('backend.product-warehouse-stocks.show', ['productWarehouseStock' => $productWarehouseStock->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                 <i class="bx bx-show"></i>
                                             </a>
 
-                                            <a href="{{ route('backend.product-warehouse-stocks.edit', ['productWarehouseStock' => $stock->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
+                                            <a href="{{ route('backend.product-warehouse-stocks.edit', ['productWarehouseStock' => $productWarehouseStock->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                 <i class="bx bx-edit"></i>
                                             </a>
 
-                                            <form action="{{ route('backend.product-warehouse-stocks.destroy', ['productWarehouseStock' => $stock->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $stock->uuid }}">
+                                            <form action="{{ route('backend.product-warehouse-stocks.destroy', ['productWarehouseStock' => $productWarehouseStock->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $productWarehouseStock->uuid }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $stock->uuid }}', '{{ __('Supprimer ce stock ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $productWarehouseStock->uuid }}', '{{ __('Supprimer ce stock ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             </form>

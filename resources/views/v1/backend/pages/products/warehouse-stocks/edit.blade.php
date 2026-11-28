@@ -1,7 +1,7 @@
 @extends('v1.backend.layouts.app')
 
 @section('title')
-    {{ __('Modifier un stock') }} — <code>{{ $stock->variant?->sku ?? '' }}</code>
+    {{ __('Modifier un stock') }} — <code>{{ $productWarehouseStock->variant?->sku ?? '' }}</code>
 @endsection
 
 @section('content')
@@ -14,7 +14,7 @@
 
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5 class="card-title mb-0">
-                        {{ __('Modifier') }} — <code>{{ $stock->variant?->sku ?? '' }}</code>
+                        {{ __('Modifier') }} — <code>{{ $productWarehouseStock->variant?->sku ?? '' }}</code>
                     </h5>
                     <a href="{{ route('backend.product-warehouse-stocks.index') }}" class="btn btn-secondary btn-sm">
                         <i class="bx bx-arrow-back me-1"></i> {{ __('Retour') }}
@@ -26,16 +26,16 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">{{ __('Entrepôt') }}</label>
-                            <input type="text" class="form-control" value="{{ $stock->warehouse?->active_translation?->name ?? $stock->warehouse?->code ?? '—' }}" readonly disabled />
+                            <input type="text" class="form-control" value="{{ $productWarehouseStock->warehouse?->active_translation?->name ?? $productWarehouseStock->warehouse?->code ?? '—' }}" readonly disabled />
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">{{ __('Variante') }}</label>
-                            <input type="text" class="form-control" value="{{ $stock->variant?->sku ?? '—' }}" readonly disabled />
+                            <input type="text" class="form-control" value="{{ $productWarehouseStock->variant?->sku ?? '—' }}" readonly disabled />
                         </div>
                     </div>
 
                     <form id="edit-stock-form"
-                          action="{{ route('backend.product-warehouse-stocks.update', ['productWarehouseStock' => $stock->uuid]) }}"
+                          action="{{ route('backend.product-warehouse-stocks.update', ['productWarehouseStock' => $productWarehouseStock->uuid]) }}"
                           method="POST">
                         @csrf
                         @method('PUT')
@@ -43,7 +43,7 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="quantity" class="form-label">{{ __('Quantité') }} <span class="text-danger">*</span></label>
-                                <input type="number" step="1" min="0" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity', $stock->quantity) }}" required />
+                                <input type="number" step="1" min="0" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity', $productWarehouseStock->quantity) }}" required />
                                 @error('quantity') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                 <small class="text-muted">{{ __('La quantité ne peut pas être négative.') }}</small>
                             </div>

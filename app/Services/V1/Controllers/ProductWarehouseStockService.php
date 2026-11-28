@@ -30,9 +30,7 @@ class ProductWarehouseStockService
             $variant = ProductVariant::findOrFail($data['product_variant_id']);
 
             // Un solde unique par couple (entrepôt, variante) : on refuse un doublon.
-            $exists = ProductWarehouseStock::where('warehouse_id', $warehouse->id)
-                ->where('product_variant_id', $variant->id)
-                ->exists();
+            $exists = ProductWarehouseStock::where('warehouse_id', $warehouse->id)->where('product_variant_id', $variant->id)->exists();
 
             if ($exists) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.store.already_exists"));
@@ -56,42 +54,42 @@ class ProductWarehouseStockService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function backend_product_warehouse_stocks_update(ProductWarehouseStock $stock, array $data): ProductWarehouseStock
+    public function backend_product_warehouse_stocks_update(ProductWarehouseStock $productWarehouseStock, array $data): ProductWarehouseStock
     {
-        return DB::transaction(function () use ($stock, $data) {
+        return DB::transaction(function () use ($productWarehouseStock, $data) {
 
-            $warehouse = $stock->warehouse;
+            $warehouse = $productWarehouseStock->warehouse;
 
             // Un stock global ne peut être modifié que pour un entrepôt en mode « warehouse ».
             $this->assertWarehouseTracked($warehouse);
 
             // Quantité refusée si négative.
-            $quantity = (int) ($data['quantity'] ?? $stock->quantity);
+            $quantity = (int) ($data['quantity'] ?? $productWarehouseStock->quantity);
 
             if ($quantity < 0) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.negative_quantity"));
             }
 
-            $stock->update([
+            $productWarehouseStock->update([
                 'quantity' => $quantity,
             ]);
 
-            return $stock;
+            return $productWarehouseStock;
         });
     }
 
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function backend_product_warehouse_stocks_destroy(ProductWarehouseStock $stock): void
+    public function backend_product_warehouse_stocks_destroy(ProductWarehouseStock $productWarehouseStock): void
     {
-        DB::transaction(function () use ($stock) {
+        DB::transaction(function () use ($productWarehouseStock) {
 
             // Un stock global ne peut être supprimé que pour un entrepôt en mode « warehouse ».
-            $this->assertWarehouseTracked($stock->warehouse);
+            $this->assertWarehouseTracked($productWarehouseStock->warehouse);
 
             // Suppression via le helper du projet (soft delete + gestion des relations dépendantes).
-            destroy_function($stock);
+            destroy_function($productWarehouseStock);
         });
     }
 

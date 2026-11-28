@@ -25,7 +25,8 @@ trait LogActivity
         // ── Fichier log (storage/logs) ──────────────────────────────
         Log::{$type}($action, array_merge(
             ['user' => auth()->id()],
-            $context
+            $context,
+            ['message' => $message, 'activity' => $activity, 'is_success' => $is_success],
         ));
 
         // ── Base de données ─────────────────────────────────────────
@@ -60,9 +61,13 @@ trait LogActivity
         } catch (\Exception $e) {
 
             // Ne jamais laisser le log DB planter l'action principale
+            // On logge l'erreur dans le fichier log pour investigation ultérieure.
             Log::error('activity_log.store.error', [
                 'message' => $e->getMessage(),
                 'action' => $action,
+                'context' => $context,
+                'activity' => $activity,
+                'is_success' => $is_success,
             ]);
 
         }

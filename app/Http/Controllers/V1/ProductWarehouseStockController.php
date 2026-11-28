@@ -34,13 +34,7 @@ class ProductWarehouseStockController extends Controller
         try {
 
             // Récupère tous les soldes avec leur entrepôt et leur variante, et le nombre d'audits/logs
-            $stocks = ProductWarehouseStock::with([
-                'warehouse',
-                'variant.product',
-            ])
-                ->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])
-                ->orderByDesc('created_at')
-                ->get();
+            $stocks = ProductWarehouseStock::with(['warehouse', 'variant.product'])->withAuditsCountTotal()->withCount(['audits', 'activityLogs'])->orderByDesc('created_at')->get();
 
             $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.index', context: ['count' => $stocks->count()], message: null, activity: __("{$this->backendLangPath}.index.success"), is_success: true);
 
@@ -91,13 +85,13 @@ class ProductWarehouseStockController extends Controller
     {
         try {
 
-            $stock = $this->productWarehouseStockService->backend_product_warehouse_stocks_store($request->validated());
+            $productWarehouseStock = $this->productWarehouseStockService->backend_product_warehouse_stocks_store($request->validated());
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.store', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.store.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.store', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.store.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return redirect()->route('backend.product-warehouse-stocks.index')->with('success', __("{$this->backendLangPath}.store.flash_success", ['label' => $stockLabel]));
+            return redirect()->route('backend.product-warehouse-stocks.index')->with('success', __("{$this->backendLangPath}.store.flash_success", ['label' => $productWarehouseStockLabel]));
 
         } catch (\InvalidArgumentException $e) {
 
@@ -118,21 +112,20 @@ class ProductWarehouseStockController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_warehouse_stocks_show(ProductWarehouseStock $productWarehouseStock): View
     {
-        $stock = $productWarehouseStock;
 
         try {
 
-            $stock->load(['warehouse', 'variant.product'])->loadCount(['audits', 'activityLogs']);
+            $productWarehouseStock->load(['warehouse', 'variant.product'])->loadCount(['audits', 'activityLogs']);
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.show', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.show.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.show', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.show.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return view('v1.backend.pages.products.warehouse-stocks.show', compact('stock'));
+            return view('v1.backend.pages.products.warehouse-stocks.show', compact('productWarehouseStock'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.show', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.show', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.show.error", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             abort(500);
         }
@@ -143,23 +136,22 @@ class ProductWarehouseStockController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_warehouse_stocks_audits(ProductWarehouseStock $productWarehouseStock): View
     {
-        $stock = $productWarehouseStock;
 
         try {
 
-            $stock->load(['warehouse', 'variant.product'])->loadCount(['audits', 'activityLogs']);
+            $productWarehouseStock->load(['warehouse', 'variant.product'])->loadCount(['audits', 'activityLogs']);
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            $audits = $stock->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
+            $audits = $productWarehouseStock->auditsWithTranslations()->with(['user', 'auditable'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.audits', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.audits.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.audits', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.audits.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return view('v1.backend.pages.products.warehouse-stocks.others.audits', compact('stock', 'audits'));
+            return view('v1.backend.pages.products.warehouse-stocks.others.audits', compact('productWarehouseStock', 'audits'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.audits', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.audits', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.audits.error", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             abort(500);
         }
@@ -170,23 +162,22 @@ class ProductWarehouseStockController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_warehouse_stocks_activity_logs(ProductWarehouseStock $productWarehouseStock): View
     {
-        $stock = $productWarehouseStock;
 
         try {
 
-            $stock->load(['warehouse', 'variant.product'])->loadCount(['audits', 'activityLogs']);
+            $productWarehouseStock->load(['warehouse', 'variant.product'])->loadCount(['audits', 'activityLogs']);
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            $logs = $stock->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
+            $logs = $productWarehouseStock->activityLogs()->with(['user'])->orderBy('created_at', 'desc')->get();
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.activity-logs', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.activity-logs', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.activity-logs.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return view('v1.backend.pages.products.warehouse-stocks.others.activity-logs', compact('stock', 'logs'));
+            return view('v1.backend.pages.products.warehouse-stocks.others.activity-logs', compact('productWarehouseStock', 'logs'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.activity-logs', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.activity-logs', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.activity-logs.error", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             abort(500);
         }
@@ -197,19 +188,18 @@ class ProductWarehouseStockController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_warehouse_stocks_edit(ProductWarehouseStock $productWarehouseStock): View
     {
-        $stock = $productWarehouseStock;
 
         try {
 
-            $stock->load(['warehouse', 'variant.product']);
+            $productWarehouseStock->load(['warehouse', 'variant.product']);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.edit', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.edit.success", ['label' => $this->stockLabel($stock)]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.edit', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.edit.success", ['label' => $this->stockLabel($productWarehouseStock)]), is_success: true, loggable: $productWarehouseStock);
 
-            return view('v1.backend.pages.products.warehouse-stocks.edit', compact('stock'));
+            return view('v1.backend.pages.products.warehouse-stocks.edit', compact('productWarehouseStock'));
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.edit', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.edit', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.edit.error", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             abort(500);
         }
@@ -220,31 +210,30 @@ class ProductWarehouseStockController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_warehouse_stocks_update(UpdateProductWarehouseStockRequest $request, ProductWarehouseStock $productWarehouseStock): RedirectResponse
     {
-        $stock = $productWarehouseStock;
 
         try {
 
-            $this->productWarehouseStockService->backend_product_warehouse_stocks_update($stock, $request->validated());
+            $this->productWarehouseStockService->backend_product_warehouse_stocks_update($productWarehouseStock, $request->validated());
 
-            $changes = $stock->getChanges();
+            $changes = $productWarehouseStock->getChanges();
 
-            $stock->refresh()->load(['warehouse', 'variant.product']);
+            $productWarehouseStock->refresh()->load(['warehouse', 'variant.product']);
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.update', context: ['stock_uuid' => $stock->uuid, 'changes' => $changes], message: null, activity: __("{$this->backendLangPath}.update.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.update', context: ['stock_uuid' => $productWarehouseStock->uuid, 'changes' => $changes], message: null, activity: __("{$this->backendLangPath}.update.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return redirect()->route('backend.product-warehouse-stocks.show', ['productWarehouseStock' => $stock->uuid])->with('success', __("{$this->backendLangPath}.update.flash_success", ['label' => $stockLabel]));
+            return redirect()->route('backend.product-warehouse-stocks.show', ['productWarehouseStock' => $productWarehouseStock->uuid])->with('success', __("{$this->backendLangPath}.update.flash_success", ['label' => $productWarehouseStockLabel]));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-stocks.update', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.warning_meta", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-stocks.update', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.warning_meta", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             return redirect()->back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.update', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.error", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.update', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.update.error", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             return redirect()->back()->with('error', __("{$this->backendLangPath}.update.flash_error"))->withInput();
         }
@@ -255,27 +244,26 @@ class ProductWarehouseStockController extends Controller
     // ─────────────────────────────────────────────
     public function backend_product_warehouse_stocks_destroy(ProductWarehouseStock $productWarehouseStock): RedirectResponse
     {
-        $stock = $productWarehouseStock;
 
         try {
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            $this->productWarehouseStockService->backend_product_warehouse_stocks_destroy($stock);
+            $this->productWarehouseStockService->backend_product_warehouse_stocks_destroy($productWarehouseStock);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.destroy', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.destroy', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.destroy.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return redirect()->route('backend.product-warehouse-stocks.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['label' => $stockLabel]));
+            return redirect()->route('backend.product-warehouse-stocks.index')->with('success', __("{$this->backendLangPath}.destroy.flash_success", ['label' => $productWarehouseStockLabel]));
 
         } catch (\InvalidArgumentException $e) {
 
-            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-stocks.destroy', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'warning', action: 'backend.product-warehouse-stocks.destroy', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.warning_meta", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             return redirect()->back()->with('error', $e->getMessage())->withInput();
 
         } catch (\Exception $e) {
 
-            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.destroy', context: ['stock_uuid' => $stock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $stock->uuid]), is_success: false);
+            $this->logActivity(type: 'error', action: 'backend.product-warehouse-stocks.destroy', context: ['stock_uuid' => $productWarehouseStock->uuid], message: $e->getMessage(), activity: __("{$this->backendLangPath}.destroy.error", ['uuid' => $productWarehouseStock->uuid]), is_success: false);
 
             return redirect()->back()->with('error', __("{$this->backendLangPath}.destroy.flash_error"));
         }
@@ -309,15 +297,15 @@ class ProductWarehouseStockController extends Controller
     {
         try {
 
-            $stock = ProductWarehouseStock::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
+            $productWarehouseStock = ProductWarehouseStock::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            restore_function($stock);
+            restore_function($productWarehouseStock);
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.restore', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.restore.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.restore', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.restore.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return redirect()->back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['label' => $stockLabel]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.restore.flash_success", ['label' => $productWarehouseStockLabel]));
 
         } catch (ModelNotFoundException $e) {
 
@@ -338,15 +326,15 @@ class ProductWarehouseStockController extends Controller
     {
         try {
 
-            $stock = ProductWarehouseStock::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
+            $productWarehouseStock = ProductWarehouseStock::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
 
-            $stockLabel = $this->stockLabel($stock);
+            $productWarehouseStockLabel = $this->stockLabel($productWarehouseStock);
 
-            force_destroy_function($stock);
+            force_destroy_function($productWarehouseStock);
 
-            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.force_destroy', context: ['stock_uuid' => $stock->uuid], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['label' => $stockLabel]), is_success: true, loggable: $stock);
+            $this->logActivity(type: 'info', action: 'backend.product-warehouse-stocks.force_destroy', context: ['stock_uuid' => $productWarehouseStock->uuid], message: null, activity: __("{$this->backendLangPath}.force_destroy.success", ['label' => $productWarehouseStockLabel]), is_success: true, loggable: $productWarehouseStock);
 
-            return redirect()->back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success", ['label' => $stockLabel]));
+            return redirect()->back()->with('success', __("{$this->backendLangPath}.force_destroy.flash_success", ['label' => $productWarehouseStockLabel]));
 
         } catch (ModelNotFoundException $e) {
 
@@ -363,10 +351,10 @@ class ProductWarehouseStockController extends Controller
     // ─────────────────────────────────────────────
     // STOCK LABEL (privé)
     // ─────────────────────────────────────────────
-    private function stockLabel(ProductWarehouseStock $stock): string
+    private function stockLabel(ProductWarehouseStock $productWarehouseStock): string
     {
-        $variantName = $stock->variant?->sku ?? '—';
-        $warehouseName = $stock->warehouse?->active_translation?->name ?? $stock->warehouse?->code ?? '—';
+        $variantName = $productWarehouseStock->variant?->sku ?? '—';
+        $warehouseName = $productWarehouseStock->warehouse?->active_translation?->name ?? $productWarehouseStock->warehouse?->code ?? '—';
 
         return "{$variantName} @ {$warehouseName}";
     }

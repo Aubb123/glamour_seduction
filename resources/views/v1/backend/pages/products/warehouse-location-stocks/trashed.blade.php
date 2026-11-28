@@ -33,27 +33,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($stocks as $stock)
+                                @forelse ($productWarehouseLocationStocks as $productWarehouseLocationStock)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td class="fw-bold">{{ $stock->variant?->sku ?? '—' }}</td>
-                                        <td><span class="badge badge-soft-primary">{{ $stock->location?->code ?? '—' }}</span></td>
-                                        <td><span class="badge badge-soft-secondary">{{ number_format((int) $stock->quantity, 0, '.', ' ') }}</span></td>
-                                        <td class="text-muted">@formatDate($stock->deleted_at, 'D MMMM YYYY - HH:mm:ss')</td>
+                                        <td class="fw-bold">{{ $productWarehouseLocationStock->variant?->sku ?? '—' }}</td>
+                                        <td><span class="badge badge-soft-primary">{{ $productWarehouseLocationStock->location?->code ?? '—' }}</span></td>
+                                        <td><span class="badge badge-soft-secondary">{{ number_format((int) $productWarehouseLocationStock->quantity, 0, '.', ' ') }}</span></td>
+                                        <td class="text-muted">@formatDate($productWarehouseLocationStock->deleted_at, 'D MMMM YYYY - HH:mm:ss')</td>
                                         <td>
                                             <div class="hstack gap-2 fs-15">
-                                                <form action="{{ route('backend.product-warehouse-location-stocks.restore', ['uuid' => $stock->uuid]) }}" method="POST" class="d-inline" id="restore-form-{{ $stock->uuid }}">
+                                                <form action="{{ route('backend.product-warehouse-location-stocks.restore', ['uuid' => $productWarehouseLocationStock->uuid]) }}" method="POST" class="d-inline" id="restore-form-{{ $productWarehouseLocationStock->uuid }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $stock->uuid }}', '{{ __('Restaurer ce stock ?') }}', 'Restaurer', 'success')">
+                                                    <button type="button" class="btn btn-sm btn-soft-success" title="{{ __('Restaurer') }}" onclick="confirmAction('restore-form-{{ $productWarehouseLocationStock->uuid }}', '{{ __('Restaurer ce stock ?') }}', 'Restaurer', 'success')">
                                                         <i class="bx bx-undo"></i>
                                                     </button>
                                                 </form>
 
-                                                <form action="{{ route('backend.product-warehouse-location-stocks.force_destroy', ['uuid' => $stock->uuid]) }}" method="POST" class="d-inline" id="force-delete-form-{{ $stock->uuid }}">
+                                                <form action="{{ route('backend.product-warehouse-location-stocks.force_destroy', ['uuid' => $productWarehouseLocationStock->uuid]) }}" method="POST" class="d-inline" id="force-delete-form-{{ $productWarehouseLocationStock->uuid }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" onclick="confirmAction('force-delete-form-{{ $stock->uuid }}', '{{ __('Supprimer définitivement ce stock ?') }}', 'Supprimer', 'warning')">
+                                                    <button type="button" class="btn btn-sm btn-soft-danger" title="{{ __('Supprimer définitivement') }}" onclick="confirmAction('force-delete-form-{{ $productWarehouseLocationStock->uuid }}', '{{ __('Supprimer définitivement ce stock ?') }}', 'Supprimer', 'warning')">
                                                         <i class="bx bx-trash"></i>
                                                     </button>
                                                 </form>

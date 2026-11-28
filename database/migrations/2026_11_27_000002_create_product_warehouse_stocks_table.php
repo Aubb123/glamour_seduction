@@ -12,9 +12,9 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
 
-            $table->foreignId('warehouse_id')->constrained('product_warehouses')->cascadeOnUpdate()->restrictOnDelete();
+            $table->foreignId('warehouse_id')->constrained('product_warehouses')->cascadeOnUpdate()->cascadeOnDelete();
 
-            $table->foreignId('product_variant_id')->constrained('product_variants')->cascadeOnUpdate()->restrictOnDelete();
+            $table->foreignId('product_variant_id')->constrained('product_variants')->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->integer('quantity')->default(0);
 

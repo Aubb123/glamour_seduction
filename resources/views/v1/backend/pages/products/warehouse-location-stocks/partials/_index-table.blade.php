@@ -52,54 +52,68 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($stocks as $stock)
+                            @forelse ($stocks as $productWarehouseLocationStock)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
 
-                                    <td class="fw-bold">{{ $stock->variant?->sku ?? '—' }}</td>
-
-                                    <td>{{ $stock->variant?->product?->active_translation?->name ?? '—' }}</td>
-
-                                    <td>
-                                        <span class="badge badge-soft-primary">{{ $stock->location?->code ?? '—' }}</span>
+                                    <td class="fw-bold">
+                                        <a href="{{ route('backend.product-variants.show', ['productVariant' => $productWarehouseLocationStock->variant?->uuid]) }}" class="text-decoration-none">
+                                            {{ $productWarehouseLocationStock->variant?->sku ?? '—' }}
+                                        </a>
                                     </td>
 
-                                    <td>{{ $stock->location?->warehouse?->active_translation?->name ?? $stock->location?->warehouse?->code ?? '—' }}</td>
+                                    <td>
+                                        <a href="{{ route('backend.products.show', ['product' => $productWarehouseLocationStock->variant?->product?->uuid, 'slug' => $productWarehouseLocationStock->variant?->product?->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                            {{ $productWarehouseLocationStock->variant?->product?->active_translation?->name ?? '—' }}
+                                        </a>
+                                    </td>
 
                                     <td>
-                                        <span class="badge badge-soft-secondary">{{ number_format((int) $stock->quantity, 0, '.', ' ') }}</span>
+                                        <a href="{{ route('backend.product-warehouse-locations.show', ['productWarehouseLocation' => $productWarehouseLocationStock->location?->uuid]) }}" class="text-decoration-none">
+                                            <span class="badge badge-soft-primary">{{ $productWarehouseLocationStock->location?->code ?? '—' }}</span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ route('backend.product-warehouses.show', ['productWarehouse' => $productWarehouseLocationStock->location?->warehouse?->uuid, 'slug' => $productWarehouseLocationStock->location?->warehouse?->active_translation?->slug ?? 'null']) }}" class="text-decoration-none">
+                                            {{ $productWarehouseLocationStock->location?->warehouse?->active_translation?->name ?? $productWarehouseLocationStock->location?->warehouse?->code ?? '—' }}
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge badge-soft-secondary">{{ number_format((int) $productWarehouseLocationStock->quantity, 0, '.', ' ') }}</span>
                                     </td>
 
                                     <td>
                                         <span class="badge badge-soft-primary">
-                                            <i class="bx bx-file me-1"></i> {{ $stock->audits_count ?? 0 }}
+                                            <i class="bx bx-file me-1"></i> {{ $productWarehouseLocationStock->audits_count ?? 0 }}
                                         </span>
                                     </td>
 
                                     <td>
                                         <span class="badge badge-soft-info">
-                                            <i class="bx bx-pulse me-1"></i> {{ $stock->activity_logs_count ?? 0 }}
+                                            <i class="bx bx-pulse me-1"></i> {{ $productWarehouseLocationStock->activity_logs_count ?? 0 }}
                                         </span>
                                     </td>
 
                                     <td class="text-muted">
-                                        @formatDate($stock->created_at, 'D MMMM YYYY - HH:mm:ss')
+                                        @formatDate($productWarehouseLocationStock->created_at, 'D MMMM YYYY - HH:mm:ss')
                                     </td>
 
                                     <td>
                                         <div class="hstack gap-2 fs-15">
-                                            <a href="{{ route('backend.product-warehouse-location-stocks.show', ['productWarehouseLocationStock' => $stock->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
+                                            <a href="{{ route('backend.product-warehouse-location-stocks.show', ['productWarehouseLocationStock' => $productWarehouseLocationStock->uuid]) }}" class="btn btn-sm btn-light" title="{{ __('Voir') }}">
                                                 <i class="bx bx-show"></i>
                                             </a>
 
-                                            <a href="{{ route('backend.product-warehouse-location-stocks.edit', ['productWarehouseLocationStock' => $stock->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
+                                            <a href="{{ route('backend.product-warehouse-location-stocks.edit', ['productWarehouseLocationStock' => $productWarehouseLocationStock->uuid]) }}" class="btn btn-sm btn-soft-primary" title="{{ __('Modifier') }}">
                                                 <i class="bx bx-edit"></i>
                                             </a>
 
-                                            <form action="{{ route('backend.product-warehouse-location-stocks.destroy', ['productWarehouseLocationStock' => $stock->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $stock->uuid }}">
+                                            <form action="{{ route('backend.product-warehouse-location-stocks.destroy', ['productWarehouseLocationStock' => $productWarehouseLocationStock->uuid]) }}" method="POST" class="d-inline" id="delete-form-{{ $productWarehouseLocationStock->uuid }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $stock->uuid }}', '{{ __('Supprimer ce stock par emplacement ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
+                                                <button type="button" class="btn btn-sm btn-soft-danger" onclick="confirmAction('delete-form-{{ $productWarehouseLocationStock->uuid }}', '{{ __('Supprimer ce stock par emplacement ?') }}', 'Supprimer', 'warning')" title="{{ __('Supprimer') }}">
                                                     <i class="bx bx-trash"></i>
                                                 </button>
                                             </form>

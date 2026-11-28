@@ -117,8 +117,10 @@ class ProductWarehouseService
                 $isDefault = (bool) $data['is_default'];
 
                 if ($isDefault && ! $warehouse->is_default) {
+                    // Un entrepôt ne peut devenir par défaut que s'il est de type "Storage" et actif.
                     $this->assertCanBeDefault($newType, $newStatus);
 
+                    // Bascule de l'ancien entrepôt par défaut
                     ProductWarehouse::where('is_default', true)->whereKeyNot($warehouse->id)->update(['is_default' => false]);
                 }
 

@@ -32,6 +32,7 @@ class ProductWarehouseLocationStockService
                 $this->assertWarehouseMatchesLocation($location, (int) $data['warehouse_id']);
             }
 
+            // Un solde unique par couple (emplacement, variante) : on refuse un doublon.
             $variant = ProductVariant::findOrFail($data['product_variant_id']);
 
             // Un solde unique par couple (emplacement, variante) : on refuse un doublon.
@@ -61,42 +62,42 @@ class ProductWarehouseLocationStockService
     // ─────────────────────────────────────────────
     // UPDATE
     // ─────────────────────────────────────────────
-    public function backend_product_warehouse_location_stocks_update(ProductWarehouseLocationStock $stock, array $data): ProductWarehouseLocationStock
+    public function backend_product_warehouse_location_stocks_update(ProductWarehouseLocationStock $productWarehouseLocationStock, array $data): ProductWarehouseLocationStock
     {
-        return DB::transaction(function () use ($stock, $data) {
+        return DB::transaction(function () use ($productWarehouseLocationStock, $data) {
 
-            $location = $stock->location;
+            $location = $productWarehouseLocationStock->location;
 
             // Le stock par emplacement ne peut être modifié que pour un entrepôt en mode « location ».
             $this->assertLocationTracked($location);
 
             // Quantité refusée si négative.
-            $quantity = (int) ($data['quantity'] ?? $stock->quantity);
+            $quantity = (int) ($data['quantity'] ?? $productWarehouseLocationStock->quantity);
 
             if ($quantity < 0) {
                 throw new \InvalidArgumentException(__("{$this->backendLangPath}.update.negative_quantity"));
             }
 
-            $stock->update([
+            $productWarehouseLocationStock->update([
                 'quantity' => $quantity,
             ]);
 
-            return $stock;
+            return $productWarehouseLocationStock;
         });
     }
 
     // ─────────────────────────────────────────────
     // DESTROY (soft delete)
     // ─────────────────────────────────────────────
-    public function backend_product_warehouse_location_stocks_destroy(ProductWarehouseLocationStock $stock): void
+    public function backend_product_warehouse_location_stocks_destroy(ProductWarehouseLocationStock $productWarehouseLocationStock): void
     {
-        DB::transaction(function () use ($stock) {
+        DB::transaction(function () use ($productWarehouseLocationStock) {
 
             // Le stock par emplacement ne peut être supprimé que pour un entrepôt en mode « location ».
-            $this->assertLocationTracked($stock->location);
+            $this->assertLocationTracked($productWarehouseLocationStock->location);
 
             // Suppression via le helper du projet (soft delete + gestion des relations dépendantes).
-            destroy_function($stock);
+            destroy_function($productWarehouseLocationStock);
         });
     }
 

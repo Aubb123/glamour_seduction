@@ -12,26 +12,15 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
 
-            $table->foreignId('location_id')
-                ->constrained('product_warehouse_locations')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
-
-            $table->foreignId('product_variant_id')
-                ->constrained('product_variants')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
+            $table->foreignId('location_id')->constrained('product_warehouse_locations')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignId('product_variant_id')->constrained('product_variants')->cascadeOnUpdate()->cascadeOnDelete();
 
             $table->integer('quantity')->default(0);
 
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(
-                ['location_id', 'product_variant_id'],
-                'pwls_location_variant_unique'
-            );
-
+            $table->unique(['location_id', 'product_variant_id'], 'pwls_location_variant_unique');
             $table->index('product_variant_id', 'pwls_variant_index');
         });
     }

@@ -63,7 +63,6 @@ class ProductWarehouseStock extends Model
      */
     public function scopeWarehouseTracked($query): Builder
     {
-        return $query->whereHas('warehouse', fn ($query) => $query
-            ->where('stock_tracking_mode', 'warehouse'));
+        return $query->whereHas('warehouse', fn ($query) => $query->where('stock_tracking_mode', 'warehouse'));
     }
 }
